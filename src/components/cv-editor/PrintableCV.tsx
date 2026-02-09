@@ -3,24 +3,8 @@
 import { forwardRef } from "react";
 import { CVData, ContactItem } from "@/lib/types";
 import { Separator } from "@/components/ui/separator";
-import {
-  Mail,
-  Phone,
-  MapPin,
-  Linkedin,
-  Globe,
-  Link,
-  LucideIcon,
-} from "lucide-react";
-
-const iconMap: Record<string, LucideIcon> = {
-  Mail,
-  Phone,
-  MapPin,
-  Linkedin,
-  Globe,
-  Link,
-};
+import { iconMap } from "./IconPicker";
+import { Link } from "lucide-react";
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
@@ -38,7 +22,7 @@ function ContactLine({ contact }: { contact: ContactItem }) {
 
   return (
     <div className="flex items-center gap-2 text-[11px] text-gray-600">
-      <Icon className="h-3 w-3 flex-shrink-0 text-gray-400" />
+      <Icon className="h-3 w-3 shrink-0 text-gray-400" />
       <span className="truncate">{contact.value}</span>
     </div>
   );
