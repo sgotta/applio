@@ -4,36 +4,11 @@ export const defaultCVData: CVData = {
   personalInfo: {
     fullName: "Simón Gotta",
     title: "Sr. Software Engineer",
-    contacts: [
-      {
-        id: "contact-1",
-        type: "email",
-        label: "Email",
-        value: "simon@ejemplo.com",
-        icon: "Mail",
-      },
-      {
-        id: "contact-2",
-        type: "phone",
-        label: "Teléfono",
-        value: "+54 11 1234-5678",
-        icon: "Phone",
-      },
-      {
-        id: "contact-3",
-        type: "location",
-        label: "Ubicación",
-        value: "Buenos Aires, Argentina",
-        icon: "MapPin",
-      },
-      {
-        id: "contact-4",
-        type: "linkedin",
-        label: "LinkedIn",
-        value: "linkedin.com/in/simongotta",
-        icon: "Linkedin",
-      },
-    ],
+    email: "simon@ejemplo.com",
+    phone: "+54 11 1234-5678",
+    location: "Buenos Aires, Argentina",
+    linkedin: "linkedin.com/in/simongotta",
+    website: "",
   },
   summary:
     "Ingeniero de software con más de 5 años de experiencia desarrollando aplicaciones web escalables. Especializado en React, TypeScript y arquitecturas de microservicios.",
@@ -90,5 +65,4 @@ export const defaultCVData: CVData = {
       items: ["Git", "Docker", "CI/CD", "Figma"],
     },
   ],
-  customSections: [],
 };

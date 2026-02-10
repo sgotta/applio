@@ -3,11 +3,38 @@
 import { memo } from "react";
 import { useCV } from "@/lib/cv-context";
 import { EditableText } from "./EditableText";
-import { EditableContact } from "./EditableContact";
 import { SectionTitle } from "./SectionTitle";
 import { ProfilePhotoUpload } from "./ProfilePhotoUpload";
 import { Button } from "@/components/ui/button";
 import { Plus, X } from "lucide-react";
+import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
+
+function ContactLine({
+  icon: Icon,
+  value,
+  field,
+  placeholder,
+  onChange,
+}: {
+  icon: React.ElementType;
+  value: string;
+  field: string;
+  placeholder: string;
+  onChange: (field: string, value: string) => void;
+}) {
+  return (
+    <div className="flex items-center gap-2 group/contact">
+      <Icon className="h-3 w-3 shrink-0 text-gray-400" />
+      <EditableText
+        value={value}
+        onChange={(v) => onChange(field, v)}
+        as="tiny"
+        className="!text-[11px] !text-gray-600"
+        placeholder={placeholder}
+      />
+    </div>
+  );
+}
 
 function SkillBadge({
   value,
@@ -42,9 +69,6 @@ export const PersonalInfo = memo(function PersonalInfo() {
   const {
     data: { personalInfo, summary, skills },
     updatePersonalInfo,
-    updateContact,
-    addContact,
-    removeContact,
     updateSummary,
     updateSkillCategory,
     addSkillCategory,
@@ -63,24 +87,42 @@ export const PersonalInfo = memo(function PersonalInfo() {
       {/* Contact */}
       <div className="space-y-2">
         <SectionTitle>Contacto</SectionTitle>
-        <div className="space-y-1">
-          {personalInfo.contacts.map((contact) => (
-            <EditableContact
-              key={contact.id}
-              contact={contact}
-              onChange={(updated) => updateContact(contact.id, updated)}
-              onRemove={() => removeContact(contact.id)}
-            />
-          ))}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={addContact}
-            className="h-6 px-2 text-[10px] text-gray-400 hover:text-gray-600 w-full justify-start"
-          >
-            <Plus className="mr-1 h-3 w-3" />
-            Agregar contacto
-          </Button>
+        <div className="space-y-1.5">
+          <ContactLine
+            icon={Mail}
+            value={personalInfo.email}
+            field="email"
+            placeholder="tu@email.com"
+            onChange={(f, v) => updatePersonalInfo(f, v)}
+          />
+          <ContactLine
+            icon={Phone}
+            value={personalInfo.phone}
+            field="phone"
+            placeholder="+54 11 1234-5678"
+            onChange={(f, v) => updatePersonalInfo(f, v)}
+          />
+          <ContactLine
+            icon={MapPin}
+            value={personalInfo.location}
+            field="location"
+            placeholder="Ciudad, País"
+            onChange={(f, v) => updatePersonalInfo(f, v)}
+          />
+          <ContactLine
+            icon={Linkedin}
+            value={personalInfo.linkedin}
+            field="linkedin"
+            placeholder="linkedin.com/in/usuario"
+            onChange={(f, v) => updatePersonalInfo(f, v)}
+          />
+          <ContactLine
+            icon={Globe}
+            value={personalInfo.website}
+            field="website"
+            placeholder="tusitio.com"
+            onChange={(f, v) => updatePersonalInfo(f, v)}
+          />
         </div>
       </div>
 

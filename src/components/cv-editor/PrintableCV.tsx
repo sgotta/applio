@@ -1,10 +1,9 @@
 "use client";
 
 import { forwardRef } from "react";
-import { CVData, ContactItem } from "@/lib/types";
+import { CVData } from "@/lib/types";
 import { Separator } from "@/components/ui/separator";
-import { iconMap } from "./IconPicker";
-import { Link } from "lucide-react";
+import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
@@ -17,34 +16,9 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
   );
 }
 
-function ContactLine({ contact }: { contact: ContactItem }) {
-  const Icon = contact.icon ? iconMap[contact.icon] || Link : Link;
-
-  return (
-    <div className="flex items-center gap-2 text-[11px] text-gray-600">
-      <Icon className="h-3 w-3 shrink-0 text-gray-400" />
-      <span className="truncate">{contact.value}</span>
-    </div>
-  );
-}
-
 export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
   function PrintableCV({ data }, ref) {
-    const {
-      personalInfo,
-      summary,
-      experience,
-      education,
-      skills,
-      customSections,
-    } = data;
-
-    const leftSections = customSections?.filter(
-      (s) => s.placement === "left"
-    ) || [];
-    const rightSections = customSections?.filter(
-      (s) => s.placement === "right"
-    ) || [];
+    const { personalInfo, summary, experience, education, skills } = data;
 
     return (
       <div
@@ -75,16 +49,41 @@ export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
             </div>
 
             {/* Contact */}
-            {personalInfo.contacts && personalInfo.contacts.length > 0 && (
-              <div className="space-y-2">
-                <SectionHeading>Contacto</SectionHeading>
-                <div className="space-y-1.5">
-                  {personalInfo.contacts.map((contact) => (
-                    <ContactLine key={contact.id} contact={contact} />
-                  ))}
-                </div>
+            <div className="space-y-2">
+              <SectionHeading>Contacto</SectionHeading>
+              <div className="space-y-1.5">
+                {personalInfo.email && (
+                  <div className="flex items-center gap-2 text-[11px] text-gray-600">
+                    <Mail className="h-3 w-3 shrink-0 text-gray-400" />
+                    <span className="truncate">{personalInfo.email}</span>
+                  </div>
+                )}
+                {personalInfo.phone && (
+                  <div className="flex items-center gap-2 text-[11px] text-gray-600">
+                    <Phone className="h-3 w-3 shrink-0 text-gray-400" />
+                    <span className="truncate">{personalInfo.phone}</span>
+                  </div>
+                )}
+                {personalInfo.location && (
+                  <div className="flex items-center gap-2 text-[11px] text-gray-600">
+                    <MapPin className="h-3 w-3 shrink-0 text-gray-400" />
+                    <span className="truncate">{personalInfo.location}</span>
+                  </div>
+                )}
+                {personalInfo.linkedin && (
+                  <div className="flex items-center gap-2 text-[11px] text-gray-600">
+                    <Linkedin className="h-3 w-3 shrink-0 text-gray-400" />
+                    <span className="truncate">{personalInfo.linkedin}</span>
+                  </div>
+                )}
+                {personalInfo.website && (
+                  <div className="flex items-center gap-2 text-[11px] text-gray-600">
+                    <Globe className="h-3 w-3 shrink-0 text-gray-400" />
+                    <span className="truncate">{personalInfo.website}</span>
+                  </div>
+                )}
               </div>
-            )}
+            </div>
 
             {/* Summary */}
             {summary && (
@@ -121,32 +120,6 @@ export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
                 </div>
               </div>
             )}
-
-            {/* Custom Sections - Left Column */}
-            {leftSections.map((section) => (
-              <div key={section.id}>
-                <SectionHeading>{section.title}</SectionHeading>
-                <div className="space-y-3">
-                  {section.items.map((item) => (
-                    <div key={item.id}>
-                      <p className="text-[11px] font-semibold text-gray-900">
-                        {item.title}
-                      </p>
-                      {item.subtitle && (
-                        <p className="text-[10px] text-gray-500">
-                          {item.subtitle}
-                        </p>
-                      )}
-                      {item.description && (
-                        <p className="mt-1 text-[10px] leading-relaxed text-gray-600">
-                          {item.description}
-                        </p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
           </div>
 
           {/* ===== RIGHT COLUMN ===== */}
@@ -225,32 +198,6 @@ export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
                 </div>
               </div>
             )}
-
-            {/* Custom Sections - Right Column */}
-            {rightSections.map((section) => (
-              <div key={section.id}>
-                <SectionHeading>{section.title}</SectionHeading>
-                <div className="space-y-4">
-                  {section.items.map((item) => (
-                    <div key={item.id}>
-                      <p className="text-[13px] font-semibold text-gray-900">
-                        {item.title}
-                      </p>
-                      {item.subtitle && (
-                        <p className="text-[11px] text-gray-500">
-                          {item.subtitle}
-                        </p>
-                      )}
-                      {item.description && (
-                        <p className="mt-1 text-[11px] leading-relaxed text-gray-600">
-                          {item.description}
-                        </p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </div>

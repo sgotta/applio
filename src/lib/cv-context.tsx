@@ -13,10 +13,6 @@ import {
   ExperienceItem,
   EducationItem,
   SkillCategory,
-  ContactItem,
-  PersonalInfo,
-  CustomSection,
-  CustomSectionItem,
 } from "./types";
 import { defaultCVData } from "./default-data";
 import { loadCVData, saveCVData } from "./storage";
@@ -24,9 +20,6 @@ import { loadCVData, saveCVData } from "./storage";
 interface CVContextValue {
   data: CVData;
   updatePersonalInfo: (field: string, value: string | undefined) => void;
-  updateContact: (id: string, updates: Partial<ContactItem>) => void;
-  addContact: () => void;
-  removeContact: (id: string) => void;
   updateSummary: (value: string) => void;
   updateExperience: (id: string, updates: Partial<ExperienceItem>) => void;
   addExperience: () => void;
@@ -39,20 +32,6 @@ interface CVContextValue {
   updateSkillCategory: (id: string, updates: Partial<SkillCategory>) => void;
   addSkillCategory: () => void;
   removeSkillCategory: (id: string) => void;
-  addCustomSection: (
-    type: CustomSection["type"],
-    title: string,
-    placement: "left" | "right"
-  ) => void;
-  updateCustomSection: (id: string, updates: Partial<CustomSection>) => void;
-  removeCustomSection: (id: string) => void;
-  addCustomSectionItem: (sectionId: string) => void;
-  updateCustomSectionItem: (
-    sectionId: string,
-    itemId: string,
-    updates: Partial<CustomSectionItem>
-  ) => void;
-  removeCustomSectionItem: (sectionId: string, itemId: string) => void;
   resetData: () => void;
   importData: (data: CVData) => void;
 }
@@ -71,80 +50,51 @@ function moveItem<T>(arr: T[], index: number, direction: "up" | "down"): T[] {
   return newArr;
 }
 
-// Migración de formato viejo a nuevo
-function migratePersonalInfo(oldData: any): PersonalInfo {
-  // Si ya tiene el formato nuevo (contacts array), retornar tal cual
-  if (Array.isArray(oldData.contacts)) {
-    return oldData as PersonalInfo;
-  }
-
-  // Convertir formato viejo a nuevo
-  const contacts: ContactItem[] = [];
-  let idCounter = 1;
-
-  if (oldData.email) {
-    contacts.push({
-      id: `contact-${idCounter++}`,
-      type: "email",
-      label: "Email",
-      value: oldData.email,
-      icon: "Mail",
-    });
-  }
-
-  if (oldData.phone) {
-    contacts.push({
-      id: `contact-${idCounter++}`,
-      type: "phone",
-      label: "Teléfono",
-      value: oldData.phone,
-      icon: "Phone",
-    });
-  }
-
-  if (oldData.location) {
-    contacts.push({
-      id: `contact-${idCounter++}`,
-      type: "location",
-      label: "Ubicación",
-      value: oldData.location,
-      icon: "MapPin",
-    });
-  }
-
-  if (oldData.linkedin) {
-    contacts.push({
-      id: `contact-${idCounter++}`,
-      type: "linkedin",
-      label: "LinkedIn",
-      value: oldData.linkedin,
-      icon: "Linkedin",
-    });
-  }
-
-  if (oldData.website) {
-    contacts.push({
-      id: `contact-${idCounter++}`,
-      type: "website",
-      label: "Sitio web",
-      value: oldData.website,
-      icon: "Globe",
-    });
-  }
-
-  return {
-    fullName: oldData.fullName || "",
-    title: oldData.title || "",
-    photo: oldData.photo,
-    contacts,
-  };
-}
-
+// Migración: si los datos guardados tienen el formato viejo (contacts array), convertir a campos individuales
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function migrateCVData(data: any): CVData {
+  const personalInfo = data.personalInfo || {};
+
+  // Si tiene contacts array (formato viejo), extraer los valores
+  if (Array.isArray(personalInfo.contacts)) {
+    const contacts = personalInfo.contacts;
+    const findContact = (type: string) =>
+      contacts.find((c: { type: string }) => c.type === type)?.value || "";
+
+    return {
+      personalInfo: {
+        fullName: personalInfo.fullName || "",
+        title: personalInfo.title || "",
+        photo: personalInfo.photo,
+        email: findContact("email") || personalInfo.email || "",
+        phone: findContact("phone") || personalInfo.phone || "",
+        location: findContact("location") || personalInfo.location || "",
+        linkedin: findContact("linkedin") || personalInfo.linkedin || "",
+        website: findContact("website") || personalInfo.website || "",
+      },
+      summary: data.summary || "",
+      experience: data.experience || [],
+      education: data.education || [],
+      skills: data.skills || [],
+    };
+  }
+
+  // Already in new format, just ensure all fields exist
   return {
-    ...data,
-    personalInfo: migratePersonalInfo(data.personalInfo),
-    customSections: data.customSections || [],
+    personalInfo: {
+      fullName: personalInfo.fullName || "",
+      title: personalInfo.title || "",
+      photo: personalInfo.photo,
+      email: personalInfo.email || "",
+      phone: personalInfo.phone || "",
+      location: personalInfo.location || "",
+      linkedin: personalInfo.linkedin || "",
+      website: personalInfo.website || "",
+    },
+    summary: data.summary || "",
+    experience: data.experience || [],
+    education: data.education || [],
+    skills: data.skills || [],
   };
 }
 
@@ -152,14 +102,14 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
   const [data, setData] = useState<CVData>(defaultCVData);
   const initialized = useRef(false);
 
-  // Load from localStorage on mount
+  // Load from localStorage on mount (useEffect is correct here to avoid SSR hydration mismatch)
   useEffect(() => {
     if (initialized.current) return;
     initialized.current = true;
     const saved = loadCVData();
     if (saved) {
-      // Aplicar migración si es necesario
       const migrated = migrateCVData(saved);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setData(migrated);
     }
   }, []);
@@ -175,50 +125,6 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     setData((prev) => ({
       ...prev,
       personalInfo: { ...prev.personalInfo, [field]: value },
-    }));
-  }, []);
-
-  const updateContact = useCallback(
-    (id: string, updates: Partial<ContactItem>) => {
-      setData((prev) => ({
-        ...prev,
-        personalInfo: {
-          ...prev.personalInfo,
-          contacts: prev.personalInfo.contacts.map((contact) =>
-            contact.id === id ? { ...contact, ...updates } : contact
-          ),
-        },
-      }));
-    },
-    []
-  );
-
-  const addContact = useCallback(() => {
-    const newContact: ContactItem = {
-      id: `contact-${generateId()}`,
-      type: "custom",
-      label: "Nuevo contacto",
-      value: "",
-      icon: "Link",
-    };
-    setData((prev) => ({
-      ...prev,
-      personalInfo: {
-        ...prev.personalInfo,
-        contacts: [...prev.personalInfo.contacts, newContact],
-      },
-    }));
-  }, []);
-
-  const removeContact = useCallback((id: string) => {
-    setData((prev) => ({
-      ...prev,
-      personalInfo: {
-        ...prev.personalInfo,
-        contacts: prev.personalInfo.contacts.filter(
-          (contact) => contact.id !== id
-        ),
-      },
     }));
   }, []);
 
@@ -352,101 +258,6 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     }));
   }, []);
 
-  const addCustomSection = useCallback(
-    (
-      type: CustomSection["type"],
-      title: string,
-      placement: "left" | "right"
-    ) => {
-      const newSection: CustomSection = {
-        id: `section-${generateId()}`,
-        type,
-        title,
-        placement,
-        items: [],
-      };
-      setData((prev) => ({
-        ...prev,
-        customSections: [...prev.customSections, newSection],
-      }));
-    },
-    []
-  );
-
-  const updateCustomSection = useCallback(
-    (id: string, updates: Partial<CustomSection>) => {
-      setData((prev) => ({
-        ...prev,
-        customSections: prev.customSections.map((section) =>
-          section.id === id ? { ...section, ...updates } : section
-        ),
-      }));
-    },
-    []
-  );
-
-  const removeCustomSection = useCallback((id: string) => {
-    setData((prev) => ({
-      ...prev,
-      customSections: prev.customSections.filter(
-        (section) => section.id !== id
-      ),
-    }));
-  }, []);
-
-  const addCustomSectionItem = useCallback((sectionId: string) => {
-    const newItem: CustomSectionItem = {
-      id: `item-${generateId()}`,
-      title: "Nuevo item",
-      subtitle: "",
-      description: "",
-    };
-    setData((prev) => ({
-      ...prev,
-      customSections: prev.customSections.map((section) =>
-        section.id === sectionId
-          ? { ...section, items: [...section.items, newItem] }
-          : section
-      ),
-    }));
-  }, []);
-
-  const updateCustomSectionItem = useCallback(
-    (sectionId: string, itemId: string, updates: Partial<CustomSectionItem>) => {
-      setData((prev) => ({
-        ...prev,
-        customSections: prev.customSections.map((section) =>
-          section.id === sectionId
-            ? {
-                ...section,
-                items: section.items.map((item) =>
-                  item.id === itemId ? { ...item, ...updates } : item
-                ),
-              }
-            : section
-        ),
-      }));
-    },
-    []
-  );
-
-  const removeCustomSectionItem = useCallback(
-    (sectionId: string, itemId: string) => {
-      setData((prev) => ({
-        ...prev,
-        customSections: prev.customSections.map((section) =>
-          section.id === sectionId
-            ? {
-                ...section,
-                items: section.items.filter((item) => item.id !== itemId),
-              }
-            : section
-        ),
-      }));
-    },
-    []
-  );
-
   const resetData = useCallback(() => {
     setData(defaultCVData);
   }, []);
@@ -460,9 +271,6 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
       value={{
         data,
         updatePersonalInfo,
-        updateContact,
-        addContact,
-        removeContact,
         updateSummary,
         updateExperience,
         addExperience,
@@ -475,12 +283,6 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
         updateSkillCategory,
         addSkillCategory,
         removeSkillCategory,
-        addCustomSection,
-        updateCustomSection,
-        removeCustomSection,
-        addCustomSectionItem,
-        updateCustomSectionItem,
-        removeCustomSectionItem,
         resetData,
         importData,
       }}
