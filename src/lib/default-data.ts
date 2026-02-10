@@ -2,50 +2,50 @@ import { CVData } from "./types";
 
 export const defaultCVData: CVData = {
   personalInfo: {
-    fullName: "Simón Gotta",
+    fullName: "John Doe",
     title: "Sr. Software Engineer",
-    email: "simon@ejemplo.com",
-    phone: "+54 11 1234-5678",
-    location: "Buenos Aires, Argentina",
-    linkedin: "linkedin.com/in/simongotta",
-    website: "",
+    email: "john.doe@email.com",
+    phone: "+1 (555) 123-4567",
+    location: "New York, NY",
+    linkedin: "linkedin.com/in/johndoe",
+    website: "johndoe.dev",
   },
   summary:
-    "Ingeniero de software con más de 5 años de experiencia desarrollando aplicaciones web escalables. Especializado en React, TypeScript y arquitecturas de microservicios.",
+    "Software engineer with 5+ years of experience building scalable web applications. Specialized in React, TypeScript, and microservices architectures. Passionate about clean code and delivering high-quality user experiences.",
   experience: [
     {
       id: "exp-1",
-      company: "Santander Tecnología",
+      company: "Acme Corp",
       position: "Senior Software Engineer",
-      startDate: "marzo 2021",
-      endDate: "Actualidad",
+      startDate: "Mar 2021",
+      endDate: "Present",
       description: [
-        "Lideré el desarrollo del nuevo sistema de onboarding digital, reduciendo el tiempo de alta de clientes en un 40%.",
-        "Migración de aplicación monolítica a microservicios con Node.js y AWS Lambda.",
-        "Mentoría a equipo de 4 desarrolladores junior.",
+        "Led the development of a new digital onboarding system, reducing customer sign-up time by 40%.",
+        "Migrated monolithic application to microservices using Node.js and AWS Lambda.",
+        "Mentored a team of 4 junior developers through code reviews and pair programming.",
       ],
     },
     {
       id: "exp-2",
-      company: "Globant",
+      company: "Tech Solutions Inc.",
       position: "Frontend Developer",
-      startDate: "septiembre 2019",
-      endDate: "febrero 2021",
+      startDate: "Sep 2019",
+      endDate: "Feb 2021",
       description: [
-        "Desarrollo de interfaces de usuario para clientes enterprise con React y TypeScript.",
-        "Implementación de design system compartido entre 3 equipos.",
+        "Built enterprise user interfaces for clients using React and TypeScript.",
+        "Implemented a shared design system adopted across 3 product teams.",
       ],
     },
   ],
   education: [
     {
       id: "edu-1",
-      institution: "Universidad de Buenos Aires",
-      degree: "Licenciatura en Ciencias de la Computación",
+      institution: "University of California, Berkeley",
+      degree: "B.S. in Computer Science",
       startDate: "2015",
       endDate: "2019",
       description:
-        "Tesis: Optimización de algoritmos de búsqueda en grafos distribuidos.",
+        "Thesis: Optimization of search algorithms in distributed graph systems.",
     },
   ],
   skills: [
@@ -61,7 +61,7 @@ export const defaultCVData: CVData = {
     },
     {
       id: "skill-3",
-      category: "Herramientas",
+      category: "Tools",
       items: ["Git", "Docker", "CI/CD", "Figma"],
     },
   ],
