@@ -72,7 +72,7 @@ function SkillBadge({
 
 export const PersonalInfo = memo(function PersonalInfo() {
   const {
-    data: { personalInfo, summary, skills },
+    data: { personalInfo, summary, skills, visibility },
     updatePersonalInfo,
     updateSummary,
     updateSkillCategory,
@@ -91,46 +91,58 @@ export const PersonalInfo = memo(function PersonalInfo() {
       />
 
       {/* Contact */}
-      <div className="space-y-2">
-        <SectionTitle>{t("contact")}</SectionTitle>
-        <div className="space-y-1.5">
-          <ContactLine
-            icon={Mail}
-            value={personalInfo.email}
-            field="email"
-            placeholder={t("emailPlaceholder")}
-            onChange={(f, v) => updatePersonalInfo(f, v)}
-          />
-          <ContactLine
-            icon={Phone}
-            value={personalInfo.phone}
-            field="phone"
-            placeholder={t("phonePlaceholder")}
-            onChange={(f, v) => updatePersonalInfo(f, v)}
-          />
-          <ContactLine
-            icon={MapPin}
-            value={personalInfo.location}
-            field="location"
-            placeholder={t("locationPlaceholder")}
-            onChange={(f, v) => updatePersonalInfo(f, v)}
-          />
-          <ContactLine
-            icon={Linkedin}
-            value={personalInfo.linkedin}
-            field="linkedin"
-            placeholder={t("linkedinPlaceholder")}
-            onChange={(f, v) => updatePersonalInfo(f, v)}
-          />
-          <ContactLine
-            icon={Globe}
-            value={personalInfo.website}
-            field="website"
-            placeholder={t("websitePlaceholder")}
-            onChange={(f, v) => updatePersonalInfo(f, v)}
-          />
+      {(visibility.email || visibility.phone || visibility.location || visibility.linkedin || visibility.website) && (
+        <div className="space-y-2">
+          <SectionTitle>{t("contact")}</SectionTitle>
+          <div className="space-y-1.5">
+            {visibility.email && (
+              <ContactLine
+                icon={Mail}
+                value={personalInfo.email}
+                field="email"
+                placeholder={t("emailPlaceholder")}
+                onChange={(f, v) => updatePersonalInfo(f, v)}
+              />
+            )}
+            {visibility.phone && (
+              <ContactLine
+                icon={Phone}
+                value={personalInfo.phone}
+                field="phone"
+                placeholder={t("phonePlaceholder")}
+                onChange={(f, v) => updatePersonalInfo(f, v)}
+              />
+            )}
+            {visibility.location && (
+              <ContactLine
+                icon={MapPin}
+                value={personalInfo.location}
+                field="location"
+                placeholder={t("locationPlaceholder")}
+                onChange={(f, v) => updatePersonalInfo(f, v)}
+              />
+            )}
+            {visibility.linkedin && (
+              <ContactLine
+                icon={Linkedin}
+                value={personalInfo.linkedin}
+                field="linkedin"
+                placeholder={t("linkedinPlaceholder")}
+                onChange={(f, v) => updatePersonalInfo(f, v)}
+              />
+            )}
+            {visibility.website && (
+              <ContactLine
+                icon={Globe}
+                value={personalInfo.website}
+                field="website"
+                placeholder={t("websitePlaceholder")}
+                onChange={(f, v) => updatePersonalInfo(f, v)}
+              />
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Summary */}
       <div>

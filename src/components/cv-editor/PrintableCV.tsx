@@ -19,7 +19,7 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
 
 export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
   function PrintableCV({ data }, ref) {
-    const { personalInfo, summary, experience, education, skills } = data;
+    const { personalInfo, summary, experience, education, skills, courses, certifications, visibility } = data;
     const t = useTranslations("printable");
 
     return (
@@ -51,41 +51,43 @@ export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
             </div>
 
             {/* Contact */}
-            <div className="space-y-2">
-              <SectionHeading>{t("contact")}</SectionHeading>
-              <div className="space-y-1.5">
-                {personalInfo.email && (
-                  <div className="flex items-center gap-2 text-[11px] text-gray-600">
-                    <Mail className="h-3 w-3 shrink-0 text-gray-400" />
-                    <span className="truncate">{personalInfo.email}</span>
-                  </div>
-                )}
-                {personalInfo.phone && (
-                  <div className="flex items-center gap-2 text-[11px] text-gray-600">
-                    <Phone className="h-3 w-3 shrink-0 text-gray-400" />
-                    <span className="truncate">{personalInfo.phone}</span>
-                  </div>
-                )}
-                {personalInfo.location && (
-                  <div className="flex items-center gap-2 text-[11px] text-gray-600">
-                    <MapPin className="h-3 w-3 shrink-0 text-gray-400" />
-                    <span className="truncate">{personalInfo.location}</span>
-                  </div>
-                )}
-                {personalInfo.linkedin && (
-                  <div className="flex items-center gap-2 text-[11px] text-gray-600">
-                    <Linkedin className="h-3 w-3 shrink-0 text-gray-400" />
-                    <span className="truncate">{personalInfo.linkedin}</span>
-                  </div>
-                )}
-                {personalInfo.website && (
-                  <div className="flex items-center gap-2 text-[11px] text-gray-600">
-                    <Globe className="h-3 w-3 shrink-0 text-gray-400" />
-                    <span className="truncate">{personalInfo.website}</span>
-                  </div>
-                )}
+            {(visibility.email || visibility.phone || visibility.location || visibility.linkedin || visibility.website) && (
+              <div className="space-y-2">
+                <SectionHeading>{t("contact")}</SectionHeading>
+                <div className="space-y-1.5">
+                  {visibility.email && personalInfo.email && (
+                    <div className="flex items-center gap-2 text-[11px] text-gray-600">
+                      <Mail className="h-3 w-3 shrink-0 text-gray-400" />
+                      <span className="truncate">{personalInfo.email}</span>
+                    </div>
+                  )}
+                  {visibility.phone && personalInfo.phone && (
+                    <div className="flex items-center gap-2 text-[11px] text-gray-600">
+                      <Phone className="h-3 w-3 shrink-0 text-gray-400" />
+                      <span className="truncate">{personalInfo.phone}</span>
+                    </div>
+                  )}
+                  {visibility.location && personalInfo.location && (
+                    <div className="flex items-center gap-2 text-[11px] text-gray-600">
+                      <MapPin className="h-3 w-3 shrink-0 text-gray-400" />
+                      <span className="truncate">{personalInfo.location}</span>
+                    </div>
+                  )}
+                  {visibility.linkedin && personalInfo.linkedin && (
+                    <div className="flex items-center gap-2 text-[11px] text-gray-600">
+                      <Linkedin className="h-3 w-3 shrink-0 text-gray-400" />
+                      <span className="truncate">{personalInfo.linkedin}</span>
+                    </div>
+                  )}
+                  {visibility.website && personalInfo.website && (
+                    <div className="flex items-center gap-2 text-[11px] text-gray-600">
+                      <Globe className="h-3 w-3 shrink-0 text-gray-400" />
+                      <span className="truncate">{personalInfo.website}</span>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Summary */}
             {summary && (
@@ -195,6 +197,54 @@ export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
                           {edu.description}
                         </p>
                       )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Courses */}
+            {visibility.courses && courses.length > 0 && (
+              <div>
+                <SectionHeading>{t("courses")}</SectionHeading>
+                <div className="space-y-3">
+                  {courses.map((course) => (
+                    <div key={course.id}>
+                      <div className="flex items-baseline justify-between gap-2">
+                        <h4 className="text-[13px] font-semibold text-gray-900">
+                          {course.name}
+                        </h4>
+                        <span className="flex-shrink-0 text-[10px] text-gray-400">
+                          {course.date}
+                        </span>
+                      </div>
+                      <p className="text-[11px] font-medium text-gray-500">
+                        {course.institution}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Certifications */}
+            {visibility.certifications && certifications.length > 0 && (
+              <div>
+                <SectionHeading>{t("certifications")}</SectionHeading>
+                <div className="space-y-3">
+                  {certifications.map((cert) => (
+                    <div key={cert.id}>
+                      <div className="flex items-baseline justify-between gap-2">
+                        <h4 className="text-[13px] font-semibold text-gray-900">
+                          {cert.name}
+                        </h4>
+                        <span className="flex-shrink-0 text-[10px] text-gray-400">
+                          {cert.date}
+                        </span>
+                      </div>
+                      <p className="text-[11px] font-medium text-gray-500">
+                        {cert.issuer}
+                      </p>
                     </div>
                   ))}
                 </div>

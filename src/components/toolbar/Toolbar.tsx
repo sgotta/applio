@@ -6,7 +6,10 @@ import { useTranslations } from "next-intl";
 import { useAppLocale, Locale } from "@/lib/locale-context";
 import { CVData } from "@/lib/types";
 import { Button } from "@/components/ui/button";
-import { Download, FileUp, FileDown, FileText, Globe } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Switch } from "@/components/ui/switch";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Download, FileUp, FileDown, FileText, Globe, SlidersHorizontal } from "lucide-react";
 
 interface ToolbarProps {
   onPrintPDF: () => void;
@@ -26,8 +29,25 @@ function isValidCVData(data: unknown): data is CVData {
   );
 }
 
+function SectionToggle({
+  label,
+  checked,
+  onToggle,
+}: {
+  label: string;
+  checked: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <label className="flex items-center justify-between gap-3 py-1 cursor-pointer">
+      <span className="text-sm text-gray-700">{label}</span>
+      <Switch checked={checked} onCheckedChange={onToggle} />
+    </label>
+  );
+}
+
 export function Toolbar({ onPrintPDF }: ToolbarProps) {
-  const { data, importData } = useCV();
+  const { data, importData, toggleSection } = useCV();
   const t = useTranslations("toolbar");
   const { locale, setLocale } = useAppLocale();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -93,19 +113,60 @@ export function Toolbar({ onPrintPDF }: ToolbarProps) {
           </span>
         </div>
 
-        {/* Actions */}
-        <div className="flex items-center gap-2">
+        {/* Actions — icon-only except PDF */}
+        <div className="flex items-center gap-1">
           {/* Language toggle */}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-gray-600 hover:text-gray-900"
-            onClick={toggleLocale}
-            title={locale === "en" ? "Cambiar a Español" : "Switch to English"}
-          >
-            <Globe className="mr-1.5 h-4 w-4" />
-            <span className="text-xs font-medium uppercase">{locale}</span>
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-gray-600 hover:text-gray-900"
+                onClick={toggleLocale}
+              >
+                <Globe className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {locale === "en" ? "Cambiar a Español" : "Switch to English"}
+            </TooltipContent>
+          </Tooltip>
+
+          {/* Sections toggle */}
+          <Popover>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-gray-600 hover:text-gray-900"
+                  >
+                    <SlidersHorizontal className="h-4 w-4" />
+                  </Button>
+                </PopoverTrigger>
+              </TooltipTrigger>
+              <TooltipContent>{t("sections")}</TooltipContent>
+            </Tooltip>
+            <PopoverContent className="w-64" align="end">
+              <div className="space-y-3">
+                <div className="space-y-1">
+                  <p className="text-xs font-medium uppercase tracking-wide text-gray-400 mb-1">{t("sectionsTitle")}</p>
+                  <SectionToggle label={t("sectionEmail")} checked={data.visibility.email} onToggle={() => toggleSection("email")} />
+                  <SectionToggle label={t("sectionPhone")} checked={data.visibility.phone} onToggle={() => toggleSection("phone")} />
+                  <SectionToggle label={t("sectionLocation")} checked={data.visibility.location} onToggle={() => toggleSection("location")} />
+                  <SectionToggle label={t("sectionLinkedin")} checked={data.visibility.linkedin} onToggle={() => toggleSection("linkedin")} />
+                  <SectionToggle label={t("sectionWebsite")} checked={data.visibility.website} onToggle={() => toggleSection("website")} />
+                </div>
+
+                <div className="space-y-1">
+                  <p className="text-xs font-medium uppercase tracking-wide text-gray-400 mb-1">{t("optionalSections")}</p>
+                  <SectionToggle label={t("sectionCourses")} checked={data.visibility.courses} onToggle={() => toggleSection("courses")} />
+                  <SectionToggle label={t("sectionCertifications")} checked={data.visibility.certifications} onToggle={() => toggleSection("certifications")} />
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
 
           {/* Import */}
           <input
@@ -116,40 +177,50 @@ export function Toolbar({ onPrintPDF }: ToolbarProps) {
             className="hidden"
             aria-label={t("importAriaLabel")}
           />
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-gray-600 hover:text-gray-900"
-            onClick={() => fileInputRef.current?.click()}
-            title={t("importTitle")}
-          >
-            <FileUp className="mr-1.5 h-4 w-4" />
-            <span className="hidden sm:inline">{t("import")}</span>
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-gray-600 hover:text-gray-900"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <FileUp className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{t("importTitle")}</TooltipContent>
+          </Tooltip>
 
           {/* Export JSON */}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-gray-600 hover:text-gray-900"
-            onClick={exportToJSON}
-            title={t("exportTitle")}
-          >
-            <FileDown className="mr-1.5 h-4 w-4" />
-            <span className="hidden sm:inline">{t("export")}</span>
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-gray-600 hover:text-gray-900"
+                onClick={exportToJSON}
+              >
+                <FileDown className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{t("exportTitle")}</TooltipContent>
+          </Tooltip>
 
           {/* Export PDF */}
-          <Button
-            variant="default"
-            size="sm"
-            className="bg-gray-900 text-white hover:bg-gray-800"
-            onClick={onPrintPDF}
-            title={t("pdfTitle")}
-          >
-            <Download className="mr-1.5 h-4 w-4" />
-            <span>PDF</span>
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="default"
+                size="sm"
+                className="ml-1 bg-gray-900 text-white hover:bg-gray-800"
+                onClick={onPrintPDF}
+              >
+                <Download className="mr-1.5 h-4 w-4" />
+                <span>PDF</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{t("pdfTitle")}</TooltipContent>
+          </Tooltip>
         </div>
       </div>
     </header>

@@ -6,6 +6,8 @@ import { EditableText } from "./EditableText";
 import { PersonalInfo } from "./PersonalInfo";
 import { Experience } from "./Experience";
 import { Education } from "./Education";
+import { Courses } from "./Courses";
+import { Certifications } from "./Certifications";
 
 function CVHeader() {
   const {
@@ -35,6 +37,8 @@ function CVHeader() {
 }
 
 export function CVPreview() {
+  const { data: { visibility } } = useCV();
+
   return (
     <div className="mx-auto w-full max-w-[210mm] bg-white shadow-sm border border-gray-100 print:shadow-none print:border-none">
       {/* CV Content — A4-like aspect ratio */}
@@ -49,6 +53,8 @@ export function CVPreview() {
           <CVHeader />
           <Experience />
           <Education />
+          {visibility.courses && <Courses />}
+          {visibility.certifications && <Certifications />}
         </div>
       </div>
     </div>

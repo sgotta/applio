@@ -1,12 +1,20 @@
 {
   "toolbar": {
     "tagline": "gratis, sin registro",
+    "sections": "Secciones",
+    "sectionsTitle": "Datos de contacto",
+    "sectionEmail": "Correo Electrónico",
+    "sectionPhone": "Teléfono",
+    "sectionLocation": "Ubicación",
+    "sectionLinkedin": "LinkedIn",
+    "sectionWebsite": "Sitio Web",
     "importAriaLabel": "Importar archivo JSON",
     "importTitle": "Cargar CV desde archivo JSON",
-    "import": "Importar",
     "exportTitle": "Exportar CV como archivo JSON",
-    "export": "Exportar",
     "pdfTitle": "Generar PDF para imprimir o enviar",
+    "optionalSections": "Secciones Opcionales",
+    "sectionCourses": "Cursos y Capacitaciones",
+    "sectionCertifications": "Certificaciones",
     "importFormatError": "El archivo no tiene el formato correcto. Asegurate de que sea un JSON exportado desde Applio.",
     "importConfirm": "¿Querés cargar este CV? Se van a sobrescribir los datos actuales.",
     "importReadError": "Error al leer el archivo. Asegurate de que sea un archivo JSON válido."
@@ -71,13 +79,31 @@
   "editableText": {
     "defaultPlaceholder": "Click para editar..."
   },
+  "courses": {
+    "title": "Cursos y Capacitaciones",
+    "namePlaceholder": "Nombre del curso",
+    "institutionPlaceholder": "Institución",
+    "datePlaceholder": "fecha",
+    "deleteCourse": "Eliminar curso",
+    "addCourse": "Agregar curso"
+  },
+  "certifications": {
+    "title": "Certificaciones",
+    "namePlaceholder": "Nombre de la certificación",
+    "issuerPlaceholder": "Organización emisora",
+    "datePlaceholder": "fecha",
+    "deleteCertification": "Eliminar certificación",
+    "addCertification": "Agregar certificación"
+  },
   "printable": {
     "profilePhotoAlt": "Foto de perfil",
     "contact": "Contacto",
     "aboutMe": "Sobre mí",
     "skills": "Habilidades",
     "experience": "Experiencia",
-    "education": "Educación"
+    "education": "Educación",
+    "courses": "Cursos y Capacitaciones",
+    "certifications": "Certificaciones"
   },
   "defaults": {
     "company": "Empresa",
@@ -87,6 +113,10 @@
     "institution": "Institución",
     "degree": "Título",
     "category": "Categoría",
-    "skill": "Habilidad 1"
+    "skill": "Habilidad 1",
+    "courseName": "Curso",
+    "courseInstitution": "Institución",
+    "certificationName": "Certificación",
+    "certificationIssuer": "Emisor"
   }
 }

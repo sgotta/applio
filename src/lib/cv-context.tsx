@@ -14,8 +14,11 @@ import {
   ExperienceItem,
   EducationItem,
   SkillCategory,
+  CourseItem,
+  CertificationItem,
+  SectionVisibility,
 } from "./types";
-import { getDefaultCVData } from "./default-data";
+import { getDefaultCVData, defaultVisibility } from "./default-data";
 import { loadCVData, saveCVData } from "./storage";
 
 interface CVContextValue {
@@ -33,6 +36,13 @@ interface CVContextValue {
   updateSkillCategory: (id: string, updates: Partial<SkillCategory>) => void;
   addSkillCategory: () => void;
   removeSkillCategory: (id: string) => void;
+  updateCourse: (id: string, updates: Partial<CourseItem>) => void;
+  addCourse: () => void;
+  removeCourse: (id: string) => void;
+  updateCertification: (id: string, updates: Partial<CertificationItem>) => void;
+  addCertification: () => void;
+  removeCertification: (id: string) => void;
+  toggleSection: (key: keyof SectionVisibility) => void;
   resetData: () => void;
   importData: (data: CVData) => void;
 }
@@ -77,6 +87,9 @@ function migrateCVData(data: any): CVData {
       experience: data.experience || [],
       education: data.education || [],
       skills: data.skills || [],
+      courses: data.courses || [],
+      certifications: data.certifications || [],
+      visibility: { ...defaultVisibility, ...data.visibility },
     };
   }
 
@@ -96,6 +109,9 @@ function migrateCVData(data: any): CVData {
     experience: data.experience || [],
     education: data.education || [],
     skills: data.skills || [],
+    courses: data.courses || [],
+    certifications: data.certifications || [],
+    visibility: { ...defaultVisibility, ...data.visibility },
   };
 }
 
@@ -269,6 +285,77 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     }));
   }, []);
 
+  const updateCourse = useCallback(
+    (id: string, updates: Partial<CourseItem>) => {
+      setData((prev) => ({
+        ...prev,
+        courses: prev.courses.map((c) =>
+          c.id === id ? { ...c, ...updates } : c
+        ),
+      }));
+    },
+    []
+  );
+
+  const addCourse = useCallback(() => {
+    const newCourse: CourseItem = {
+      id: `course-${generateId()}`,
+      name: tRef.current("courseName"),
+      institution: tRef.current("courseInstitution"),
+      date: "2024",
+    };
+    setData((prev) => ({
+      ...prev,
+      courses: [...prev.courses, newCourse],
+    }));
+  }, []);
+
+  const removeCourse = useCallback((id: string) => {
+    setData((prev) => ({
+      ...prev,
+      courses: prev.courses.filter((c) => c.id !== id),
+    }));
+  }, []);
+
+  const updateCertification = useCallback(
+    (id: string, updates: Partial<CertificationItem>) => {
+      setData((prev) => ({
+        ...prev,
+        certifications: prev.certifications.map((c) =>
+          c.id === id ? { ...c, ...updates } : c
+        ),
+      }));
+    },
+    []
+  );
+
+  const addCertification = useCallback(() => {
+    const newCert: CertificationItem = {
+      id: `cert-${generateId()}`,
+      name: tRef.current("certificationName"),
+      issuer: tRef.current("certificationIssuer"),
+      date: "2024",
+    };
+    setData((prev) => ({
+      ...prev,
+      certifications: [...prev.certifications, newCert],
+    }));
+  }, []);
+
+  const removeCertification = useCallback((id: string) => {
+    setData((prev) => ({
+      ...prev,
+      certifications: prev.certifications.filter((c) => c.id !== id),
+    }));
+  }, []);
+
+  const toggleSection = useCallback((key: keyof SectionVisibility) => {
+    setData((prev) => ({
+      ...prev,
+      visibility: { ...prev.visibility, [key]: !prev.visibility[key] },
+    }));
+  }, []);
+
   const resetData = useCallback(() => {
     setData(getDefaultCVData(localeRef.current));
   }, []);
@@ -294,6 +381,13 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
         updateSkillCategory,
         addSkillCategory,
         removeSkillCategory,
+        updateCourse,
+        addCourse,
+        removeCourse,
+        updateCertification,
+        addCertification,
+        removeCertification,
+        toggleSection,
         resetData,
         importData,
       }}

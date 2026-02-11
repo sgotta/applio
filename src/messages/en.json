@@ -1,12 +1,20 @@
 {
   "toolbar": {
     "tagline": "free, no sign-up",
+    "sections": "Sections",
+    "sectionsTitle": "Contact Fields",
+    "sectionEmail": "Email",
+    "sectionPhone": "Phone",
+    "sectionLocation": "Location",
+    "sectionLinkedin": "LinkedIn",
+    "sectionWebsite": "Website",
     "importAriaLabel": "Import JSON file",
     "importTitle": "Load CV from JSON file",
-    "import": "Import",
     "exportTitle": "Export CV as JSON file",
-    "export": "Export",
     "pdfTitle": "Generate PDF to print or send",
+    "optionalSections": "Optional Sections",
+    "sectionCourses": "Courses & Training",
+    "sectionCertifications": "Certifications",
     "importFormatError": "The file format is incorrect. Make sure it's a JSON exported from Applio.",
     "importConfirm": "Do you want to load this CV? Current data will be overwritten.",
     "importReadError": "Error reading the file. Make sure it's a valid JSON file."
@@ -71,13 +79,31 @@
   "editableText": {
     "defaultPlaceholder": "Click to edit..."
   },
+  "courses": {
+    "title": "Courses & Training",
+    "namePlaceholder": "Course name",
+    "institutionPlaceholder": "Institution",
+    "datePlaceholder": "date",
+    "deleteCourse": "Delete course",
+    "addCourse": "Add course"
+  },
+  "certifications": {
+    "title": "Certifications",
+    "namePlaceholder": "Certification name",
+    "issuerPlaceholder": "Issuing organization",
+    "datePlaceholder": "date",
+    "deleteCertification": "Delete certification",
+    "addCertification": "Add certification"
+  },
   "printable": {
     "profilePhotoAlt": "Profile photo",
     "contact": "Contact",
     "aboutMe": "About me",
     "skills": "Skills",
     "experience": "Experience",
-    "education": "Education"
+    "education": "Education",
+    "courses": "Courses & Training",
+    "certifications": "Certifications"
   },
   "defaults": {
     "company": "Company",
@@ -87,6 +113,10 @@
     "institution": "Institution",
     "degree": "Degree",
     "category": "Category",
-    "skill": "Skill 1"
+    "skill": "Skill 1",
+    "courseName": "Course",
+    "courseInstitution": "Institution",
+    "certificationName": "Certification",
+    "certificationIssuer": "Issuer"
   }
 }

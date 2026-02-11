@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 import { CVProvider, useCV } from "@/lib/cv-context";
 import { LocaleProvider } from "@/lib/locale-context";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toolbar } from "@/components/toolbar/Toolbar";
 import { CVEditor } from "@/components/cv-editor/CVEditor";
 import { PrintableCV } from "@/components/cv-editor/PrintableCV";
@@ -46,7 +47,9 @@ export default function Home() {
   return (
     <LocaleProvider>
       <CVProvider>
-        <AppContent />
+        <TooltipProvider delayDuration={300}>
+          <AppContent />
+        </TooltipProvider>
       </CVProvider>
     </LocaleProvider>
   );

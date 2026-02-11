@@ -1,4 +1,14 @@
-import { CVData } from "./types";
+import { CVData, SectionVisibility } from "./types";
+
+export const defaultVisibility: SectionVisibility = {
+  email: true,
+  phone: true,
+  location: true,
+  linkedin: true,
+  website: true,
+  courses: false,
+  certifications: false,
+};
 
 const enData: CVData = {
   personalInfo: {
@@ -65,6 +75,9 @@ const enData: CVData = {
       items: ["Git", "Docker", "CI/CD", "Figma"],
     },
   ],
+  courses: [],
+  certifications: [],
+  visibility: defaultVisibility,
 };
 
 const esData: CVData = {
@@ -132,6 +145,9 @@ const esData: CVData = {
       items: ["Git", "Docker", "CI/CD", "Figma"],
     },
   ],
+  courses: [],
+  certifications: [],
+  visibility: defaultVisibility,
 };
 
 const dataByLocale: Record<string, CVData> = { en: enData, es: esData };
