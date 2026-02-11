@@ -2,9 +2,11 @@
 
 import { useRef } from "react";
 import { useCV } from "@/lib/cv-context";
+import { useTranslations } from "next-intl";
+import { useAppLocale, Locale } from "@/lib/locale-context";
 import { CVData } from "@/lib/types";
 import { Button } from "@/components/ui/button";
-import { Download, FileUp, FileDown, FileText } from "lucide-react";
+import { Download, FileUp, FileDown, FileText, Globe } from "lucide-react";
 
 interface ToolbarProps {
   onPrintPDF: () => void;
@@ -26,7 +28,13 @@ function isValidCVData(data: unknown): data is CVData {
 
 export function Toolbar({ onPrintPDF }: ToolbarProps) {
   const { data, importData } = useCV();
+  const t = useTranslations("toolbar");
+  const { locale, setLocale } = useAppLocale();
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const toggleLocale = () => {
+    setLocale(locale === "en" ? "es" : ("en" as Locale));
+  };
 
   const exportToJSON = () => {
     const dataStr = JSON.stringify(data, null, 2);
@@ -55,23 +63,15 @@ export function Toolbar({ onPrintPDF }: ToolbarProps) {
         const parsed = JSON.parse(result);
 
         if (!isValidCVData(parsed)) {
-          alert(
-            "El archivo no tiene el formato correcto. Asegurate de que sea un JSON exportado desde QuickCV."
-          );
+          alert(t("importFormatError"));
           return;
         }
 
-        if (
-          confirm(
-            "¿Querés cargar este CV? Se van a sobrescribir los datos actuales."
-          )
-        ) {
+        if (confirm(t("importConfirm"))) {
           importData(parsed);
         }
       } catch {
-        alert(
-          "Error al leer el archivo. Asegurate de que sea un archivo JSON válido."
-        );
+        alert(t("importReadError"));
       }
     };
     reader.readAsText(file);
@@ -89,12 +89,24 @@ export function Toolbar({ onPrintPDF }: ToolbarProps) {
             QuickCV
           </span>
           <span className="hidden text-xs text-gray-400 sm:inline">
-            gratis, sin registro
+            {t("tagline")}
           </span>
         </div>
 
-        {/* Actions — uniform gap-2 */}
+        {/* Actions */}
         <div className="flex items-center gap-2">
+          {/* Language toggle */}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-gray-600 hover:text-gray-900"
+            onClick={toggleLocale}
+            title={locale === "en" ? "Cambiar a Español" : "Switch to English"}
+          >
+            <Globe className="mr-1.5 h-4 w-4" />
+            <span className="text-xs font-medium uppercase">{locale}</span>
+          </Button>
+
           {/* Import */}
           <input
             ref={fileInputRef}
@@ -102,17 +114,17 @@ export function Toolbar({ onPrintPDF }: ToolbarProps) {
             accept=".json"
             onChange={handleFileImport}
             className="hidden"
-            aria-label="Importar archivo JSON"
+            aria-label={t("importAriaLabel")}
           />
           <Button
             variant="ghost"
             size="sm"
             className="text-gray-600 hover:text-gray-900"
             onClick={() => fileInputRef.current?.click()}
-            title="Cargar CV desde archivo JSON"
+            title={t("importTitle")}
           >
             <FileUp className="mr-1.5 h-4 w-4" />
-            <span className="hidden sm:inline">Importar</span>
+            <span className="hidden sm:inline">{t("import")}</span>
           </Button>
 
           {/* Export JSON */}
@@ -121,10 +133,10 @@ export function Toolbar({ onPrintPDF }: ToolbarProps) {
             size="sm"
             className="text-gray-600 hover:text-gray-900"
             onClick={exportToJSON}
-            title="Exportar CV como archivo JSON"
+            title={t("exportTitle")}
           >
             <FileDown className="mr-1.5 h-4 w-4" />
-            <span className="hidden sm:inline">Exportar</span>
+            <span className="hidden sm:inline">{t("export")}</span>
           </Button>
 
           {/* Export PDF */}
@@ -133,7 +145,7 @@ export function Toolbar({ onPrintPDF }: ToolbarProps) {
             size="sm"
             className="bg-gray-900 text-white hover:bg-gray-800"
             onClick={onPrintPDF}
-            title="Generar PDF para imprimir o enviar"
+            title={t("pdfTitle")}
           >
             <Download className="mr-1.5 h-4 w-4" />
             <span>PDF</span>

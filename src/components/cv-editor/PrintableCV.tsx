@@ -1,6 +1,7 @@
 "use client";
 
 import { forwardRef } from "react";
+import { useTranslations } from "next-intl";
 import { CVData } from "@/lib/types";
 import { Separator } from "@/components/ui/separator";
 import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
@@ -19,6 +20,7 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
 export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
   function PrintableCV({ data }, ref) {
     const { personalInfo, summary, experience, education, skills } = data;
+    const t = useTranslations("printable");
 
     return (
       <div
@@ -34,7 +36,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
               {personalInfo.photo ? (
                 <img
                   src={personalInfo.photo}
-                  alt="Foto de perfil"
+                  alt={t("profilePhotoAlt")}
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -50,7 +52,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
 
             {/* Contact */}
             <div className="space-y-2">
-              <SectionHeading>Contacto</SectionHeading>
+              <SectionHeading>{t("contact")}</SectionHeading>
               <div className="space-y-1.5">
                 {personalInfo.email && (
                   <div className="flex items-center gap-2 text-[11px] text-gray-600">
@@ -88,7 +90,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
             {/* Summary */}
             {summary && (
               <div>
-                <SectionHeading>Sobre mí</SectionHeading>
+                <SectionHeading>{t("aboutMe")}</SectionHeading>
                 <p className="text-[11px] leading-relaxed text-gray-600">
                   {summary}
                 </p>
@@ -98,7 +100,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
             {/* Skills */}
             {skills.length > 0 && (
               <div>
-                <SectionHeading>Habilidades</SectionHeading>
+                <SectionHeading>{t("skills")}</SectionHeading>
                 <div className="space-y-3">
                   {skills.map((skillGroup) => (
                     <div key={skillGroup.id}>
@@ -137,7 +139,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
             {/* Experience */}
             {experience.length > 0 && (
               <div>
-                <SectionHeading>Experiencia</SectionHeading>
+                <SectionHeading>{t("experience")}</SectionHeading>
                 <div className="space-y-4">
                   {experience.map((exp) => (
                     <div key={exp.id}>
@@ -173,7 +175,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
             {/* Education */}
             {education.length > 0 && (
               <div>
-                <SectionHeading>Educación</SectionHeading>
+                <SectionHeading>{t("education")}</SectionHeading>
                 <div className="space-y-4">
                   {education.map((edu) => (
                     <div key={edu.id}>

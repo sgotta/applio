@@ -8,9 +8,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "QuickCV — CV Builder gratuito y sin registro",
+  title: "QuickCV — Free CV Builder, No Sign-up",
   description:
-    "Creá tu currículum vitae profesional de forma rápida y gratuita. Sin registro, sin complicaciones.",
+    "Create your professional resume quickly and for free. No sign-up, no hassle.",
 };
 
 export default function RootLayout({
@@ -19,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
+    <html lang="en">
       <body className={`${inter.variable} antialiased`}>{children}</body>
     </html>
   );

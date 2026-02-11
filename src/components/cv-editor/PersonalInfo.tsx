@@ -2,6 +2,7 @@
 
 import { memo } from "react";
 import { useCV } from "@/lib/cv-context";
+import { useTranslations } from "next-intl";
 import { EditableText } from "./EditableText";
 import { SectionTitle } from "./SectionTitle";
 import { ProfilePhotoUpload } from "./ProfilePhotoUpload";
@@ -40,10 +41,14 @@ function SkillBadge({
   value,
   onChange,
   onRemove,
+  skillPlaceholder,
+  deleteAriaLabel,
 }: {
   value: string;
   onChange: (v: string) => void;
   onRemove: () => void;
+  skillPlaceholder: string;
+  deleteAriaLabel: string;
 }) {
   return (
     <span className="inline-flex items-center gap-0.5 rounded bg-gray-100 pl-2 pr-0.5 py-0.5 group/badge">
@@ -52,12 +57,12 @@ function SkillBadge({
         onChange={onChange}
         as="tiny"
         className="!text-[10px] !text-gray-700"
-        placeholder="skill"
+        placeholder={skillPlaceholder}
       />
       <button
         onClick={onRemove}
         className="opacity-0 group-hover/badge:opacity-100 p-0.5 rounded hover:bg-gray-200 transition-opacity duration-150"
-        aria-label={`Eliminar ${value}`}
+        aria-label={deleteAriaLabel}
       >
         <X className="h-2.5 w-2.5 text-gray-400" />
       </button>
@@ -74,6 +79,7 @@ export const PersonalInfo = memo(function PersonalInfo() {
     addSkillCategory,
     removeSkillCategory,
   } = useCV();
+  const t = useTranslations("personalInfo");
 
   return (
     <div className="space-y-5">
@@ -86,41 +92,41 @@ export const PersonalInfo = memo(function PersonalInfo() {
 
       {/* Contact */}
       <div className="space-y-2">
-        <SectionTitle>Contacto</SectionTitle>
+        <SectionTitle>{t("contact")}</SectionTitle>
         <div className="space-y-1.5">
           <ContactLine
             icon={Mail}
             value={personalInfo.email}
             field="email"
-            placeholder="tu@email.com"
+            placeholder={t("emailPlaceholder")}
             onChange={(f, v) => updatePersonalInfo(f, v)}
           />
           <ContactLine
             icon={Phone}
             value={personalInfo.phone}
             field="phone"
-            placeholder="+54 11 1234-5678"
+            placeholder={t("phonePlaceholder")}
             onChange={(f, v) => updatePersonalInfo(f, v)}
           />
           <ContactLine
             icon={MapPin}
             value={personalInfo.location}
             field="location"
-            placeholder="Ciudad, País"
+            placeholder={t("locationPlaceholder")}
             onChange={(f, v) => updatePersonalInfo(f, v)}
           />
           <ContactLine
             icon={Linkedin}
             value={personalInfo.linkedin}
             field="linkedin"
-            placeholder="linkedin.com/in/usuario"
+            placeholder={t("linkedinPlaceholder")}
             onChange={(f, v) => updatePersonalInfo(f, v)}
           />
           <ContactLine
             icon={Globe}
             value={personalInfo.website}
             field="website"
-            placeholder="tusitio.com"
+            placeholder={t("websitePlaceholder")}
             onChange={(f, v) => updatePersonalInfo(f, v)}
           />
         </div>
@@ -128,11 +134,11 @@ export const PersonalInfo = memo(function PersonalInfo() {
 
       {/* Summary */}
       <div>
-        <SectionTitle>Sobre mí</SectionTitle>
+        <SectionTitle>{t("aboutMe")}</SectionTitle>
         <EditableText
           value={summary}
           onChange={updateSummary}
-          placeholder="Escribí un resumen profesional..."
+          placeholder={t("summaryPlaceholder")}
           multiline
           as="body"
         />
@@ -140,7 +146,7 @@ export const PersonalInfo = memo(function PersonalInfo() {
 
       {/* Skills */}
       <div>
-        <SectionTitle>Habilidades</SectionTitle>
+        <SectionTitle>{t("skills")}</SectionTitle>
         <div className="space-y-3">
           {skills.map((skillGroup) => (
             <div key={skillGroup.id} className="group/skillcat">
@@ -152,12 +158,12 @@ export const PersonalInfo = memo(function PersonalInfo() {
                   }
                   as="tiny"
                   className="!font-semibold !uppercase !tracking-wide !text-gray-500"
-                  placeholder="Categoría"
+                  placeholder={t("categoryPlaceholder")}
                 />
                 <button
                   onClick={() => removeSkillCategory(skillGroup.id)}
                   className="opacity-0 group-hover/skillcat:opacity-100 p-0.5 rounded hover:bg-gray-200 transition-opacity duration-150"
-                  aria-label={`Eliminar categoría ${skillGroup.category}`}
+                  aria-label={t("deleteCategoryAriaLabel", { category: skillGroup.category })}
                 >
                   <X className="h-3 w-3 text-gray-400" />
                 </button>
@@ -167,6 +173,8 @@ export const PersonalInfo = memo(function PersonalInfo() {
                   <SkillBadge
                     key={i}
                     value={item}
+                    skillPlaceholder={t("skillPlaceholder")}
+                    deleteAriaLabel={t("deleteSkillAriaLabel", { skill: item })}
                     onChange={(v) => {
                       const newItems = [...skillGroup.items];
                       newItems[i] = v;
@@ -200,7 +208,7 @@ export const PersonalInfo = memo(function PersonalInfo() {
             className="h-6 px-2 text-[10px] text-gray-400 hover:text-gray-600"
           >
             <Plus className="mr-1 h-3 w-3" />
-            Agregar categoría
+            {t("addCategory")}
           </Button>
         </div>
       </div>

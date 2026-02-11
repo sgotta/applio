@@ -2,6 +2,7 @@
 
 import React, { memo } from "react";
 import { useCV } from "@/lib/cv-context";
+import { useTranslations } from "next-intl";
 import { EducationItem } from "@/lib/types";
 import { EditableText } from "./EditableText";
 import { SectionTitle } from "./SectionTitle";
@@ -18,6 +19,7 @@ function EducationCard({
   isLast: boolean;
 }) {
   const { updateEducation, removeEducation, moveEducation } = useCV();
+  const t = useTranslations("education");
 
   return (
     <div className="group/edu relative rounded-sm transition-colors duration-150 -mx-1.5 px-1.5 py-1 hover:bg-gray-50/50">
@@ -27,7 +29,7 @@ function EducationCard({
           <button
             onClick={() => moveEducation(edu.id, "up")}
             className="p-1 rounded hover:bg-gray-200 transition-colors"
-            aria-label="Mover arriba"
+            aria-label={t("moveUp")}
           >
             <ChevronUp className="h-3 w-3 text-gray-400" />
           </button>
@@ -36,7 +38,7 @@ function EducationCard({
           <button
             onClick={() => moveEducation(edu.id, "down")}
             className="p-1 rounded hover:bg-gray-200 transition-colors"
-            aria-label="Mover abajo"
+            aria-label={t("moveDown")}
           >
             <ChevronDown className="h-3 w-3 text-gray-400" />
           </button>
@@ -44,7 +46,7 @@ function EducationCard({
         <button
           onClick={() => removeEducation(edu.id)}
           className="p-1 rounded hover:bg-red-50 transition-colors"
-          aria-label="Eliminar educación"
+          aria-label={t("deleteEducation")}
         >
           <Trash2 className="h-3 w-3 text-gray-400 hover:text-red-500" />
         </button>
@@ -57,21 +59,21 @@ function EducationCard({
           onChange={(v) => updateEducation(edu.id, { institution: v })}
           as="small"
           className="!text-[13px] !font-semibold !text-gray-900"
-          placeholder="Institución"
+          placeholder={t("institutionPlaceholder")}
         />
         <div className="flex items-baseline gap-1 flex-shrink-0">
           <EditableText
             value={edu.startDate}
             onChange={(v) => updateEducation(edu.id, { startDate: v })}
             as="tiny"
-            placeholder="inicio"
+            placeholder={t("startDatePlaceholder")}
           />
           <span className="text-[10px] text-gray-400">—</span>
           <EditableText
             value={edu.endDate}
             onChange={(v) => updateEducation(edu.id, { endDate: v })}
             as="tiny"
-            placeholder="fin"
+            placeholder={t("endDatePlaceholder")}
           />
         </div>
       </div>
@@ -82,7 +84,7 @@ function EducationCard({
         onChange={(v) => updateEducation(edu.id, { degree: v })}
         as="small"
         className="!font-medium !text-gray-500"
-        placeholder="Título obtenido"
+        placeholder={t("degreePlaceholder")}
       />
 
       {/* Description (optional) */}
@@ -91,7 +93,7 @@ function EducationCard({
           value={edu.description || ""}
           onChange={(v) => updateEducation(edu.id, { description: v })}
           as="body"
-          placeholder="Descripción opcional..."
+          placeholder={t("descriptionPlaceholder")}
         />
       </div>
     </div>
@@ -103,10 +105,11 @@ export const Education = memo(function Education() {
     data: { education },
     addEducation,
   } = useCV();
+  const t = useTranslations("education");
 
   return (
     <div>
-      <SectionTitle>Educación</SectionTitle>
+      <SectionTitle>{t("title")}</SectionTitle>
       <div className="space-y-3">
         {education.map((edu, i) => (
           <EducationCard
@@ -124,7 +127,7 @@ export const Education = memo(function Education() {
         className="mt-2 h-7 px-2 text-[11px] text-gray-400 hover:text-gray-600"
       >
         <Plus className="mr-1 h-3 w-3" />
-        Agregar educación
+        {t("addEducation")}
       </Button>
     </div>
   );

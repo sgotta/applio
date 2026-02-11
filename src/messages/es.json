@@ -1,0 +1,92 @@
+{
+  "toolbar": {
+    "tagline": "gratis, sin registro",
+    "importAriaLabel": "Importar archivo JSON",
+    "importTitle": "Cargar CV desde archivo JSON",
+    "import": "Importar",
+    "exportTitle": "Exportar CV como archivo JSON",
+    "export": "Exportar",
+    "pdfTitle": "Generar PDF para imprimir o enviar",
+    "importFormatError": "El archivo no tiene el formato correcto. Asegurate de que sea un JSON exportado desde QuickCV.",
+    "importConfirm": "¿Querés cargar este CV? Se van a sobrescribir los datos actuales.",
+    "importReadError": "Error al leer el archivo. Asegurate de que sea un archivo JSON válido."
+  },
+  "cvPreview": {
+    "fullNamePlaceholder": "Tu Nombre Completo",
+    "titlePlaceholder": "Tu Título Profesional"
+  },
+  "personalInfo": {
+    "contact": "Contacto",
+    "emailPlaceholder": "tu@email.com",
+    "phonePlaceholder": "+54 11 1234-5678",
+    "locationPlaceholder": "Ciudad, País",
+    "linkedinPlaceholder": "linkedin.com/in/usuario",
+    "websitePlaceholder": "tusitio.com",
+    "aboutMe": "Sobre mí",
+    "summaryPlaceholder": "Escribí un resumen profesional...",
+    "skills": "Habilidades",
+    "categoryPlaceholder": "Categoría",
+    "deleteCategoryAriaLabel": "Eliminar categoría {category}",
+    "addCategory": "Agregar categoría",
+    "skillPlaceholder": "skill",
+    "deleteSkillAriaLabel": "Eliminar {skill}"
+  },
+  "experience": {
+    "title": "Experiencia",
+    "moveUp": "Mover arriba",
+    "moveDown": "Mover abajo",
+    "deleteExperience": "Eliminar experiencia",
+    "companyPlaceholder": "Nombre de la empresa",
+    "startDatePlaceholder": "inicio",
+    "endDatePlaceholder": "fin",
+    "positionPlaceholder": "Título del puesto",
+    "bulletPlaceholder": "Describe un logro o responsabilidad...",
+    "deleteBullet": "Eliminar bullet",
+    "addBullet": "Agregar logro",
+    "addExperience": "Agregar experiencia",
+    "newBulletDefault": "Nuevo logro o responsabilidad."
+  },
+  "education": {
+    "title": "Educación",
+    "moveUp": "Mover arriba",
+    "moveDown": "Mover abajo",
+    "deleteEducation": "Eliminar educación",
+    "institutionPlaceholder": "Institución",
+    "startDatePlaceholder": "inicio",
+    "endDatePlaceholder": "fin",
+    "degreePlaceholder": "Título obtenido",
+    "descriptionPlaceholder": "Descripción opcional...",
+    "addEducation": "Agregar educación"
+  },
+  "photo": {
+    "altText": "Foto de perfil",
+    "invalidImage": "Por favor selecciona una imagen válida (JPG, PNG, etc.)",
+    "imageTooLarge": "La imagen es muy grande. Máximo 2MB.",
+    "confirmDelete": "¿Deseas eliminar la foto de perfil?",
+    "change": "Cambiar",
+    "upload": "Subir",
+    "photoLabel": "foto",
+    "delete": "Eliminar"
+  },
+  "editableText": {
+    "defaultPlaceholder": "Click para editar..."
+  },
+  "printable": {
+    "profilePhotoAlt": "Foto de perfil",
+    "contact": "Contacto",
+    "aboutMe": "Sobre mí",
+    "skills": "Habilidades",
+    "experience": "Experiencia",
+    "education": "Educación"
+  },
+  "defaults": {
+    "company": "Empresa",
+    "position": "Puesto",
+    "endDatePresent": "Actualidad",
+    "experienceDescription": "Descripción de responsabilidades y logros.",
+    "institution": "Institución",
+    "degree": "Título",
+    "category": "Categoría",
+    "skill": "Habilidad 1"
+  }
+}

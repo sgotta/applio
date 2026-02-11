@@ -8,13 +8,14 @@ import {
   useRef,
   useState,
 } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import {
   CVData,
   ExperienceItem,
   EducationItem,
   SkillCategory,
 } from "./types";
-import { defaultCVData } from "./default-data";
+import { getDefaultCVData } from "./default-data";
 import { loadCVData, saveCVData } from "./storage";
 
 interface CVContextValue {
@@ -99,7 +100,17 @@ function migrateCVData(data: any): CVData {
 }
 
 export function CVProvider({ children }: { children: React.ReactNode }) {
-  const [data, setData] = useState<CVData>(defaultCVData);
+  const locale = useLocale();
+  const t = useTranslations("defaults");
+  const tRef = useRef(t);
+  const localeRef = useRef(locale);
+
+  useEffect(() => {
+    tRef.current = t;
+    localeRef.current = locale;
+  }, [t, locale]);
+
+  const [data, setData] = useState<CVData>(() => getDefaultCVData(locale));
   const initialized = useRef(false);
 
   // Load from localStorage on mount (useEffect is correct here to avoid SSR hydration mismatch)
@@ -147,11 +158,11 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
   const addExperience = useCallback(() => {
     const newExp: ExperienceItem = {
       id: `exp-${generateId()}`,
-      company: "Empresa",
-      position: "Puesto",
+      company: tRef.current("company"),
+      position: tRef.current("position"),
       startDate: "2024",
-      endDate: "Actualidad",
-      description: ["Descripción de responsabilidades y logros."],
+      endDate: tRef.current("endDatePresent"),
+      description: [tRef.current("experienceDescription")],
     };
     setData((prev) => ({
       ...prev,
@@ -195,8 +206,8 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
   const addEducation = useCallback(() => {
     const newEdu: EducationItem = {
       id: `edu-${generateId()}`,
-      institution: "Institución",
-      degree: "Título",
+      institution: tRef.current("institution"),
+      degree: tRef.current("degree"),
       startDate: "2020",
       endDate: "2024",
     };
@@ -242,8 +253,8 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
   const addSkillCategory = useCallback(() => {
     const newSkill: SkillCategory = {
       id: `skill-${generateId()}`,
-      category: "Categoría",
-      items: ["Habilidad 1"],
+      category: tRef.current("category"),
+      items: [tRef.current("skill")],
     };
     setData((prev) => ({
       ...prev,
@@ -259,7 +270,7 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const resetData = useCallback(() => {
-    setData(defaultCVData);
+    setData(getDefaultCVData(localeRef.current));
   }, []);
 
   const importData = useCallback((imported: CVData) => {

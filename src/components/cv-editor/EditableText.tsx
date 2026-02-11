@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, KeyboardEvent } from "react";
+import { useTranslations } from "next-intl";
 
 type EditableStyle = "heading" | "subheading" | "body" | "small" | "tiny";
 
@@ -26,11 +27,13 @@ const styleMap: Record<EditableStyle, string> = {
 export function EditableText({
   value,
   onChange,
-  placeholder = "Click para editar...",
+  placeholder: placeholderProp,
   multiline = false,
   className = "",
   as = "body",
 }: EditableTextProps) {
+  const t = useTranslations("editableText");
+  const placeholder = placeholderProp ?? t("defaultPlaceholder");
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(value);
   const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);

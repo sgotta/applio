@@ -1,6 +1,7 @@
 "use client";
 
 import { useCV } from "@/lib/cv-context";
+import { useTranslations } from "next-intl";
 import { EditableText } from "./EditableText";
 import { PersonalInfo } from "./PersonalInfo";
 import { Experience } from "./Experience";
@@ -11,6 +12,7 @@ function CVHeader() {
     data: { personalInfo },
     updatePersonalInfo,
   } = useCV();
+  const t = useTranslations("cvPreview");
 
   return (
     <div className="mb-4">
@@ -18,14 +20,14 @@ function CVHeader() {
         value={personalInfo.fullName}
         onChange={(v) => updatePersonalInfo("fullName", v)}
         as="heading"
-        placeholder="Tu Nombre Completo"
+        placeholder={t("fullNamePlaceholder")}
       />
       <div className="mt-0.5">
         <EditableText
           value={personalInfo.title}
           onChange={(v) => updatePersonalInfo("title", v)}
           as="subheading"
-          placeholder="Tu Título Profesional"
+          placeholder={t("titlePlaceholder")}
         />
       </div>
     </div>

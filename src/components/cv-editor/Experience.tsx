@@ -2,6 +2,7 @@
 
 import React, { memo } from "react";
 import { useCV } from "@/lib/cv-context";
+import { useTranslations } from "next-intl";
 import { ExperienceItem } from "@/lib/types";
 import { EditableText } from "./EditableText";
 import { SectionTitle } from "./SectionTitle";
@@ -12,10 +13,14 @@ function EditableBullet({
   value,
   onChange,
   onRemove,
+  bulletPlaceholder,
+  deleteAriaLabel,
 }: {
   value: string;
   onChange: (v: string) => void;
   onRemove: () => void;
+  bulletPlaceholder: string;
+  deleteAriaLabel: string;
 }) {
   return (
     <li className="flex items-start gap-1 group/bullet pl-3 relative before:content-['•'] before:absolute before:left-0 before:text-gray-400 before:text-[11px]">
@@ -24,12 +29,12 @@ function EditableBullet({
         onChange={onChange}
         as="body"
         className="flex-1"
-        placeholder="Describe un logro o responsabilidad..."
+        placeholder={bulletPlaceholder}
       />
       <button
         onClick={onRemove}
         className="opacity-0 group-hover/bullet:opacity-100 mt-0.5 p-0.5 rounded hover:bg-gray-100 transition-opacity duration-150 flex-shrink-0"
-        aria-label="Eliminar bullet"
+        aria-label={deleteAriaLabel}
       >
         <X className="h-3 w-3 text-gray-400" />
       </button>
@@ -47,6 +52,7 @@ function ExperienceCard({
   isLast: boolean;
 }) {
   const { updateExperience, removeExperience, moveExperience } = useCV();
+  const t = useTranslations("experience");
 
   const updateBullet = (index: number, value: string) => {
     const newDesc = [...exp.description];
@@ -61,7 +67,7 @@ function ExperienceCard({
 
   const addBullet = () => {
     updateExperience(exp.id, {
-      description: [...exp.description, "Nuevo logro o responsabilidad."],
+      description: [...exp.description, t("newBulletDefault")],
     });
   };
 
@@ -73,7 +79,7 @@ function ExperienceCard({
           <button
             onClick={() => moveExperience(exp.id, "up")}
             className="p-1 rounded hover:bg-gray-200 transition-colors"
-            aria-label="Mover arriba"
+            aria-label={t("moveUp")}
           >
             <ChevronUp className="h-3 w-3 text-gray-400" />
           </button>
@@ -82,7 +88,7 @@ function ExperienceCard({
           <button
             onClick={() => moveExperience(exp.id, "down")}
             className="p-1 rounded hover:bg-gray-200 transition-colors"
-            aria-label="Mover abajo"
+            aria-label={t("moveDown")}
           >
             <ChevronDown className="h-3 w-3 text-gray-400" />
           </button>
@@ -90,7 +96,7 @@ function ExperienceCard({
         <button
           onClick={() => removeExperience(exp.id)}
           className="p-1 rounded hover:bg-red-50 transition-colors"
-          aria-label="Eliminar experiencia"
+          aria-label={t("deleteExperience")}
         >
           <Trash2 className="h-3 w-3 text-gray-400 hover:text-red-500" />
         </button>
@@ -103,21 +109,21 @@ function ExperienceCard({
           onChange={(v) => updateExperience(exp.id, { company: v })}
           as="small"
           className="!text-[13px] !font-semibold !text-gray-900"
-          placeholder="Nombre de la empresa"
+          placeholder={t("companyPlaceholder")}
         />
         <div className="flex items-baseline gap-1 flex-shrink-0">
           <EditableText
             value={exp.startDate}
             onChange={(v) => updateExperience(exp.id, { startDate: v })}
             as="tiny"
-            placeholder="inicio"
+            placeholder={t("startDatePlaceholder")}
           />
           <span className="text-[10px] text-gray-400">—</span>
           <EditableText
             value={exp.endDate}
             onChange={(v) => updateExperience(exp.id, { endDate: v })}
             as="tiny"
-            placeholder="fin"
+            placeholder={t("endDatePlaceholder")}
           />
         </div>
       </div>
@@ -128,7 +134,7 @@ function ExperienceCard({
         onChange={(v) => updateExperience(exp.id, { position: v })}
         as="subheading"
         className="!text-[11px]"
-        placeholder="Título del puesto"
+        placeholder={t("positionPlaceholder")}
       />
 
       {/* Bullet points */}
@@ -139,6 +145,8 @@ function ExperienceCard({
             value={bullet}
             onChange={(v) => updateBullet(i, v)}
             onRemove={() => removeBullet(i)}
+            bulletPlaceholder={t("bulletPlaceholder")}
+            deleteAriaLabel={t("deleteBullet")}
           />
         ))}
       </ul>
@@ -149,7 +157,7 @@ function ExperienceCard({
         className="mt-1 flex items-center gap-1 text-[10px] text-gray-300 hover:text-gray-500 transition-colors duration-150 pl-3"
       >
         <Plus className="h-2.5 w-2.5" />
-        Agregar logro
+        {t("addBullet")}
       </button>
     </div>
   );
@@ -160,10 +168,11 @@ export const Experience = memo(function Experience() {
     data: { experience },
     addExperience,
   } = useCV();
+  const t = useTranslations("experience");
 
   return (
     <div>
-      <SectionTitle>Experiencia</SectionTitle>
+      <SectionTitle>{t("title")}</SectionTitle>
       <div className="space-y-3">
         {experience.map((exp, i) => (
           <ExperienceCard
@@ -181,7 +190,7 @@ export const Experience = memo(function Experience() {
         className="mt-2 h-7 px-2 text-[11px] text-gray-400 hover:text-gray-600"
       >
         <Plus className="mr-1 h-3 w-3" />
-        Agregar experiencia
+        {t("addExperience")}
       </Button>
     </div>
   );
