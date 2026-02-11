@@ -7,7 +7,7 @@
     "exportTitle": "Export CV as JSON file",
     "export": "Export",
     "pdfTitle": "Generate PDF to print or send",
-    "importFormatError": "The file format is incorrect. Make sure it's a JSON exported from QuickCV.",
+    "importFormatError": "The file format is incorrect. Make sure it's a JSON exported from Applio.",
     "importConfirm": "Do you want to load this CV? Current data will be overwritten.",
     "importReadError": "Error reading the file. Make sure it's a valid JSON file."
   },

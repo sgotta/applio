@@ -86,7 +86,7 @@ export function Toolbar({ onPrintPDF }: ToolbarProps) {
         <div className="flex items-center gap-2">
           <FileText className="h-5 w-5 text-gray-900" />
           <span className="text-sm font-semibold tracking-tight text-gray-900">
-            QuickCV
+            Applio
           </span>
           <span className="hidden text-xs text-gray-400 sm:inline">
             {t("tagline")}

@@ -8,7 +8,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "QuickCV — Free CV Builder, No Sign-up",
+  title: "Applio — Free CV Builder, No Sign-up",
   description:
     "Create your professional resume quickly and for free. No sign-up, no hassle.",
 };

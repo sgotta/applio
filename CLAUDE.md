@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**QuickCV** is a free, no-login CV builder with a minimalist Notion-style design. Built with Next.js 16 App Router, React 19, and Tailwind CSS v4. The app runs entirely client-side with localStorage persistence.
+**Applio** is a free, no-login CV builder with a minimalist Notion-style design. Built with Next.js 16 App Router, React 19, and Tailwind CSS v4. The app runs entirely client-side with localStorage persistence.
 
 ## Commands
 
