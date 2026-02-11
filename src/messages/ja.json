@@ -18,7 +18,11 @@
     "sectionCertifications": "資格",
     "importFormatError": "ファイル形式が正しくありません。ApplioからエクスポートされたJSONであることを確認してください。",
     "importConfirm": "この履歴書を読み込みますか？現在のデータは上書きされます。",
-    "importReadError": "ファイルの読み込みエラー。有効なJSONファイルであることを確認してください。"
+    "importReadError": "ファイルの読み込みエラー。有効なJSONファイルであることを確認してください。",
+    "theme": "テーマ",
+    "themeLight": "ライト",
+    "themeDark": "ダーク",
+    "themeSystem": "システム"
   },
   "cvPreview": {
     "fullNamePlaceholder": "氏名",

@@ -237,9 +237,9 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
               <button
                 type="button"
                 onClick={triggerFileInput}
-                className="flex flex-col items-center justify-center gap-3 w-full py-10 border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-400 hover:bg-gray-50 transition-colors cursor-pointer"
+                className="flex flex-col items-center justify-center gap-3 w-full py-10 border-2 border-dashed border-gray-300 dark:border-border rounded-lg hover:border-gray-400 dark:hover:border-ring hover:bg-gray-50 dark:hover:bg-accent transition-colors cursor-pointer"
               >
-                <ImagePlus className="w-8 h-8 text-gray-400" />
+                <ImagePlus className="w-8 h-8 text-gray-400 dark:text-gray-500" />
                 <span className="text-sm text-muted-foreground">
                   {t("upload")} {t("photoLabel")}
                 </span>

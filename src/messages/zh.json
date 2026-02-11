@@ -18,7 +18,11 @@
     "sectionCertifications": "证书",
     "importFormatError": "文件格式不正确。请确保是从Applio导出的JSON文件。",
     "importConfirm": "是否要加载此简历？当前数据将被覆盖。",
-    "importReadError": "读取文件时出错。请确保是有效的JSON文件。"
+    "importReadError": "读取文件时出错。请确保是有效的JSON文件。",
+    "theme": "主题",
+    "themeLight": "浅色",
+    "themeDark": "深色",
+    "themeSystem": "系统"
   },
   "cvPreview": {
     "fullNamePlaceholder": "您的姓名",

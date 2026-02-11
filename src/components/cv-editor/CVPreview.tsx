@@ -40,11 +40,11 @@ export function CVPreview() {
   const { data: { visibility } } = useCV();
 
   return (
-    <div className="mx-auto w-full max-w-[210mm] bg-white shadow-sm border border-gray-100 print:shadow-none print:border-none">
+    <div className="mx-auto w-full max-w-[210mm] bg-white dark:bg-card shadow-sm border border-gray-100 dark:border-border print:shadow-none print:border-none">
       {/* CV Content — A4-like aspect ratio */}
       <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] min-h-[297mm]">
         {/* ===== LEFT COLUMN ===== */}
-        <div className="border-r border-gray-100 bg-gray-50/50 p-6 space-y-5">
+        <div className="border-r border-gray-100 dark:border-border bg-gray-50/50 dark:bg-white/2 p-6 space-y-5">
           <PersonalInfo />
         </div>
 

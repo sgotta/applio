@@ -18,7 +18,11 @@
     "sectionCertifications": "Certificazioni",
     "importFormatError": "Il formato del file non è corretto. Assicurati che sia un JSON esportato da Applio.",
     "importConfirm": "Vuoi caricare questo CV? I dati attuali verranno sovrascritti.",
-    "importReadError": "Errore nella lettura del file. Assicurati che sia un file JSON valido."
+    "importReadError": "Errore nella lettura del file. Assicurati che sia un file JSON valido.",
+    "theme": "Tema",
+    "themeLight": "Chiaro",
+    "themeDark": "Scuro",
+    "themeSystem": "Sistema"
   },
   "cvPreview": {
     "fullNamePlaceholder": "Il Tuo Nome Completo",

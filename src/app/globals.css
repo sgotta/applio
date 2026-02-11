@@ -82,12 +82,46 @@
   --sidebar-ring: #9ca3af;
 }
 
+.dark {
+  --background: #0b1120;
+  --foreground: #e2e8f0;
+  --card: #131c2e;
+  --card-foreground: #e2e8f0;
+  --popover: #1a2540;
+  --popover-foreground: #e2e8f0;
+  --primary: #e2e8f0;
+  --primary-foreground: #0b1120;
+  --secondary: #1a2540;
+  --secondary-foreground: #e2e8f0;
+  --muted: #1a2540;
+  --muted-foreground: #8896ab;
+  --accent: #1e2d45;
+  --accent-foreground: #e2e8f0;
+  --destructive: #ef4444;
+  --border: #1e2d45;
+  --input: #1e2d45;
+  --ring: #475569;
+  --chart-1: #e2e8f0;
+  --chart-2: #94a3b8;
+  --chart-3: #64748b;
+  --chart-4: #475569;
+  --chart-5: #334155;
+  --sidebar: #131c2e;
+  --sidebar-foreground: #e2e8f0;
+  --sidebar-primary: #e2e8f0;
+  --sidebar-primary-foreground: #0b1120;
+  --sidebar-accent: #1e2d45;
+  --sidebar-accent-foreground: #e2e8f0;
+  --sidebar-border: #1e2d45;
+  --sidebar-ring: #475569;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-foreground font-sans transition-colors duration-200;
   }
 }
 

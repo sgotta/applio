@@ -25,12 +25,12 @@ function ContactLine({
 }) {
   return (
     <div className="flex items-center gap-2 group/contact">
-      <Icon className="h-3 w-3 shrink-0 text-gray-400" />
+      <Icon className="h-3 w-3 shrink-0 text-gray-400 dark:text-gray-500" />
       <EditableText
         value={value}
         onChange={(v) => onChange(field, v)}
         as="tiny"
-        className="!text-[11px] !text-gray-600"
+        className="!text-[11px] !text-gray-600 dark:text-gray-300!"
         placeholder={placeholder}
       />
     </div>
@@ -51,20 +51,20 @@ function SkillBadge({
   deleteAriaLabel: string;
 }) {
   return (
-    <span className="inline-flex items-center gap-0.5 rounded bg-gray-100 pl-2 pr-0.5 py-0.5 group/badge">
+    <span className="inline-flex items-center gap-0.5 rounded bg-gray-100 dark:bg-accent pl-2 pr-0.5 py-0.5 group/badge">
       <EditableText
         value={value}
         onChange={onChange}
         as="tiny"
-        className="!text-[10px] !text-gray-700"
+        className="!text-[10px] !text-gray-700 dark:text-gray-300!"
         placeholder={skillPlaceholder}
       />
       <button
         onClick={onRemove}
-        className="opacity-0 group-hover/badge:opacity-100 p-0.5 rounded hover:bg-gray-200 transition-opacity duration-150"
+        className="opacity-0 group-hover/badge:opacity-100 p-0.5 rounded hover:bg-gray-200 dark:hover:bg-muted transition-opacity duration-150"
         aria-label={deleteAriaLabel}
       >
-        <X className="h-2.5 w-2.5 text-gray-400" />
+        <X className="h-2.5 w-2.5 text-gray-400 dark:text-gray-500" />
       </button>
     </span>
   );
@@ -169,15 +169,15 @@ export const PersonalInfo = memo(function PersonalInfo() {
                     updateSkillCategory(skillGroup.id, { category: v })
                   }
                   as="tiny"
-                  className="!font-semibold !uppercase !tracking-wide !text-gray-500"
+                  className="!font-semibold !uppercase !tracking-wide !text-gray-500 dark:text-gray-400!"
                   placeholder={t("categoryPlaceholder")}
                 />
                 <button
                   onClick={() => removeSkillCategory(skillGroup.id)}
-                  className="opacity-0 group-hover/skillcat:opacity-100 p-0.5 rounded hover:bg-gray-200 transition-opacity duration-150"
+                  className="opacity-0 group-hover/skillcat:opacity-100 p-0.5 rounded hover:bg-gray-200 dark:hover:bg-muted transition-opacity duration-150"
                   aria-label={t("deleteCategoryAriaLabel", { category: skillGroup.category })}
                 >
-                  <X className="h-3 w-3 text-gray-400" />
+                  <X className="h-3 w-3 text-gray-400 dark:text-gray-500" />
                 </button>
               </div>
               <div className="flex flex-wrap gap-1">
@@ -206,7 +206,7 @@ export const PersonalInfo = memo(function PersonalInfo() {
                       items: [...skillGroup.items, "Skill"],
                     })
                   }
-                  className="inline-flex items-center gap-0.5 rounded border border-dashed border-gray-300 px-2 py-0.5 text-[10px] text-gray-400 hover:border-gray-400 hover:text-gray-500 transition-colors duration-150"
+                  className="inline-flex items-center gap-0.5 rounded border border-dashed border-gray-300 dark:border-border px-2 py-0.5 text-[10px] text-gray-400 dark:text-gray-500 hover:border-gray-400 dark:hover:border-ring hover:text-gray-500 dark:hover:text-gray-400 transition-colors duration-150"
                 >
                   <Plus className="h-2.5 w-2.5" />
                 </button>
@@ -217,7 +217,7 @@ export const PersonalInfo = memo(function PersonalInfo() {
             variant="ghost"
             size="sm"
             onClick={addSkillCategory}
-            className="h-6 px-2 text-[10px] text-gray-400 hover:text-gray-600"
+            className="h-6 px-2 text-[10px] text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
           >
             <Plus className="mr-1 h-3 w-3" />
             {t("addCategory")}

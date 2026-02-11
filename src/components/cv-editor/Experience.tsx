@@ -23,7 +23,7 @@ function EditableBullet({
   deleteAriaLabel: string;
 }) {
   return (
-    <li className="flex items-start gap-1 group/bullet pl-3 relative before:content-['•'] before:absolute before:left-0 before:text-gray-400 before:text-[11px]">
+    <li className="flex items-start gap-1 group/bullet pl-3 relative before:content-['•'] before:absolute before:left-0 before:text-gray-400 dark:before:text-gray-500 before:text-[11px]">
       <EditableText
         value={value}
         onChange={onChange}
@@ -33,10 +33,10 @@ function EditableBullet({
       />
       <button
         onClick={onRemove}
-        className="opacity-0 group-hover/bullet:opacity-100 mt-0.5 p-0.5 rounded hover:bg-gray-100 transition-opacity duration-150 flex-shrink-0"
+        className="opacity-0 group-hover/bullet:opacity-100 mt-0.5 p-0.5 rounded hover:bg-gray-100 dark:hover:bg-accent transition-opacity duration-150 flex-shrink-0"
         aria-label={deleteAriaLabel}
       >
-        <X className="h-3 w-3 text-gray-400" />
+        <X className="h-3 w-3 text-gray-400 dark:text-gray-500" />
       </button>
     </li>
   );
@@ -72,30 +72,30 @@ function ExperienceCard({
   };
 
   return (
-    <div className="group/exp relative rounded-sm transition-colors duration-150 -mx-1.5 px-1.5 py-1 hover:bg-gray-50/50">
+    <div className="group/exp relative rounded-sm transition-colors duration-150 -mx-1.5 px-1.5 py-1 hover:bg-gray-50/50 dark:hover:bg-accent/50">
       {/* Action buttons — visible on hover */}
       <div className="absolute -right-1 top-1 flex items-center gap-0.5 opacity-0 group-hover/exp:opacity-100 transition-opacity duration-150">
         {!isFirst && (
           <button
             onClick={() => moveExperience(exp.id, "up")}
-            className="p-1 rounded hover:bg-gray-200 transition-colors"
+            className="p-1 rounded hover:bg-gray-200 dark:hover:bg-muted transition-colors"
             aria-label={t("moveUp")}
           >
-            <ChevronUp className="h-3 w-3 text-gray-400" />
+            <ChevronUp className="h-3 w-3 text-gray-400 dark:text-gray-500" />
           </button>
         )}
         {!isLast && (
           <button
             onClick={() => moveExperience(exp.id, "down")}
-            className="p-1 rounded hover:bg-gray-200 transition-colors"
+            className="p-1 rounded hover:bg-gray-200 dark:hover:bg-muted transition-colors"
             aria-label={t("moveDown")}
           >
-            <ChevronDown className="h-3 w-3 text-gray-400" />
+            <ChevronDown className="h-3 w-3 text-gray-400 dark:text-gray-500" />
           </button>
         )}
         <button
           onClick={() => removeExperience(exp.id)}
-          className="p-1 rounded hover:bg-red-50 transition-colors"
+          className="p-1 rounded hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
           aria-label={t("deleteExperience")}
         >
           <Trash2 className="h-3 w-3 text-gray-400 hover:text-red-500" />
@@ -108,7 +108,7 @@ function ExperienceCard({
           value={exp.company}
           onChange={(v) => updateExperience(exp.id, { company: v })}
           as="small"
-          className="!text-[13px] !font-semibold !text-gray-900"
+          className="!text-[13px] !font-semibold !text-gray-900 dark:text-gray-100!"
           placeholder={t("companyPlaceholder")}
         />
         <div className="flex items-baseline gap-1 flex-shrink-0">
@@ -118,7 +118,7 @@ function ExperienceCard({
             as="tiny"
             placeholder={t("startDatePlaceholder")}
           />
-          <span className="text-[10px] text-gray-400">—</span>
+          <span className="text-[10px] text-gray-400 dark:text-gray-500">—</span>
           <EditableText
             value={exp.endDate}
             onChange={(v) => updateExperience(exp.id, { endDate: v })}
@@ -154,7 +154,7 @@ function ExperienceCard({
       {/* Add bullet */}
       <button
         onClick={addBullet}
-        className="mt-1 flex items-center gap-1 text-[10px] text-gray-300 hover:text-gray-500 transition-colors duration-150 pl-3"
+        className="mt-1 flex items-center gap-1 text-[10px] text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 transition-colors duration-150 pl-3"
       >
         <Plus className="h-2.5 w-2.5" />
         {t("addBullet")}
@@ -187,7 +187,7 @@ export const Experience = memo(function Experience() {
         variant="ghost"
         size="sm"
         onClick={addExperience}
-        className="mt-2 h-7 px-2 text-[11px] text-gray-400 hover:text-gray-600"
+        className="mt-2 h-7 px-2 text-[11px] text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
       >
         <Plus className="mr-1 h-3 w-3" />
         {t("addExperience")}

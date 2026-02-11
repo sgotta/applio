@@ -18,7 +18,11 @@
     "sectionCertifications": "Zertifizierungen",
     "importFormatError": "Das Dateiformat ist falsch. Stelle sicher, dass es ein aus Applio exportiertes JSON ist.",
     "importConfirm": "Möchtest du diesen Lebenslauf laden? Die aktuellen Daten werden überschrieben.",
-    "importReadError": "Fehler beim Lesen der Datei. Stelle sicher, dass es eine gültige JSON-Datei ist."
+    "importReadError": "Fehler beim Lesen der Datei. Stelle sicher, dass es eine gültige JSON-Datei ist.",
+    "theme": "Design",
+    "themeLight": "Hell",
+    "themeDark": "Dunkel",
+    "themeSystem": "System"
   },
   "cvPreview": {
     "fullNamePlaceholder": "Dein vollständiger Name",

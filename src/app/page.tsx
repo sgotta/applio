@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 import { CVProvider, useCV } from "@/lib/cv-context";
 import { LocaleProvider } from "@/lib/locale-context";
+import { ThemeProvider } from "@/lib/theme-context";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toolbar } from "@/components/toolbar/Toolbar";
 import { CVEditor } from "@/components/cv-editor/CVEditor";
@@ -31,7 +32,7 @@ function AppContent() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50/50">
+    <div className="min-h-screen bg-gray-50/50 dark:bg-background">
       <Toolbar onPrintPDF={() => handlePrint()} />
       <CVEditor />
 
@@ -45,12 +46,14 @@ function AppContent() {
 
 export default function Home() {
   return (
-    <LocaleProvider>
-      <CVProvider>
-        <TooltipProvider delayDuration={300}>
-          <AppContent />
-        </TooltipProvider>
-      </CVProvider>
-    </LocaleProvider>
+    <ThemeProvider>
+      <LocaleProvider>
+        <CVProvider>
+          <TooltipProvider delayDuration={300}>
+            <AppContent />
+          </TooltipProvider>
+        </CVProvider>
+      </LocaleProvider>
+    </ThemeProvider>
   );
 }

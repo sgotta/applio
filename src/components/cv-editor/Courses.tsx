@@ -14,11 +14,11 @@ function CourseCard({ course }: { course: CourseItem }) {
   const t = useTranslations("courses");
 
   return (
-    <div className="group/course relative rounded-sm transition-colors duration-150 -mx-1.5 px-1.5 py-1 hover:bg-gray-50/50">
+    <div className="group/course relative rounded-sm transition-colors duration-150 -mx-1.5 px-1.5 py-1 hover:bg-gray-50/50 dark:hover:bg-accent/50">
       <div className="absolute -right-1 top-1 flex items-center gap-0.5 opacity-0 group-hover/course:opacity-100 transition-opacity duration-150">
         <button
           onClick={() => removeCourse(course.id)}
-          className="p-1 rounded hover:bg-red-50 transition-colors"
+          className="p-1 rounded hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
           aria-label={t("deleteCourse")}
         >
           <Trash2 className="h-3 w-3 text-gray-400 hover:text-red-500" />
@@ -30,7 +30,7 @@ function CourseCard({ course }: { course: CourseItem }) {
           value={course.name}
           onChange={(v) => updateCourse(course.id, { name: v })}
           as="small"
-          className="!text-[13px] !font-semibold !text-gray-900"
+          className="!text-[13px] !font-semibold !text-gray-900 dark:text-gray-100!"
           placeholder={t("namePlaceholder")}
         />
         <EditableText
@@ -46,7 +46,7 @@ function CourseCard({ course }: { course: CourseItem }) {
         value={course.institution}
         onChange={(v) => updateCourse(course.id, { institution: v })}
         as="small"
-        className="!font-medium !text-gray-500"
+        className="!font-medium !text-gray-500 dark:text-gray-400!"
         placeholder={t("institutionPlaceholder")}
       />
     </div>
@@ -72,7 +72,7 @@ export const Courses = memo(function Courses() {
         variant="ghost"
         size="sm"
         onClick={addCourse}
-        className="mt-2 h-7 px-2 text-[11px] text-gray-400 hover:text-gray-600"
+        className="mt-2 h-7 px-2 text-[11px] text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
       >
         <Plus className="mr-1 h-3 w-3" />
         {t("addCourse")}

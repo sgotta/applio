@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Download, FileUp, FileDown, FileText, Globe, SlidersHorizontal, Check } from "lucide-react";
+import { useTheme, Theme } from "@/lib/theme-context";
+import { Download, FileUp, FileDown, FileText, Globe, SlidersHorizontal, Check, Sun, Moon, Monitor } from "lucide-react";
 
 interface ToolbarProps {
   onPrintPDF: () => void;
@@ -40,7 +41,7 @@ function SectionToggle({
 }) {
   return (
     <label className="flex items-center justify-between gap-3 py-1 cursor-pointer">
-      <span className="text-sm text-gray-700">{label}</span>
+      <span className="text-sm text-gray-700 dark:text-gray-300">{label}</span>
       <Switch checked={checked} onCheckedChange={onToggle} />
     </label>
   );
@@ -50,7 +51,16 @@ export function Toolbar({ onPrintPDF }: ToolbarProps) {
   const { data, importData, toggleSection } = useCV();
   const t = useTranslations("toolbar");
   const { locale, setLocale } = useAppLocale();
+  const { theme, setTheme, resolvedTheme } = useTheme();
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const THEME_OPTIONS: { value: Theme; icon: typeof Sun; label: string }[] = [
+    { value: "light", icon: Sun, label: t("themeLight") },
+    { value: "dark", icon: Moon, label: t("themeDark") },
+    { value: "system", icon: Monitor, label: t("themeSystem") },
+  ];
+
+  const ThemeIcon = resolvedTheme === "dark" ? Moon : Sun;
 
   const exportToJSON = () => {
     const dataStr = JSON.stringify(data, null, 2);
@@ -96,15 +106,15 @@ export function Toolbar({ onPrintPDF }: ToolbarProps) {
   };
 
   return (
-    <header className="no-print sticky top-0 z-50 border-b border-border bg-white/80 backdrop-blur-sm">
+    <header className="no-print sticky top-0 z-50 border-b border-border bg-white/80 dark:bg-card/80 backdrop-blur-sm">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6">
         {/* Logo */}
         <div className="flex items-center gap-2">
-          <FileText className="h-5 w-5 text-gray-900" />
-          <span className="text-sm font-semibold tracking-tight text-gray-900">
+          <FileText className="h-5 w-5 text-gray-900 dark:text-gray-100" />
+          <span className="text-sm font-semibold tracking-tight text-gray-900 dark:text-gray-100">
             Applio
           </span>
-          <span className="hidden text-xs text-gray-400 sm:inline">
+          <span className="hidden text-xs text-gray-400 dark:text-gray-500 sm:inline">
             {t("tagline")}
           </span>
         </div>
@@ -119,7 +129,7 @@ export function Toolbar({ onPrintPDF }: ToolbarProps) {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-8 w-8 text-gray-600 hover:text-gray-900"
+                    className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
                   >
                     <Globe className="h-4 w-4" />
                   </Button>
@@ -133,11 +143,48 @@ export function Toolbar({ onPrintPDF }: ToolbarProps) {
                   <button
                     key={code}
                     onClick={() => setLocale(code)}
-                    className="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                    className="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-accent transition-colors"
                   >
                     <span>{LOCALE_NAMES[code]}</span>
                     {locale === code && (
-                      <Check className="h-4 w-4 text-gray-900" />
+                      <Check className="h-4 w-4 text-gray-900 dark:text-gray-100" />
+                    )}
+                  </button>
+                ))}
+              </div>
+            </PopoverContent>
+          </Popover>
+
+          {/* Theme toggle */}
+          <Popover>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                  >
+                    <ThemeIcon className="h-4 w-4" />
+                  </Button>
+                </PopoverTrigger>
+              </TooltipTrigger>
+              <TooltipContent>{t("theme")}</TooltipContent>
+            </Tooltip>
+            <PopoverContent className="w-40 p-1" align="end">
+              <div className="space-y-0.5">
+                {THEME_OPTIONS.map(({ value, icon: Icon, label }) => (
+                  <button
+                    key={value}
+                    onClick={() => setTheme(value)}
+                    className="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-accent transition-colors"
+                  >
+                    <span className="flex items-center gap-2">
+                      <Icon className="h-4 w-4" />
+                      {label}
+                    </span>
+                    {theme === value && (
+                      <Check className="h-4 w-4 text-gray-900 dark:text-gray-100" />
                     )}
                   </button>
                 ))}
@@ -153,7 +200,7 @@ export function Toolbar({ onPrintPDF }: ToolbarProps) {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-8 w-8 text-gray-600 hover:text-gray-900"
+                    className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
                   >
                     <SlidersHorizontal className="h-4 w-4" />
                   </Button>
@@ -164,7 +211,7 @@ export function Toolbar({ onPrintPDF }: ToolbarProps) {
             <PopoverContent className="w-64" align="end">
               <div className="space-y-3">
                 <div className="space-y-1">
-                  <p className="text-xs font-medium uppercase tracking-wide text-gray-400 mb-1">{t("sectionsTitle")}</p>
+                  <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-1">{t("sectionsTitle")}</p>
                   <SectionToggle label={t("sectionEmail")} checked={data.visibility.email} onToggle={() => toggleSection("email")} />
                   <SectionToggle label={t("sectionPhone")} checked={data.visibility.phone} onToggle={() => toggleSection("phone")} />
                   <SectionToggle label={t("sectionLocation")} checked={data.visibility.location} onToggle={() => toggleSection("location")} />
@@ -173,7 +220,7 @@ export function Toolbar({ onPrintPDF }: ToolbarProps) {
                 </div>
 
                 <div className="space-y-1">
-                  <p className="text-xs font-medium uppercase tracking-wide text-gray-400 mb-1">{t("optionalSections")}</p>
+                  <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-1">{t("optionalSections")}</p>
                   <SectionToggle label={t("sectionCourses")} checked={data.visibility.courses} onToggle={() => toggleSection("courses")} />
                   <SectionToggle label={t("sectionCertifications")} checked={data.visibility.certifications} onToggle={() => toggleSection("certifications")} />
                 </div>
@@ -195,7 +242,7 @@ export function Toolbar({ onPrintPDF }: ToolbarProps) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-gray-600 hover:text-gray-900"
+                className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
                 onClick={() => fileInputRef.current?.click()}
               >
                 <FileUp className="h-4 w-4" />
@@ -210,7 +257,7 @@ export function Toolbar({ onPrintPDF }: ToolbarProps) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-gray-600 hover:text-gray-900"
+                className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
                 onClick={exportToJSON}
               >
                 <FileDown className="h-4 w-4" />
@@ -225,7 +272,7 @@ export function Toolbar({ onPrintPDF }: ToolbarProps) {
               <Button
                 variant="default"
                 size="sm"
-                className="ml-1 bg-gray-900 text-white hover:bg-gray-800"
+                className="ml-1 bg-gray-900 text-white hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
                 onClick={onPrintPDF}
               >
                 <Download className="mr-1.5 h-4 w-4" />

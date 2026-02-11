@@ -39,7 +39,7 @@ export function ProfilePhotoUpload({
       <button
         type="button"
         onClick={() => setDialogOpen(true)}
-        className="relative w-32 h-32 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center group cursor-pointer"
+        className="relative w-32 h-32 rounded-full overflow-hidden bg-gray-200 dark:bg-accent flex items-center justify-center group cursor-pointer"
       >
         {currentPhoto ? (
           <img
@@ -48,7 +48,7 @@ export function ProfilePhotoUpload({
             className="w-full h-full object-cover"
           />
         ) : (
-          <span className="text-4xl text-gray-500 font-semibold">
+          <span className="text-4xl text-gray-500 dark:text-gray-400 font-semibold">
             {getInitials(fullName)}
           </span>
         )}

@@ -16,12 +16,12 @@ interface EditableTextProps {
 
 const styleMap: Record<EditableStyle, string> = {
   heading:
-    "text-2xl font-semibold tracking-tight text-gray-900",
+    "text-2xl font-semibold tracking-tight text-gray-900 dark:text-gray-100",
   subheading:
-    "text-sm font-medium uppercase tracking-wide text-gray-500",
-  body: "text-[11px] leading-relaxed text-gray-600",
-  small: "text-[11px] text-gray-600",
-  tiny: "text-[10px] text-gray-400",
+    "text-sm font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400",
+  body: "text-[11px] leading-relaxed text-gray-600 dark:text-gray-300",
+  small: "text-[11px] text-gray-600 dark:text-gray-300",
+  tiny: "text-[10px] text-gray-400 dark:text-gray-500",
 };
 
 export function EditableText({
@@ -80,7 +80,7 @@ export function EditableText({
   const displayEmpty = !value && !editing;
 
   if (editing) {
-    const inputClasses = `${baseStyle} ${className} w-full bg-white border border-gray-300 rounded-sm px-1.5 py-0.5 outline-none focus:border-gray-400 focus:ring-1 focus:ring-gray-200 transition-all duration-150`;
+    const inputClasses = `${baseStyle} ${className} w-full bg-white dark:bg-accent border border-gray-300 dark:border-border rounded-sm px-1.5 py-0.5 outline-none focus:border-gray-400 dark:focus:border-ring focus:ring-1 focus:ring-gray-200 dark:focus:ring-ring/30 transition-all duration-150`;
 
     if (multiline) {
       return (
@@ -122,8 +122,8 @@ export function EditableText({
           setEditing(true);
         }
       }}
-      className={`${baseStyle} ${className} inline-block cursor-text rounded-sm px-1.5 py-0.5 -mx-1.5 -my-0.5 transition-colors duration-150 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none ${
-        displayEmpty ? "text-gray-300 italic" : ""
+      className={`${baseStyle} ${className} inline-block cursor-text rounded-sm px-1.5 py-0.5 -mx-1.5 -my-0.5 transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-accent focus:bg-gray-100 dark:focus:bg-accent focus:outline-none ${
+        displayEmpty ? "text-gray-300 dark:text-gray-600 italic" : ""
       }`}
     >
       {displayEmpty ? placeholder : value}

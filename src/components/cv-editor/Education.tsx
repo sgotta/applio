@@ -22,30 +22,30 @@ function EducationCard({
   const t = useTranslations("education");
 
   return (
-    <div className="group/edu relative rounded-sm transition-colors duration-150 -mx-1.5 px-1.5 py-1 hover:bg-gray-50/50">
+    <div className="group/edu relative rounded-sm transition-colors duration-150 -mx-1.5 px-1.5 py-1 hover:bg-gray-50/50 dark:hover:bg-accent/50">
       {/* Action buttons */}
       <div className="absolute -right-1 top-1 flex items-center gap-0.5 opacity-0 group-hover/edu:opacity-100 transition-opacity duration-150">
         {!isFirst && (
           <button
             onClick={() => moveEducation(edu.id, "up")}
-            className="p-1 rounded hover:bg-gray-200 transition-colors"
+            className="p-1 rounded hover:bg-gray-200 dark:hover:bg-muted transition-colors"
             aria-label={t("moveUp")}
           >
-            <ChevronUp className="h-3 w-3 text-gray-400" />
+            <ChevronUp className="h-3 w-3 text-gray-400 dark:text-gray-500" />
           </button>
         )}
         {!isLast && (
           <button
             onClick={() => moveEducation(edu.id, "down")}
-            className="p-1 rounded hover:bg-gray-200 transition-colors"
+            className="p-1 rounded hover:bg-gray-200 dark:hover:bg-muted transition-colors"
             aria-label={t("moveDown")}
           >
-            <ChevronDown className="h-3 w-3 text-gray-400" />
+            <ChevronDown className="h-3 w-3 text-gray-400 dark:text-gray-500" />
           </button>
         )}
         <button
           onClick={() => removeEducation(edu.id)}
-          className="p-1 rounded hover:bg-red-50 transition-colors"
+          className="p-1 rounded hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
           aria-label={t("deleteEducation")}
         >
           <Trash2 className="h-3 w-3 text-gray-400 hover:text-red-500" />
@@ -58,7 +58,7 @@ function EducationCard({
           value={edu.institution}
           onChange={(v) => updateEducation(edu.id, { institution: v })}
           as="small"
-          className="!text-[13px] !font-semibold !text-gray-900"
+          className="!text-[13px] !font-semibold !text-gray-900 dark:text-gray-100!"
           placeholder={t("institutionPlaceholder")}
         />
         <div className="flex items-baseline gap-1 flex-shrink-0">
@@ -68,7 +68,7 @@ function EducationCard({
             as="tiny"
             placeholder={t("startDatePlaceholder")}
           />
-          <span className="text-[10px] text-gray-400">—</span>
+          <span className="text-[10px] text-gray-400 dark:text-gray-500">—</span>
           <EditableText
             value={edu.endDate}
             onChange={(v) => updateEducation(edu.id, { endDate: v })}
@@ -83,7 +83,7 @@ function EducationCard({
         value={edu.degree}
         onChange={(v) => updateEducation(edu.id, { degree: v })}
         as="small"
-        className="!font-medium !text-gray-500"
+        className="!font-medium !text-gray-500 dark:text-gray-400!"
         placeholder={t("degreePlaceholder")}
       />
 
@@ -124,7 +124,7 @@ export const Education = memo(function Education() {
         variant="ghost"
         size="sm"
         onClick={addEducation}
-        className="mt-2 h-7 px-2 text-[11px] text-gray-400 hover:text-gray-600"
+        className="mt-2 h-7 px-2 text-[11px] text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
       >
         <Plus className="mr-1 h-3 w-3" />
         {t("addEducation")}
