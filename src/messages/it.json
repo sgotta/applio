@@ -75,7 +75,13 @@
     "change": "Cambia",
     "upload": "Carica",
     "photoLabel": "foto",
-    "delete": "Elimina"
+    "delete": "Elimina",
+    "cropTitle": "Regola foto",
+    "cropDescription": "Zoom e posiziona la tua foto",
+    "zoom": "Zoom",
+    "cancel": "Annulla",
+    "apply": "Applica",
+    "adjust": "Regola"
   },
   "editableText": {
     "defaultPlaceholder": "Clicca per modificare..."

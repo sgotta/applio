@@ -1,8 +1,9 @@
 "use client";
 
+import { useState, useCallback } from "react";
 import { Camera } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { Button } from "@/components/ui/button";
+import { PhotoCropDialog } from "./PhotoCropDialog";
 
 interface ProfilePhotoUploadProps {
   currentPhoto?: string;
@@ -16,34 +17,14 @@ export function ProfilePhotoUpload({
   onPhotoChange,
 }: ProfilePhotoUploadProps) {
   const t = useTranslations("photo");
+  const [dialogOpen, setDialogOpen] = useState(false);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (!file.type.startsWith("image/")) {
-      alert(t("invalidImage"));
-      return;
-    }
-
-    if (file.size > 2 * 1024 * 1024) {
-      alert(t("imageTooLarge"));
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const base64 = e.target?.result as string;
-      onPhotoChange(base64);
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const handleRemovePhoto = () => {
-    if (confirm(t("confirmDelete"))) {
-      onPhotoChange(undefined);
-    }
-  };
+  const handlePhotoChange = useCallback(
+    (photo: string | undefined) => {
+      onPhotoChange(photo);
+    },
+    [onPhotoChange]
+  );
 
   const getInitials = (name: string): string => {
     const parts = name.trim().split(" ");
@@ -54,8 +35,12 @@ export function ProfilePhotoUpload({
   };
 
   return (
-    <div className="flex flex-col items-center gap-3 mb-6">
-      <div className="relative w-32 h-32 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center group">
+    <div className="flex flex-col items-center mb-6">
+      <button
+        type="button"
+        onClick={() => setDialogOpen(true)}
+        className="relative w-32 h-32 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center group cursor-pointer"
+      >
         {currentPhoto ? (
           <img
             src={currentPhoto}
@@ -68,40 +53,17 @@ export function ProfilePhotoUpload({
           </span>
         )}
 
-        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
-          <label className="cursor-pointer flex items-center justify-center w-full h-full">
-            <Camera className="w-6 h-6 text-white" />
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="hidden"
-            />
-          </label>
+        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+          <Camera className="w-6 h-6 text-white" />
         </div>
-      </div>
+      </button>
 
-      <div className="flex gap-2">
-        <label className="cursor-pointer">
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="hidden"
-          />
-          <Button variant="outline" size="sm" asChild>
-            <span className="cursor-pointer">
-              {currentPhoto ? t("change") : t("upload")} {t("photoLabel")}
-            </span>
-          </Button>
-        </label>
-
-        {currentPhoto && (
-          <Button variant="ghost" size="sm" onClick={handleRemovePhoto}>
-            {t("delete")}
-          </Button>
-        )}
-      </div>
+      <PhotoCropDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        currentPhoto={currentPhoto}
+        onPhotoChange={handlePhotoChange}
+      />
     </div>
   );
 }

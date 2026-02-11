@@ -75,7 +75,13 @@
     "change": "Alterar",
     "upload": "Enviar",
     "photoLabel": "foto",
-    "delete": "Excluir"
+    "delete": "Excluir",
+    "cropTitle": "Ajustar foto",
+    "cropDescription": "Amplie e posicione sua foto",
+    "zoom": "Zoom",
+    "cancel": "Cancelar",
+    "apply": "Aplicar",
+    "adjust": "Ajustar"
   },
   "editableText": {
     "defaultPlaceholder": "Clique para editar..."

@@ -75,7 +75,13 @@
     "change": "Ändern",
     "upload": "Hochladen",
     "photoLabel": "Foto",
-    "delete": "Löschen"
+    "delete": "Löschen",
+    "cropTitle": "Foto anpassen",
+    "cropDescription": "Zoomen und positionieren Sie Ihr Foto",
+    "zoom": "Zoom",
+    "cancel": "Abbrechen",
+    "apply": "Übernehmen",
+    "adjust": "Anpassen"
   },
   "editableText": {
     "defaultPlaceholder": "Zum Bearbeiten klicken..."

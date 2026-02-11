@@ -75,7 +75,13 @@
     "change": "변경",
     "upload": "업로드",
     "photoLabel": "사진",
-    "delete": "삭제"
+    "delete": "삭제",
+    "cropTitle": "사진 조정",
+    "cropDescription": "사진을 확대하고 위치를 조정하세요",
+    "zoom": "확대",
+    "cancel": "취소",
+    "apply": "적용",
+    "adjust": "조정"
   },
   "editableText": {
     "defaultPlaceholder": "클릭하여 편집..."

@@ -75,7 +75,13 @@
     "change": "Cambiar",
     "upload": "Subir",
     "photoLabel": "foto",
-    "delete": "Eliminar"
+    "delete": "Eliminar",
+    "cropTitle": "Ajustar foto",
+    "cropDescription": "Hacé zoom y posicioná tu foto",
+    "zoom": "Zoom",
+    "cancel": "Cancelar",
+    "apply": "Aplicar",
+    "adjust": "Ajustar"
   },
   "editableText": {
     "defaultPlaceholder": "Click para editar..."

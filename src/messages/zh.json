@@ -75,7 +75,13 @@
     "change": "更换",
     "upload": "上传",
     "photoLabel": "照片",
-    "delete": "删除"
+    "delete": "删除",
+    "cropTitle": "调整照片",
+    "cropDescription": "缩放并定位您的照片",
+    "zoom": "缩放",
+    "cancel": "取消",
+    "apply": "应用",
+    "adjust": "调整"
   },
   "editableText": {
     "defaultPlaceholder": "点击编辑..."

@@ -75,7 +75,13 @@
     "change": "変更",
     "upload": "アップロード",
     "photoLabel": "写真",
-    "delete": "削除"
+    "delete": "削除",
+    "cropTitle": "写真を調整",
+    "cropDescription": "ズームして写真を配置してください",
+    "zoom": "ズーム",
+    "cancel": "キャンセル",
+    "apply": "適用",
+    "adjust": "調整"
   },
   "editableText": {
     "defaultPlaceholder": "クリックして編集..."
