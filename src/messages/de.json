@@ -22,7 +22,9 @@
     "theme": "Design",
     "themeLight": "Hell",
     "themeDark": "Dunkel",
-    "themeSystem": "System"
+    "themeSystem": "System",
+    "import": "JSON importieren",
+    "export": "JSON exportieren"
   },
   "cvPreview": {
     "fullNamePlaceholder": "Dein vollständiger Name",
@@ -42,7 +44,13 @@
     "deleteCategoryAriaLabel": "Kategorie {category} löschen",
     "addCategory": "Kategorie hinzufügen",
     "skillPlaceholder": "Fähigkeit",
-    "deleteSkillAriaLabel": "{skill} löschen"
+    "deleteSkillAriaLabel": "{skill} löschen",
+    "confirmDeleteSkill": "\"{skill}\" löschen?",
+    "confirmDeleteSkillEmpty": "Diese Fähigkeit löschen?",
+    "deleteSkillConfirm": "Löschen",
+    "deleteSkillCancel": "Abbrechen",
+    "confirmDeleteCategory": "Kategorie \"{category}\" löschen?",
+    "confirmDeleteCategoryEmpty": "Diese Kategorie löschen?"
   },
   "experience": {
     "title": "Berufserfahrung",

@@ -22,7 +22,9 @@
     "theme": "主题",
     "themeLight": "浅色",
     "themeDark": "深色",
-    "themeSystem": "系统"
+    "themeSystem": "系统",
+    "import": "导入 JSON",
+    "export": "导出 JSON"
   },
   "cvPreview": {
     "fullNamePlaceholder": "您的姓名",
@@ -42,7 +44,13 @@
     "deleteCategoryAriaLabel": "删除类别 {category}",
     "addCategory": "添加类别",
     "skillPlaceholder": "技能",
-    "deleteSkillAriaLabel": "删除 {skill}"
+    "deleteSkillAriaLabel": "删除 {skill}",
+    "confirmDeleteSkill": "删除「{skill}」？",
+    "confirmDeleteSkillEmpty": "删除此技能？",
+    "deleteSkillConfirm": "删除",
+    "deleteSkillCancel": "取消",
+    "confirmDeleteCategory": "删除类别「{category}」？",
+    "confirmDeleteCategoryEmpty": "删除此类别？"
   },
   "experience": {
     "title": "工作经历",

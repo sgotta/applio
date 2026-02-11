@@ -22,7 +22,9 @@
     "theme": "테마",
     "themeLight": "라이트",
     "themeDark": "다크",
-    "themeSystem": "시스템"
+    "themeSystem": "시스템",
+    "import": "JSON 가져오기",
+    "export": "JSON 내보내기"
   },
   "cvPreview": {
     "fullNamePlaceholder": "성명",
@@ -42,7 +44,13 @@
     "deleteCategoryAriaLabel": "카테고리 {category} 삭제",
     "addCategory": "카테고리 추가",
     "skillPlaceholder": "기술",
-    "deleteSkillAriaLabel": "{skill} 삭제"
+    "deleteSkillAriaLabel": "{skill} 삭제",
+    "confirmDeleteSkill": "\"{skill}\" 삭제하시겠습니까?",
+    "confirmDeleteSkillEmpty": "이 기술을 삭제하시겠습니까?",
+    "deleteSkillConfirm": "삭제",
+    "deleteSkillCancel": "취소",
+    "confirmDeleteCategory": "카테고리 \"{category}\" 삭제하시겠습니까?",
+    "confirmDeleteCategoryEmpty": "이 카테고리를 삭제하시겠습니까?"
   },
   "experience": {
     "title": "경력",
