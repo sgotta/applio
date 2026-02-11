@@ -1,6 +1,7 @@
 {
   "toolbar": {
-    "tagline": "free, no sign-up",
+    "tagline": "Your CV. Stored on your computer. Not ours.",
+    "language": "Language",
     "sections": "Sections",
     "sectionsTitle": "Contact Fields",
     "sectionEmail": "Email",

@@ -1,0 +1,123 @@
+{
+  "toolbar": {
+    "tagline": "Votre CV. Sur votre ordinateur. Pas le nôtre.",
+    "language": "Langue",
+    "sections": "Sections",
+    "sectionsTitle": "Champs de contact",
+    "sectionEmail": "E-mail",
+    "sectionPhone": "Téléphone",
+    "sectionLocation": "Localisation",
+    "sectionLinkedin": "LinkedIn",
+    "sectionWebsite": "Site web",
+    "importAriaLabel": "Importer un fichier JSON",
+    "importTitle": "Charger un CV depuis un fichier JSON",
+    "exportTitle": "Exporter le CV en fichier JSON",
+    "pdfTitle": "Générer un PDF à imprimer ou envoyer",
+    "optionalSections": "Sections optionnelles",
+    "sectionCourses": "Formations",
+    "sectionCertifications": "Certifications",
+    "importFormatError": "Le format du fichier est incorrect. Assurez-vous qu'il s'agit d'un JSON exporté depuis Applio.",
+    "importConfirm": "Voulez-vous charger ce CV ? Les données actuelles seront écrasées.",
+    "importReadError": "Erreur de lecture du fichier. Assurez-vous qu'il s'agit d'un fichier JSON valide."
+  },
+  "cvPreview": {
+    "fullNamePlaceholder": "Votre Nom Complet",
+    "titlePlaceholder": "Votre Titre Professionnel"
+  },
+  "personalInfo": {
+    "contact": "Contact",
+    "emailPlaceholder": "vous@email.com",
+    "phonePlaceholder": "+33 1 23 45 67 89",
+    "locationPlaceholder": "Ville, Pays",
+    "linkedinPlaceholder": "linkedin.com/in/utilisateur",
+    "websitePlaceholder": "votresite.com",
+    "aboutMe": "À propos",
+    "summaryPlaceholder": "Rédigez un résumé professionnel...",
+    "skills": "Compétences",
+    "categoryPlaceholder": "Catégorie",
+    "deleteCategoryAriaLabel": "Supprimer la catégorie {category}",
+    "addCategory": "Ajouter une catégorie",
+    "skillPlaceholder": "compétence",
+    "deleteSkillAriaLabel": "Supprimer {skill}"
+  },
+  "experience": {
+    "title": "Expérience",
+    "moveUp": "Monter",
+    "moveDown": "Descendre",
+    "deleteExperience": "Supprimer l'expérience",
+    "companyPlaceholder": "Nom de l'entreprise",
+    "startDatePlaceholder": "début",
+    "endDatePlaceholder": "fin",
+    "positionPlaceholder": "Intitulé du poste",
+    "bulletPlaceholder": "Décrivez une réalisation ou responsabilité...",
+    "deleteBullet": "Supprimer le point",
+    "addBullet": "Ajouter une réalisation",
+    "addExperience": "Ajouter une expérience",
+    "newBulletDefault": "Nouvelle réalisation ou responsabilité."
+  },
+  "education": {
+    "title": "Formation",
+    "moveUp": "Monter",
+    "moveDown": "Descendre",
+    "deleteEducation": "Supprimer la formation",
+    "institutionPlaceholder": "Établissement",
+    "startDatePlaceholder": "début",
+    "endDatePlaceholder": "fin",
+    "degreePlaceholder": "Diplôme obtenu",
+    "descriptionPlaceholder": "Description optionnelle...",
+    "addEducation": "Ajouter une formation"
+  },
+  "photo": {
+    "altText": "Photo de profil",
+    "invalidImage": "Veuillez sélectionner une image valide (JPG, PNG, etc.)",
+    "imageTooLarge": "L'image est trop volumineuse. Maximum 2 Mo.",
+    "confirmDelete": "Voulez-vous supprimer la photo de profil ?",
+    "change": "Modifier",
+    "upload": "Télécharger",
+    "photoLabel": "photo",
+    "delete": "Supprimer"
+  },
+  "editableText": {
+    "defaultPlaceholder": "Cliquez pour modifier..."
+  },
+  "courses": {
+    "title": "Formations",
+    "namePlaceholder": "Nom de la formation",
+    "institutionPlaceholder": "Établissement",
+    "datePlaceholder": "date",
+    "deleteCourse": "Supprimer la formation",
+    "addCourse": "Ajouter une formation"
+  },
+  "certifications": {
+    "title": "Certifications",
+    "namePlaceholder": "Nom de la certification",
+    "issuerPlaceholder": "Organisme émetteur",
+    "datePlaceholder": "date",
+    "deleteCertification": "Supprimer la certification",
+    "addCertification": "Ajouter une certification"
+  },
+  "printable": {
+    "profilePhotoAlt": "Photo de profil",
+    "contact": "Contact",
+    "aboutMe": "À propos",
+    "skills": "Compétences",
+    "experience": "Expérience",
+    "education": "Formation",
+    "courses": "Formations",
+    "certifications": "Certifications"
+  },
+  "defaults": {
+    "company": "Entreprise",
+    "position": "Poste",
+    "endDatePresent": "Présent",
+    "experienceDescription": "Description des responsabilités et réalisations.",
+    "institution": "Établissement",
+    "degree": "Diplôme",
+    "category": "Catégorie",
+    "skill": "Compétence 1",
+    "courseName": "Formation",
+    "courseInstitution": "Établissement",
+    "certificationName": "Certification",
+    "certificationIssuer": "Émetteur"
+  }
+}

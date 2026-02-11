@@ -1,0 +1,123 @@
+{
+  "toolbar": {
+    "tagline": "Seu CV. No seu computador. Não no nosso.",
+    "language": "Idioma",
+    "sections": "Seções",
+    "sectionsTitle": "Campos de contato",
+    "sectionEmail": "E-mail",
+    "sectionPhone": "Telefone",
+    "sectionLocation": "Localização",
+    "sectionLinkedin": "LinkedIn",
+    "sectionWebsite": "Site",
+    "importAriaLabel": "Importar arquivo JSON",
+    "importTitle": "Carregar CV de um arquivo JSON",
+    "exportTitle": "Exportar CV como arquivo JSON",
+    "pdfTitle": "Gerar PDF para imprimir ou enviar",
+    "optionalSections": "Seções opcionais",
+    "sectionCourses": "Cursos e Formações",
+    "sectionCertifications": "Certificações",
+    "importFormatError": "O formato do arquivo está incorreto. Verifique se é um JSON exportado do Applio.",
+    "importConfirm": "Deseja carregar este CV? Os dados atuais serão sobrescritos.",
+    "importReadError": "Erro ao ler o arquivo. Verifique se é um arquivo JSON válido."
+  },
+  "cvPreview": {
+    "fullNamePlaceholder": "Seu Nome Completo",
+    "titlePlaceholder": "Seu Título Profissional"
+  },
+  "personalInfo": {
+    "contact": "Contato",
+    "emailPlaceholder": "voce@email.com",
+    "phonePlaceholder": "+55 11 91234-5678",
+    "locationPlaceholder": "Cidade, País",
+    "linkedinPlaceholder": "linkedin.com/in/usuario",
+    "websitePlaceholder": "seusite.com",
+    "aboutMe": "Sobre mim",
+    "summaryPlaceholder": "Escreva um resumo profissional...",
+    "skills": "Habilidades",
+    "categoryPlaceholder": "Categoria",
+    "deleteCategoryAriaLabel": "Excluir categoria {category}",
+    "addCategory": "Adicionar categoria",
+    "skillPlaceholder": "habilidade",
+    "deleteSkillAriaLabel": "Excluir {skill}"
+  },
+  "experience": {
+    "title": "Experiência",
+    "moveUp": "Mover para cima",
+    "moveDown": "Mover para baixo",
+    "deleteExperience": "Excluir experiência",
+    "companyPlaceholder": "Nome da empresa",
+    "startDatePlaceholder": "início",
+    "endDatePlaceholder": "fim",
+    "positionPlaceholder": "Cargo",
+    "bulletPlaceholder": "Descreva uma conquista ou responsabilidade...",
+    "deleteBullet": "Excluir item",
+    "addBullet": "Adicionar conquista",
+    "addExperience": "Adicionar experiência",
+    "newBulletDefault": "Nova conquista ou responsabilidade."
+  },
+  "education": {
+    "title": "Educação",
+    "moveUp": "Mover para cima",
+    "moveDown": "Mover para baixo",
+    "deleteEducation": "Excluir educação",
+    "institutionPlaceholder": "Instituição",
+    "startDatePlaceholder": "início",
+    "endDatePlaceholder": "fim",
+    "degreePlaceholder": "Grau obtido",
+    "descriptionPlaceholder": "Descrição opcional...",
+    "addEducation": "Adicionar educação"
+  },
+  "photo": {
+    "altText": "Foto de perfil",
+    "invalidImage": "Selecione uma imagem válida (JPG, PNG, etc.)",
+    "imageTooLarge": "A imagem é muito grande. Máximo 2MB.",
+    "confirmDelete": "Deseja remover a foto de perfil?",
+    "change": "Alterar",
+    "upload": "Enviar",
+    "photoLabel": "foto",
+    "delete": "Excluir"
+  },
+  "editableText": {
+    "defaultPlaceholder": "Clique para editar..."
+  },
+  "courses": {
+    "title": "Cursos e Formações",
+    "namePlaceholder": "Nome do curso",
+    "institutionPlaceholder": "Instituição",
+    "datePlaceholder": "data",
+    "deleteCourse": "Excluir curso",
+    "addCourse": "Adicionar curso"
+  },
+  "certifications": {
+    "title": "Certificações",
+    "namePlaceholder": "Nome da certificação",
+    "issuerPlaceholder": "Organização emissora",
+    "datePlaceholder": "data",
+    "deleteCertification": "Excluir certificação",
+    "addCertification": "Adicionar certificação"
+  },
+  "printable": {
+    "profilePhotoAlt": "Foto de perfil",
+    "contact": "Contato",
+    "aboutMe": "Sobre mim",
+    "skills": "Habilidades",
+    "experience": "Experiência",
+    "education": "Educação",
+    "courses": "Cursos e Formações",
+    "certifications": "Certificações"
+  },
+  "defaults": {
+    "company": "Empresa",
+    "position": "Cargo",
+    "endDatePresent": "Atual",
+    "experienceDescription": "Descrição de responsabilidades e conquistas.",
+    "institution": "Instituição",
+    "degree": "Grau",
+    "category": "Categoria",
+    "skill": "Habilidade 1",
+    "courseName": "Curso",
+    "courseInstitution": "Instituição",
+    "certificationName": "Certificação",
+    "certificationIssuer": "Emissor"
+  }
+}

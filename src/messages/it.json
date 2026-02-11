@@ -1,0 +1,123 @@
+{
+  "toolbar": {
+    "tagline": "Il tuo CV. Sul tuo computer. Non sul nostro.",
+    "language": "Lingua",
+    "sections": "Sezioni",
+    "sectionsTitle": "Campi di contatto",
+    "sectionEmail": "E-mail",
+    "sectionPhone": "Telefono",
+    "sectionLocation": "Posizione",
+    "sectionLinkedin": "LinkedIn",
+    "sectionWebsite": "Sito web",
+    "importAriaLabel": "Importa file JSON",
+    "importTitle": "Carica CV da file JSON",
+    "exportTitle": "Esporta CV come file JSON",
+    "pdfTitle": "Genera PDF da stampare o inviare",
+    "optionalSections": "Sezioni opzionali",
+    "sectionCourses": "Corsi e Formazione",
+    "sectionCertifications": "Certificazioni",
+    "importFormatError": "Il formato del file non è corretto. Assicurati che sia un JSON esportato da Applio.",
+    "importConfirm": "Vuoi caricare questo CV? I dati attuali verranno sovrascritti.",
+    "importReadError": "Errore nella lettura del file. Assicurati che sia un file JSON valido."
+  },
+  "cvPreview": {
+    "fullNamePlaceholder": "Il Tuo Nome Completo",
+    "titlePlaceholder": "Il Tuo Titolo Professionale"
+  },
+  "personalInfo": {
+    "contact": "Contatti",
+    "emailPlaceholder": "tu@email.com",
+    "phonePlaceholder": "+39 02 1234567",
+    "locationPlaceholder": "Città, Paese",
+    "linkedinPlaceholder": "linkedin.com/in/utente",
+    "websitePlaceholder": "tuosito.com",
+    "aboutMe": "Chi sono",
+    "summaryPlaceholder": "Scrivi un riepilogo professionale...",
+    "skills": "Competenze",
+    "categoryPlaceholder": "Categoria",
+    "deleteCategoryAriaLabel": "Elimina categoria {category}",
+    "addCategory": "Aggiungi categoria",
+    "skillPlaceholder": "competenza",
+    "deleteSkillAriaLabel": "Elimina {skill}"
+  },
+  "experience": {
+    "title": "Esperienza",
+    "moveUp": "Sposta su",
+    "moveDown": "Sposta giù",
+    "deleteExperience": "Elimina esperienza",
+    "companyPlaceholder": "Nome dell'azienda",
+    "startDatePlaceholder": "inizio",
+    "endDatePlaceholder": "fine",
+    "positionPlaceholder": "Titolo lavorativo",
+    "bulletPlaceholder": "Descrivi un risultato o una responsabilità...",
+    "deleteBullet": "Elimina punto",
+    "addBullet": "Aggiungi risultato",
+    "addExperience": "Aggiungi esperienza",
+    "newBulletDefault": "Nuovo risultato o responsabilità."
+  },
+  "education": {
+    "title": "Istruzione",
+    "moveUp": "Sposta su",
+    "moveDown": "Sposta giù",
+    "deleteEducation": "Elimina istruzione",
+    "institutionPlaceholder": "Istituto",
+    "startDatePlaceholder": "inizio",
+    "endDatePlaceholder": "fine",
+    "degreePlaceholder": "Titolo di studio",
+    "descriptionPlaceholder": "Descrizione opzionale...",
+    "addEducation": "Aggiungi istruzione"
+  },
+  "photo": {
+    "altText": "Foto profilo",
+    "invalidImage": "Seleziona un'immagine valida (JPG, PNG, ecc.)",
+    "imageTooLarge": "L'immagine è troppo grande. Massimo 2 MB.",
+    "confirmDelete": "Vuoi rimuovere la foto profilo?",
+    "change": "Cambia",
+    "upload": "Carica",
+    "photoLabel": "foto",
+    "delete": "Elimina"
+  },
+  "editableText": {
+    "defaultPlaceholder": "Clicca per modificare..."
+  },
+  "courses": {
+    "title": "Corsi e Formazione",
+    "namePlaceholder": "Nome del corso",
+    "institutionPlaceholder": "Istituto",
+    "datePlaceholder": "data",
+    "deleteCourse": "Elimina corso",
+    "addCourse": "Aggiungi corso"
+  },
+  "certifications": {
+    "title": "Certificazioni",
+    "namePlaceholder": "Nome della certificazione",
+    "issuerPlaceholder": "Ente certificatore",
+    "datePlaceholder": "data",
+    "deleteCertification": "Elimina certificazione",
+    "addCertification": "Aggiungi certificazione"
+  },
+  "printable": {
+    "profilePhotoAlt": "Foto profilo",
+    "contact": "Contatti",
+    "aboutMe": "Chi sono",
+    "skills": "Competenze",
+    "experience": "Esperienza",
+    "education": "Istruzione",
+    "courses": "Corsi e Formazione",
+    "certifications": "Certificazioni"
+  },
+  "defaults": {
+    "company": "Azienda",
+    "position": "Posizione",
+    "endDatePresent": "Attuale",
+    "experienceDescription": "Descrizione delle responsabilità e dei risultati.",
+    "institution": "Istituto",
+    "degree": "Titolo di studio",
+    "category": "Categoria",
+    "skill": "Competenza 1",
+    "courseName": "Corso",
+    "courseInstitution": "Istituto",
+    "certificationName": "Certificazione",
+    "certificationIssuer": "Ente"
+  }
+}

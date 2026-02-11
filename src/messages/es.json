@@ -1,6 +1,7 @@
 {
   "toolbar": {
-    "tagline": "gratis, sin registro",
+    "tagline": "Tu CV. En tu computadora. No en la nuestra.",
+    "language": "Idioma",
     "sections": "Secciones",
     "sectionsTitle": "Datos de contacto",
     "sectionEmail": "Correo Electrónico",

@@ -1,0 +1,123 @@
+{
+  "toolbar": {
+    "tagline": "당신의 이력서. 당신의 컴퓨터에 저장됩니다. 우리 서버가 아닙니다.",
+    "language": "언어",
+    "sections": "섹션",
+    "sectionsTitle": "연락처",
+    "sectionEmail": "이메일",
+    "sectionPhone": "전화",
+    "sectionLocation": "위치",
+    "sectionLinkedin": "LinkedIn",
+    "sectionWebsite": "웹사이트",
+    "importAriaLabel": "JSON 파일 가져오기",
+    "importTitle": "JSON 파일에서 이력서 불러오기",
+    "exportTitle": "이력서를 JSON 파일로 내보내기",
+    "pdfTitle": "인쇄 또는 전송용 PDF 생성",
+    "optionalSections": "선택 섹션",
+    "sectionCourses": "교육 과정",
+    "sectionCertifications": "자격증",
+    "importFormatError": "파일 형식이 올바르지 않습니다. Applio에서 내보낸 JSON 파일인지 확인하세요.",
+    "importConfirm": "이 이력서를 불러오시겠습니까? 현재 데이터가 덮어씌워집니다.",
+    "importReadError": "파일 읽기 오류. 유효한 JSON 파일인지 확인하세요."
+  },
+  "cvPreview": {
+    "fullNamePlaceholder": "성명",
+    "titlePlaceholder": "직함"
+  },
+  "personalInfo": {
+    "contact": "연락처",
+    "emailPlaceholder": "you@email.com",
+    "phonePlaceholder": "+82 10-1234-5678",
+    "locationPlaceholder": "도시, 국가",
+    "linkedinPlaceholder": "linkedin.com/in/username",
+    "websitePlaceholder": "yoursite.com",
+    "aboutMe": "자기소개",
+    "summaryPlaceholder": "전문적인 요약을 작성하세요...",
+    "skills": "기술",
+    "categoryPlaceholder": "카테고리",
+    "deleteCategoryAriaLabel": "카테고리 {category} 삭제",
+    "addCategory": "카테고리 추가",
+    "skillPlaceholder": "기술",
+    "deleteSkillAriaLabel": "{skill} 삭제"
+  },
+  "experience": {
+    "title": "경력",
+    "moveUp": "위로 이동",
+    "moveDown": "아래로 이동",
+    "deleteExperience": "경력 삭제",
+    "companyPlaceholder": "회사명",
+    "startDatePlaceholder": "시작",
+    "endDatePlaceholder": "종료",
+    "positionPlaceholder": "직함",
+    "bulletPlaceholder": "성과 또는 책임을 설명하세요...",
+    "deleteBullet": "항목 삭제",
+    "addBullet": "성과 추가",
+    "addExperience": "경력 추가",
+    "newBulletDefault": "새로운 성과 또는 책임."
+  },
+  "education": {
+    "title": "학력",
+    "moveUp": "위로 이동",
+    "moveDown": "아래로 이동",
+    "deleteEducation": "학력 삭제",
+    "institutionPlaceholder": "학교/기관",
+    "startDatePlaceholder": "시작",
+    "endDatePlaceholder": "종료",
+    "degreePlaceholder": "학위",
+    "descriptionPlaceholder": "선택적 설명...",
+    "addEducation": "학력 추가"
+  },
+  "photo": {
+    "altText": "프로필 사진",
+    "invalidImage": "유효한 이미지를 선택하세요 (JPG, PNG 등)",
+    "imageTooLarge": "이미지가 너무 큽니다. 최대 2MB.",
+    "confirmDelete": "프로필 사진을 삭제하시겠습니까?",
+    "change": "변경",
+    "upload": "업로드",
+    "photoLabel": "사진",
+    "delete": "삭제"
+  },
+  "editableText": {
+    "defaultPlaceholder": "클릭하여 편집..."
+  },
+  "courses": {
+    "title": "교육 과정",
+    "namePlaceholder": "과정명",
+    "institutionPlaceholder": "기관",
+    "datePlaceholder": "날짜",
+    "deleteCourse": "과정 삭제",
+    "addCourse": "과정 추가"
+  },
+  "certifications": {
+    "title": "자격증",
+    "namePlaceholder": "자격증명",
+    "issuerPlaceholder": "발급 기관",
+    "datePlaceholder": "날짜",
+    "deleteCertification": "자격증 삭제",
+    "addCertification": "자격증 추가"
+  },
+  "printable": {
+    "profilePhotoAlt": "프로필 사진",
+    "contact": "연락처",
+    "aboutMe": "자기소개",
+    "skills": "기술",
+    "experience": "경력",
+    "education": "학력",
+    "courses": "교육 과정",
+    "certifications": "자격증"
+  },
+  "defaults": {
+    "company": "회사",
+    "position": "직함",
+    "endDatePresent": "현재",
+    "experienceDescription": "책임과 성과에 대한 설명.",
+    "institution": "학교/기관",
+    "degree": "학위",
+    "category": "카테고리",
+    "skill": "기술 1",
+    "courseName": "과정",
+    "courseInstitution": "기관",
+    "certificationName": "자격증",
+    "certificationIssuer": "발급 기관"
+  }
+}

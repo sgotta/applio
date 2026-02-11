@@ -3,13 +3,13 @@
 import { useRef } from "react";
 import { useCV } from "@/lib/cv-context";
 import { useTranslations } from "next-intl";
-import { useAppLocale, Locale } from "@/lib/locale-context";
+import { useAppLocale, LOCALES, LOCALE_NAMES } from "@/lib/locale-context";
 import { CVData } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Download, FileUp, FileDown, FileText, Globe, SlidersHorizontal } from "lucide-react";
+import { Download, FileUp, FileDown, FileText, Globe, SlidersHorizontal, Check } from "lucide-react";
 
 interface ToolbarProps {
   onPrintPDF: () => void;
@@ -51,10 +51,6 @@ export function Toolbar({ onPrintPDF }: ToolbarProps) {
   const t = useTranslations("toolbar");
   const { locale, setLocale } = useAppLocale();
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const toggleLocale = () => {
-    setLocale(locale === "en" ? "es" : ("en" as Locale));
-  };
 
   const exportToJSON = () => {
     const dataStr = JSON.stringify(data, null, 2);
@@ -115,22 +111,39 @@ export function Toolbar({ onPrintPDF }: ToolbarProps) {
 
         {/* Actions — icon-only except PDF */}
         <div className="flex items-center gap-1">
-          {/* Language toggle */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-gray-600 hover:text-gray-900"
-                onClick={toggleLocale}
-              >
-                <Globe className="h-4 w-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              {locale === "en" ? "Cambiar a Español" : "Switch to English"}
-            </TooltipContent>
-          </Tooltip>
+          {/* Language selector */}
+          <Popover>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-gray-600 hover:text-gray-900"
+                  >
+                    <Globe className="h-4 w-4" />
+                  </Button>
+                </PopoverTrigger>
+              </TooltipTrigger>
+              <TooltipContent>{t("language")}</TooltipContent>
+            </Tooltip>
+            <PopoverContent className="w-48 p-1" align="end">
+              <div className="space-y-0.5">
+                {LOCALES.map((code) => (
+                  <button
+                    key={code}
+                    onClick={() => setLocale(code)}
+                    className="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                  >
+                    <span>{LOCALE_NAMES[code]}</span>
+                    {locale === code && (
+                      <Check className="h-4 w-4 text-gray-900" />
+                    )}
+                  </button>
+                ))}
+              </div>
+            </PopoverContent>
+          </Popover>
 
           {/* Sections toggle */}
           <Popover>

@@ -1,0 +1,123 @@
+{
+  "toolbar": {
+    "tagline": "Dein Lebenslauf. Auf deinem Computer. Nicht auf unserem.",
+    "language": "Sprache",
+    "sections": "Bereiche",
+    "sectionsTitle": "Kontaktfelder",
+    "sectionEmail": "E-Mail",
+    "sectionPhone": "Telefon",
+    "sectionLocation": "Standort",
+    "sectionLinkedin": "LinkedIn",
+    "sectionWebsite": "Webseite",
+    "importAriaLabel": "JSON-Datei importieren",
+    "importTitle": "Lebenslauf aus JSON-Datei laden",
+    "exportTitle": "Lebenslauf als JSON-Datei exportieren",
+    "pdfTitle": "PDF zum Drucken oder Versenden erstellen",
+    "optionalSections": "Optionale Bereiche",
+    "sectionCourses": "Kurse & Weiterbildung",
+    "sectionCertifications": "Zertifizierungen",
+    "importFormatError": "Das Dateiformat ist falsch. Stelle sicher, dass es ein aus Applio exportiertes JSON ist.",
+    "importConfirm": "Möchtest du diesen Lebenslauf laden? Die aktuellen Daten werden überschrieben.",
+    "importReadError": "Fehler beim Lesen der Datei. Stelle sicher, dass es eine gültige JSON-Datei ist."
+  },
+  "cvPreview": {
+    "fullNamePlaceholder": "Dein vollständiger Name",
+    "titlePlaceholder": "Deine Berufsbezeichnung"
+  },
+  "personalInfo": {
+    "contact": "Kontakt",
+    "emailPlaceholder": "du@email.com",
+    "phonePlaceholder": "+49 170 1234567",
+    "locationPlaceholder": "Stadt, Land",
+    "linkedinPlaceholder": "linkedin.com/in/benutzername",
+    "websitePlaceholder": "deineseite.com",
+    "aboutMe": "Über mich",
+    "summaryPlaceholder": "Schreibe eine professionelle Zusammenfassung...",
+    "skills": "Fähigkeiten",
+    "categoryPlaceholder": "Kategorie",
+    "deleteCategoryAriaLabel": "Kategorie {category} löschen",
+    "addCategory": "Kategorie hinzufügen",
+    "skillPlaceholder": "Fähigkeit",
+    "deleteSkillAriaLabel": "{skill} löschen"
+  },
+  "experience": {
+    "title": "Berufserfahrung",
+    "moveUp": "Nach oben",
+    "moveDown": "Nach unten",
+    "deleteExperience": "Erfahrung löschen",
+    "companyPlaceholder": "Firmenname",
+    "startDatePlaceholder": "Beginn",
+    "endDatePlaceholder": "Ende",
+    "positionPlaceholder": "Berufsbezeichnung",
+    "bulletPlaceholder": "Beschreibe eine Leistung oder Verantwortung...",
+    "deleteBullet": "Punkt löschen",
+    "addBullet": "Leistung hinzufügen",
+    "addExperience": "Erfahrung hinzufügen",
+    "newBulletDefault": "Neue Leistung oder Verantwortung."
+  },
+  "education": {
+    "title": "Bildung",
+    "moveUp": "Nach oben",
+    "moveDown": "Nach unten",
+    "deleteEducation": "Bildung löschen",
+    "institutionPlaceholder": "Einrichtung",
+    "startDatePlaceholder": "Beginn",
+    "endDatePlaceholder": "Ende",
+    "degreePlaceholder": "Abschluss",
+    "descriptionPlaceholder": "Optionale Beschreibung...",
+    "addEducation": "Bildung hinzufügen"
+  },
+  "photo": {
+    "altText": "Profilfoto",
+    "invalidImage": "Bitte wähle ein gültiges Bild (JPG, PNG, etc.)",
+    "imageTooLarge": "Das Bild ist zu groß. Maximal 2 MB.",
+    "confirmDelete": "Möchtest du das Profilfoto entfernen?",
+    "change": "Ändern",
+    "upload": "Hochladen",
+    "photoLabel": "Foto",
+    "delete": "Löschen"
+  },
+  "editableText": {
+    "defaultPlaceholder": "Zum Bearbeiten klicken..."
+  },
+  "courses": {
+    "title": "Kurse & Weiterbildung",
+    "namePlaceholder": "Kursname",
+    "institutionPlaceholder": "Einrichtung",
+    "datePlaceholder": "Datum",
+    "deleteCourse": "Kurs löschen",
+    "addCourse": "Kurs hinzufügen"
+  },
+  "certifications": {
+    "title": "Zertifizierungen",
+    "namePlaceholder": "Name der Zertifizierung",
+    "issuerPlaceholder": "Ausstellende Organisation",
+    "datePlaceholder": "Datum",
+    "deleteCertification": "Zertifizierung löschen",
+    "addCertification": "Zertifizierung hinzufügen"
+  },
+  "printable": {
+    "profilePhotoAlt": "Profilfoto",
+    "contact": "Kontakt",
+    "aboutMe": "Über mich",
+    "skills": "Fähigkeiten",
+    "experience": "Berufserfahrung",
+    "education": "Bildung",
+    "courses": "Kurse & Weiterbildung",
+    "certifications": "Zertifizierungen"
+  },
+  "defaults": {
+    "company": "Unternehmen",
+    "position": "Position",
+    "endDatePresent": "Aktuell",
+    "experienceDescription": "Beschreibung der Verantwortlichkeiten und Leistungen.",
+    "institution": "Einrichtung",
+    "degree": "Abschluss",
+    "category": "Kategorie",
+    "skill": "Fähigkeit 1",
+    "courseName": "Kurs",
+    "courseInstitution": "Einrichtung",
+    "certificationName": "Zertifizierung",
+    "certificationIssuer": "Aussteller"
+  }
+}

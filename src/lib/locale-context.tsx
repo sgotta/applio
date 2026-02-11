@@ -10,8 +10,29 @@ import {
 import { NextIntlClientProvider } from "next-intl";
 import enMessages from "@/messages/en.json";
 import esMessages from "@/messages/es.json";
+import frMessages from "@/messages/fr.json";
+import ptMessages from "@/messages/pt.json";
+import deMessages from "@/messages/de.json";
+import itMessages from "@/messages/it.json";
+import zhMessages from "@/messages/zh.json";
+import jaMessages from "@/messages/ja.json";
+import koMessages from "@/messages/ko.json";
 
-export type Locale = "en" | "es";
+export type Locale = "en" | "es" | "fr" | "pt" | "de" | "it" | "zh" | "ja" | "ko";
+
+export const LOCALES: Locale[] = ["en", "es", "fr", "pt", "de", "it", "zh", "ja", "ko"];
+
+export const LOCALE_NAMES: Record<Locale, string> = {
+  en: "English",
+  es: "Español",
+  fr: "Français",
+  pt: "Português",
+  de: "Deutsch",
+  it: "Italiano",
+  zh: "中文",
+  ja: "日本語",
+  ko: "한국어",
+};
 
 const STORAGE_KEY = "quickcv-locale";
 const DEFAULT_LOCALE: Locale = "en";
@@ -19,6 +40,13 @@ const DEFAULT_LOCALE: Locale = "en";
 const messages: Record<Locale, typeof enMessages> = {
   en: enMessages,
   es: esMessages,
+  fr: frMessages,
+  pt: ptMessages,
+  de: deMessages,
+  it: itMessages,
+  zh: zhMessages,
+  ja: jaMessages,
+  ko: koMessages,
 };
 
 interface LocaleContextValue {
@@ -31,7 +59,7 @@ const LocaleContext = createContext<LocaleContextValue | null>(null);
 function getInitialLocale(): Locale {
   if (typeof window === "undefined") return DEFAULT_LOCALE;
   const saved = localStorage.getItem(STORAGE_KEY);
-  if (saved === "en" || saved === "es") return saved;
+  if (saved && LOCALES.includes(saved as Locale)) return saved as Locale;
   return DEFAULT_LOCALE;
 }
 

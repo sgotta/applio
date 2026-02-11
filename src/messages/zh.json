@@ -1,0 +1,123 @@
+{
+  "toolbar": {
+    "tagline": "你的简历。存在你的电脑上。不在我们这里。",
+    "language": "语言",
+    "sections": "板块",
+    "sectionsTitle": "联系方式",
+    "sectionEmail": "电子邮箱",
+    "sectionPhone": "电话",
+    "sectionLocation": "所在地",
+    "sectionLinkedin": "LinkedIn",
+    "sectionWebsite": "网站",
+    "importAriaLabel": "导入JSON文件",
+    "importTitle": "从JSON文件加载简历",
+    "exportTitle": "将简历导出为JSON文件",
+    "pdfTitle": "生成PDF用于打印或发送",
+    "optionalSections": "可选板块",
+    "sectionCourses": "课程与培训",
+    "sectionCertifications": "证书",
+    "importFormatError": "文件格式不正确。请确保是从Applio导出的JSON文件。",
+    "importConfirm": "是否要加载此简历？当前数据将被覆盖。",
+    "importReadError": "读取文件时出错。请确保是有效的JSON文件。"
+  },
+  "cvPreview": {
+    "fullNamePlaceholder": "您的姓名",
+    "titlePlaceholder": "您的职业头衔"
+  },
+  "personalInfo": {
+    "contact": "联系方式",
+    "emailPlaceholder": "you@email.com",
+    "phonePlaceholder": "+86 138 0000 0000",
+    "locationPlaceholder": "城市，国家",
+    "linkedinPlaceholder": "linkedin.com/in/username",
+    "websitePlaceholder": "yoursite.com",
+    "aboutMe": "关于我",
+    "summaryPlaceholder": "撰写专业简介...",
+    "skills": "技能",
+    "categoryPlaceholder": "类别",
+    "deleteCategoryAriaLabel": "删除类别 {category}",
+    "addCategory": "添加类别",
+    "skillPlaceholder": "技能",
+    "deleteSkillAriaLabel": "删除 {skill}"
+  },
+  "experience": {
+    "title": "工作经历",
+    "moveUp": "上移",
+    "moveDown": "下移",
+    "deleteExperience": "删除经历",
+    "companyPlaceholder": "公司名称",
+    "startDatePlaceholder": "开始",
+    "endDatePlaceholder": "结束",
+    "positionPlaceholder": "职位名称",
+    "bulletPlaceholder": "描述一项成就或职责...",
+    "deleteBullet": "删除要点",
+    "addBullet": "添加成就",
+    "addExperience": "添加经历",
+    "newBulletDefault": "新的成就或职责。"
+  },
+  "education": {
+    "title": "教育背景",
+    "moveUp": "上移",
+    "moveDown": "下移",
+    "deleteEducation": "删除教育",
+    "institutionPlaceholder": "学校/机构",
+    "startDatePlaceholder": "开始",
+    "endDatePlaceholder": "结束",
+    "degreePlaceholder": "学位/学历",
+    "descriptionPlaceholder": "可选描述...",
+    "addEducation": "添加教育"
+  },
+  "photo": {
+    "altText": "个人照片",
+    "invalidImage": "请选择有效的图片（JPG、PNG等）",
+    "imageTooLarge": "图片太大。最大2MB。",
+    "confirmDelete": "是否要删除个人照片？",
+    "change": "更换",
+    "upload": "上传",
+    "photoLabel": "照片",
+    "delete": "删除"
+  },
+  "editableText": {
+    "defaultPlaceholder": "点击编辑..."
+  },
+  "courses": {
+    "title": "课程与培训",
+    "namePlaceholder": "课程名称",
+    "institutionPlaceholder": "机构",
+    "datePlaceholder": "日期",
+    "deleteCourse": "删除课程",
+    "addCourse": "添加课程"
+  },
+  "certifications": {
+    "title": "证书",
+    "namePlaceholder": "证书名称",
+    "issuerPlaceholder": "颁发机构",
+    "datePlaceholder": "日期",
+    "deleteCertification": "删除证书",
+    "addCertification": "添加证书"
+  },
+  "printable": {
+    "profilePhotoAlt": "个人照片",
+    "contact": "联系方式",
+    "aboutMe": "关于我",
+    "skills": "技能",
+    "experience": "工作经历",
+    "education": "教育背景",
+    "courses": "课程与培训",
+    "certifications": "证书"
+  },
+  "defaults": {
+    "company": "公司",
+    "position": "职位",
+    "endDatePresent": "至今",
+    "experienceDescription": "职责和成就描述。",
+    "institution": "机构",
+    "degree": "学位",
+    "category": "类别",
+    "skill": "技能 1",
+    "courseName": "课程",
+    "courseInstitution": "机构",
+    "certificationName": "证书",
+    "certificationIssuer": "颁发机构"
+  }
+}

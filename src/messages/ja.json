@@ -1,0 +1,123 @@
+{
+  "toolbar": {
+    "tagline": "あなたの履歴書。あなたのパソコンに保存。私たちのではありません。",
+    "language": "言語",
+    "sections": "セクション",
+    "sectionsTitle": "連絡先",
+    "sectionEmail": "メール",
+    "sectionPhone": "電話",
+    "sectionLocation": "所在地",
+    "sectionLinkedin": "LinkedIn",
+    "sectionWebsite": "ウェブサイト",
+    "importAriaLabel": "JSONファイルをインポート",
+    "importTitle": "JSONファイルから履歴書を読み込む",
+    "exportTitle": "履歴書をJSONファイルとしてエクスポート",
+    "pdfTitle": "印刷・送信用のPDFを生成",
+    "optionalSections": "オプションセクション",
+    "sectionCourses": "講座・研修",
+    "sectionCertifications": "資格",
+    "importFormatError": "ファイル形式が正しくありません。ApplioからエクスポートされたJSONであることを確認してください。",
+    "importConfirm": "この履歴書を読み込みますか？現在のデータは上書きされます。",
+    "importReadError": "ファイルの読み込みエラー。有効なJSONファイルであることを確認してください。"
+  },
+  "cvPreview": {
+    "fullNamePlaceholder": "氏名",
+    "titlePlaceholder": "職種・肩書き"
+  },
+  "personalInfo": {
+    "contact": "連絡先",
+    "emailPlaceholder": "you@email.com",
+    "phonePlaceholder": "+81 90-1234-5678",
+    "locationPlaceholder": "市区町村、国",
+    "linkedinPlaceholder": "linkedin.com/in/username",
+    "websitePlaceholder": "yoursite.com",
+    "aboutMe": "自己紹介",
+    "summaryPlaceholder": "職務要約を記入...",
+    "skills": "スキル",
+    "categoryPlaceholder": "カテゴリー",
+    "deleteCategoryAriaLabel": "カテゴリー {category} を削除",
+    "addCategory": "カテゴリーを追加",
+    "skillPlaceholder": "スキル",
+    "deleteSkillAriaLabel": "{skill} を削除"
+  },
+  "experience": {
+    "title": "職歴",
+    "moveUp": "上に移動",
+    "moveDown": "下に移動",
+    "deleteExperience": "職歴を削除",
+    "companyPlaceholder": "会社名",
+    "startDatePlaceholder": "開始",
+    "endDatePlaceholder": "終了",
+    "positionPlaceholder": "役職",
+    "bulletPlaceholder": "実績や職務内容を記入...",
+    "deleteBullet": "項目を削除",
+    "addBullet": "実績を追加",
+    "addExperience": "職歴を追加",
+    "newBulletDefault": "新しい実績または職務内容。"
+  },
+  "education": {
+    "title": "学歴",
+    "moveUp": "上に移動",
+    "moveDown": "下に移動",
+    "deleteEducation": "学歴を削除",
+    "institutionPlaceholder": "学校名",
+    "startDatePlaceholder": "開始",
+    "endDatePlaceholder": "終了",
+    "degreePlaceholder": "学位・資格",
+    "descriptionPlaceholder": "説明（任意）...",
+    "addEducation": "学歴を追加"
+  },
+  "photo": {
+    "altText": "プロフィール写真",
+    "invalidImage": "有効な画像を選択してください（JPG、PNGなど）",
+    "imageTooLarge": "画像が大きすぎます。最大2MB。",
+    "confirmDelete": "プロフィール写真を削除しますか？",
+    "change": "変更",
+    "upload": "アップロード",
+    "photoLabel": "写真",
+    "delete": "削除"
+  },
+  "editableText": {
+    "defaultPlaceholder": "クリックして編集..."
+  },
+  "courses": {
+    "title": "講座・研修",
+    "namePlaceholder": "講座名",
+    "institutionPlaceholder": "機関",
+    "datePlaceholder": "日付",
+    "deleteCourse": "講座を削除",
+    "addCourse": "講座を追加"
+  },
+  "certifications": {
+    "title": "資格",
+    "namePlaceholder": "資格名",
+    "issuerPlaceholder": "発行機関",
+    "datePlaceholder": "日付",
+    "deleteCertification": "資格を削除",
+    "addCertification": "資格を追加"
+  },
+  "printable": {
+    "profilePhotoAlt": "プロフィール写真",
+    "contact": "連絡先",
+    "aboutMe": "自己紹介",
+    "skills": "スキル",
+    "experience": "職歴",
+    "education": "学歴",
+    "courses": "講座・研修",
+    "certifications": "資格"
+  },
+  "defaults": {
+    "company": "会社名",
+    "position": "役職",
+    "endDatePresent": "現在",
+    "experienceDescription": "職務内容と実績の説明。",
+    "institution": "学校名",
+    "degree": "学位",
+    "category": "カテゴリー",
+    "skill": "スキル 1",
+    "courseName": "講座",
+    "courseInstitution": "機関",
+    "certificationName": "資格",
+    "certificationIssuer": "発行機関"
+  }
+}
