@@ -25,7 +25,9 @@
     "themeDark": "ダーク",
     "themeSystem": "システム",
     "import": "JSONインポート",
-    "export": "JSONエクスポート"
+    "export": "JSONエクスポート",
+    "overflowWarning": "履歴書が1ページを超えています。PDFが正しく生成されるよう、内容を減らしてください。",
+    "pdfOverflowTooltip": "履歴書が1ページを超えています。PDFが切れる可能性があります"
   },
   "cvPreview": {
     "fullNamePlaceholder": "氏名",

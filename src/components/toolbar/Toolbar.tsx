@@ -13,11 +13,12 @@ import { useTheme, Theme } from "@/lib/theme-context";
 import {
   Download, FileUp, FileDown, FileText, Globe,
   SlidersHorizontal, Check, Sun, Moon, Monitor,
-  Menu, X, ChevronRight, ChevronLeft,
+  Menu, X, ChevronRight, ChevronLeft, AlertTriangle,
 } from "lucide-react";
 
 interface ToolbarProps {
   onPrintPDF: () => void;
+  isOverflowing?: boolean;
 }
 
 function isValidCVData(data: unknown): data is CVData {
@@ -53,7 +54,7 @@ function SectionToggle({
 
 type MobileMenuPage = "main" | "language" | "theme" | "sections";
 
-export function Toolbar({ onPrintPDF }: ToolbarProps) {
+export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
   const { data, importData, toggleSection } = useCV();
   const t = useTranslations("toolbar");
   const { locale, setLocale } = useAppLocale();
@@ -125,6 +126,7 @@ export function Toolbar({ onPrintPDF }: ToolbarProps) {
     "flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors";
 
   return (
+    <>
     <header className="no-print sticky top-0 z-50 border-b border-border bg-white/80 dark:bg-card/80 backdrop-blur-sm">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6">
         {/* Logo */}
@@ -378,9 +380,17 @@ export function Toolbar({ onPrintPDF }: ToolbarProps) {
                   {/* Export PDF — prominent */}
                   <button
                     onClick={onPrintPDF}
-                    className="mx-auto mb-1.5 flex items-center justify-center gap-2 rounded-md px-8 py-2.5 text-sm font-medium bg-gray-900 text-white hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200 transition-colors"
+                    className={`mx-auto mb-1.5 flex items-center justify-center gap-2 rounded-md px-8 py-2.5 text-sm font-medium transition-colors ${
+                      isOverflowing
+                        ? "bg-amber-600 text-white hover:bg-amber-700"
+                        : "bg-gray-900 text-white hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
+                    }`}
                   >
-                    <Download className="h-4 w-4" />
+                    {isOverflowing ? (
+                      <AlertTriangle className="h-4 w-4" />
+                    ) : (
+                      <Download className="h-4 w-4" />
+                    )}
                     PDF
                   </button>
                 </div>
@@ -474,17 +484,40 @@ export function Toolbar({ onPrintPDF }: ToolbarProps) {
               <Button
                 variant="default"
                 size="sm"
-                className="hidden md:inline-flex ml-1 bg-gray-900 text-white hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
+                className={`hidden md:inline-flex ml-1 ${
+                  isOverflowing
+                    ? "bg-amber-600 text-white hover:bg-amber-700 dark:bg-amber-600 dark:text-white dark:hover:bg-amber-700"
+                    : "bg-gray-900 text-white hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
+                }`}
                 onClick={onPrintPDF}
               >
-                <Download className="mr-1.5 h-4 w-4" />
+                {isOverflowing ? (
+                  <AlertTriangle className="mr-1.5 h-4 w-4" />
+                ) : (
+                  <Download className="mr-1.5 h-4 w-4" />
+                )}
                 <span>PDF</span>
               </Button>
             </TooltipTrigger>
-            <TooltipContent>{t("pdfTitle")}</TooltipContent>
+            <TooltipContent>
+              {isOverflowing ? t("pdfOverflowTooltip") : t("pdfTitle")}
+            </TooltipContent>
           </Tooltip>
         </div>
       </div>
     </header>
+
+    {/* Overflow warning banner */}
+    {isOverflowing && (
+      <div className="no-print border-b border-amber-200 bg-amber-50 dark:border-amber-900/50 dark:bg-amber-950/30">
+        <div className="mx-auto flex max-w-7xl items-center gap-2 px-4 py-2 sm:px-6">
+          <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-500" />
+          <p className="text-xs text-amber-800 dark:text-amber-200">
+            {t("overflowWarning")}
+          </p>
+        </div>
+      </div>
+    )}
+    </>
   );
 }

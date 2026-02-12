@@ -25,7 +25,9 @@
     "themeDark": "深色",
     "themeSystem": "系统",
     "import": "导入 JSON",
-    "export": "导出 JSON"
+    "export": "导出 JSON",
+    "overflowWarning": "您的简历超过一页。请减少内容以确保PDF正确生成。",
+    "pdfOverflowTooltip": "简历超过1页，PDF可能会被截断"
   },
   "cvPreview": {
     "fullNamePlaceholder": "您的姓名",

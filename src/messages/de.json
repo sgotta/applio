@@ -25,7 +25,9 @@
     "themeDark": "Dunkel",
     "themeSystem": "System",
     "import": "JSON importieren",
-    "export": "JSON exportieren"
+    "export": "JSON exportieren",
+    "overflowWarning": "Dein Lebenslauf überschreitet eine Seite. Reduziere den Inhalt, damit das PDF korrekt erstellt wird.",
+    "pdfOverflowTooltip": "Lebenslauf überschreitet 1 Seite, das PDF könnte abgeschnitten werden"
   },
   "cvPreview": {
     "fullNamePlaceholder": "Dein vollständiger Name",

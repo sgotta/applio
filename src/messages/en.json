@@ -25,7 +25,9 @@
     "themeDark": "Dark",
     "themeSystem": "System",
     "import": "Import JSON",
-    "export": "Export JSON"
+    "export": "Export JSON",
+    "overflowWarning": "Your CV exceeds one page. Reduce content so the PDF generates correctly.",
+    "pdfOverflowTooltip": "CV exceeds 1 page, the PDF may be cut off"
   },
   "cvPreview": {
     "fullNamePlaceholder": "Your Full Name",
