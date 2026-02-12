@@ -27,7 +27,15 @@
     "import": "JSON importieren",
     "export": "JSON exportieren",
     "overflowWarning": "Dein Lebenslauf überschreitet eine Seite. Reduziere den Inhalt, damit das PDF korrekt erstellt wird.",
-    "pdfOverflowTooltip": "Lebenslauf überschreitet 1 Seite, das PDF könnte abgeschnitten werden"
+    "pdfOverflowTooltip": "Lebenslauf überschreitet 1 Seite, das PDF könnte abgeschnitten werden",
+    "colorScheme": "Farbe",
+    "colorSchemeIvory": "Elfenbein",
+    "colorSchemePeterRiver": "Clear Child",
+    "colorSchemeEmerald": "Smaragd",
+    "colorSchemeAlizarin": "Bruschetta",
+    "colorSchemeSunFlower": "Sonnenblume",
+    "colorSchemeCarrot": "Karotte",
+    "colorSchemeWetAsphalt": "Asphalt"
   },
   "cvPreview": {
     "fullNamePlaceholder": "Dein vollständiger Name",

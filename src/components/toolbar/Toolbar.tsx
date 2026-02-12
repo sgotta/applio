@@ -10,10 +10,12 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useTheme, Theme } from "@/lib/theme-context";
+import { useColorScheme } from "@/lib/color-scheme-context";
+import { COLOR_SCHEME_NAMES, COLOR_SCHEMES } from "@/lib/color-schemes";
 import {
   Download, FileUp, FileDown, FileText, Globe,
   SlidersHorizontal, Check, Sun, Moon, Monitor,
-  Menu, X, ChevronRight, ChevronLeft, AlertTriangle,
+  Menu, X, ChevronRight, ChevronLeft, AlertTriangle, Palette,
 } from "lucide-react";
 
 interface ToolbarProps {
@@ -52,13 +54,14 @@ function SectionToggle({
   );
 }
 
-type MobileMenuPage = "main" | "language" | "theme" | "sections";
+type MobileMenuPage = "main" | "language" | "theme" | "color" | "sections";
 
 export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
   const { data, importData, toggleSection } = useCV();
   const t = useTranslations("toolbar");
   const { locale, setLocale } = useAppLocale();
   const { theme, setTheme, resolvedTheme } = useTheme();
+  const { colorSchemeName, setColorScheme } = useColorScheme();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileMenuPage, setMobileMenuPage] = useState<MobileMenuPage>("main");
@@ -225,6 +228,53 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
               </PopoverContent>
             </Popover>
 
+            {/* Color scheme picker */}
+            <Popover>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                    >
+                      <Palette className="h-4 w-4" />
+                    </Button>
+                  </PopoverTrigger>
+                </TooltipTrigger>
+                <TooltipContent>{t("colorScheme")}</TooltipContent>
+              </Tooltip>
+              <PopoverContent className="w-auto p-3" align="end">
+                <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-2">
+                  {t("colorScheme")}
+                </p>
+                <div className="flex gap-2">
+                  {COLOR_SCHEME_NAMES.map((name) => {
+                    const scheme = COLOR_SCHEMES[name];
+                    const isLight = scheme.sidebarText !== "#ffffff";
+                    return (
+                      <Tooltip key={name}>
+                        <TooltipTrigger asChild>
+                          <button
+                            onClick={() => setColorScheme(name)}
+                            className={`relative h-7 w-7 rounded-full transition-transform hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-400 ${isLight ? "ring-1 ring-inset ring-black/10" : ""}`}
+                            style={{ backgroundColor: scheme.sidebarBg }}
+                          >
+                            {colorSchemeName === name && (
+                              <Check className={`absolute inset-0 m-auto h-3.5 w-3.5 drop-shadow-sm ${isLight ? "text-gray-800" : "text-white"}`} />
+                            )}
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          {t(`colorScheme${name.charAt(0).toUpperCase() + name.slice(1)}` as Parameters<typeof t>[0])}
+                        </TooltipContent>
+                      </Tooltip>
+                    );
+                  })}
+                </div>
+              </PopoverContent>
+            </Popover>
+
             {/* Sections toggle */}
             <Popover>
               <Tooltip>
@@ -346,6 +396,21 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
                     </span>
                   </button>
 
+                  {/* Color */}
+                  <button onClick={() => setMobileMenuPage("color")} className={menuItemClass}>
+                    <span className="flex items-center gap-2.5">
+                      <Palette className="h-4 w-4" />
+                      {t("colorScheme")}
+                    </span>
+                    <span className="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500">
+                      <span
+                        className="inline-block h-3 w-3 rounded-full"
+                        style={{ backgroundColor: COLOR_SCHEMES[colorSchemeName].sidebarBg }}
+                      />
+                      <ChevronRight className="h-3.5 w-3.5" />
+                    </span>
+                  </button>
+
                   {/* Sections */}
                   <button onClick={() => setMobileMenuPage("sections")} className={menuItemClass}>
                     <span className="flex items-center gap-2.5">
@@ -447,6 +512,43 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
                         )}
                       </button>
                     ))}
+                  </div>
+                </div>
+              )}
+
+              {mobileMenuPage === "color" && (
+                <div>
+                  <button onClick={() => setMobileMenuPage("main")} className={backButtonClass}>
+                    <ChevronLeft className="h-3.5 w-3.5" />
+                    {t("colorScheme")}
+                  </button>
+                  <div className="flex flex-wrap gap-2 px-3 pt-2 pb-1">
+                    {COLOR_SCHEME_NAMES.map((name) => {
+                      const scheme = COLOR_SCHEMES[name];
+                      const isLight = scheme.sidebarText !== "#ffffff";
+                      return (
+                        <button
+                          key={name}
+                          onClick={() => {
+                            setColorScheme(name);
+                            setMobileMenuPage("main");
+                          }}
+                          className="relative flex flex-col items-center gap-1"
+                        >
+                          <span
+                            className={`relative h-8 w-8 rounded-full transition-transform hover:scale-110 ${isLight ? "ring-1 ring-inset ring-black/10" : ""}`}
+                            style={{ backgroundColor: scheme.sidebarBg }}
+                          >
+                            {colorSchemeName === name && (
+                              <Check className={`absolute inset-0 m-auto h-4 w-4 drop-shadow-sm ${isLight ? "text-gray-800" : "text-white"}`} />
+                            )}
+                          </span>
+                          <span className="text-[10px] text-gray-500 dark:text-gray-400">
+                            {t(`colorScheme${name.charAt(0).toUpperCase() + name.slice(1)}` as Parameters<typeof t>[0])}
+                          </span>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               )}

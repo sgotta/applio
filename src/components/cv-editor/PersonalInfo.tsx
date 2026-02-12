@@ -3,6 +3,7 @@
 import { memo, useRef, useCallback, useState } from "react";
 import { useCV } from "@/lib/cv-context";
 import { useTranslations } from "next-intl";
+import { useColorScheme } from "@/lib/color-scheme-context";
 import { EditableText } from "./EditableText";
 import { SectionTitle } from "./SectionTitle";
 import { ProfilePhotoUpload } from "./ProfilePhotoUpload";
@@ -23,22 +24,25 @@ function ContactLine({
   field,
   placeholder,
   onChange,
+  iconColor,
 }: {
   icon: React.ElementType;
   value: string;
   field: string;
   placeholder: string;
   onChange: (field: string, value: string) => void;
+  iconColor: string;
 }) {
   return (
     <div className="flex items-center gap-2 group/contact">
-      <Icon className="h-3 w-3 shrink-0 text-gray-400 dark:text-gray-500" />
+      <Icon className="h-3 w-3 shrink-0" style={{ color: iconColor }} />
       <EditableText
         value={value}
         onChange={(v) => onChange(field, v)}
         as="tiny"
-        className="!text-[11px] !text-gray-600 dark:text-gray-300!"
+        className="!text-[11px]"
         placeholder={placeholder}
+        displayStyle={{ color: iconColor }}
       />
     </div>
   );
@@ -51,6 +55,8 @@ function SkillBadge({
   onLongPressDelete,
   skillPlaceholder,
   deleteAriaLabel,
+  badgeBg,
+  badgeText,
 }: {
   value: string;
   onChange: (v: string) => void;
@@ -58,6 +64,8 @@ function SkillBadge({
   onLongPressDelete: () => void;
   skillPlaceholder: string;
   deleteAriaLabel: string;
+  badgeBg: string;
+  badgeText: string;
 }) {
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const didLongPress = useRef(false);
@@ -79,7 +87,8 @@ function SkillBadge({
 
   return (
     <span
-      className="inline-flex items-center gap-0.5 rounded bg-gray-100 dark:bg-accent pl-2 pr-2 md:pr-0.5 py-0.5 group/badge"
+      className="inline-flex items-center gap-0.5 rounded pl-2 pr-2 md:pr-0.5 py-0.5 group/badge"
+      style={{ backgroundColor: badgeBg, color: badgeText }}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       onTouchCancel={handleTouchEnd}
@@ -88,15 +97,16 @@ function SkillBadge({
         value={value}
         onChange={onChange}
         as="tiny"
-        className="!text-[10px] !text-gray-700 dark:text-gray-300!"
+        className="!text-[10px]"
         placeholder={skillPlaceholder}
+        displayStyle={{ color: badgeText }}
       />
       <button
         onClick={onRemove}
-        className="opacity-0 group-hover/badge:opacity-100 p-0.5 rounded hover:bg-gray-200 dark:hover:bg-muted transition-opacity duration-150 hidden md:inline-flex"
+        className="opacity-0 group-hover/badge:opacity-100 p-0.5 rounded hover:bg-white/20 transition-opacity duration-150 hidden md:inline-flex"
         aria-label={deleteAriaLabel}
       >
-        <X className="h-2.5 w-2.5 text-gray-400 dark:text-gray-500" />
+        <X className="h-2.5 w-2.5" style={{ color: badgeText }} />
       </button>
     </span>
   );
@@ -109,6 +119,7 @@ function CategoryHeader({
   categoryPlaceholder,
   deleteAriaLabel,
   onCategoryChange,
+  categoryColor,
 }: {
   category: string;
   onRemove: () => void;
@@ -116,6 +127,7 @@ function CategoryHeader({
   categoryPlaceholder: string;
   deleteAriaLabel: string;
   onCategoryChange: (v: string) => void;
+  categoryColor: string;
 }) {
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const didLongPress = useRef(false);
@@ -146,15 +158,16 @@ function CategoryHeader({
         value={category}
         onChange={onCategoryChange}
         as="tiny"
-        className="!font-semibold !uppercase !tracking-wide !text-gray-500 dark:text-gray-400!"
+        className="!font-semibold !uppercase !tracking-wide"
         placeholder={categoryPlaceholder}
+        displayStyle={{ color: categoryColor }}
       />
       <button
         onClick={onRemove}
-        className="opacity-0 group-hover/skillcat:opacity-100 p-0.5 rounded hover:bg-gray-200 dark:hover:bg-muted transition-opacity duration-150 hidden md:inline-flex"
+        className="opacity-0 group-hover/skillcat:opacity-100 p-0.5 rounded hover:bg-white/20 transition-opacity duration-150 hidden md:inline-flex"
         aria-label={deleteAriaLabel}
       >
-        <X className="h-3 w-3 text-gray-400 dark:text-gray-500" />
+        <X className="h-3 w-3" style={{ color: categoryColor }} />
       </button>
     </div>
   );
@@ -170,6 +183,7 @@ export const PersonalInfo = memo(function PersonalInfo() {
     removeSkillCategory,
   } = useCV();
   const t = useTranslations("personalInfo");
+  const { colorScheme } = useColorScheme();
   const [pendingDelete, setPendingDelete] = useState<{
     message: string;
     onConfirm: () => void;
@@ -189,7 +203,7 @@ export const PersonalInfo = memo(function PersonalInfo() {
       {/* Contact */}
       {(visibility.email || visibility.phone || visibility.location || visibility.linkedin || visibility.website) && (
         <div className="space-y-2">
-          <SectionTitle>{t("contact")}</SectionTitle>
+          <SectionTitle sidebar>{t("contact")}</SectionTitle>
           <div className="space-y-1.5">
             {visibility.email && (
               <ContactLine
@@ -198,6 +212,7 @@ export const PersonalInfo = memo(function PersonalInfo() {
                 field="email"
                 placeholder={t("emailPlaceholder")}
                 onChange={(f, v) => updatePersonalInfo(f, v)}
+                iconColor={colorScheme.sidebarText}
               />
             )}
             {visibility.phone && (
@@ -207,6 +222,7 @@ export const PersonalInfo = memo(function PersonalInfo() {
                 field="phone"
                 placeholder={t("phonePlaceholder")}
                 onChange={(f, v) => updatePersonalInfo(f, v)}
+                iconColor={colorScheme.sidebarText}
               />
             )}
             {visibility.location && (
@@ -216,6 +232,7 @@ export const PersonalInfo = memo(function PersonalInfo() {
                 field="location"
                 placeholder={t("locationPlaceholder")}
                 onChange={(f, v) => updatePersonalInfo(f, v)}
+                iconColor={colorScheme.sidebarText}
               />
             )}
             {visibility.linkedin && (
@@ -225,6 +242,7 @@ export const PersonalInfo = memo(function PersonalInfo() {
                 field="linkedin"
                 placeholder={t("linkedinPlaceholder")}
                 onChange={(f, v) => updatePersonalInfo(f, v)}
+                iconColor={colorScheme.sidebarText}
               />
             )}
             {visibility.website && (
@@ -234,6 +252,7 @@ export const PersonalInfo = memo(function PersonalInfo() {
                 field="website"
                 placeholder={t("websitePlaceholder")}
                 onChange={(f, v) => updatePersonalInfo(f, v)}
+                iconColor={colorScheme.sidebarText}
               />
             )}
           </div>
@@ -242,19 +261,20 @@ export const PersonalInfo = memo(function PersonalInfo() {
 
       {/* Summary */}
       <div>
-        <SectionTitle>{t("aboutMe")}</SectionTitle>
+        <SectionTitle sidebar>{t("aboutMe")}</SectionTitle>
         <EditableText
           value={summary}
           onChange={updateSummary}
           placeholder={t("summaryPlaceholder")}
           multiline
           as="body"
+          displayStyle={{ color: colorScheme.sidebarText }}
         />
       </div>
 
       {/* Skills */}
       <div>
-        <SectionTitle>{t("skills")}</SectionTitle>
+        <SectionTitle sidebar>{t("skills")}</SectionTitle>
         <div className="space-y-3">
           {skills.map((skillGroup) => (
             <div key={skillGroup.id} className="group/skillcat">
@@ -274,6 +294,7 @@ export const PersonalInfo = memo(function PersonalInfo() {
                     onConfirm: () => removeSkillCategory(skillGroup.id),
                   })
                 }
+                categoryColor={colorScheme.sidebarText}
               />
               <div className="flex flex-wrap gap-1">
                 {skillGroup.items.map((item, i) => {
@@ -289,6 +310,8 @@ export const PersonalInfo = memo(function PersonalInfo() {
                       value={item}
                       skillPlaceholder={t("skillPlaceholder")}
                       deleteAriaLabel={t("deleteSkillAriaLabel", { skill: item })}
+                      badgeBg={colorScheme.sidebarBadgeBg}
+                      badgeText={colorScheme.sidebarBadgeText}
                       onChange={(v) => {
                         const newItems = [...skillGroup.items];
                         newItems[i] = v;
@@ -312,7 +335,8 @@ export const PersonalInfo = memo(function PersonalInfo() {
                       items: [...skillGroup.items, "Skill"],
                     })
                   }
-                  className="inline-flex items-center gap-0.5 rounded border border-dashed border-gray-300 dark:border-border px-2 py-0.5 text-[10px] text-gray-400 dark:text-gray-500 hover:border-gray-400 dark:hover:border-ring hover:text-gray-500 dark:hover:text-gray-400 transition-colors duration-150"
+                  className="inline-flex items-center gap-0.5 rounded border border-dashed px-2 py-0.5 text-[10px] transition-colors duration-150 hover:opacity-80"
+                  style={{ borderColor: colorScheme.sidebarMuted, color: colorScheme.sidebarMuted }}
                 >
                   <Plus className="h-2.5 w-2.5" />
                 </button>
@@ -323,7 +347,8 @@ export const PersonalInfo = memo(function PersonalInfo() {
             variant="ghost"
             size="sm"
             onClick={addSkillCategory}
-            className="h-6 px-2 text-[10px] text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+            className="h-6 px-2 text-[10px] hover:opacity-80"
+            style={{ color: colorScheme.sidebarMuted }}
           >
             <Plus className="mr-1 h-3 w-3" />
             {t("addCategory")}

@@ -4,23 +4,53 @@ import { forwardRef } from "react";
 import { useTranslations } from "next-intl";
 import { CVData } from "@/lib/types";
 import { Separator } from "@/components/ui/separator";
+import { useColorScheme } from "@/lib/color-scheme-context";
+import { type ColorScheme } from "@/lib/color-schemes";
 import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
 
-function SectionHeading({ children }: { children: React.ReactNode }) {
+function SectionHeading({
+  children,
+  colors,
+  sidebar,
+}: {
+  children: React.ReactNode;
+  colors: ColorScheme;
+  sidebar?: boolean;
+}) {
+  const headingColor = sidebar ? colors.sidebarText : colors.heading;
+  const separatorColor = sidebar ? colors.sidebarSeparator : colors.separator;
+
   return (
     <div className="mb-3 mt-1">
-      <h3 className="text-[10px] font-semibold uppercase tracking-[0.15em] text-gray-500">
+      <h3
+        className="text-[10px] font-semibold uppercase tracking-[0.15em]"
+        style={{ color: headingColor }}
+      >
         {children}
       </h3>
-      <Separator className="mt-1.5" />
+      <Separator
+        className="mt-1.5"
+        style={{ backgroundColor: separatorColor }}
+      />
     </div>
   );
 }
 
 export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
   function PrintableCV({ data }, ref) {
-    const { personalInfo, summary, experience, education, skills, courses, certifications, awards, visibility } = data;
+    const {
+      personalInfo,
+      summary,
+      experience,
+      education,
+      skills,
+      courses,
+      certifications,
+      awards,
+      visibility,
+    } = data;
     const t = useTranslations("printable");
+    const { colorScheme: colors } = useColorScheme();
 
     return (
       <div
@@ -28,11 +58,19 @@ export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
         className="printable-cv bg-white font-sans"
         style={{ fontFamily: "var(--font-inter), Inter, sans-serif" }}
       >
-        <div className="grid grid-cols-[220px_1fr]" style={{ minHeight: "297mm" }}>
+        <div
+          className="grid grid-cols-[220px_1fr]"
+          style={{ minHeight: "297mm" }}
+        >
           {/* ===== LEFT COLUMN ===== */}
-          <div className="border-r border-gray-100 bg-gray-50/50 p-6 space-y-5">
+          <div
+            className="p-6 space-y-5"
+            style={{ backgroundColor: colors.sidebarBg }}
+          >
             {/* Photo / Initials */}
-            <div className="mx-auto h-28 w-28 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+            <div
+              className="mx-auto h-28 w-28 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden"
+            >
               {personalInfo.photo ? (
                 <img
                   src={personalInfo.photo}
@@ -51,38 +89,63 @@ export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
             </div>
 
             {/* Contact */}
-            {(visibility.email || visibility.phone || visibility.location || visibility.linkedin || visibility.website) && (
+            {(visibility.email ||
+              visibility.phone ||
+              visibility.location ||
+              visibility.linkedin ||
+              visibility.website) && (
               <div className="space-y-2">
-                <SectionHeading>{t("contact")}</SectionHeading>
+                <SectionHeading colors={colors} sidebar>{t("contact")}</SectionHeading>
                 <div className="space-y-1.5">
                   {visibility.email && personalInfo.email && (
-                    <div className="flex items-center gap-2 text-[11px] text-gray-600">
-                      <Mail className="h-3 w-3 shrink-0 text-gray-400" />
+                    <div className="flex items-center gap-2 text-[11px]" style={{ color: colors.sidebarText }}>
+                      <Mail
+                        className="h-3 w-3 shrink-0"
+                        style={{ color: colors.sidebarText }}
+                      />
                       <span className="truncate">{personalInfo.email}</span>
                     </div>
                   )}
                   {visibility.phone && personalInfo.phone && (
-                    <div className="flex items-center gap-2 text-[11px] text-gray-600">
-                      <Phone className="h-3 w-3 shrink-0 text-gray-400" />
+                    <div className="flex items-center gap-2 text-[11px]" style={{ color: colors.sidebarText }}>
+                      <Phone
+                        className="h-3 w-3 shrink-0"
+                        style={{ color: colors.sidebarText }}
+                      />
                       <span className="truncate">{personalInfo.phone}</span>
                     </div>
                   )}
                   {visibility.location && personalInfo.location && (
-                    <div className="flex items-center gap-2 text-[11px] text-gray-600">
-                      <MapPin className="h-3 w-3 shrink-0 text-gray-400" />
-                      <span className="truncate">{personalInfo.location}</span>
+                    <div className="flex items-center gap-2 text-[11px]" style={{ color: colors.sidebarText }}>
+                      <MapPin
+                        className="h-3 w-3 shrink-0"
+                        style={{ color: colors.sidebarText }}
+                      />
+                      <span className="truncate">
+                        {personalInfo.location}
+                      </span>
                     </div>
                   )}
                   {visibility.linkedin && personalInfo.linkedin && (
-                    <div className="flex items-center gap-2 text-[11px] text-gray-600">
-                      <Linkedin className="h-3 w-3 shrink-0 text-gray-400" />
-                      <span className="truncate">{personalInfo.linkedin}</span>
+                    <div className="flex items-center gap-2 text-[11px]" style={{ color: colors.sidebarText }}>
+                      <Linkedin
+                        className="h-3 w-3 shrink-0"
+                        style={{ color: colors.sidebarText }}
+                      />
+                      <span className="truncate">
+                        {personalInfo.linkedin}
+                      </span>
                     </div>
                   )}
                   {visibility.website && personalInfo.website && (
-                    <div className="flex items-center gap-2 text-[11px] text-gray-600">
-                      <Globe className="h-3 w-3 shrink-0 text-gray-400" />
-                      <span className="truncate">{personalInfo.website}</span>
+                    <div className="flex items-center gap-2 text-[11px]" style={{ color: colors.sidebarText }}>
+                      <Globe
+                        className="h-3 w-3 shrink-0"
+                        style={{ color: colors.sidebarText }}
+                      />
+                      <span className="truncate">
+                        {personalInfo.website}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -92,8 +155,10 @@ export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
             {/* Summary */}
             {summary && (
               <div>
-                <SectionHeading>{t("aboutMe")}</SectionHeading>
-                <p className="text-[11px] leading-relaxed text-gray-600">
+                <SectionHeading colors={colors} sidebar>
+                  {t("aboutMe")}
+                </SectionHeading>
+                <p className="text-[11px] leading-relaxed" style={{ color: colors.sidebarText }}>
                   {summary}
                 </p>
               </div>
@@ -102,18 +167,27 @@ export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
             {/* Skills */}
             {skills.length > 0 && (
               <div>
-                <SectionHeading>{t("skills")}</SectionHeading>
+                <SectionHeading colors={colors} sidebar>
+                  {t("skills")}
+                </SectionHeading>
                 <div className="space-y-3">
                   {skills.map((skillGroup) => (
                     <div key={skillGroup.id}>
-                      <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-500 mb-1">
+                      <p
+                        className="text-[10px] font-semibold uppercase tracking-wide mb-1"
+                        style={{ color: colors.sidebarText }}
+                      >
                         {skillGroup.category}
                       </p>
                       <div className="flex flex-wrap gap-1">
                         {skillGroup.items.map((item, i) => (
                           <span
                             key={i}
-                            className="inline-block rounded bg-gray-100 px-2 py-0.5 text-[10px] text-gray-700"
+                            className="inline-block rounded px-2 py-0.5 text-[10px]"
+                            style={{
+                              backgroundColor: colors.sidebarBadgeBg,
+                              color: colors.sidebarBadgeText,
+                            }}
                           >
                             {item}
                           </span>
@@ -133,6 +207,12 @@ export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
               <h1 className="text-2xl font-semibold tracking-tight text-gray-900">
                 {personalInfo.fullName}
               </h1>
+              {colors.nameAccent !== "transparent" && (
+                <div
+                  className="mt-1 h-0.5 w-12 rounded-full"
+                  style={{ backgroundColor: colors.nameAccent }}
+                />
+              )}
               <p className="mt-0.5 text-sm font-medium uppercase tracking-wide text-gray-500">
                 {personalInfo.title}
               </p>
@@ -141,7 +221,9 @@ export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
             {/* Experience */}
             {experience.length > 0 && (
               <div>
-                <SectionHeading>{t("experience")}</SectionHeading>
+                <SectionHeading colors={colors}>
+                  {t("experience")}
+                </SectionHeading>
                 <div className="space-y-4">
                   {experience.map((exp) => (
                     <div key={exp.id}>
@@ -161,8 +243,14 @@ export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
                           {exp.description.map((bullet, i) => (
                             <li
                               key={i}
-                              className="text-[11px] leading-relaxed text-gray-600 pl-3 relative before:content-['•'] before:absolute before:left-0 before:text-gray-400"
+                              className="text-[11px] leading-relaxed text-gray-600 pl-3 relative"
                             >
+                              <span
+                                className="absolute left-0"
+                                style={{ color: colors.bullet }}
+                              >
+                                &bull;
+                              </span>
                               {bullet}
                             </li>
                           ))}
@@ -177,7 +265,9 @@ export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
             {/* Education */}
             {education.length > 0 && (
               <div>
-                <SectionHeading>{t("education")}</SectionHeading>
+                <SectionHeading colors={colors}>
+                  {t("education")}
+                </SectionHeading>
                 <div className="space-y-4">
                   {education.map((edu) => (
                     <div key={edu.id}>
@@ -206,7 +296,9 @@ export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
             {/* Courses */}
             {visibility.courses && courses.length > 0 && (
               <div>
-                <SectionHeading>{t("courses")}</SectionHeading>
+                <SectionHeading colors={colors}>
+                  {t("courses")}
+                </SectionHeading>
                 <div className="space-y-3">
                   {courses.map((course) => (
                     <div key={course.id}>
@@ -230,7 +322,9 @@ export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
             {/* Certifications */}
             {visibility.certifications && certifications.length > 0 && (
               <div>
-                <SectionHeading>{t("certifications")}</SectionHeading>
+                <SectionHeading colors={colors}>
+                  {t("certifications")}
+                </SectionHeading>
                 <div className="space-y-3">
                   {certifications.map((cert) => (
                     <div key={cert.id}>
@@ -254,7 +348,9 @@ export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
             {/* Awards */}
             {visibility.awards && awards.length > 0 && (
               <div>
-                <SectionHeading>{t("awards")}</SectionHeading>
+                <SectionHeading colors={colors}>
+                  {t("awards")}
+                </SectionHeading>
                 <div className="space-y-3">
                   {awards.map((award) => (
                     <div key={award.id}>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, KeyboardEvent } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, KeyboardEvent } from "react";
 import { useTranslations } from "next-intl";
 
 type EditableStyle = "heading" | "subheading" | "body" | "small" | "tiny";
@@ -12,6 +12,8 @@ interface EditableTextProps {
   multiline?: boolean;
   className?: string;
   as?: EditableStyle;
+  /** Inline style applied to display span only (not the editing input) */
+  displayStyle?: React.CSSProperties;
 }
 
 const styleMap: Record<EditableStyle, string> = {
@@ -31,6 +33,7 @@ export function EditableText({
   multiline = false,
   className = "",
   as = "body",
+  displayStyle,
 }: EditableTextProps) {
   const t = useTranslations("editableText");
   const placeholder = placeholderProp ?? t("defaultPlaceholder");
@@ -50,6 +53,15 @@ export function EditableText({
       inputRef.current.select();
     }
   }, [editing]);
+
+  // Auto-resize textarea to match content height (avoids size jump)
+  useLayoutEffect(() => {
+    if (editing && multiline && inputRef.current) {
+      const el = inputRef.current as HTMLTextAreaElement;
+      el.style.height = "auto";
+      el.style.height = `${el.scrollHeight}px`;
+    }
+  }, [editing, multiline, draft]);
 
   const save = useCallback(() => {
     setEditing(false);
@@ -80,7 +92,16 @@ export function EditableText({
   const displayEmpty = !value && !editing;
 
   if (editing) {
-    const inputClasses = `${baseStyle} ${className} w-full bg-white dark:bg-accent border border-gray-300 dark:border-border rounded-sm px-1.5 py-0.5 outline-none focus:border-gray-400 dark:focus:border-ring focus:ring-1 focus:ring-gray-200 dark:focus:ring-ring/30 transition-all duration-150`;
+    const onSidebar = !!displayStyle;
+    const isDarkSidebar =
+      onSidebar &&
+      (displayStyle as Record<string, string>).color === "#ffffff";
+
+    const inputClasses = isDarkSidebar
+      ? `${baseStyle} ${className} w-full bg-white/15 border border-white/20 rounded-sm px-1.5 py-0.5 outline-none focus:border-white/30 focus:ring-1 focus:ring-white/10 transition-all duration-150 placeholder:text-white/40`
+      : onSidebar
+        ? `${baseStyle} ${className} w-full bg-black/[0.08] border border-black/10 rounded-sm px-1.5 py-0.5 outline-none focus:border-black/15 focus:ring-1 focus:ring-black/[0.05] transition-all duration-150 placeholder:opacity-40`
+        : `${baseStyle} ${className} w-full bg-white dark:bg-accent border border-gray-300 dark:border-border rounded-sm px-1.5 py-0.5 outline-none focus:border-gray-400 dark:focus:border-ring focus:ring-1 focus:ring-gray-200 dark:focus:ring-ring/30 transition-all duration-150`;
 
     if (multiline) {
       return (
@@ -91,8 +112,9 @@ export function EditableText({
           onBlur={save}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
-          rows={3}
-          className={`${inputClasses} resize-y min-h-[3em]`}
+          rows={1}
+          className={`${inputClasses} resize-none overflow-hidden`}
+          style={onSidebar ? displayStyle : undefined}
         />
       );
     }
@@ -107,6 +129,7 @@ export function EditableText({
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         className={inputClasses}
+        style={onSidebar ? displayStyle : undefined}
       />
     );
   }
@@ -122,9 +145,14 @@ export function EditableText({
           setEditing(true);
         }
       }}
-      className={`${baseStyle} ${className} inline-block cursor-text rounded-sm px-1.5 py-0.5 -mx-1.5 -my-0.5 transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-accent focus:bg-gray-100 dark:focus:bg-accent focus:outline-none ${
-        displayEmpty ? "text-gray-300 dark:text-gray-600 italic" : ""
-      }`}
+      className={`${baseStyle} ${className} inline-block cursor-text rounded-sm px-1.5 py-0.5 -mx-1.5 -my-0.5 transition-colors duration-150 focus:outline-none ${
+        displayStyle
+          ? (displayStyle as Record<string, string>).color === "#ffffff"
+            ? "hover:bg-white/15 focus:bg-white/15"
+            : "hover:bg-black/[0.07] focus:bg-black/[0.07]"
+          : "hover:bg-gray-100 dark:hover:bg-accent focus:bg-gray-100 dark:focus:bg-accent"
+      } ${displayEmpty ? "text-gray-300 dark:text-gray-600 italic" : ""}`}
+      style={displayEmpty ? undefined : displayStyle}
     >
       {displayEmpty ? placeholder : value}
     </span>

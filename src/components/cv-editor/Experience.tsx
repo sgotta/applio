@@ -3,6 +3,7 @@
 import React, { memo } from "react";
 import { useCV } from "@/lib/cv-context";
 import { useTranslations } from "next-intl";
+import { useColorScheme } from "@/lib/color-scheme-context";
 import { ExperienceItem } from "@/lib/types";
 import { EditableText } from "./EditableText";
 import { SectionTitle } from "./SectionTitle";
@@ -15,15 +16,20 @@ function EditableBullet({
   onRemove,
   bulletPlaceholder,
   deleteAriaLabel,
+  bulletColor,
 }: {
   value: string;
   onChange: (v: string) => void;
   onRemove: () => void;
   bulletPlaceholder: string;
   deleteAriaLabel: string;
+  bulletColor: string;
 }) {
   return (
-    <li className="flex items-start gap-1 group/bullet pl-3 relative before:content-['•'] before:absolute before:left-0 before:text-gray-400 dark:before:text-gray-500 before:text-[11px]">
+    <li className="flex items-start gap-1 group/bullet pl-3 relative">
+      <span className="absolute left-0 text-[11px] select-none" style={{ color: bulletColor }}>
+        &bull;
+      </span>
       <EditableText
         value={value}
         onChange={onChange}
@@ -53,6 +59,7 @@ function ExperienceCard({
 }) {
   const { updateExperience, removeExperience, moveExperience } = useCV();
   const t = useTranslations("experience");
+  const { colorScheme } = useColorScheme();
 
   const updateBullet = (index: number, value: string) => {
     const newDesc = [...exp.description];
@@ -147,6 +154,7 @@ function ExperienceCard({
             onRemove={() => removeBullet(i)}
             bulletPlaceholder={t("bulletPlaceholder")}
             deleteAriaLabel={t("deleteBullet")}
+            bulletColor={colorScheme.bullet}
           />
         ))}
       </ul>

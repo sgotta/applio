@@ -27,7 +27,15 @@
     "import": "Importar JSON",
     "export": "Exportar JSON",
     "overflowWarning": "Tu CV excede una página. Reducí contenido para que el PDF se genere correctamente.",
-    "pdfOverflowTooltip": "El CV excede 1 página, el PDF podría cortarse"
+    "pdfOverflowTooltip": "El CV excede 1 página, el PDF podría cortarse",
+    "colorScheme": "Color",
+    "colorSchemeIvory": "Marfil",
+    "colorSchemePeterRiver": "Clear Child",
+    "colorSchemeEmerald": "Esmeralda",
+    "colorSchemeAlizarin": "Bruschetta",
+    "colorSchemeSunFlower": "Girasol",
+    "colorSchemeCarrot": "Zanahoria",
+    "colorSchemeWetAsphalt": "Asfalto"
   },
   "cvPreview": {
     "fullNamePlaceholder": "Tu Nombre Completo",

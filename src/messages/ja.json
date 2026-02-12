@@ -27,7 +27,15 @@
     "import": "JSONインポート",
     "export": "JSONエクスポート",
     "overflowWarning": "履歴書が1ページを超えています。PDFが正しく生成されるよう、内容を減らしてください。",
-    "pdfOverflowTooltip": "履歴書が1ページを超えています。PDFが切れる可能性があります"
+    "pdfOverflowTooltip": "履歴書が1ページを超えています。PDFが切れる可能性があります",
+    "colorScheme": "カラー",
+    "colorSchemeIvory": "アイボリー",
+    "colorSchemePeterRiver": "クリアチャイルド",
+    "colorSchemeEmerald": "エメラルド",
+    "colorSchemeAlizarin": "ブルスケッタ",
+    "colorSchemeSunFlower": "ひまわり",
+    "colorSchemeCarrot": "キャロット",
+    "colorSchemeWetAsphalt": "アスファルト"
   },
   "cvPreview": {
     "fullNamePlaceholder": "氏名",

@@ -5,6 +5,7 @@ import { useReactToPrint } from "react-to-print";
 import { CVProvider, useCV } from "@/lib/cv-context";
 import { LocaleProvider } from "@/lib/locale-context";
 import { ThemeProvider } from "@/lib/theme-context";
+import { ColorSchemeProvider } from "@/lib/color-scheme-context";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toolbar } from "@/components/toolbar/Toolbar";
 import { CVEditor } from "@/components/cv-editor/CVEditor";
@@ -54,13 +55,15 @@ function AppContent() {
 export default function Home() {
   return (
     <ThemeProvider>
-      <LocaleProvider>
-        <CVProvider>
-          <TooltipProvider delayDuration={300}>
-            <AppContent />
-          </TooltipProvider>
-        </CVProvider>
-      </LocaleProvider>
+      <ColorSchemeProvider>
+        <LocaleProvider>
+          <CVProvider>
+            <TooltipProvider delayDuration={300}>
+              <AppContent />
+            </TooltipProvider>
+          </CVProvider>
+        </LocaleProvider>
+      </ColorSchemeProvider>
     </ThemeProvider>
   );
 }
