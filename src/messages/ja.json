@@ -14,8 +14,9 @@
     "exportTitle": "履歴書をJSONファイルとしてエクスポート",
     "pdfTitle": "印刷・送信用のPDFを生成",
     "optionalSections": "オプションセクション",
-    "sectionCourses": "講座・研修",
+    "sectionCourses": "講座・ワークショップ",
     "sectionCertifications": "資格",
+    "sectionAwards": "受賞歴",
     "importFormatError": "ファイル形式が正しくありません。ApplioからエクスポートされたJSONであることを確認してください。",
     "importConfirm": "この履歴書を読み込みますか？現在のデータは上書きされます。",
     "importReadError": "ファイルの読み込みエラー。有効なJSONファイルであることを確認してください。",
@@ -99,7 +100,7 @@
     "defaultPlaceholder": "クリックして編集..."
   },
   "courses": {
-    "title": "講座・研修",
+    "title": "講座・ワークショップ",
     "namePlaceholder": "講座名",
     "institutionPlaceholder": "機関",
     "datePlaceholder": "日付",
@@ -114,6 +115,14 @@
     "deleteCertification": "資格を削除",
     "addCertification": "資格を追加"
   },
+  "awards": {
+    "title": "受賞歴",
+    "namePlaceholder": "賞の名称",
+    "issuerPlaceholder": "授与機関",
+    "datePlaceholder": "日付",
+    "deleteAward": "受賞歴を削除",
+    "addAward": "受賞歴を追加"
+  },
   "printable": {
     "profilePhotoAlt": "プロフィール写真",
     "contact": "連絡先",
@@ -121,8 +130,9 @@
     "skills": "スキル",
     "experience": "職歴",
     "education": "学歴",
-    "courses": "講座・研修",
-    "certifications": "資格"
+    "courses": "講座・ワークショップ",
+    "certifications": "資格",
+    "awards": "受賞歴"
   },
   "defaults": {
     "company": "会社名",
@@ -136,6 +146,8 @@
     "courseName": "講座",
     "courseInstitution": "機関",
     "certificationName": "資格",
-    "certificationIssuer": "発行機関"
+    "certificationIssuer": "発行機関",
+    "awardName": "受賞",
+    "awardIssuer": "機関"
   }
 }

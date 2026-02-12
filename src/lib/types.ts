@@ -47,6 +47,13 @@ export interface CertificationItem {
   date: string;
 }
 
+export interface AwardItem {
+  id: string;
+  name: string;
+  issuer: string;
+  date: string;
+}
+
 export interface SectionVisibility {
   email: boolean;
   phone: boolean;
@@ -55,6 +62,7 @@ export interface SectionVisibility {
   website: boolean;
   courses: boolean;
   certifications: boolean;
+  awards: boolean;
 }
 
 export interface CVData {
@@ -65,5 +73,6 @@ export interface CVData {
   skills: SkillCategory[];
   courses: CourseItem[];
   certifications: CertificationItem[];
+  awards: AwardItem[];
   visibility: SectionVisibility;
 }

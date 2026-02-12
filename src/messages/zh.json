@@ -14,8 +14,9 @@
     "exportTitle": "将简历导出为JSON文件",
     "pdfTitle": "生成PDF用于打印或发送",
     "optionalSections": "可选板块",
-    "sectionCourses": "课程与培训",
+    "sectionCourses": "课程与工作坊",
     "sectionCertifications": "证书",
+    "sectionAwards": "奖项",
     "importFormatError": "文件格式不正确。请确保是从Applio导出的JSON文件。",
     "importConfirm": "是否要加载此简历？当前数据将被覆盖。",
     "importReadError": "读取文件时出错。请确保是有效的JSON文件。",
@@ -99,7 +100,7 @@
     "defaultPlaceholder": "点击编辑..."
   },
   "courses": {
-    "title": "课程与培训",
+    "title": "课程与工作坊",
     "namePlaceholder": "课程名称",
     "institutionPlaceholder": "机构",
     "datePlaceholder": "日期",
@@ -114,6 +115,14 @@
     "deleteCertification": "删除证书",
     "addCertification": "添加证书"
   },
+  "awards": {
+    "title": "奖项与荣誉",
+    "namePlaceholder": "奖项名称",
+    "issuerPlaceholder": "颁奖机构",
+    "datePlaceholder": "日期",
+    "deleteAward": "删除奖项",
+    "addAward": "添加奖项"
+  },
   "printable": {
     "profilePhotoAlt": "个人照片",
     "contact": "联系方式",
@@ -121,8 +130,9 @@
     "skills": "技能",
     "experience": "工作经历",
     "education": "教育背景",
-    "courses": "课程与培训",
-    "certifications": "证书"
+    "courses": "课程与工作坊",
+    "certifications": "证书",
+    "awards": "奖项与荣誉"
   },
   "defaults": {
     "company": "公司",
@@ -136,6 +146,8 @@
     "courseName": "课程",
     "courseInstitution": "机构",
     "certificationName": "证书",
-    "certificationIssuer": "颁发机构"
+    "certificationIssuer": "颁发机构",
+    "awardName": "奖项",
+    "awardIssuer": "机构"
   }
 }

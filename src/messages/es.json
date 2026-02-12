@@ -14,8 +14,9 @@
     "exportTitle": "Exportar CV como archivo JSON",
     "pdfTitle": "Generar PDF para imprimir o enviar",
     "optionalSections": "Secciones Opcionales",
-    "sectionCourses": "Cursos y Capacitaciones",
+    "sectionCourses": "Cursos y Talleres",
     "sectionCertifications": "Certificaciones",
+    "sectionAwards": "Premios",
     "importFormatError": "El archivo no tiene el formato correcto. Asegurate de que sea un JSON exportado desde Applio.",
     "importConfirm": "¿Querés cargar este CV? Se van a sobrescribir los datos actuales.",
     "importReadError": "Error al leer el archivo. Asegurate de que sea un archivo JSON válido.",
@@ -99,7 +100,7 @@
     "defaultPlaceholder": "Click para editar..."
   },
   "courses": {
-    "title": "Cursos y Capacitaciones",
+    "title": "Cursos y Talleres",
     "namePlaceholder": "Nombre del curso",
     "institutionPlaceholder": "Institución",
     "datePlaceholder": "fecha",
@@ -114,6 +115,14 @@
     "deleteCertification": "Eliminar certificación",
     "addCertification": "Agregar certificación"
   },
+  "awards": {
+    "title": "Premios y Reconocimientos",
+    "namePlaceholder": "Nombre del premio",
+    "issuerPlaceholder": "Organización que otorga",
+    "datePlaceholder": "fecha",
+    "deleteAward": "Eliminar premio",
+    "addAward": "Agregar premio"
+  },
   "printable": {
     "profilePhotoAlt": "Foto de perfil",
     "contact": "Contacto",
@@ -121,8 +130,9 @@
     "skills": "Habilidades",
     "experience": "Experiencia",
     "education": "Educación",
-    "courses": "Cursos y Capacitaciones",
-    "certifications": "Certificaciones"
+    "courses": "Cursos y Talleres",
+    "certifications": "Certificaciones",
+    "awards": "Premios y Reconocimientos"
   },
   "defaults": {
     "company": "Empresa",
@@ -136,6 +146,8 @@
     "courseName": "Curso",
     "courseInstitution": "Institución",
     "certificationName": "Certificación",
-    "certificationIssuer": "Emisor"
+    "certificationIssuer": "Emisor",
+    "awardName": "Premio",
+    "awardIssuer": "Organización"
   }
 }

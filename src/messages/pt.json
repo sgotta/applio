@@ -14,8 +14,9 @@
     "exportTitle": "Exportar CV como arquivo JSON",
     "pdfTitle": "Gerar PDF para imprimir ou enviar",
     "optionalSections": "Seções opcionais",
-    "sectionCourses": "Cursos e Formações",
+    "sectionCourses": "Cursos e Workshops",
     "sectionCertifications": "Certificações",
+    "sectionAwards": "Prêmios",
     "importFormatError": "O formato do arquivo está incorreto. Verifique se é um JSON exportado do Applio.",
     "importConfirm": "Deseja carregar este CV? Os dados atuais serão sobrescritos.",
     "importReadError": "Erro ao ler o arquivo. Verifique se é um arquivo JSON válido.",
@@ -99,7 +100,7 @@
     "defaultPlaceholder": "Clique para editar..."
   },
   "courses": {
-    "title": "Cursos e Formações",
+    "title": "Cursos e Workshops",
     "namePlaceholder": "Nome do curso",
     "institutionPlaceholder": "Instituição",
     "datePlaceholder": "data",
@@ -114,6 +115,14 @@
     "deleteCertification": "Excluir certificação",
     "addCertification": "Adicionar certificação"
   },
+  "awards": {
+    "title": "Prêmios e Honrarias",
+    "namePlaceholder": "Nome do prêmio",
+    "issuerPlaceholder": "Organização",
+    "datePlaceholder": "data",
+    "deleteAward": "Excluir prêmio",
+    "addAward": "Adicionar prêmio"
+  },
   "printable": {
     "profilePhotoAlt": "Foto de perfil",
     "contact": "Contato",
@@ -121,8 +130,9 @@
     "skills": "Habilidades",
     "experience": "Experiência",
     "education": "Educação",
-    "courses": "Cursos e Formações",
-    "certifications": "Certificações"
+    "courses": "Cursos e Workshops",
+    "certifications": "Certificações",
+    "awards": "Prêmios e Honrarias"
   },
   "defaults": {
     "company": "Empresa",
@@ -136,6 +146,8 @@
     "courseName": "Curso",
     "courseInstitution": "Instituição",
     "certificationName": "Certificação",
-    "certificationIssuer": "Emissor"
+    "certificationIssuer": "Emissor",
+    "awardName": "Prêmio",
+    "awardIssuer": "Organização"
   }
 }

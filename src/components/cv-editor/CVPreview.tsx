@@ -9,6 +9,7 @@ import { Experience } from "./Experience";
 import { Education } from "./Education";
 import { Courses } from "./Courses";
 import { Certifications } from "./Certifications";
+import { Awards } from "./Awards";
 
 function CVHeader() {
   const {
@@ -83,6 +84,7 @@ export function CVPreview() {
           <Education />
           {visibility.courses && <Courses />}
           {visibility.certifications && <Certifications />}
+          {visibility.awards && <Awards />}
         </div>
       </div>
     </div>

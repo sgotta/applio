@@ -14,8 +14,9 @@
     "exportTitle": "Exporter le CV en fichier JSON",
     "pdfTitle": "Générer un PDF à imprimer ou envoyer",
     "optionalSections": "Sections optionnelles",
-    "sectionCourses": "Formations",
+    "sectionCourses": "Cours et Ateliers",
     "sectionCertifications": "Certifications",
+    "sectionAwards": "Prix",
     "importFormatError": "Le format du fichier est incorrect. Assurez-vous qu'il s'agit d'un JSON exporté depuis Applio.",
     "importConfirm": "Voulez-vous charger ce CV ? Les données actuelles seront écrasées.",
     "importReadError": "Erreur de lecture du fichier. Assurez-vous qu'il s'agit d'un fichier JSON valide.",
@@ -99,7 +100,7 @@
     "defaultPlaceholder": "Cliquez pour modifier..."
   },
   "courses": {
-    "title": "Formations",
+    "title": "Cours et Ateliers",
     "namePlaceholder": "Nom de la formation",
     "institutionPlaceholder": "Établissement",
     "datePlaceholder": "date",
@@ -114,6 +115,14 @@
     "deleteCertification": "Supprimer la certification",
     "addCertification": "Ajouter une certification"
   },
+  "awards": {
+    "title": "Prix et Distinctions",
+    "namePlaceholder": "Nom du prix",
+    "issuerPlaceholder": "Organisation",
+    "datePlaceholder": "date",
+    "deleteAward": "Supprimer le prix",
+    "addAward": "Ajouter un prix"
+  },
   "printable": {
     "profilePhotoAlt": "Photo de profil",
     "contact": "Contact",
@@ -121,8 +130,9 @@
     "skills": "Compétences",
     "experience": "Expérience",
     "education": "Formation",
-    "courses": "Formations",
-    "certifications": "Certifications"
+    "courses": "Cours et Ateliers",
+    "certifications": "Certifications",
+    "awards": "Prix et Distinctions"
   },
   "defaults": {
     "company": "Entreprise",
@@ -136,6 +146,8 @@
     "courseName": "Formation",
     "courseInstitution": "Établissement",
     "certificationName": "Certification",
-    "certificationIssuer": "Émetteur"
+    "certificationIssuer": "Émetteur",
+    "awardName": "Prix",
+    "awardIssuer": "Organisation"
   }
 }

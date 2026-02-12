@@ -14,8 +14,9 @@
     "exportTitle": "Lebenslauf als JSON-Datei exportieren",
     "pdfTitle": "PDF zum Drucken oder Versenden erstellen",
     "optionalSections": "Optionale Bereiche",
-    "sectionCourses": "Kurse & Weiterbildung",
+    "sectionCourses": "Kurse & Workshops",
     "sectionCertifications": "Zertifizierungen",
+    "sectionAwards": "Auszeichnungen",
     "importFormatError": "Das Dateiformat ist falsch. Stelle sicher, dass es ein aus Applio exportiertes JSON ist.",
     "importConfirm": "Möchtest du diesen Lebenslauf laden? Die aktuellen Daten werden überschrieben.",
     "importReadError": "Fehler beim Lesen der Datei. Stelle sicher, dass es eine gültige JSON-Datei ist.",
@@ -99,7 +100,7 @@
     "defaultPlaceholder": "Zum Bearbeiten klicken..."
   },
   "courses": {
-    "title": "Kurse & Weiterbildung",
+    "title": "Kurse & Workshops",
     "namePlaceholder": "Kursname",
     "institutionPlaceholder": "Einrichtung",
     "datePlaceholder": "Datum",
@@ -114,6 +115,14 @@
     "deleteCertification": "Zertifizierung löschen",
     "addCertification": "Zertifizierung hinzufügen"
   },
+  "awards": {
+    "title": "Auszeichnungen",
+    "namePlaceholder": "Name der Auszeichnung",
+    "issuerPlaceholder": "Verleihende Organisation",
+    "datePlaceholder": "Datum",
+    "deleteAward": "Auszeichnung löschen",
+    "addAward": "Auszeichnung hinzufügen"
+  },
   "printable": {
     "profilePhotoAlt": "Profilfoto",
     "contact": "Kontakt",
@@ -121,8 +130,9 @@
     "skills": "Fähigkeiten",
     "experience": "Berufserfahrung",
     "education": "Bildung",
-    "courses": "Kurse & Weiterbildung",
-    "certifications": "Zertifizierungen"
+    "courses": "Kurse & Workshops",
+    "certifications": "Zertifizierungen",
+    "awards": "Auszeichnungen"
   },
   "defaults": {
     "company": "Unternehmen",
@@ -136,6 +146,8 @@
     "courseName": "Kurs",
     "courseInstitution": "Einrichtung",
     "certificationName": "Zertifizierung",
-    "certificationIssuer": "Aussteller"
+    "certificationIssuer": "Aussteller",
+    "awardName": "Auszeichnung",
+    "awardIssuer": "Organisation"
   }
 }

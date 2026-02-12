@@ -254,6 +254,7 @@ export function Toolbar({ onPrintPDF }: ToolbarProps) {
                     <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-1">{t("optionalSections")}</p>
                     <SectionToggle label={t("sectionCourses")} checked={data.visibility.courses} onToggle={() => toggleSection("courses")} />
                     <SectionToggle label={t("sectionCertifications")} checked={data.visibility.certifications} onToggle={() => toggleSection("certifications")} />
+                    <SectionToggle label={t("sectionAwards")} checked={data.visibility.awards} onToggle={() => toggleSection("awards")} />
                   </div>
                 </div>
               </PopoverContent>
@@ -459,6 +460,7 @@ export function Toolbar({ onPrintPDF }: ToolbarProps) {
                       <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-1">{t("optionalSections")}</p>
                       <SectionToggle label={t("sectionCourses")} checked={data.visibility.courses} onToggle={() => toggleSection("courses")} />
                       <SectionToggle label={t("sectionCertifications")} checked={data.visibility.certifications} onToggle={() => toggleSection("certifications")} />
+                      <SectionToggle label={t("sectionAwards")} checked={data.visibility.awards} onToggle={() => toggleSection("awards")} />
                     </div>
                   </div>
                 </div>

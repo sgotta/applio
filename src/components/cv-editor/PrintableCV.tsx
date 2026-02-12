@@ -19,7 +19,7 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
 
 export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
   function PrintableCV({ data }, ref) {
-    const { personalInfo, summary, experience, education, skills, courses, certifications, visibility } = data;
+    const { personalInfo, summary, experience, education, skills, courses, certifications, awards, visibility } = data;
     const t = useTranslations("printable");
 
     return (
@@ -244,6 +244,30 @@ export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
                       </div>
                       <p className="text-[11px] font-medium text-gray-500">
                         {cert.issuer}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Awards */}
+            {visibility.awards && awards.length > 0 && (
+              <div>
+                <SectionHeading>{t("awards")}</SectionHeading>
+                <div className="space-y-3">
+                  {awards.map((award) => (
+                    <div key={award.id}>
+                      <div className="flex items-baseline justify-between gap-2">
+                        <h4 className="text-[13px] font-semibold text-gray-900">
+                          {award.name}
+                        </h4>
+                        <span className="flex-shrink-0 text-[10px] text-gray-400">
+                          {award.date}
+                        </span>
+                      </div>
+                      <p className="text-[11px] font-medium text-gray-500">
+                        {award.issuer}
                       </p>
                     </div>
                   ))}

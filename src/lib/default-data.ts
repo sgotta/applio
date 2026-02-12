@@ -8,6 +8,7 @@ export const defaultVisibility: SectionVisibility = {
   website: true,
   courses: false,
   certifications: false,
+  awards: false,
 };
 
 const enData: CVData = {
@@ -77,6 +78,7 @@ const enData: CVData = {
   ],
   courses: [],
   certifications: [],
+  awards: [],
   visibility: defaultVisibility,
 };
 
@@ -147,6 +149,7 @@ const esData: CVData = {
   ],
   courses: [],
   certifications: [],
+  awards: [],
   visibility: defaultVisibility,
 };
 

@@ -16,6 +16,7 @@ import {
   SkillCategory,
   CourseItem,
   CertificationItem,
+  AwardItem,
   SectionVisibility,
 } from "./types";
 import { getDefaultCVData, defaultVisibility } from "./default-data";
@@ -42,6 +43,9 @@ interface CVContextValue {
   updateCertification: (id: string, updates: Partial<CertificationItem>) => void;
   addCertification: () => void;
   removeCertification: (id: string) => void;
+  updateAward: (id: string, updates: Partial<AwardItem>) => void;
+  addAward: () => void;
+  removeAward: (id: string) => void;
   toggleSection: (key: keyof SectionVisibility) => void;
   resetData: () => void;
   importData: (data: CVData) => void;
@@ -89,6 +93,7 @@ function migrateCVData(data: any): CVData {
       skills: data.skills || [],
       courses: data.courses || [],
       certifications: data.certifications || [],
+      awards: data.awards || [],
       visibility: { ...defaultVisibility, ...data.visibility },
     };
   }
@@ -111,6 +116,7 @@ function migrateCVData(data: any): CVData {
     skills: data.skills || [],
     courses: data.courses || [],
     certifications: data.certifications || [],
+    awards: data.awards || [],
     visibility: { ...defaultVisibility, ...data.visibility },
   };
 }
@@ -349,6 +355,38 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     }));
   }, []);
 
+  const updateAward = useCallback(
+    (id: string, updates: Partial<AwardItem>) => {
+      setData((prev) => ({
+        ...prev,
+        awards: prev.awards.map((a) =>
+          a.id === id ? { ...a, ...updates } : a
+        ),
+      }));
+    },
+    []
+  );
+
+  const addAward = useCallback(() => {
+    const newAward: AwardItem = {
+      id: `award-${generateId()}`,
+      name: tRef.current("awardName"),
+      issuer: tRef.current("awardIssuer"),
+      date: "2024",
+    };
+    setData((prev) => ({
+      ...prev,
+      awards: [...prev.awards, newAward],
+    }));
+  }, []);
+
+  const removeAward = useCallback((id: string) => {
+    setData((prev) => ({
+      ...prev,
+      awards: prev.awards.filter((a) => a.id !== id),
+    }));
+  }, []);
+
   const toggleSection = useCallback((key: keyof SectionVisibility) => {
     setData((prev) => ({
       ...prev,
@@ -387,6 +425,9 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
         updateCertification,
         addCertification,
         removeCertification,
+        updateAward,
+        addAward,
+        removeAward,
         toggleSection,
         resetData,
         importData,
