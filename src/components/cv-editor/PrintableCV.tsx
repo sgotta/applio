@@ -80,7 +80,8 @@ export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
           >
             {/* Photo / Initials */}
             <div
-              className="mx-auto h-28 w-28 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden"
+              className="mx-auto h-28 w-28 rounded-full grid place-items-center overflow-hidden"
+              style={{ backgroundColor: colors.sidebarBadgeBg }}
             >
               {personalInfo.photo ? (
                 <img
@@ -90,8 +91,8 @@ export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
                 />
               ) : (
                 <span
-                  className="font-semibold text-gray-400 select-none"
-                  style={{ fontSize: fs(24) }}
+                  className="font-medium select-none leading-none tracking-wide"
+                  style={{ fontSize: fs(22), color: colors.sidebarMuted }}
                 >
                   {personalInfo.fullName
                     .split(" ")

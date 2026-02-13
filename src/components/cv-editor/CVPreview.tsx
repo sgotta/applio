@@ -52,6 +52,7 @@ function MobileHeader() {
     data: { personalInfo },
     updatePersonalInfo,
   } = useCV();
+  const { colorScheme } = useColorScheme();
 
   return (
     <div className="flex flex-col items-center px-6 pt-6">
@@ -59,6 +60,8 @@ function MobileHeader() {
         currentPhoto={personalInfo.photo}
         fullName={personalInfo.fullName}
         onPhotoChange={(photo) => updatePersonalInfo("photo", photo)}
+        placeholderBg={colorScheme.sidebarBadgeBg}
+        placeholderText={colorScheme.sidebarMuted}
       />
       <CVHeader />
     </div>

@@ -193,9 +193,11 @@ export const PersonalInfo = memo(function PersonalInfo() {
       <div className="hidden md:block">
         <ProfilePhotoUpload
           currentPhoto={personalInfo.photo}
-        fullName={personalInfo.fullName}
-        onPhotoChange={(photo) => updatePersonalInfo("photo", photo)}
-      />
+          fullName={personalInfo.fullName}
+          onPhotoChange={(photo) => updatePersonalInfo("photo", photo)}
+          placeholderBg={colorScheme.sidebarBadgeBg}
+          placeholderText={colorScheme.sidebarMuted}
+        />
       </div>
 
       {/* Contact */}

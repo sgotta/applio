@@ -9,12 +9,18 @@ interface ProfilePhotoUploadProps {
   currentPhoto?: string;
   fullName: string;
   onPhotoChange: (photoBase64: string | undefined) => void;
+  /** Background color for the initials circle (from color scheme) */
+  placeholderBg?: string;
+  /** Text color for the initials (from color scheme) */
+  placeholderText?: string;
 }
 
 export function ProfilePhotoUpload({
   currentPhoto,
   fullName,
   onPhotoChange,
+  placeholderBg,
+  placeholderText,
 }: ProfilePhotoUploadProps) {
   const t = useTranslations("photo");
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -39,7 +45,8 @@ export function ProfilePhotoUpload({
       <button
         type="button"
         onClick={() => setDialogOpen(true)}
-        className="relative w-32 h-32 rounded-full overflow-hidden bg-gray-200 dark:bg-accent flex items-center justify-center group cursor-pointer"
+        className="relative w-32 h-32 rounded-full overflow-hidden grid place-items-center group cursor-pointer"
+        style={{ backgroundColor: placeholderBg ?? "#e5e7eb" }}
       >
         {currentPhoto ? (
           <img
@@ -48,7 +55,10 @@ export function ProfilePhotoUpload({
             className="w-full h-full object-cover"
           />
         ) : (
-          <span className="text-4xl text-gray-500 dark:text-gray-400 font-semibold">
+          <span
+            className="text-3xl font-medium leading-none tracking-wide select-none"
+            style={{ color: placeholderText ?? "#9ca3af" }}
+          >
             {getInitials(fullName)}
           </span>
         )}
