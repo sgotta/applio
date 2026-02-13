@@ -20,7 +20,7 @@
     "importFormatError": "ファイル形式が正しくありません。ApplioからエクスポートされたJSONであることを確認してください。",
     "importConfirm": "この履歴書を読み込みますか？現在のデータは上書きされます。",
     "importReadError": "ファイルの読み込みエラー。有効なJSONファイルであることを確認してください。",
-    "theme": "テーマ",
+    "theme": "ダークモード",
     "themeLight": "ライト",
     "themeDark": "ダーク",
     "themeSystem": "システム",
@@ -28,7 +28,7 @@
     "export": "JSONエクスポート",
     "overflowWarning": "履歴書が1ページを超えています。PDFが正しく生成されるよう、内容を減らしてください。",
     "pdfOverflowTooltip": "履歴書が1ページを超えています。PDFが切れる可能性があります",
-    "colorScheme": "カラー",
+    "colorScheme": "CV カラー",
     "colorSchemeIvory": "アイボリー",
     "colorSchemePeterRiver": "クリアチャイルド",
     "colorSchemeEmerald": "エメラルド",
@@ -78,7 +78,11 @@
     "deleteBullet": "項目を削除",
     "addBullet": "実績を追加",
     "addExperience": "職歴を追加",
-    "newBulletDefault": "新しい実績または職務内容。"
+    "newBulletDefault": "新しい実績または職務内容。",
+    "confirmDeleteExperience": "「{name}」を削除しますか？",
+    "confirmDeleteExperienceEmpty": "この職歴を削除しますか？",
+    "deleteConfirm": "削除",
+    "deleteCancel": "キャンセル"
   },
   "education": {
     "title": "学歴",
@@ -90,7 +94,11 @@
     "endDatePlaceholder": "終了",
     "degreePlaceholder": "学位・資格",
     "descriptionPlaceholder": "説明（任意）...",
-    "addEducation": "学歴を追加"
+    "addEducation": "学歴を追加",
+    "confirmDeleteEducation": "「{name}」を削除しますか？",
+    "confirmDeleteEducationEmpty": "この学歴を削除しますか？",
+    "deleteConfirm": "削除",
+    "deleteCancel": "キャンセル"
   },
   "photo": {
     "altText": "プロフィール写真",
@@ -117,7 +125,11 @@
     "institutionPlaceholder": "機関",
     "datePlaceholder": "日付",
     "deleteCourse": "講座を削除",
-    "addCourse": "講座を追加"
+    "addCourse": "講座を追加",
+    "confirmDeleteCourse": "「{name}」を削除しますか？",
+    "confirmDeleteCourseEmpty": "この講座を削除しますか？",
+    "deleteConfirm": "削除",
+    "deleteCancel": "キャンセル"
   },
   "certifications": {
     "title": "資格",
@@ -125,7 +137,11 @@
     "issuerPlaceholder": "発行機関",
     "datePlaceholder": "日付",
     "deleteCertification": "資格を削除",
-    "addCertification": "資格を追加"
+    "addCertification": "資格を追加",
+    "confirmDeleteCertification": "「{name}」を削除しますか？",
+    "confirmDeleteCertificationEmpty": "この資格を削除しますか？",
+    "deleteConfirm": "削除",
+    "deleteCancel": "キャンセル"
   },
   "awards": {
     "title": "受賞歴",
@@ -133,7 +149,11 @@
     "issuerPlaceholder": "授与機関",
     "datePlaceholder": "日付",
     "deleteAward": "受賞歴を削除",
-    "addAward": "受賞歴を追加"
+    "addAward": "受賞歴を追加",
+    "confirmDeleteAward": "「{name}」を削除しますか？",
+    "confirmDeleteAwardEmpty": "この受賞歴を削除しますか？",
+    "deleteConfirm": "削除",
+    "deleteCancel": "キャンセル"
   },
   "printable": {
     "profilePhotoAlt": "プロフィール写真",

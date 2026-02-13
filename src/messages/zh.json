@@ -20,7 +20,7 @@
     "importFormatError": "文件格式不正确。请确保是从Applio导出的JSON文件。",
     "importConfirm": "是否要加载此简历？当前数据将被覆盖。",
     "importReadError": "读取文件时出错。请确保是有效的JSON文件。",
-    "theme": "主题",
+    "theme": "深色模式",
     "themeLight": "浅色",
     "themeDark": "深色",
     "themeSystem": "系统",
@@ -28,7 +28,7 @@
     "export": "导出 JSON",
     "overflowWarning": "您的简历超过一页。请减少内容以确保PDF正确生成。",
     "pdfOverflowTooltip": "简历超过1页，PDF可能会被截断",
-    "colorScheme": "颜色",
+    "colorScheme": "简历配色",
     "colorSchemeIvory": "象牙白",
     "colorSchemePeterRiver": "清澈蓝",
     "colorSchemeEmerald": "翡翠",
@@ -78,7 +78,11 @@
     "deleteBullet": "删除要点",
     "addBullet": "添加成就",
     "addExperience": "添加经历",
-    "newBulletDefault": "新的成就或职责。"
+    "newBulletDefault": "新的成就或职责。",
+    "confirmDeleteExperience": "删除「{name}」？",
+    "confirmDeleteExperienceEmpty": "删除此经历？",
+    "deleteConfirm": "删除",
+    "deleteCancel": "取消"
   },
   "education": {
     "title": "教育背景",
@@ -90,7 +94,11 @@
     "endDatePlaceholder": "结束",
     "degreePlaceholder": "学位/学历",
     "descriptionPlaceholder": "可选描述...",
-    "addEducation": "添加教育"
+    "addEducation": "添加教育",
+    "confirmDeleteEducation": "删除「{name}」？",
+    "confirmDeleteEducationEmpty": "删除此教育经历？",
+    "deleteConfirm": "删除",
+    "deleteCancel": "取消"
   },
   "photo": {
     "altText": "个人照片",
@@ -117,7 +125,11 @@
     "institutionPlaceholder": "机构",
     "datePlaceholder": "日期",
     "deleteCourse": "删除课程",
-    "addCourse": "添加课程"
+    "addCourse": "添加课程",
+    "confirmDeleteCourse": "删除「{name}」？",
+    "confirmDeleteCourseEmpty": "删除此课程？",
+    "deleteConfirm": "删除",
+    "deleteCancel": "取消"
   },
   "certifications": {
     "title": "证书",
@@ -125,7 +137,11 @@
     "issuerPlaceholder": "颁发机构",
     "datePlaceholder": "日期",
     "deleteCertification": "删除证书",
-    "addCertification": "添加证书"
+    "addCertification": "添加证书",
+    "confirmDeleteCertification": "删除「{name}」？",
+    "confirmDeleteCertificationEmpty": "删除此证书？",
+    "deleteConfirm": "删除",
+    "deleteCancel": "取消"
   },
   "awards": {
     "title": "奖项与荣誉",
@@ -133,7 +149,11 @@
     "issuerPlaceholder": "颁奖机构",
     "datePlaceholder": "日期",
     "deleteAward": "删除奖项",
-    "addAward": "添加奖项"
+    "addAward": "添加奖项",
+    "confirmDeleteAward": "删除「{name}」？",
+    "confirmDeleteAwardEmpty": "删除此奖项？",
+    "deleteConfirm": "删除",
+    "deleteCancel": "取消"
   },
   "printable": {
     "profilePhotoAlt": "个人照片",

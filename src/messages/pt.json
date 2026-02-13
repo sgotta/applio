@@ -20,7 +20,7 @@
     "importFormatError": "O formato do arquivo está incorreto. Verifique se é um JSON exportado do Applio.",
     "importConfirm": "Deseja carregar este CV? Os dados atuais serão sobrescritos.",
     "importReadError": "Erro ao ler o arquivo. Verifique se é um arquivo JSON válido.",
-    "theme": "Tema",
+    "theme": "Modo escuro",
     "themeLight": "Claro",
     "themeDark": "Escuro",
     "themeSystem": "Sistema",
@@ -28,7 +28,7 @@
     "export": "Exportar JSON",
     "overflowWarning": "Seu CV ultrapassa uma página. Reduza o conteúdo para que o PDF seja gerado corretamente.",
     "pdfOverflowTooltip": "O CV ultrapassa 1 página, o PDF pode ser cortado",
-    "colorScheme": "Cor",
+    "colorScheme": "Cor do CV",
     "colorSchemeIvory": "Marfim",
     "colorSchemePeterRiver": "Clear Child",
     "colorSchemeEmerald": "Esmeralda",
@@ -78,7 +78,11 @@
     "deleteBullet": "Excluir item",
     "addBullet": "Adicionar conquista",
     "addExperience": "Adicionar experiência",
-    "newBulletDefault": "Nova conquista ou responsabilidade."
+    "newBulletDefault": "Nova conquista ou responsabilidade.",
+    "confirmDeleteExperience": "Excluir \"{name}\"?",
+    "confirmDeleteExperienceEmpty": "Excluir esta experiência?",
+    "deleteConfirm": "Excluir",
+    "deleteCancel": "Cancelar"
   },
   "education": {
     "title": "Educação",
@@ -90,7 +94,11 @@
     "endDatePlaceholder": "fim",
     "degreePlaceholder": "Grau obtido",
     "descriptionPlaceholder": "Descrição opcional...",
-    "addEducation": "Adicionar educação"
+    "addEducation": "Adicionar educação",
+    "confirmDeleteEducation": "Excluir \"{name}\"?",
+    "confirmDeleteEducationEmpty": "Excluir esta educação?",
+    "deleteConfirm": "Excluir",
+    "deleteCancel": "Cancelar"
   },
   "photo": {
     "altText": "Foto de perfil",
@@ -117,7 +125,11 @@
     "institutionPlaceholder": "Instituição",
     "datePlaceholder": "data",
     "deleteCourse": "Excluir curso",
-    "addCourse": "Adicionar curso"
+    "addCourse": "Adicionar curso",
+    "confirmDeleteCourse": "Excluir \"{name}\"?",
+    "confirmDeleteCourseEmpty": "Excluir este curso?",
+    "deleteConfirm": "Excluir",
+    "deleteCancel": "Cancelar"
   },
   "certifications": {
     "title": "Certificações",
@@ -125,7 +137,11 @@
     "issuerPlaceholder": "Organização emissora",
     "datePlaceholder": "data",
     "deleteCertification": "Excluir certificação",
-    "addCertification": "Adicionar certificação"
+    "addCertification": "Adicionar certificação",
+    "confirmDeleteCertification": "Excluir \"{name}\"?",
+    "confirmDeleteCertificationEmpty": "Excluir esta certificação?",
+    "deleteConfirm": "Excluir",
+    "deleteCancel": "Cancelar"
   },
   "awards": {
     "title": "Prêmios e Honrarias",
@@ -133,7 +149,11 @@
     "issuerPlaceholder": "Organização",
     "datePlaceholder": "data",
     "deleteAward": "Excluir prêmio",
-    "addAward": "Adicionar prêmio"
+    "addAward": "Adicionar prêmio",
+    "confirmDeleteAward": "Excluir \"{name}\"?",
+    "confirmDeleteAwardEmpty": "Excluir este prêmio?",
+    "deleteConfirm": "Excluir",
+    "deleteCancel": "Cancelar"
   },
   "printable": {
     "profilePhotoAlt": "Foto de perfil",

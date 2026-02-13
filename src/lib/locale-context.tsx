@@ -58,8 +58,20 @@ const LocaleContext = createContext<LocaleContextValue | null>(null);
 
 function getInitialLocale(): Locale {
   if (typeof window === "undefined") return DEFAULT_LOCALE;
+
+  // 1. Saved preference in localStorage
   const saved = localStorage.getItem(STORAGE_KEY);
   if (saved && LOCALES.includes(saved as Locale)) return saved as Locale;
+
+  // 2. Detect from browser language
+  try {
+    const browserLang = navigator.language.split("-")[0].toLowerCase();
+    if (LOCALES.includes(browserLang as Locale)) return browserLang as Locale;
+  } catch {
+    // Fallback silently
+  }
+
+  // 3. Default to English
   return DEFAULT_LOCALE;
 }
 
