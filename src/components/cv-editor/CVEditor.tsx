@@ -4,9 +4,9 @@ import { CVPreview } from "./CVPreview";
 
 export function CVEditor() {
   return (
-    <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+    <main className="mx-auto max-w-7xl px-0 pt-0 pb-0 md:px-6 md:pt-4 md:pb-8">
       <div className="flex justify-center">
-        <div className="origin-top scale-110 mb-16">
+        <div className="w-full md:w-auto cv-zoom">
           <CVPreview />
         </div>
       </div>

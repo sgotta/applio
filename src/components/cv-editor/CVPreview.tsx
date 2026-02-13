@@ -72,7 +72,7 @@ export function CVPreview() {
   const mg = (px: number) => Math.round(px * marginScale);
 
   return (
-    <div className="mx-auto w-full md:w-[210mm] max-w-[210mm] bg-white dark:bg-card shadow-sm border border-gray-100 dark:border-border print:shadow-none print:border-none">
+    <div className="mx-auto w-full md:w-[210mm] max-w-[210mm] bg-white dark:bg-card md:shadow-sm md:border border-gray-100 dark:border-border print:shadow-none print:border-none">
       {/* CV Content — A4-like aspect ratio */}
       <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] min-h-[297mm]">
         {/* ===== MOBILE HEADER: photo + name centered (mobile only) ===== */}
@@ -94,7 +94,7 @@ export function CVPreview() {
         </div>
 
         {/* ===== RIGHT COLUMN — experience/education ===== */}
-        <div className="order-3 md:order-0 md:col-start-2 md:row-start-2 space-y-5" style={{ padding: `0 ${mg(24)}px ${mg(24)}px` }}>
+        <div className="order-3 md:order-0 md:col-start-2 md:row-start-2 space-y-5" style={{ padding: `${mg(16)}px ${mg(24)}px ${mg(24)}px` }}>
           <Experience />
           <Education />
           {visibility.courses && <Courses />}

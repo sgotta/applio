@@ -155,14 +155,16 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
     <header className="no-print sticky top-0 z-50 border-b border-border bg-white/80 dark:bg-card/80 backdrop-blur-sm">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6">
         {/* Logo */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <FileText className="h-5 w-5 text-gray-900 dark:text-gray-100" />
-          <span className="text-sm font-semibold tracking-tight text-gray-900 dark:text-gray-100">
-            Applio
-          </span>
-          <span className="hidden text-xs text-gray-400 dark:text-gray-500 sm:inline">
-            {t("tagline")}
-          </span>
+          <div className="flex items-baseline gap-2">
+            <span className="font-display text-base font-bold tracking-tight text-gray-900 dark:text-gray-100">
+              Applio
+            </span>
+            <span className="hidden text-[11px] font-light tracking-wide text-gray-400 dark:text-gray-500 sm:inline">
+              {t("tagline")}
+            </span>
+          </div>
         </div>
 
         {/* Actions */}
