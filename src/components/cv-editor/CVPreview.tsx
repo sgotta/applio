@@ -60,8 +60,8 @@ function MobileHeader() {
         currentPhoto={personalInfo.photo}
         fullName={personalInfo.fullName}
         onPhotoChange={(photo) => updatePersonalInfo("photo", photo)}
-        placeholderBg={colorScheme.sidebarBadgeBg}
-        placeholderText={colorScheme.sidebarMuted}
+        placeholderBg={`${colorScheme.nameAccent}18`}
+        placeholderText={`${colorScheme.nameAccent}90`}
       />
       <CVHeader />
     </div>
