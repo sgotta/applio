@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, KeyboardEvent } from "react";
 import { useTranslations } from "next-intl";
-import { useFontSize } from "@/lib/font-size-context";
+
 
 type EditableStyle = "heading" | "subheading" | "itemTitle" | "body" | "small" | "tiny";
 
@@ -50,7 +50,7 @@ export function EditableText({
   displayStyle,
 }: EditableTextProps) {
   const t = useTranslations("editableText");
-  const { fontScale } = useFontSize();
+  const fontScale = 1.08;
   const placeholder = placeholderProp ?? t("defaultPlaceholder");
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(value);

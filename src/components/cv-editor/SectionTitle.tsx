@@ -2,7 +2,7 @@
 
 import { Separator } from "@/components/ui/separator";
 import { useColorScheme } from "@/lib/color-scheme-context";
-import { useFontSize } from "@/lib/font-size-context";
+
 
 export function SectionTitle({
   children,
@@ -12,7 +12,7 @@ export function SectionTitle({
   sidebar?: boolean;
 }) {
   const { colorScheme } = useColorScheme();
-  const { fontScale } = useFontSize();
+  const fontScale = 1.08;
 
   const headingColor = sidebar
     ? colorScheme.sidebarText

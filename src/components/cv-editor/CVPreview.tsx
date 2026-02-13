@@ -3,7 +3,7 @@
 import { useCV } from "@/lib/cv-context";
 import { useTranslations } from "next-intl";
 import { useColorScheme } from "@/lib/color-scheme-context";
-import { useMargin } from "@/lib/margin-context";
+
 import { EditableText } from "./EditableText";
 import { PersonalInfo } from "./PersonalInfo";
 import { ProfilePhotoUpload } from "./ProfilePhotoUpload";
@@ -71,8 +71,7 @@ function MobileHeader() {
 export function CVPreview() {
   const { data: { visibility } } = useCV();
   const { colorScheme } = useColorScheme();
-  const { marginScale } = useMargin();
-  const mg = (px: number) => Math.round(px * marginScale);
+  const mg = (px: number) => Math.round(px * 1.6);
 
   return (
     <div className="mx-auto w-full md:w-[210mm] max-w-[210mm] bg-white dark:bg-card md:shadow-sm md:border border-gray-100 dark:border-border print:shadow-none print:border-none">
