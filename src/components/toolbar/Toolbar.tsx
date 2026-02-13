@@ -11,7 +11,7 @@ import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useTheme, Theme } from "@/lib/theme-context";
 import { useColorScheme } from "@/lib/color-scheme-context";
-import { COLOR_SCHEME_NAMES, COLOR_SCHEMES } from "@/lib/color-schemes";
+import { COLOR_SCHEME_NAMES, COLOR_SCHEMES, type ColorSchemeName } from "@/lib/color-schemes";
 import { useFontSize, type FontSizeLevel } from "@/lib/font-size-context";
 import { useMargin, type MarginLevel } from "@/lib/margin-context";
 import {
@@ -80,7 +80,15 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
   const ThemeIcon = resolvedTheme === "dark" ? Moon : Sun;
 
   const exportToJSON = () => {
-    const dataStr = JSON.stringify(data, null, 2);
+    const exportData = {
+      ...data,
+      settings: {
+        colorScheme: colorSchemeName,
+        fontSizeLevel,
+        marginLevel,
+      },
+    };
+    const dataStr = JSON.stringify(exportData, null, 2);
     const blob = new Blob([dataStr], { type: "application/json" });
     const url = URL.createObjectURL(blob);
 
@@ -112,6 +120,15 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
 
         if (confirm(t("importConfirm"))) {
           importData(parsed);
+          // Restore visual settings if present
+          const settings = (parsed as unknown as Record<string, unknown>).settings as
+            | { colorScheme?: string; fontSizeLevel?: number; marginLevel?: number }
+            | undefined;
+          if (settings) {
+            if (settings.colorScheme) setColorScheme(settings.colorScheme as ColorSchemeName);
+            if (settings.fontSizeLevel) setFontSizeLevel(settings.fontSizeLevel as FontSizeLevel);
+            if (settings.marginLevel) setMarginLevel(settings.marginLevel as MarginLevel);
+          }
         }
       } catch {
         alert(t("importReadError"));
@@ -313,7 +330,7 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
                   </span>
                   <button
                     onClick={() => setFontSizeLevel((fontSizeLevel + 1) as FontSizeLevel)}
-                    disabled={fontSizeLevel >= 5}
+                    disabled={fontSizeLevel >= 2}
                     className="flex h-7 w-7 items-center justify-center rounded-md border border-gray-200 dark:border-border text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-accent transition-colors disabled:opacity-30 disabled:pointer-events-none"
                   >
                     <Plus className="h-3.5 w-3.5" />
@@ -355,7 +372,7 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
                   </span>
                   <button
                     onClick={() => setMarginLevel((marginLevel + 1) as MarginLevel)}
-                    disabled={marginLevel >= 5}
+                    disabled={marginLevel >= 2}
                     className="flex h-7 w-7 items-center justify-center rounded-md border border-gray-200 dark:border-border text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-accent transition-colors disabled:opacity-30 disabled:pointer-events-none"
                   >
                     <Plus className="h-3.5 w-3.5" />
@@ -685,7 +702,7 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
                     </span>
                     <button
                       onClick={() => setFontSizeLevel((fontSizeLevel + 1) as FontSizeLevel)}
-                      disabled={fontSizeLevel >= 5}
+                      disabled={fontSizeLevel >= 2}
                       className="flex h-9 w-9 items-center justify-center rounded-md border border-gray-200 dark:border-border text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-accent transition-colors disabled:opacity-30 disabled:pointer-events-none"
                     >
                       <Plus className="h-4 w-4" />
@@ -713,7 +730,7 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
                     </span>
                     <button
                       onClick={() => setMarginLevel((marginLevel + 1) as MarginLevel)}
-                      disabled={marginLevel >= 5}
+                      disabled={marginLevel >= 2}
                       className="flex h-9 w-9 items-center justify-center rounded-md border border-gray-200 dark:border-border text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-accent transition-colors disabled:opacity-30 disabled:pointer-events-none"
                     >
                       <Plus className="h-4 w-4" />

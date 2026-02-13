@@ -9,19 +9,16 @@ import {
   useState,
 } from "react";
 
-export type MarginLevel = 1 | 2 | 3 | 4 | 5;
+export type MarginLevel = 1 | 2;
 
 const MARGIN_SCALES: Record<MarginLevel, number> = {
-  1: 0.4,
-  2: 0.7,
-  3: 1,
-  4: 1.3,
-  5: 1.6,
+  1: 1.3,
+  2: 1.6,
 };
 
-const DEFAULT_LEVEL: MarginLevel = 3;
+const DEFAULT_LEVEL: MarginLevel = 1;
 const STORAGE_KEY = "applio-margin";
-const VALID_LEVELS: MarginLevel[] = [1, 2, 3, 4, 5];
+const VALID_LEVELS: MarginLevel[] = [1, 2];
 
 interface MarginContextValue {
   marginLevel: MarginLevel;

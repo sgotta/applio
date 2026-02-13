@@ -9,19 +9,16 @@ import {
   useState,
 } from "react";
 
-export type FontSizeLevel = 1 | 2 | 3 | 4 | 5;
+export type FontSizeLevel = 1 | 2;
 
 const FONT_SIZE_SCALES: Record<FontSizeLevel, number> = {
-  1: 0.85,
-  2: 0.92,
-  3: 1,
-  4: 1.08,
-  5: 1.15,
+  1: 1,
+  2: 1.08,
 };
 
-const DEFAULT_LEVEL: FontSizeLevel = 3;
+const DEFAULT_LEVEL: FontSizeLevel = 1;
 const STORAGE_KEY = "applio-font-size";
-const VALID_LEVELS: FontSizeLevel[] = [1, 2, 3, 4, 5];
+const VALID_LEVELS: FontSizeLevel[] = [1, 2];
 
 interface FontSizeContextValue {
   fontSizeLevel: FontSizeLevel;
