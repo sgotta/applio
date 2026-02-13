@@ -3,6 +3,7 @@
 import { useCV } from "@/lib/cv-context";
 import { useTranslations } from "next-intl";
 import { useColorScheme } from "@/lib/color-scheme-context";
+import { useMargin } from "@/lib/margin-context";
 import { EditableText } from "./EditableText";
 import { PersonalInfo } from "./PersonalInfo";
 import { ProfilePhotoUpload } from "./ProfilePhotoUpload";
@@ -67,6 +68,8 @@ function MobileHeader() {
 export function CVPreview() {
   const { data: { visibility } } = useCV();
   const { colorScheme } = useColorScheme();
+  const { marginScale } = useMargin();
+  const mg = (px: number) => Math.round(px * marginScale);
 
   return (
     <div className="mx-auto w-full md:w-[210mm] max-w-[210mm] bg-white dark:bg-card shadow-sm border border-gray-100 dark:border-border print:shadow-none print:border-none">
@@ -78,20 +81,20 @@ export function CVPreview() {
         </div>
 
         {/* ===== NAME & TITLE — desktop only, top-right ===== */}
-        <div className="hidden md:block md:col-start-2 md:row-start-1 px-6 pt-6">
+        <div className="hidden md:block md:col-start-2 md:row-start-1" style={{ padding: `${mg(24)}px ${mg(24)}px 0` }}>
           <CVHeader />
         </div>
 
         {/* ===== LEFT COLUMN — sidebar on desktop, below header on mobile ===== */}
         <div
-          className="order-2 md:order-0 md:col-start-1 md:row-start-1 md:row-span-2 p-6 md:pt-6 pt-2 space-y-5"
-          style={{ backgroundColor: colorScheme.sidebarBg }}
+          className="order-2 md:order-0 md:col-start-1 md:row-start-1 md:row-span-2 space-y-5"
+          style={{ backgroundColor: colorScheme.sidebarBg, padding: mg(24) }}
         >
           <PersonalInfo />
         </div>
 
         {/* ===== RIGHT COLUMN — experience/education ===== */}
-        <div className="order-3 md:order-0 md:col-start-2 md:row-start-2 px-6 pb-6 space-y-5">
+        <div className="order-3 md:order-0 md:col-start-2 md:row-start-2 space-y-5" style={{ padding: `0 ${mg(24)}px ${mg(24)}px` }}>
           <Experience />
           <Education />
           {visibility.courses && <Courses />}

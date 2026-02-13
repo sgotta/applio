@@ -13,11 +13,12 @@ import { useTheme, Theme } from "@/lib/theme-context";
 import { useColorScheme } from "@/lib/color-scheme-context";
 import { COLOR_SCHEME_NAMES, COLOR_SCHEMES } from "@/lib/color-schemes";
 import { useFontSize, type FontSizeLevel } from "@/lib/font-size-context";
+import { useMargin, type MarginLevel } from "@/lib/margin-context";
 import {
   Download, FileUp, FileDown, FileText, Globe,
   SlidersHorizontal, Check, Sun, Moon, Monitor,
   Menu, X, ChevronRight, ChevronLeft, AlertTriangle, Palette,
-  Minus, Plus, Type,
+  Minus, Plus, Type, Maximize2,
 } from "lucide-react";
 
 interface ToolbarProps {
@@ -56,7 +57,7 @@ function SectionToggle({
   );
 }
 
-type MobileMenuPage = "main" | "language" | "theme" | "color" | "fontSize" | "sections";
+type MobileMenuPage = "main" | "language" | "theme" | "color" | "fontSize" | "margins" | "sections";
 
 export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
   const { data, importData, toggleSection } = useCV();
@@ -65,6 +66,7 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const { colorSchemeName, setColorScheme } = useColorScheme();
   const { fontSizeLevel, setFontSizeLevel } = useFontSize();
+  const { marginLevel, setMarginLevel } = useMargin();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileMenuPage, setMobileMenuPage] = useState<MobileMenuPage>("main");
@@ -320,6 +322,48 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
               </PopoverContent>
             </Popover>
 
+            {/* Margins */}
+            <Popover>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                    >
+                      <Maximize2 className="h-4 w-4" />
+                    </Button>
+                  </PopoverTrigger>
+                </TooltipTrigger>
+                <TooltipContent>{t("margins")}</TooltipContent>
+              </Tooltip>
+              <PopoverContent className="w-auto p-3" align="end">
+                <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-2">
+                  {t("margins")}
+                </p>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setMarginLevel((marginLevel - 1) as MarginLevel)}
+                    disabled={marginLevel <= 1}
+                    className="flex h-7 w-7 items-center justify-center rounded-md border border-gray-200 dark:border-border text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-accent transition-colors disabled:opacity-30 disabled:pointer-events-none"
+                  >
+                    <Minus className="h-3.5 w-3.5" />
+                  </button>
+                  <span className="w-6 text-center text-sm font-medium text-gray-700 dark:text-gray-300">
+                    {marginLevel}
+                  </span>
+                  <button
+                    onClick={() => setMarginLevel((marginLevel + 1) as MarginLevel)}
+                    disabled={marginLevel >= 5}
+                    className="flex h-7 w-7 items-center justify-center rounded-md border border-gray-200 dark:border-border text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-accent transition-colors disabled:opacity-30 disabled:pointer-events-none"
+                  >
+                    <Plus className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              </PopoverContent>
+            </Popover>
+
             {/* Sections toggle */}
             <Popover>
               <Tooltip>
@@ -464,6 +508,18 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
                     </span>
                     <span className="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500">
                       {fontSizeLevel}
+                      <ChevronRight className="h-3.5 w-3.5" />
+                    </span>
+                  </button>
+
+                  {/* Margins */}
+                  <button onClick={() => setMobileMenuPage("margins")} className={menuItemClass}>
+                    <span className="flex items-center gap-2.5">
+                      <Maximize2 className="h-4 w-4" />
+                      {t("margins")}
+                    </span>
+                    <span className="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500">
+                      {marginLevel}
                       <ChevronRight className="h-3.5 w-3.5" />
                     </span>
                   </button>
@@ -630,6 +686,34 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
                     <button
                       onClick={() => setFontSizeLevel((fontSizeLevel + 1) as FontSizeLevel)}
                       disabled={fontSizeLevel >= 5}
+                      className="flex h-9 w-9 items-center justify-center rounded-md border border-gray-200 dark:border-border text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-accent transition-colors disabled:opacity-30 disabled:pointer-events-none"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {mobileMenuPage === "margins" && (
+                <div>
+                  <button onClick={() => setMobileMenuPage("main")} className={backButtonClass}>
+                    <ChevronLeft className="h-3.5 w-3.5" />
+                    {t("margins")}
+                  </button>
+                  <div className="flex items-center justify-center gap-3 px-3 pt-3 pb-2">
+                    <button
+                      onClick={() => setMarginLevel((marginLevel - 1) as MarginLevel)}
+                      disabled={marginLevel <= 1}
+                      className="flex h-9 w-9 items-center justify-center rounded-md border border-gray-200 dark:border-border text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-accent transition-colors disabled:opacity-30 disabled:pointer-events-none"
+                    >
+                      <Minus className="h-4 w-4" />
+                    </button>
+                    <span className="w-8 text-center text-base font-medium text-gray-700 dark:text-gray-300">
+                      {marginLevel}
+                    </span>
+                    <button
+                      onClick={() => setMarginLevel((marginLevel + 1) as MarginLevel)}
+                      disabled={marginLevel >= 5}
                       className="flex h-9 w-9 items-center justify-center rounded-md border border-gray-200 dark:border-border text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-accent transition-colors disabled:opacity-30 disabled:pointer-events-none"
                     >
                       <Plus className="h-4 w-4" />

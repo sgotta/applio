@@ -36,7 +36,8 @@
     "colorSchemeSunFlower": "ひまわり",
     "colorSchemeCarrot": "キャロット",
     "colorSchemeWetAsphalt": "アスファルト",
-    "fontSize": "フォントサイズ"
+    "fontSize": "フォントサイズ",
+    "margins": "余白"
   },
   "cvPreview": {
     "fullNamePlaceholder": "氏名",

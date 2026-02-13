@@ -7,6 +7,7 @@ import { LocaleProvider } from "@/lib/locale-context";
 import { ThemeProvider } from "@/lib/theme-context";
 import { ColorSchemeProvider } from "@/lib/color-scheme-context";
 import { FontSizeProvider } from "@/lib/font-size-context";
+import { MarginProvider } from "@/lib/margin-context";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toolbar } from "@/components/toolbar/Toolbar";
 import { CVEditor } from "@/components/cv-editor/CVEditor";
@@ -58,6 +59,7 @@ export default function Home() {
     <ThemeProvider>
       <ColorSchemeProvider>
         <FontSizeProvider>
+          <MarginProvider>
           <LocaleProvider>
             <CVProvider>
               <TooltipProvider delayDuration={300}>
@@ -65,6 +67,7 @@ export default function Home() {
               </TooltipProvider>
             </CVProvider>
           </LocaleProvider>
+          </MarginProvider>
         </FontSizeProvider>
       </ColorSchemeProvider>
     </ThemeProvider>

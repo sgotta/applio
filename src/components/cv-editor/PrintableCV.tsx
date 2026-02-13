@@ -6,6 +6,7 @@ import { CVData } from "@/lib/types";
 import { Separator } from "@/components/ui/separator";
 import { useColorScheme } from "@/lib/color-scheme-context";
 import { useFontSize } from "@/lib/font-size-context";
+import { useMargin } from "@/lib/margin-context";
 import { type ColorScheme } from "@/lib/color-schemes";
 import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
 
@@ -55,9 +56,12 @@ export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
     const t = useTranslations("printable");
     const { colorScheme: colors } = useColorScheme();
     const { fontScale } = useFontSize();
+    const { marginScale } = useMargin();
 
     /** Scale a base pixel size by the current font-size level */
     const fs = (px: number) => Math.round(px * fontScale);
+    /** Scale a base pixel size by the current margin level */
+    const mg = (px: number) => Math.round(px * marginScale);
 
     return (
       <div
@@ -71,8 +75,8 @@ export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
         >
           {/* ===== LEFT COLUMN ===== */}
           <div
-            className="px-6 py-8 space-y-5"
-            style={{ backgroundColor: colors.sidebarBg }}
+            className="space-y-5"
+            style={{ backgroundColor: colors.sidebarBg, padding: `${mg(32)}px ${mg(24)}px` }}
           >
             {/* Photo / Initials */}
             <div
@@ -212,7 +216,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
           </div>
 
           {/* ===== RIGHT COLUMN ===== */}
-          <div className="p-8 space-y-5">
+          <div className="space-y-5" style={{ padding: mg(32) }}>
             {/* Header */}
             <div className="mb-8">
               <h1

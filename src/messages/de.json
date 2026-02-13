@@ -36,7 +36,8 @@
     "colorSchemeSunFlower": "Sonnenblume",
     "colorSchemeCarrot": "Karotte",
     "colorSchemeWetAsphalt": "Asphalt",
-    "fontSize": "Schriftgröße"
+    "fontSize": "Schriftgröße",
+    "margins": "Ränder"
   },
   "cvPreview": {
     "fullNamePlaceholder": "Dein vollständiger Name",

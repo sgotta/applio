@@ -36,7 +36,8 @@
     "colorSchemeSunFlower": "해바라기",
     "colorSchemeCarrot": "당근",
     "colorSchemeWetAsphalt": "아스팔트",
-    "fontSize": "글꼴 크기"
+    "fontSize": "글꼴 크기",
+    "margins": "여백"
   },
   "cvPreview": {
     "fullNamePlaceholder": "성명",

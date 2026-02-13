@@ -36,7 +36,8 @@
     "colorSchemeSunFlower": "向日葵",
     "colorSchemeCarrot": "胡萝卜",
     "colorSchemeWetAsphalt": "沥青",
-    "fontSize": "字体大小"
+    "fontSize": "字体大小",
+    "margins": "边距"
   },
   "cvPreview": {
     "fullNamePlaceholder": "您的姓名",

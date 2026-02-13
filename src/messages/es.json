@@ -36,7 +36,8 @@
     "colorSchemeSunFlower": "Girasol",
     "colorSchemeCarrot": "Zanahoria",
     "colorSchemeWetAsphalt": "Asfalto",
-    "fontSize": "Tamaño de fuente"
+    "fontSize": "Tamaño de fuente",
+    "margins": "Márgenes"
   },
   "cvPreview": {
     "fullNamePlaceholder": "Tu Nombre Completo",
