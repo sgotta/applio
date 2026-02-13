@@ -2,8 +2,9 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, KeyboardEvent } from "react";
 import { useTranslations } from "next-intl";
+import { useFontSize } from "@/lib/font-size-context";
 
-type EditableStyle = "heading" | "subheading" | "body" | "small" | "tiny";
+type EditableStyle = "heading" | "subheading" | "itemTitle" | "body" | "small" | "tiny";
 
 interface EditableTextProps {
   value: string;
@@ -16,14 +17,27 @@ interface EditableTextProps {
   displayStyle?: React.CSSProperties;
 }
 
+/** Tailwind classes WITHOUT font-size (font-size is applied via inline style) */
 const styleMap: Record<EditableStyle, string> = {
   heading:
-    "text-2xl font-semibold tracking-tight text-gray-900 dark:text-gray-100",
+    "font-semibold tracking-tight text-gray-900 dark:text-gray-100",
   subheading:
-    "text-sm font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400",
-  body: "text-[11px] leading-relaxed text-gray-600 dark:text-gray-300",
-  small: "text-[11px] text-gray-600 dark:text-gray-300",
-  tiny: "text-[10px] text-gray-400 dark:text-gray-500",
+    "font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400",
+  itemTitle:
+    "font-semibold text-gray-900 dark:text-gray-100",
+  body: "leading-relaxed text-gray-600 dark:text-gray-300",
+  small: "text-gray-600 dark:text-gray-300",
+  tiny: "text-gray-400 dark:text-gray-500",
+};
+
+/** Base pixel sizes for each style (before scaling) */
+const baseSizeMap: Record<EditableStyle, number> = {
+  heading: 24,
+  subheading: 14,
+  itemTitle: 13,
+  body: 11,
+  small: 11,
+  tiny: 10,
 };
 
 export function EditableText({
@@ -36,10 +50,13 @@ export function EditableText({
   displayStyle,
 }: EditableTextProps) {
   const t = useTranslations("editableText");
+  const { fontScale } = useFontSize();
   const placeholder = placeholderProp ?? t("defaultPlaceholder");
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(value);
   const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
+
+  const scaledFontSize = Math.round(baseSizeMap[as] * fontScale);
 
   // Sync draft when value changes externally
   useEffect(() => {
@@ -103,6 +120,11 @@ export function EditableText({
         ? `${baseStyle} ${className} w-full bg-black/[0.08] border border-black/10 rounded-sm px-1.5 py-0.5 outline-none focus:border-black/15 focus:ring-1 focus:ring-black/[0.05] transition-all duration-150 placeholder:opacity-40`
         : `${baseStyle} ${className} w-full bg-white dark:bg-accent border border-gray-300 dark:border-border rounded-sm px-1.5 py-0.5 outline-none focus:border-gray-400 dark:focus:border-ring focus:ring-1 focus:ring-gray-200 dark:focus:ring-ring/30 transition-all duration-150`;
 
+    const inputStyle: React.CSSProperties = {
+      fontSize: scaledFontSize,
+      ...(onSidebar ? displayStyle : undefined),
+    };
+
     if (multiline) {
       return (
         <textarea
@@ -114,7 +136,7 @@ export function EditableText({
           placeholder={placeholder}
           rows={1}
           className={`${inputClasses} resize-none overflow-hidden`}
-          style={onSidebar ? displayStyle : undefined}
+          style={inputStyle}
         />
       );
     }
@@ -129,10 +151,15 @@ export function EditableText({
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         className={inputClasses}
-        style={onSidebar ? displayStyle : undefined}
+        style={inputStyle}
       />
     );
   }
+
+  const spanStyle: React.CSSProperties = {
+    fontSize: scaledFontSize,
+    ...(displayEmpty ? undefined : displayStyle),
+  };
 
   return (
     <span
@@ -152,7 +179,7 @@ export function EditableText({
             : "hover:bg-black/[0.07] focus:bg-black/[0.07]"
           : "hover:bg-gray-100 dark:hover:bg-accent focus:bg-gray-100 dark:focus:bg-accent"
       } ${displayEmpty ? "text-gray-300 dark:text-gray-600 italic" : ""}`}
-      style={displayEmpty ? undefined : displayStyle}
+      style={spanStyle}
     >
       {displayEmpty ? placeholder : value}
     </span>

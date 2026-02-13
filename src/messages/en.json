@@ -35,7 +35,8 @@
     "colorSchemeAlizarin": "Bruschetta",
     "colorSchemeSunFlower": "Sun Flower",
     "colorSchemeCarrot": "Carrot",
-    "colorSchemeWetAsphalt": "Wet Asphalt"
+    "colorSchemeWetAsphalt": "Wet Asphalt",
+    "fontSize": "Font size"
   },
   "cvPreview": {
     "fullNamePlaceholder": "Your Full Name",

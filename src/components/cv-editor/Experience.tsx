@@ -114,8 +114,7 @@ function ExperienceCard({
         <EditableText
           value={exp.company}
           onChange={(v) => updateExperience(exp.id, { company: v })}
-          as="small"
-          className="!text-[13px] !font-semibold !text-gray-900 dark:text-gray-100!"
+          as="itemTitle"
           placeholder={t("companyPlaceholder")}
         />
         <div className="flex items-baseline gap-1 flex-shrink-0">
@@ -140,7 +139,6 @@ function ExperienceCard({
         value={exp.position}
         onChange={(v) => updateExperience(exp.id, { position: v })}
         as="subheading"
-        className="!text-[11px]"
         placeholder={t("positionPlaceholder")}
       />
 

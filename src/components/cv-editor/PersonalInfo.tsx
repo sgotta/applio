@@ -39,8 +39,7 @@ function ContactLine({
       <EditableText
         value={value}
         onChange={(v) => onChange(field, v)}
-        as="tiny"
-        className="!text-[11px]"
+        as="small"
         placeholder={placeholder}
         displayStyle={{ color: iconColor }}
       />
@@ -97,7 +96,6 @@ function SkillBadge({
         value={value}
         onChange={onChange}
         as="tiny"
-        className="!text-[10px]"
         placeholder={skillPlaceholder}
         displayStyle={{ color: badgeText }}
       />

@@ -35,7 +35,8 @@
     "colorSchemeAlizarin": "ブルスケッタ",
     "colorSchemeSunFlower": "ひまわり",
     "colorSchemeCarrot": "キャロット",
-    "colorSchemeWetAsphalt": "アスファルト"
+    "colorSchemeWetAsphalt": "アスファルト",
+    "fontSize": "フォントサイズ"
   },
   "cvPreview": {
     "fullNamePlaceholder": "氏名",

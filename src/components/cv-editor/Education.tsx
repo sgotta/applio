@@ -57,8 +57,7 @@ function EducationCard({
         <EditableText
           value={edu.institution}
           onChange={(v) => updateEducation(edu.id, { institution: v })}
-          as="small"
-          className="!text-[13px] !font-semibold !text-gray-900 dark:text-gray-100!"
+          as="itemTitle"
           placeholder={t("institutionPlaceholder")}
         />
         <div className="flex items-baseline gap-1 flex-shrink-0">

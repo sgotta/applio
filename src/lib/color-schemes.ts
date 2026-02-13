@@ -38,9 +38,9 @@ export const COLOR_SCHEMES: Record<ColorSchemeName, ColorScheme> = {
     sidebarSeparator: "#e5e7eb",
     sidebarBadgeBg: "#f3f4f6",
     sidebarBadgeText: "#374151",
-    heading: "#6b7280",
+    heading: "#4b5563",
     separator: "#e5e7eb",
-    bullet: "#9ca3af",
+    bullet: "#6b7280",
     nameAccent: "#b5b0a6",
   },
   /* Clear Child · Dodger Blue #1e90ff */

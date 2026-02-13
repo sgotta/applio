@@ -2,6 +2,7 @@
 
 import { Separator } from "@/components/ui/separator";
 import { useColorScheme } from "@/lib/color-scheme-context";
+import { useFontSize } from "@/lib/font-size-context";
 
 export function SectionTitle({
   children,
@@ -11,6 +12,7 @@ export function SectionTitle({
   sidebar?: boolean;
 }) {
   const { colorScheme } = useColorScheme();
+  const { fontScale } = useFontSize();
 
   const headingColor = sidebar
     ? colorScheme.sidebarText
@@ -22,8 +24,8 @@ export function SectionTitle({
   return (
     <div className="mb-3 mt-1">
       <h3
-        className="text-[10px] font-semibold uppercase tracking-[0.15em]"
-        style={{ color: headingColor }}
+        className="font-semibold uppercase tracking-[0.15em]"
+        style={{ color: headingColor, fontSize: Math.round(10 * fontScale) }}
       >
         {children}
       </h3>

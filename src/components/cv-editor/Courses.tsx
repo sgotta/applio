@@ -29,8 +29,7 @@ function CourseCard({ course }: { course: CourseItem }) {
         <EditableText
           value={course.name}
           onChange={(v) => updateCourse(course.id, { name: v })}
-          as="small"
-          className="!text-[13px] !font-semibold !text-gray-900 dark:text-gray-100!"
+          as="itemTitle"
           placeholder={t("namePlaceholder")}
         />
         <EditableText
