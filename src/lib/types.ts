@@ -76,3 +76,15 @@ export interface CVData {
   awards: AwardItem[];
   visibility: SectionVisibility;
 }
+
+export interface SharedCVData {
+  cv: Omit<CVData, "personalInfo"> & {
+    personalInfo: Omit<PersonalInfo, "photo">;
+  };
+  settings: {
+    colorScheme: string;
+    fontSizeLevel: number;
+    marginLevel: number;
+  };
+  sharedAt: string;
+}

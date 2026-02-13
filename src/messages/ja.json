@@ -37,7 +37,12 @@
     "colorSchemeCarrot": "キャロット",
     "colorSchemeWetAsphalt": "アスファルト",
     "fontSize": "フォントサイズ",
-    "margins": "余白"
+    "margins": "余白",
+    "share": "リンクを共有",
+    "shareTitle": "CVリンクを共有",
+    "shareCopied": "リンクがコピーされました！",
+    "sharePhotoNote": "共有されたCVにはプロフィール写真の代わりにイニシャルが表示されます。",
+    "shareCopyFailed": "リンクをコピーできませんでした。もう一度お試しください。"
   },
   "cvPreview": {
     "fullNamePlaceholder": "氏名",
@@ -181,5 +186,13 @@
     "certificationIssuer": "発行機関",
     "awardName": "受賞",
     "awardIssuer": "機関"
+  },
+  "sharedView": {
+    "loading": "CVを読み込み中...",
+    "errorTitle": "無効なリンク",
+    "errorMessage": "このリンクは無効または期限切れです。",
+    "createYourCV": "CVを作成する",
+    "sharedOn": "{date}に共有",
+    "madeWith": "アルゼンチン製"
   }
 }

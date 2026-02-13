@@ -5,7 +5,6 @@ import { useTranslations } from "next-intl";
 import { CVData } from "@/lib/types";
 import { Separator } from "@/components/ui/separator";
 import { useColorScheme } from "@/lib/color-scheme-context";
-
 import { type ColorScheme } from "@/lib/color-schemes";
 import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
 
@@ -39,8 +38,20 @@ function SectionHeading({
   );
 }
 
-export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
-  function PrintableCV({ data }, ref) {
+interface PrintableCVProps {
+  data: CVData;
+  forceInitials?: boolean;
+  colorSchemeOverride?: ColorScheme;
+  fontScaleOverride?: number;
+  marginScaleOverride?: number;
+  footer?: React.ReactNode;
+}
+
+export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
+  function PrintableCV(
+    { data, forceInitials, colorSchemeOverride, fontScaleOverride, marginScaleOverride, footer },
+    ref
+  ) {
     const {
       personalInfo,
       summary,
@@ -53,11 +64,20 @@ export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
       visibility,
     } = data;
     const t = useTranslations("printable");
-    const { colorScheme: colors } = useColorScheme();
-    /** Scale a base pixel size by the fixed font-size factor */
-    const fs = (px: number) => Math.round(px * 1.08);
-    /** Scale a base pixel size by the fixed margin factor */
-    const mg = (px: number) => Math.round(px * 1.6);
+    const { colorScheme: contextColors } = useColorScheme();
+
+    const colors = colorSchemeOverride ?? contextColors;
+    /** Scale a base pixel size by the font-size factor */
+    const fs = (px: number) => Math.round(px * (fontScaleOverride ?? 1.08));
+    /** Scale a base pixel size by the margin factor */
+    const mg = (px: number) => Math.round(px * (marginScaleOverride ?? 1.6));
+
+    const showInitials = forceInitials || !personalInfo.photo;
+    const initials = personalInfo.fullName
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .slice(0, 2);
 
     return (
       <div
@@ -79,7 +99,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
               className="mx-auto h-28 w-28 rounded-full grid place-items-center overflow-hidden"
               style={{ backgroundColor: colors.sidebarBadgeBg }}
             >
-              {personalInfo.photo ? (
+              {!showInitials ? (
                 <img
                   src={personalInfo.photo}
                   alt={t("profilePhotoAlt")}
@@ -88,13 +108,12 @@ export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
               ) : (
                 <span
                   className="font-medium select-none leading-none tracking-wide"
-                  style={{ fontSize: fs(22), color: colors.sidebarMuted }}
+                  style={{
+                    fontSize: fs(22),
+                    color: colors.sidebarMuted,
+                  }}
                 >
-                  {personalInfo.fullName
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")
-                    .slice(0, 2)}
+                  {initials}
                 </span>
               )}
             </div>
@@ -439,6 +458,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, { data: CVData }>(
             )}
           </div>
         </div>
+        {footer}
       </div>
     );
   }

@@ -37,7 +37,12 @@
     "colorSchemeCarrot": "胡萝卜",
     "colorSchemeWetAsphalt": "沥青",
     "fontSize": "字体大小",
-    "margins": "边距"
+    "margins": "边距",
+    "share": "分享链接",
+    "shareTitle": "分享简历链接",
+    "shareCopied": "链接已复制！",
+    "sharePhotoNote": "分享的简历将显示您的姓名首字母，而非个人照片。",
+    "shareCopyFailed": "无法复制链接。请重试。"
   },
   "cvPreview": {
     "fullNamePlaceholder": "您的姓名",
@@ -181,5 +186,13 @@
     "certificationIssuer": "颁发机构",
     "awardName": "奖项",
     "awardIssuer": "机构"
+  },
+  "sharedView": {
+    "loading": "正在加载简历...",
+    "errorTitle": "无效链接",
+    "errorMessage": "此链接无效或已过期。",
+    "createYourCV": "创建您的简历",
+    "sharedOn": "分享于 {date}",
+    "madeWith": "阿根廷制造"
   }
 }

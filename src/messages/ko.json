@@ -37,7 +37,12 @@
     "colorSchemeCarrot": "당근",
     "colorSchemeWetAsphalt": "아스팔트",
     "fontSize": "글꼴 크기",
-    "margins": "여백"
+    "margins": "여백",
+    "share": "링크 공유",
+    "shareTitle": "CV 링크 공유",
+    "shareCopied": "링크가 복사되었습니다!",
+    "sharePhotoNote": "공유된 CV에는 프로필 사진 대신 이니셜이 표시됩니다.",
+    "shareCopyFailed": "링크를 복사할 수 없습니다. 다시 시도해 주세요."
   },
   "cvPreview": {
     "fullNamePlaceholder": "성명",
@@ -181,5 +186,13 @@
     "certificationIssuer": "발급 기관",
     "awardName": "수상",
     "awardIssuer": "기관"
+  },
+  "sharedView": {
+    "loading": "CV 로딩 중...",
+    "errorTitle": "유효하지 않은 링크",
+    "errorMessage": "이 링크는 유효하지 않거나 만료되었습니다.",
+    "createYourCV": "CV 만들기",
+    "sharedOn": "{date}에 공유됨",
+    "madeWith": "아르헨티나에서 제작"
   }
 }

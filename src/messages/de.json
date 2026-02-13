@@ -37,7 +37,12 @@
     "colorSchemeCarrot": "Karotte",
     "colorSchemeWetAsphalt": "Asphalt",
     "fontSize": "Schriftgröße",
-    "margins": "Ränder"
+    "margins": "Ränder",
+    "share": "Link teilen",
+    "shareTitle": "CV-Link teilen",
+    "shareCopied": "Link kopiert!",
+    "sharePhotoNote": "Der geteilte Lebenslauf zeigt Ihre Initialen anstelle Ihres Profilfotos.",
+    "shareCopyFailed": "Link konnte nicht kopiert werden. Versuchen Sie es erneut."
   },
   "cvPreview": {
     "fullNamePlaceholder": "Dein vollständiger Name",
@@ -181,5 +186,13 @@
     "certificationIssuer": "Aussteller",
     "awardName": "Auszeichnung",
     "awardIssuer": "Organisation"
+  },
+  "sharedView": {
+    "loading": "Lebenslauf wird geladen...",
+    "errorTitle": "Ungültiger Link",
+    "errorMessage": "Dieser Link ist ungültig oder abgelaufen.",
+    "createYourCV": "Erstellen Sie Ihren Lebenslauf",
+    "sharedOn": "Geteilt am {date}",
+    "madeWith": "Hergestellt in Argentinien"
   }
 }

@@ -74,7 +74,7 @@ export function CVPreview() {
   const mg = (px: number) => Math.round(px * 1.6);
 
   return (
-    <div className="mx-auto w-full md:w-[210mm] max-w-[210mm] bg-white dark:bg-card md:shadow-sm md:border border-gray-100 dark:border-border print:shadow-none print:border-none">
+    <div className="mx-auto w-full md:w-[210mm] max-w-[210mm] bg-white dark:bg-background md:shadow-sm md:border border-gray-100 dark:border-border print:shadow-none print:border-none">
       {/* CV Content — A4-like aspect ratio */}
       <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] min-h-[297mm]">
         {/* ===== MOBILE HEADER: photo + name centered (mobile only) ===== */}

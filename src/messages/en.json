@@ -37,7 +37,12 @@
     "colorSchemeCarrot": "Carrot",
     "colorSchemeWetAsphalt": "Wet Asphalt",
     "fontSize": "Font size",
-    "margins": "Margins"
+    "margins": "Margins",
+    "share": "Share link",
+    "shareTitle": "Share CV link",
+    "shareCopied": "Link copied!",
+    "sharePhotoNote": "The shared CV will show your initials instead of your profile photo.",
+    "shareCopyFailed": "Could not copy the link. Try again."
   },
   "cvPreview": {
     "fullNamePlaceholder": "Your Full Name",
@@ -181,5 +186,13 @@
     "certificationIssuer": "Issuer",
     "awardName": "Award",
     "awardIssuer": "Organization"
+  },
+  "sharedView": {
+    "loading": "Loading CV...",
+    "errorTitle": "Invalid link",
+    "errorMessage": "This link is not valid or has expired.",
+    "createYourCV": "Create your CV",
+    "sharedOn": "Shared on {date}",
+    "madeWith": "Made in Argentina"
   }
 }

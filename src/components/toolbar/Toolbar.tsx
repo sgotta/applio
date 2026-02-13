@@ -12,10 +12,13 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { useTheme, Theme } from "@/lib/theme-context";
 import { useColorScheme } from "@/lib/color-scheme-context";
 import { COLOR_SCHEME_NAMES, COLOR_SCHEMES, type ColorSchemeName } from "@/lib/color-schemes";
+import { toast } from "sonner";
+import { buildSharedData, compressSharedData, generateShareURL } from "@/lib/sharing";
 import {
   Download, FileUp, FileDown, FileText, Globe,
   SlidersHorizontal, Check, Sun, Moon, Monitor,
   Menu, X, ChevronRight, ChevronLeft, AlertTriangle, Palette,
+  Share2,
 } from "lucide-react";
 
 interface ToolbarProps {
@@ -134,6 +137,26 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
     setMobileMenuOpen(open);
     if (!open) setMobileMenuPage("main");
   }, []);
+
+  const handleShare = useCallback(() => {
+    const shared = buildSharedData(data, {
+      colorScheme: colorSchemeName,
+      fontSizeLevel: 1,
+      marginLevel: 1,
+    });
+    const compressed = compressSharedData(shared);
+    const url = generateShareURL(compressed);
+    navigator.clipboard.writeText(url).then(
+      () => {
+        toast.success(t("shareCopied"), {
+          description: t("sharePhotoNote"),
+        });
+      },
+      () => {
+        toast.error(t("shareCopyFailed"));
+      }
+    );
+  }, [data, colorSchemeName, t]);
 
   const menuItemClass =
     "flex w-full items-center justify-between rounded-sm px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-accent transition-colors";
@@ -356,6 +379,21 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
               </TooltipTrigger>
               <TooltipContent>{t("exportTitle")}</TooltipContent>
             </Tooltip>
+
+            {/* Share link */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                  onClick={handleShare}
+                >
+                  <Share2 className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>{t("shareTitle")}</TooltipContent>
+            </Tooltip>
           </div>
 
           {/* ===== MOBILE HAMBURGER MENU (visible only on mobile) ===== */}
@@ -451,6 +489,14 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
                     <span className="flex items-center gap-2.5">
                       <FileDown className="h-4 w-4" />
                       {t("export")}
+                    </span>
+                  </button>
+
+                  {/* Share link */}
+                  <button onClick={handleShare} className={menuItemClass}>
+                    <span className="flex items-center gap-2.5">
+                      <Share2 className="h-4 w-4" />
+                      {t("share")}
                     </span>
                   </button>
 
