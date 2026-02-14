@@ -74,8 +74,8 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
     const mg = (px: number) => Math.round(px * (marginScaleOverride ?? 1.6));
 
     const [photoUrlError, setPhotoUrlError] = useState(false);
+    const [photoUrlLoaded, setPhotoUrlLoaded] = useState(false);
     const hasLocalPhoto = !forceInitials && !!personalInfo.photo;
-    const hasRemotePhoto = !!photoUrl && !photoUrlError;
     const initials = personalInfo.fullName
       .split(" ")
       .map((n) => n[0])
@@ -99,7 +99,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
           >
             {/* Photo / Initials */}
             <div
-              className="mx-auto h-28 w-28 rounded-full grid place-items-center overflow-hidden"
+              className="mx-auto h-28 w-28 rounded-full grid place-items-center overflow-hidden relative"
               style={{ backgroundColor: colors.sidebarBadgeBg }}
             >
               {hasLocalPhoto ? (
@@ -108,23 +108,29 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
                   alt={t("profilePhotoAlt")}
                   className="w-full h-full object-cover"
                 />
-              ) : hasRemotePhoto ? (
-                <img
-                  src={photoUrl}
-                  alt={t("profilePhotoAlt")}
-                  className="w-full h-full object-cover"
-                  onError={() => setPhotoUrlError(true)}
-                />
               ) : (
-                <span
-                  className="font-medium select-none leading-none tracking-wide"
-                  style={{
-                    fontSize: fs(22),
-                    color: colors.sidebarMuted,
-                  }}
-                >
-                  {initials}
-                </span>
+                <>
+                  {/* Initials always visible as base layer */}
+                  <span
+                    className={`font-medium select-none leading-none tracking-wide transition-opacity duration-300 ${photoUrlLoaded ? "opacity-0" : "opacity-100"}`}
+                    style={{
+                      fontSize: fs(22),
+                      color: colors.sidebarMuted,
+                    }}
+                  >
+                    {initials}
+                  </span>
+                  {/* Remote photo overlays on top, fades in when loaded */}
+                  {photoUrl && !photoUrlError && (
+                    <img
+                      src={photoUrl}
+                      alt={t("profilePhotoAlt")}
+                      className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${photoUrlLoaded ? "opacity-100" : "opacity-0"}`}
+                      onLoad={() => setPhotoUrlLoaded(true)}
+                      onError={() => setPhotoUrlError(true)}
+                    />
+                  )}
+                </>
               )}
             </div>
 

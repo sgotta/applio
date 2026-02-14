@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import { useCV } from "@/lib/cv-context";
 import { useTranslations } from "next-intl";
 import { useAppLocale, LOCALES, LOCALE_NAMES } from "@/lib/locale-context";
@@ -20,6 +20,24 @@ import {
   Menu, X, ChevronRight, ChevronLeft, AlertTriangle, Palette,
   Share2, Loader2,
 } from "lucide-react";
+
+const R2_LIFECYCLE_DAYS = 30;
+const CACHE_EXPIRY_MS = (R2_LIFECYCLE_DAYS / 2) * 24 * 60 * 60 * 1000;
+
+function hashString(str: string): string {
+  let hash = 0x811c9dc5;
+  for (let i = 0; i < str.length; i++) {
+    hash ^= str.charCodeAt(i);
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return (hash >>> 0).toString(36);
+}
+
+interface ImageUploadCache {
+  hash: string;
+  url: string;
+  uploadedAt: number;
+}
 
 interface ToolbarProps {
   onPrintPDF: () => void;
@@ -139,35 +157,75 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
   }, []);
 
   const [isSharing, setIsSharing] = useState(false);
+  const [showUploadOverlay, setShowUploadOverlay] = useState(false);
+
+  // Mejora 2: Image upload cache
+  const imageCache = useRef<ImageUploadCache | null>(null);
+  const prevPhotoRef = useRef(data.personalInfo.photo);
+  useEffect(() => {
+    if (data.personalInfo.photo !== prevPhotoRef.current) {
+      imageCache.current = null;
+      prevPhotoRef.current = data.personalInfo.photo;
+    }
+  }, [data.personalInfo.photo]);
+
+  // Mejora 1: Prevent tab close during upload
+  useEffect(() => {
+    if (!showUploadOverlay) return;
+    const handler = (e: BeforeUnloadEvent) => { e.preventDefault(); };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [showUploadOverlay]);
+
+  // Mejora 6: Share requires name
+  const canShare = data.personalInfo.fullName.trim().length > 0;
 
   const handleShare = useCallback(async () => {
+    if (!data.personalInfo.fullName.trim()) {
+      toast.warning(t("shareNameRequired"));
+      return;
+    }
     if (isSharing) return;
     setIsSharing(true);
 
     const settings = { colorScheme: colorSchemeName, fontSizeLevel: 1, marginLevel: 1 };
     let photoUrl: string | undefined;
     let photoUploaded = false;
+    let freshUpload = false;
 
-    // Try to upload photo to R2 if the user has one
     if (data.personalInfo.photo) {
-      try {
-        // Convert base64 to blob
-        const res = await fetch(data.personalInfo.photo);
-        const blob = await res.blob();
-        const formData = new FormData();
-        formData.append("photo", blob, "photo.jpg");
+      const currentHash = hashString(data.personalInfo.photo);
+      const cached = imageCache.current;
 
-        const uploadRes = await fetch("/api/upload-photo", {
-          method: "POST",
-          body: formData,
-        });
-        const uploadData = await uploadRes.json();
-        if (uploadData.success && uploadData.url) {
-          photoUrl = uploadData.url;
-          photoUploaded = true;
+      if (cached && cached.hash === currentHash && (Date.now() - cached.uploadedAt) < CACHE_EXPIRY_MS) {
+        // Mejora 2: Same image, cache valid — reuse URL
+        photoUrl = cached.url;
+        photoUploaded = true;
+      } else {
+        // Need to upload — show overlay (Mejora 1)
+        setShowUploadOverlay(true);
+        try {
+          const res = await fetch(data.personalInfo.photo);
+          const blob = await res.blob();
+          const formData = new FormData();
+          formData.append("photo", blob, "photo.jpg");
+
+          const uploadRes = await fetch("/api/upload-photo", {
+            method: "POST",
+            body: formData,
+          });
+          const result = await uploadRes.json();
+          if (result.success && result.url) {
+            photoUrl = result.url;
+            photoUploaded = true;
+            freshUpload = true;
+            imageCache.current = { hash: currentHash, url: result.url, uploadedAt: Date.now() };
+          }
+        } catch {
+          // Upload failed — continue without photo
+        } finally {
+          setShowUploadOverlay(false);
         }
-      } catch {
-        // Upload failed — continue without photo
       }
     }
 
@@ -177,12 +235,49 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
 
     try {
       await navigator.clipboard.writeText(url);
+      const viewLink = (
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 text-xs font-medium underline underline-offset-2 hover:opacity-80"
+        >
+          {t("shareViewLink")} ↗
+        </a>
+      );
+
       if (photoUploaded) {
-        toast.success(t("shareCopied"), { description: t("sharePhotoUploaded") });
+        toast.success(t("shareCopied"), {
+          description: (
+            <div className="space-y-1.5 pt-0.5">
+              {freshUpload && (
+                <p className="text-xs opacity-80">{t("sharePhotoTransparency", { days: R2_LIFECYCLE_DAYS })}</p>
+              )}
+              {viewLink}
+            </div>
+          ),
+          duration: 8000,
+        });
       } else if (data.personalInfo.photo) {
-        toast.success(t("shareCopied"), { description: t("sharePhotoFailed") });
+        toast.success(t("shareCopied"), {
+          description: (
+            <div className="space-y-1.5 pt-0.5">
+              <p>{t("sharePhotoFailed")}</p>
+              {viewLink}
+            </div>
+          ),
+          duration: 6000,
+        });
       } else {
-        toast.success(t("shareCopied"), { description: t("sharePhotoNote") });
+        toast.success(t("shareCopied"), {
+          description: (
+            <div className="space-y-1.5 pt-0.5">
+              <p>{t("sharePhotoNote")}</p>
+              {viewLink}
+            </div>
+          ),
+          duration: 6000,
+        });
       }
     } catch {
       toast.error(t("shareCopyFailed"));
@@ -419,14 +514,14 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                  className={`h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 ${!canShare ? "opacity-50 cursor-not-allowed" : ""}`}
                   onClick={handleShare}
                   disabled={isSharing}
                 >
                   {isSharing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Share2 className="h-4 w-4" />}
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>{t("shareTitle")}</TooltipContent>
+              <TooltipContent>{canShare ? t("shareTitle") : t("shareNameRequired")}</TooltipContent>
             </Tooltip>
           </div>
 
@@ -527,7 +622,7 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
                   </button>
 
                   {/* Share link */}
-                  <button onClick={handleShare} disabled={isSharing} className={menuItemClass}>
+                  <button onClick={handleShare} disabled={isSharing} className={`${menuItemClass} ${!canShare ? "opacity-50" : ""}`}>
                     <span className="flex items-center gap-2.5">
                       {isSharing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Share2 className="h-4 w-4" />}
                       {isSharing ? t("shareUploading") : t("share")}
@@ -711,6 +806,22 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
           <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-500" />
           <p className="text-xs text-amber-800 dark:text-amber-200">
             {t("overflowWarning")}
+          </p>
+        </div>
+      </div>
+    )}
+
+    {/* Mejora 1: Full-screen overlay during photo upload */}
+    {showUploadOverlay && (
+      <div
+        className="fixed inset-0 z-100 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+        role="alert"
+        aria-busy="true"
+      >
+        <div className="flex flex-col items-center gap-4 rounded-xl bg-white dark:bg-gray-900 px-8 py-6 shadow-2xl">
+          <Loader2 className="h-8 w-8 animate-spin text-gray-700 dark:text-gray-300" />
+          <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            {t("shareOverlayMessage")}
           </p>
         </div>
       </div>

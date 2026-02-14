@@ -56,7 +56,8 @@ function MobileCVView({
 }) {
   const t = useTranslations("printable");
   const { personalInfo, summary, experience, education, skills, courses, certifications, awards, visibility } = data;
-  const [photoError, setPhotoError] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageFailed, setImageFailed] = useState(false);
 
   const initials = personalInfo.fullName
     .split(" ")
@@ -64,8 +65,6 @@ function MobileCVView({
     .join("")
     .slice(0, 2)
     .toUpperCase();
-
-  const showPhoto = !!photoUrl && !photoError;
 
   /* Match editor's hardcoded scales (CVPreview, EditableText, SectionTitle) */
   const fontScale = 1.08;
@@ -92,23 +91,25 @@ function MobileCVView({
         {/* Photo circle — w-32 h-32 matches ProfilePhotoUpload, colors match MobileHeader */}
         <div className="flex flex-col items-center mb-6">
           <div
-            className="w-32 h-32 rounded-full grid place-items-center overflow-hidden"
+            className="w-32 h-32 rounded-full grid place-items-center overflow-hidden relative"
             style={{ backgroundColor: `${colors.nameAccent}18` }}
           >
-            {showPhoto ? (
+            {/* Initials always rendered as base layer */}
+            <span
+              className={`text-3xl font-medium leading-none tracking-wide select-none transition-opacity duration-300 ${imageLoaded ? "opacity-0" : "opacity-100"}`}
+              style={{ color: `${colors.nameAccent}90` }}
+            >
+              {initials}
+            </span>
+            {/* Photo overlaid on top, fades in when loaded */}
+            {photoUrl && !imageFailed && (
               <img
                 src={photoUrl}
                 alt={personalInfo.fullName}
-                className="w-full h-full object-cover"
-                onError={() => setPhotoError(true)}
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
+                onLoad={() => setImageLoaded(true)}
+                onError={() => setImageFailed(true)}
               />
-            ) : (
-              <span
-                className="text-3xl font-medium leading-none tracking-wide select-none"
-                style={{ color: `${colors.nameAccent}90` }}
-              >
-                {initials}
-              </span>
             )}
           </div>
         </div>

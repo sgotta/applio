@@ -45,7 +45,11 @@
     "sharePhotoUploaded": "プロフィール写真が共有CVに含まれます。",
     "sharePhotoFailed": "CVはプロフィール写真の代わりにイニシャルで共有されます。",
     "shareUploading": "共有中...",
-    "shareCopyFailed": "リンクをコピーできませんでした。もう一度お試しください。"
+    "shareCopyFailed": "リンクをコピーできませんでした。もう一度お試しください。",
+    "shareOverlayMessage": "CVを共有する準備をしています...",
+    "sharePhotoTransparency": "プロフィール写真は一時的にサーバーに保存され、{days}日後に自動的に削除されます。",
+    "shareViewLink": "共有したCVを見る",
+    "shareNameRequired": "CVを共有するには名前を入力してください。"
   },
   "cvPreview": {
     "fullNamePlaceholder": "氏名",

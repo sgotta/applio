@@ -45,7 +45,11 @@
     "sharePhotoUploaded": "您的个人照片将包含在分享的简历中。",
     "sharePhotoFailed": "您的简历将显示姓名首字母，而非个人照片。",
     "shareUploading": "分享中...",
-    "shareCopyFailed": "无法复制链接。请重试。"
+    "shareCopyFailed": "无法复制链接。请重试。",
+    "shareOverlayMessage": "正在准备分享您的简历...",
+    "sharePhotoTransparency": "您的个人照片将临时存储在我们的服务器上，并在{days}天后自动删除。",
+    "shareViewLink": "查看我的分享简历",
+    "shareNameRequired": "请输入您的姓名以分享简历。"
   },
   "cvPreview": {
     "fullNamePlaceholder": "您的姓名",

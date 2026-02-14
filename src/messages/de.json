@@ -45,7 +45,11 @@
     "sharePhotoUploaded": "Ihr Profilfoto wird im geteilten Lebenslauf angezeigt.",
     "sharePhotoFailed": "Ihr Lebenslauf wird mit Ihren Initialen anstelle Ihres Profilfotos geteilt.",
     "shareUploading": "Wird geteilt...",
-    "shareCopyFailed": "Link konnte nicht kopiert werden. Versuchen Sie es erneut."
+    "shareCopyFailed": "Link konnte nicht kopiert werden. Versuchen Sie es erneut.",
+    "shareOverlayMessage": "Ihr Lebenslauf wird zum Teilen vorbereitet...",
+    "sharePhotoTransparency": "Ihr Profilfoto wird vorübergehend auf unseren Servern gespeichert und nach {days} Tagen automatisch gelöscht.",
+    "shareViewLink": "Meinen geteilten Lebenslauf ansehen",
+    "shareNameRequired": "Geben Sie Ihren Namen ein, um den Lebenslauf zu teilen."
   },
   "cvPreview": {
     "fullNamePlaceholder": "Dein vollständiger Name",

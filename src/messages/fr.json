@@ -45,7 +45,11 @@
     "sharePhotoUploaded": "Votre photo de profil sera incluse dans le CV partagé.",
     "sharePhotoFailed": "Votre CV sera partagé avec vos initiales au lieu de votre photo de profil.",
     "shareUploading": "Partage en cours...",
-    "shareCopyFailed": "Impossible de copier le lien. Réessayez."
+    "shareCopyFailed": "Impossible de copier le lien. Réessayez.",
+    "shareOverlayMessage": "Préparation de votre CV pour le partage...",
+    "sharePhotoTransparency": "Votre photo de profil est temporairement stockée sur nos serveurs et automatiquement supprimée après {days} jours.",
+    "shareViewLink": "Voir mon CV partagé",
+    "shareNameRequired": "Entrez votre nom pour partager votre CV."
   },
   "cvPreview": {
     "fullNamePlaceholder": "Votre Nom Complet",
