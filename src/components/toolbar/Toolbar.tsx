@@ -21,8 +21,7 @@ import {
   Share2, Loader2,
 } from "lucide-react";
 
-const R2_LIFECYCLE_DAYS = 30;
-const CACHE_EXPIRY_MS = (R2_LIFECYCLE_DAYS / 2) * 24 * 60 * 60 * 1000;
+const CACHE_EXPIRY_MS = 15 * 24 * 60 * 60 * 1000; // 15 days
 
 function hashString(str: string): string {
   let hash = 0x811c9dc5;
@@ -191,7 +190,6 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
     const settings = { colorScheme: colorSchemeName, fontSizeLevel: 1, marginLevel: 1 };
     let photoUrl: string | undefined;
     let photoUploaded = false;
-    let freshUpload = false;
 
     if (data.personalInfo.photo) {
       const currentHash = hashString(data.personalInfo.photo);
@@ -218,7 +216,6 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
           if (result.success && result.url) {
             photoUrl = result.url;
             photoUploaded = true;
-            freshUpload = true;
             imageCache.current = { hash: currentHash, url: result.url, uploadedAt: Date.now() };
           }
         } catch {
@@ -250,13 +247,10 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
         toast.success(t("shareCopied"), {
           description: (
             <div className="space-y-1.5 pt-0.5">
-              {freshUpload && (
-                <p className="text-xs opacity-80">{t("sharePhotoTransparency", { days: R2_LIFECYCLE_DAYS })}</p>
-              )}
               {viewLink}
             </div>
           ),
-          duration: 8000,
+          duration: 6000,
         });
       } else if (data.personalInfo.photo) {
         toast.success(t("shareCopied"), {

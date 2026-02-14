@@ -47,7 +47,6 @@
     "shareUploading": "Compartiendo...",
     "shareCopyFailed": "No se pudo copiar el link. Intentá de nuevo.",
     "shareOverlayMessage": "Preparando tu CV para compartir...",
-    "sharePhotoTransparency": "Tu foto de perfil se almacena temporalmente en nuestros servidores y se elimina automáticamente después de {days} días.",
     "shareViewLink": "Ver mi CV compartido",
     "shareNameRequired": "Completá tu nombre para poder compartir el CV."
   },

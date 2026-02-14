@@ -47,7 +47,6 @@
     "shareUploading": "Sharing...",
     "shareCopyFailed": "Could not copy the link. Try again.",
     "shareOverlayMessage": "Preparing your CV for sharing...",
-    "sharePhotoTransparency": "Your profile photo is temporarily stored on our servers and automatically deleted after {days} days.",
     "shareViewLink": "View my shared CV",
     "shareNameRequired": "Enter your name to share your CV."
   },
