@@ -42,6 +42,9 @@
     "shareTitle": "CV 링크 공유",
     "shareCopied": "링크가 복사되었습니다!",
     "sharePhotoNote": "공유된 CV에는 프로필 사진 대신 이니셜이 표시됩니다.",
+    "sharePhotoUploaded": "프로필 사진이 공유된 CV에 포함됩니다.",
+    "sharePhotoFailed": "CV가 프로필 사진 대신 이니셜로 공유됩니다.",
+    "shareUploading": "공유 중...",
     "shareCopyFailed": "링크를 복사할 수 없습니다. 다시 시도해 주세요."
   },
   "cvPreview": {

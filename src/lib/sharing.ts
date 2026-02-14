@@ -12,16 +12,24 @@ import {
 
 /**
  * Build the shareable data payload from the editor state.
- * Strips the photo from personalInfo to keep URLs small.
+ * Strips the base64 photo from personalInfo to keep URLs small.
+ * If a photoUrl (R2) is provided, it is included instead.
  */
 export function buildSharedData(
   data: CVData,
-  settings: { colorScheme: string; fontSizeLevel: number; marginLevel: number }
+  settings: { colorScheme: string; fontSizeLevel: number; marginLevel: number },
+  photoUrl?: string
 ): SharedCVData {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { photo, ...personalInfoWithoutPhoto } = data.personalInfo;
   return {
-    cv: { ...data, personalInfo: personalInfoWithoutPhoto },
+    cv: {
+      ...data,
+      personalInfo: {
+        ...personalInfoWithoutPhoto,
+        ...(photoUrl ? { photoUrl } : {}),
+      },
+    },
     settings,
     sharedAt: new Date().toISOString(),
   };
@@ -98,6 +106,9 @@ function validateSharedData(data: unknown): SharedCVData | null {
         location: String(pi.location || ""),
         linkedin: String(pi.linkedin || ""),
         website: String(pi.website || ""),
+        ...(typeof pi.photoUrl === "string" && pi.photoUrl
+          ? { photoUrl: pi.photoUrl }
+          : {}),
       },
       summary: typeof cv.summary === "string" ? cv.summary : "",
       experience: Array.isArray(cv.experience) ? cv.experience : [],

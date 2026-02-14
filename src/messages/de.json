@@ -42,6 +42,9 @@
     "shareTitle": "CV-Link teilen",
     "shareCopied": "Link kopiert!",
     "sharePhotoNote": "Der geteilte Lebenslauf zeigt Ihre Initialen anstelle Ihres Profilfotos.",
+    "sharePhotoUploaded": "Ihr Profilfoto wird im geteilten Lebenslauf angezeigt.",
+    "sharePhotoFailed": "Ihr Lebenslauf wird mit Ihren Initialen anstelle Ihres Profilfotos geteilt.",
+    "shareUploading": "Wird geteilt...",
     "shareCopyFailed": "Link konnte nicht kopiert werden. Versuchen Sie es erneut."
   },
   "cvPreview": {

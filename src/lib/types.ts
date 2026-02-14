@@ -79,7 +79,7 @@ export interface CVData {
 
 export interface SharedCVData {
   cv: Omit<CVData, "personalInfo"> & {
-    personalInfo: Omit<PersonalInfo, "photo">;
+    personalInfo: Omit<PersonalInfo, "photo"> & { photoUrl?: string };
   };
   settings: {
     colorScheme: string;

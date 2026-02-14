@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef } from "react";
+import { forwardRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { CVData } from "@/lib/types";
 import { Separator } from "@/components/ui/separator";
@@ -41,6 +41,7 @@ function SectionHeading({
 interface PrintableCVProps {
   data: CVData;
   forceInitials?: boolean;
+  photoUrl?: string;
   colorSchemeOverride?: ColorScheme;
   fontScaleOverride?: number;
   marginScaleOverride?: number;
@@ -49,7 +50,7 @@ interface PrintableCVProps {
 
 export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
   function PrintableCV(
-    { data, forceInitials, colorSchemeOverride, fontScaleOverride, marginScaleOverride, footer },
+    { data, forceInitials, photoUrl, colorSchemeOverride, fontScaleOverride, marginScaleOverride, footer },
     ref
   ) {
     const {
@@ -72,7 +73,9 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
     /** Scale a base pixel size by the margin factor */
     const mg = (px: number) => Math.round(px * (marginScaleOverride ?? 1.6));
 
-    const showInitials = forceInitials || !personalInfo.photo;
+    const [photoUrlError, setPhotoUrlError] = useState(false);
+    const hasLocalPhoto = !forceInitials && !!personalInfo.photo;
+    const hasRemotePhoto = !!photoUrl && !photoUrlError;
     const initials = personalInfo.fullName
       .split(" ")
       .map((n) => n[0])
@@ -99,11 +102,18 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
               className="mx-auto h-28 w-28 rounded-full grid place-items-center overflow-hidden"
               style={{ backgroundColor: colors.sidebarBadgeBg }}
             >
-              {!showInitials ? (
+              {hasLocalPhoto ? (
                 <img
                   src={personalInfo.photo}
                   alt={t("profilePhotoAlt")}
                   className="w-full h-full object-cover"
+                />
+              ) : hasRemotePhoto ? (
+                <img
+                  src={photoUrl}
+                  alt={t("profilePhotoAlt")}
+                  className="w-full h-full object-cover"
+                  onError={() => setPhotoUrlError(true)}
                 />
               ) : (
                 <span

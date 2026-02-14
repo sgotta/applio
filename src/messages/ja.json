@@ -42,6 +42,9 @@
     "shareTitle": "CVリンクを共有",
     "shareCopied": "リンクがコピーされました！",
     "sharePhotoNote": "共有されたCVにはプロフィール写真の代わりにイニシャルが表示されます。",
+    "sharePhotoUploaded": "プロフィール写真が共有CVに含まれます。",
+    "sharePhotoFailed": "CVはプロフィール写真の代わりにイニシャルで共有されます。",
+    "shareUploading": "共有中...",
     "shareCopyFailed": "リンクをコピーできませんでした。もう一度お試しください。"
   },
   "cvPreview": {

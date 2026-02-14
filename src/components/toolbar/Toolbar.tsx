@@ -18,7 +18,7 @@ import {
   Download, FileUp, FileDown, FileText, Globe,
   SlidersHorizontal, Check, Sun, Moon, Monitor,
   Menu, X, ChevronRight, ChevronLeft, AlertTriangle, Palette,
-  Share2,
+  Share2, Loader2,
 } from "lucide-react";
 
 interface ToolbarProps {
@@ -138,25 +138,58 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
     if (!open) setMobileMenuPage("main");
   }, []);
 
-  const handleShare = useCallback(() => {
-    const shared = buildSharedData(data, {
-      colorScheme: colorSchemeName,
-      fontSizeLevel: 1,
-      marginLevel: 1,
-    });
+  const [isSharing, setIsSharing] = useState(false);
+
+  const handleShare = useCallback(async () => {
+    if (isSharing) return;
+    setIsSharing(true);
+
+    const settings = { colorScheme: colorSchemeName, fontSizeLevel: 1, marginLevel: 1 };
+    let photoUrl: string | undefined;
+    let photoUploaded = false;
+
+    // Try to upload photo to R2 if the user has one
+    if (data.personalInfo.photo) {
+      try {
+        // Convert base64 to blob
+        const res = await fetch(data.personalInfo.photo);
+        const blob = await res.blob();
+        const formData = new FormData();
+        formData.append("photo", blob, "photo.jpg");
+
+        const uploadRes = await fetch("/api/upload-photo", {
+          method: "POST",
+          body: formData,
+        });
+        const uploadData = await uploadRes.json();
+        if (uploadData.success && uploadData.url) {
+          photoUrl = uploadData.url;
+          photoUploaded = true;
+        }
+      } catch {
+        // Upload failed — continue without photo
+      }
+    }
+
+    const shared = buildSharedData(data, settings, photoUrl);
     const compressed = compressSharedData(shared);
     const url = generateShareURL(compressed);
-    navigator.clipboard.writeText(url).then(
-      () => {
-        toast.success(t("shareCopied"), {
-          description: t("sharePhotoNote"),
-        });
-      },
-      () => {
-        toast.error(t("shareCopyFailed"));
+
+    try {
+      await navigator.clipboard.writeText(url);
+      if (photoUploaded) {
+        toast.success(t("shareCopied"), { description: t("sharePhotoUploaded") });
+      } else if (data.personalInfo.photo) {
+        toast.success(t("shareCopied"), { description: t("sharePhotoFailed") });
+      } else {
+        toast.success(t("shareCopied"), { description: t("sharePhotoNote") });
       }
-    );
-  }, [data, colorSchemeName, t]);
+    } catch {
+      toast.error(t("shareCopyFailed"));
+    } finally {
+      setIsSharing(false);
+    }
+  }, [data, colorSchemeName, t, isSharing]);
 
   const menuItemClass =
     "flex w-full items-center justify-between rounded-sm px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-accent transition-colors";
@@ -388,8 +421,9 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
                   size="icon"
                   className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
                   onClick={handleShare}
+                  disabled={isSharing}
                 >
-                  <Share2 className="h-4 w-4" />
+                  {isSharing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Share2 className="h-4 w-4" />}
                 </Button>
               </TooltipTrigger>
               <TooltipContent>{t("shareTitle")}</TooltipContent>
@@ -493,10 +527,10 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
                   </button>
 
                   {/* Share link */}
-                  <button onClick={handleShare} className={menuItemClass}>
+                  <button onClick={handleShare} disabled={isSharing} className={menuItemClass}>
                     <span className="flex items-center gap-2.5">
-                      <Share2 className="h-4 w-4" />
-                      {t("share")}
+                      {isSharing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Share2 className="h-4 w-4" />}
+                      {isSharing ? t("shareUploading") : t("share")}
                     </span>
                   </button>
 

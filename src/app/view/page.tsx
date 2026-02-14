@@ -48,12 +48,15 @@ function MobileSectionHeading({
 function MobileCVView({
   data,
   colors,
+  photoUrl,
 }: {
   data: CVData;
   colors: ColorScheme;
+  photoUrl?: string;
 }) {
   const t = useTranslations("printable");
   const { personalInfo, summary, experience, education, skills, courses, certifications, awards, visibility } = data;
+  const [photoError, setPhotoError] = useState(false);
 
   const initials = personalInfo.fullName
     .split(" ")
@@ -61,6 +64,8 @@ function MobileCVView({
     .join("")
     .slice(0, 2)
     .toUpperCase();
+
+  const showPhoto = !!photoUrl && !photoError;
 
   /* Match editor's hardcoded scales (CVPreview, EditableText, SectionTitle) */
   const fontScale = 1.08;
@@ -90,12 +95,21 @@ function MobileCVView({
             className="w-32 h-32 rounded-full grid place-items-center overflow-hidden"
             style={{ backgroundColor: `${colors.nameAccent}18` }}
           >
-            <span
-              className="text-3xl font-medium leading-none tracking-wide select-none"
-              style={{ color: `${colors.nameAccent}90` }}
-            >
-              {initials}
-            </span>
+            {showPhoto ? (
+              <img
+                src={photoUrl}
+                alt={personalInfo.fullName}
+                className="w-full h-full object-cover"
+                onError={() => setPhotoError(true)}
+              />
+            ) : (
+              <span
+                className="text-3xl font-medium leading-none tracking-wide select-none"
+                style={{ color: `${colors.nameAccent}90` }}
+              >
+                {initials}
+              </span>
+            )}
           </div>
         </div>
 
@@ -464,6 +478,8 @@ function ViewContent() {
     );
   }
 
+  const photoUrl = sharedData.cv.personalInfo.photoUrl;
+
   const cvData: CVData = {
     ...sharedData.cv,
     personalInfo: {
@@ -501,7 +517,8 @@ function ViewContent() {
         >
           <PrintableCV
             data={cvData}
-            forceInitials
+            forceInitials={!photoUrl}
+            photoUrl={photoUrl}
             colorSchemeOverride={colorScheme}
             fontScaleOverride={fontScale}
             marginScaleOverride={marginScale}
@@ -511,7 +528,7 @@ function ViewContent() {
 
       {/* Mobile: responsive single-column layout (hidden on desktop) */}
       <div className="md:hidden print:hidden">
-        <MobileCVView data={cvData} colors={colorScheme} />
+        <MobileCVView data={cvData} colors={colorScheme} photoUrl={photoUrl} />
       </div>
 
       <div className="text-center py-6 print:hidden">

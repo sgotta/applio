@@ -42,6 +42,9 @@
     "shareTitle": "Condividi link del CV",
     "shareCopied": "Link copiato!",
     "sharePhotoNote": "Il CV condiviso mostrerà le tue iniziali invece della tua foto profilo.",
+    "sharePhotoUploaded": "La tua foto profilo sarà inclusa nel CV condiviso.",
+    "sharePhotoFailed": "Il tuo CV verrà condiviso con le tue iniziali invece della tua foto profilo.",
+    "shareUploading": "Condivisione in corso...",
     "shareCopyFailed": "Impossibile copiare il link. Riprova."
   },
   "cvPreview": {
