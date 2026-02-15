@@ -13,7 +13,7 @@ import { useTheme, Theme } from "@/lib/theme-context";
 import { useColorScheme } from "@/lib/color-scheme-context";
 import { COLOR_SCHEME_NAMES, COLOR_SCHEMES, type ColorSchemeName } from "@/lib/color-schemes";
 import { buildSharedData, compressSharedData, generateShareURL } from "@/lib/sharing";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import {
   Download, FileUp, FileDown, FileText, Globe,
   SlidersHorizontal, Check, Sun, Moon, Monitor,
@@ -162,6 +162,23 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
   const [sharePhotoNote, setSharePhotoNote] = useState<string | null>(null);
   const [shareCopied, setShareCopied] = useState(false);
   const shareCopiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const [overflowDialogOpen, setOverflowDialogOpen] = useState(false);
+  const [overflowAcknowledged, setOverflowAcknowledged] = useState(false);
+  const [overflowIndicatorDismissed, setOverflowIndicatorDismissed] = useState(false);
+  const overflowShownRef = useRef(false);
+
+  useEffect(() => {
+    if (isOverflowing && !overflowShownRef.current) {
+      setOverflowDialogOpen(true);
+      overflowShownRef.current = true;
+    }
+    if (!isOverflowing) {
+      overflowShownRef.current = false;
+      setOverflowAcknowledged(false);
+      setOverflowIndicatorDismissed(false);
+    }
+  }, [isOverflowing]);
 
   // Mejora 2: Image upload cache
   const imageCache = useRef<ImageUploadCache | null>(null);
@@ -611,17 +628,9 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
                   {/* Export PDF — prominent */}
                   <button
                     onClick={onPrintPDF}
-                    className={`mx-auto mb-1.5 flex items-center justify-center gap-2 rounded-md px-8 py-2.5 text-sm font-medium transition-colors ${
-                      isOverflowing
-                        ? "bg-amber-600 text-white hover:bg-amber-700"
-                        : "bg-gray-900 text-white hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
-                    }`}
+                    className="mx-auto mb-1.5 flex items-center justify-center gap-2 rounded-md px-8 py-2.5 text-sm font-medium transition-colors bg-gray-900 text-white hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
                   >
-                    {isOverflowing ? (
-                      <AlertTriangle className="h-4 w-4" />
-                    ) : (
-                      <Download className="h-4 w-4" />
-                    )}
+                    <Download className="h-4 w-4" />
                     PDF
                   </button>
                 </div>
@@ -752,38 +761,52 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
               <Button
                 variant="default"
                 size="sm"
-                className={`hidden md:inline-flex ml-1 ${
-                  isOverflowing
-                    ? "bg-amber-600 text-white hover:bg-amber-700 dark:bg-amber-600 dark:text-white dark:hover:bg-amber-700"
-                    : "bg-gray-900 text-white hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
-                }`}
+                className="hidden md:inline-flex ml-1 bg-gray-900 text-white hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
                 onClick={onPrintPDF}
               >
-                {isOverflowing ? (
-                  <AlertTriangle className="mr-1.5 h-4 w-4" />
-                ) : (
-                  <Download className="mr-1.5 h-4 w-4" />
-                )}
+                <Download className="mr-1.5 h-4 w-4" />
                 <span>PDF</span>
               </Button>
             </TooltipTrigger>
-            <TooltipContent>
-              {isOverflowing ? t("pdfOverflowTooltip") : t("pdfTitle")}
-            </TooltipContent>
+            <TooltipContent>{t("pdfTitle")}</TooltipContent>
           </Tooltip>
         </div>
       </div>
     </header>
 
-    {/* Overflow warning banner */}
-    {isOverflowing && (
-      <div className="no-print border-b border-amber-200 bg-amber-50 dark:border-amber-900/50 dark:bg-amber-950/30">
-        <div className="mx-auto flex max-w-7xl items-center gap-2 px-4 py-2 sm:px-6">
-          <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-500" />
-          <p className="text-xs text-amber-800 dark:text-amber-200">
+    {/* Overflow warning dialog */}
+    <Dialog open={overflowDialogOpen} onOpenChange={setOverflowDialogOpen}>
+      <DialogContent className="sm:max-w-sm">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <AlertTriangle className="h-4 w-4 text-amber-600" />
             {t("overflowWarning")}
-          </p>
-        </div>
+          </DialogTitle>
+          <DialogDescription>{t("overflowDescription")}</DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => { setOverflowAcknowledged(true); setOverflowDialogOpen(false); }}
+          >
+            {t("overflowContinue")}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+
+    {/* Persistent overflow indicator (after user acknowledges) */}
+    {isOverflowing && overflowAcknowledged && !overflowIndicatorDismissed && (
+      <div className="no-print fixed bottom-4 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 border border-border bg-background px-3.5 py-2 shadow-md rounded-md">
+        <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-amber-600" />
+        <span className="text-xs font-medium text-foreground">{t("overflowWarning")}</span>
+        <button
+          onClick={() => setOverflowIndicatorDismissed(true)}
+          className="rounded-sm p-0.5 text-muted-foreground/60 hover:text-foreground transition-colors"
+        >
+          <X className="h-3 w-3" />
+        </button>
       </div>
     )}
 
@@ -831,9 +854,9 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
         role="alert"
         aria-busy="true"
       >
-        <div className="flex flex-col items-center gap-4 rounded-xl bg-white dark:bg-gray-900 px-8 py-6 shadow-2xl">
-          <Loader2 className="h-8 w-8 animate-spin text-gray-700 dark:text-gray-300" />
-          <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="h-7 w-7 animate-spin text-white" />
+          <p className="text-sm font-medium text-white">
             {t("shareOverlayMessage")}
           </p>
         </div>
