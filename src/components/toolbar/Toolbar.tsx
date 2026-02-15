@@ -12,13 +12,13 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { useTheme, Theme } from "@/lib/theme-context";
 import { useColorScheme } from "@/lib/color-scheme-context";
 import { COLOR_SCHEME_NAMES, COLOR_SCHEMES, type ColorSchemeName } from "@/lib/color-schemes";
-import { toast } from "sonner";
 import { buildSharedData, compressSharedData, generateShareURL } from "@/lib/sharing";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import {
   Download, FileUp, FileDown, FileText, Globe,
   SlidersHorizontal, Check, Sun, Moon, Monitor,
   Menu, X, ChevronRight, ChevronLeft, AlertTriangle, Palette,
-  Share2, Loader2,
+  Share2, Loader2, Copy,
 } from "lucide-react";
 
 const CACHE_EXPIRY_MS = 15 * 24 * 60 * 60 * 1000; // 15 days
@@ -157,6 +157,11 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
 
   const [isSharing, setIsSharing] = useState(false);
   const [showUploadOverlay, setShowUploadOverlay] = useState(false);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [shareUrl, setShareUrl] = useState<string | null>(null);
+  const [sharePhotoNote, setSharePhotoNote] = useState<string | null>(null);
+  const [shareCopied, setShareCopied] = useState(false);
+  const shareCopiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Mejora 2: Image upload cache
   const imageCache = useRef<ImageUploadCache | null>(null);
@@ -167,6 +172,12 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
       prevPhotoRef.current = data.personalInfo.photo;
     }
   }, [data.personalInfo.photo]);
+
+  useEffect(() => {
+    return () => {
+      if (shareCopiedTimerRef.current) clearTimeout(shareCopiedTimerRef.current);
+    };
+  }, []);
 
   // Mejora 1: Prevent tab close during upload
   useEffect(() => {
@@ -180,11 +191,7 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
   const canShare = data.personalInfo.fullName.trim().length > 0;
 
   const handleShare = useCallback(async () => {
-    if (!data.personalInfo.fullName.trim()) {
-      toast.warning(t("shareNameRequired"));
-      return;
-    }
-    if (isSharing) return;
+    if (!canShare || isSharing) return;
     setIsSharing(true);
 
     const settings = { colorScheme: colorSchemeName, fontSizeLevel: 1, marginLevel: 1 };
@@ -196,11 +203,9 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
       const cached = imageCache.current;
 
       if (cached && cached.hash === currentHash && (Date.now() - cached.uploadedAt) < CACHE_EXPIRY_MS) {
-        // Mejora 2: Same image, cache valid — reuse URL
         photoUrl = cached.url;
         photoUploaded = true;
       } else {
-        // Need to upload — show overlay (Mejora 1)
         setShowUploadOverlay(true);
         try {
           const res = await fetch(data.personalInfo.photo);
@@ -230,55 +235,32 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
     const compressed = compressSharedData(shared);
     const url = generateShareURL(compressed);
 
-    try {
-      await navigator.clipboard.writeText(url);
-      const viewLink = (
-        <a
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 text-xs font-medium underline underline-offset-2 hover:opacity-80"
-        >
-          {t("shareViewLink")} ↗
-        </a>
-      );
-
-      if (photoUploaded) {
-        toast.success(t("shareCopied"), {
-          description: (
-            <div className="space-y-1.5 pt-0.5">
-              {viewLink}
-            </div>
-          ),
-          duration: 6000,
-        });
-      } else if (data.personalInfo.photo) {
-        toast.success(t("shareCopied"), {
-          description: (
-            <div className="space-y-1.5 pt-0.5">
-              <p>{t("sharePhotoFailed")}</p>
-              {viewLink}
-            </div>
-          ),
-          duration: 6000,
-        });
-      } else {
-        toast.success(t("shareCopied"), {
-          description: (
-            <div className="space-y-1.5 pt-0.5">
-              <p>{t("sharePhotoNote")}</p>
-              {viewLink}
-            </div>
-          ),
-          duration: 6000,
-        });
-      }
-    } catch {
-      toast.error(t("shareCopyFailed"));
-    } finally {
-      setIsSharing(false);
+    // Set photo note for dialog
+    if (!photoUploaded && data.personalInfo.photo) {
+      setSharePhotoNote(t("sharePhotoFailed"));
+    } else if (!data.personalInfo.photo) {
+      setSharePhotoNote(t("sharePhotoNote"));
+    } else {
+      setSharePhotoNote(null);
     }
-  }, [data, colorSchemeName, t, isSharing]);
+
+    setShareUrl(url);
+    setShareCopied(false);
+    setShareDialogOpen(true);
+    setIsSharing(false);
+  }, [data, colorSchemeName, t, isSharing, canShare]);
+
+  const handleCopyShareUrl = useCallback(async () => {
+    if (!shareUrl) return;
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setShareCopied(true);
+      if (shareCopiedTimerRef.current) clearTimeout(shareCopiedTimerRef.current);
+      shareCopiedTimerRef.current = setTimeout(() => setShareCopied(false), 2000);
+    } catch {
+      // Clipboard failed — no action needed
+    }
+  }, [shareUrl]);
 
   const menuItemClass =
     "flex w-full items-center justify-between rounded-sm px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-accent transition-colors";
@@ -510,7 +492,7 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
                   size="icon"
                   className={`h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 ${!canShare ? "opacity-50 cursor-not-allowed" : ""}`}
                   onClick={handleShare}
-                  disabled={isSharing}
+                  disabled={isSharing || !canShare}
                 >
                   {isSharing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Share2 className="h-4 w-4" />}
                 </Button>
@@ -616,7 +598,7 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
                   </button>
 
                   {/* Share link */}
-                  <button onClick={handleShare} disabled={isSharing} className={`${menuItemClass} ${!canShare ? "opacity-50" : ""}`}>
+                  <button onClick={handleShare} disabled={isSharing || !canShare} className={`${menuItemClass} ${!canShare ? "opacity-50" : ""}`}>
                     <span className="flex items-center gap-2.5">
                       {isSharing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Share2 className="h-4 w-4" />}
                       {isSharing ? t("shareUploading") : t("share")}
@@ -805,7 +787,44 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
       </div>
     )}
 
-    {/* Mejora 1: Full-screen overlay during photo upload */}
+    {/* Share link dialog */}
+    <Dialog open={shareDialogOpen} onOpenChange={(open) => { setShareDialogOpen(open); if (!open) setShareCopied(false); }}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>{t("shareTitle")}</DialogTitle>
+          <DialogDescription className="sr-only">{t("shareTitle")}</DialogDescription>
+        </DialogHeader>
+        <div className="flex items-center gap-2 min-w-0">
+          <div className="min-w-0 flex-1 overflow-hidden rounded-md border border-border bg-muted/50 px-3 py-2">
+            <span className="block truncate text-sm font-mono text-muted-foreground">{shareUrl}</span>
+          </div>
+          <Button
+            variant="outline"
+            size="icon"
+            className="shrink-0"
+            onClick={handleCopyShareUrl}
+          >
+            <span className="relative h-4 w-4">
+              <Copy
+                className={`h-4 w-4 absolute inset-0 transition-all duration-200 ${
+                  shareCopied ? "opacity-0 scale-75" : "opacity-100 scale-100"
+                }`}
+              />
+              <Check
+                className={`h-4 w-4 absolute inset-0 transition-all duration-200 text-green-600 dark:text-green-400 ${
+                  shareCopied ? "opacity-100 scale-100" : "opacity-0 scale-75"
+                }`}
+              />
+            </span>
+          </Button>
+        </div>
+        {sharePhotoNote && (
+          <p className="text-xs text-muted-foreground">{sharePhotoNote}</p>
+        )}
+      </DialogContent>
+    </Dialog>
+
+    {/* Full-screen overlay during photo upload */}
     {showUploadOverlay && (
       <div
         className="fixed inset-0 z-100 flex items-center justify-center bg-black/50 backdrop-blur-sm"
