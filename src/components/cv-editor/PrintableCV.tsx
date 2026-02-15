@@ -90,7 +90,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
       >
         <div
           className="grid grid-cols-[220px_1fr]"
-          style={{ minHeight: "297mm" }}
+          style={{ minHeight: "100vh" }}
         >
           {/* ===== LEFT COLUMN ===== */}
           <div

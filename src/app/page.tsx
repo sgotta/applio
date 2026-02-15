@@ -24,13 +24,11 @@ function AppContent() {
     documentTitle: `CV-${data.personalInfo.fullName.replace(/\s+/g, "-")}`,
     pageStyle: `
       @page {
-        size: 210mm 297mm;
+        size: auto;
         margin: 0;
       }
       @media print {
         html, body {
-          width: 210mm;
-          height: 297mm;
           margin: 0;
           padding: 0;
           -webkit-print-color-adjust: exact;

@@ -149,7 +149,7 @@
 /* Print styles */
 @media print {
   @page {
-    size: 210mm 297mm;
+    size: auto;
     margin: 0;
   }
 
@@ -165,14 +165,12 @@
   }
 
   .printable-cv {
-    width: 210mm;
-    height: 297mm;
-    margin: 0 auto;
+    width: 100%;
+    min-height: 100vh;
+    margin: 0;
     padding: 0;
     box-shadow: none;
     border: none;
-    overflow: hidden;
-    page-break-after: always;
   }
 
   .cv-zoom-shared {
