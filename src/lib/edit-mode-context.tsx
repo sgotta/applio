@@ -11,7 +11,7 @@ interface EditModeContextValue {
 export const EditModeContext = createContext<EditModeContextValue | null>(null);
 
 export function EditModeProvider({ children }: { children: React.ReactNode }) {
-  const [isViewMode, setIsViewMode] = useState(true);
+  const [isViewMode, setIsViewMode] = useState(false);
 
   const toggleEditMode = useCallback(() => {
     setIsViewMode((prev) => !prev);

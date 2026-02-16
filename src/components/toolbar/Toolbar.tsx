@@ -16,6 +16,7 @@ import { useSidebarPattern } from "@/lib/sidebar-pattern-context";
 import { SIDEBAR_PATTERN_NAMES, SIDEBAR_PATTERNS, PATTERN_SCOPES, type PatternScope, type PatternIntensity } from "@/lib/sidebar-patterns";
 import { Slider } from "@/components/ui/slider";
 import { COLOR_SCHEME_NAMES, COLOR_SCHEMES, type ColorSchemeName } from "@/lib/color-schemes";
+import { useEditMode } from "@/lib/edit-mode-context";
 import { buildSharedData, compressSharedData, generateShareURL } from "@/lib/sharing";
 import { toast } from "sonner";
 import {
@@ -24,6 +25,7 @@ import {
   Menu, X, ChevronRight, ChevronLeft, Palette, Layers,
   Loader2, MoreHorizontal, Link,
   PanelLeft, PanelRight, Square,
+  Pencil, Eye,
 } from "lucide-react";
 
 const CACHE_EXPIRY_MS = 15 * 24 * 60 * 60 * 1000; // 15 days
@@ -83,7 +85,9 @@ type MobileMenuPage = "main" | "language" | "theme" | "color" | "pattern" | "sec
 
 export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   const { data, importData, toggleSection } = useCV();
+  const { isViewMode, toggleEditMode } = useEditMode();
   const t = useTranslations("toolbar");
+  const te = useTranslations("editMode");
   const { locale, setLocale } = useAppLocale();
   const { theme, setTheme, resolvedTheme } = useTheme();
   const { colorSchemeName, setColorScheme } = useColorScheme();
@@ -557,6 +561,21 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
             {/* Divider between settings and file actions */}
             <div className="h-5 w-px bg-gray-200 dark:bg-gray-700 mx-1" />
+
+            {/* Edit/View mode toggle — desktop only */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={toggleEditMode}
+                  className="hidden md:inline-flex h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                >
+                  {isViewMode ? <Pencil className="size-4" /> : <Eye className="size-4" />}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>{isViewMode ? te("switchToEdit") : te("switchToView")}</TooltipContent>
+            </Tooltip>
 
             {/* File actions menu */}
             <Popover open={fileMenuOpen} onOpenChange={setFileMenuOpen}>

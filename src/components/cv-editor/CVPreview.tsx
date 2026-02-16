@@ -5,7 +5,6 @@ import { useTranslations } from "next-intl";
 import { useColorScheme } from "@/lib/color-scheme-context";
 import { useSidebarPattern } from "@/lib/sidebar-pattern-context";
 
-import { EditModeProvider } from "@/lib/edit-mode-context";
 import { EditableText } from "./EditableText";
 import { PersonalInfo } from "./PersonalInfo";
 import { ProfilePhotoUpload } from "./ProfilePhotoUpload";
@@ -78,7 +77,7 @@ export function CVPreview() {
   const mg = (px: number) => Math.round(px * 1.6);
 
   return (
-    <EditModeProvider>
+    <>
     <div className="cv-preview-content mx-auto w-full lg:w-[210mm] max-w-[210mm] bg-white dark:bg-background md:shadow-xl print:shadow-none">
       {/* CV Content — A4-like aspect ratio */}
       <div className="grid grid-cols-1 md:grid-cols-[250px_1fr] min-h-[297mm]">
@@ -134,6 +133,6 @@ export function CVPreview() {
     <div className="print:hidden">
       <MobileEditFAB />
     </div>
-    </EditModeProvider>
+    </>
   );
 }

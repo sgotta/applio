@@ -8,6 +8,7 @@ import { LocaleProvider, useAppLocale } from "@/lib/locale-context";
 import { ThemeProvider } from "@/lib/theme-context";
 import { ColorSchemeProvider, useColorScheme } from "@/lib/color-scheme-context";
 import { SidebarPatternProvider, useSidebarPattern } from "@/lib/sidebar-pattern-context";
+import { EditModeProvider } from "@/lib/edit-mode-context";
 import { downloadPDF } from "@/lib/generate-pdf";
 import { filenameDateStamp } from "@/lib/utils";
 
@@ -83,6 +84,7 @@ export default function Home() {
         <SidebarPatternProvider>
           <LocaleProvider>
             <CVProvider>
+            <EditModeProvider>
             <TooltipProvider delayDuration={300}>
               <AppContent />
               <Toaster
@@ -96,6 +98,7 @@ export default function Home() {
                 }}
               />
             </TooltipProvider>
+            </EditModeProvider>
             </CVProvider>
           </LocaleProvider>
         </SidebarPatternProvider>
