@@ -46,6 +46,8 @@
     "patternScopeSidebar": "사이드바",
     "patternScopeMain": "본문",
     "patternScopeFull": "전체 페이지",
+    "fontSettings": "서체",
+    "fontFamily": "글꼴",
     "fontSize": "글꼴 크기",
     "margins": "여백",
     "share": "링크 복사",

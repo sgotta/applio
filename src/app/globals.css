@@ -139,7 +139,7 @@
 
 /* Responsive base font-size for the CV preview.
    All child text sizes use `em` so they scale automatically per breakpoint.
-   Only affects CVPreview (editor); PrintableCV (PDF) is not affected. */
+   Font-size scaling is applied via an inner wrapper div with em units. */
 .cv-preview-content {
   font-size: 12px;
 }

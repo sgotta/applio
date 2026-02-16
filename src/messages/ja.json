@@ -46,6 +46,8 @@
     "patternScopeSidebar": "サイドバー",
     "patternScopeMain": "メインコンテンツ",
     "patternScopeFull": "ページ全体",
+    "fontSettings": "書体設定",
+    "fontFamily": "フォント",
     "fontSize": "フォントサイズ",
     "margins": "余白",
     "share": "リンクをコピー",

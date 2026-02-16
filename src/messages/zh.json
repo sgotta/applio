@@ -46,6 +46,8 @@
     "patternScopeSidebar": "侧栏",
     "patternScopeMain": "主内容",
     "patternScopeFull": "整页",
+    "fontSettings": "排版",
+    "fontFamily": "字体",
     "fontSize": "字体大小",
     "margins": "边距",
     "share": "复制链接",

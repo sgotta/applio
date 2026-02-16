@@ -46,6 +46,8 @@
     "patternScopeSidebar": "Seitenleiste",
     "patternScopeMain": "Hauptinhalt",
     "patternScopeFull": "Ganze Seite",
+    "fontSettings": "Typografie",
+    "fontFamily": "Schriftart",
     "fontSize": "Schriftgröße",
     "margins": "Ränder",
     "share": "Link kopieren",

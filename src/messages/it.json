@@ -46,6 +46,8 @@
     "patternScopeSidebar": "Barra laterale",
     "patternScopeMain": "Contenuto",
     "patternScopeFull": "Pagina intera",
+    "fontSettings": "Tipografia",
+    "fontFamily": "Carattere",
     "fontSize": "Dimensione carattere",
     "margins": "Margini",
     "share": "Copia link",

@@ -93,6 +93,7 @@ export interface SharedCVData {
     colorScheme: string;
     fontSizeLevel: number;
     marginLevel: number;
+    fontFamily?: string;
     pattern?: { name: string; sidebarIntensity?: number; mainIntensity?: number; intensity?: number; scope: string };
   };
   sharedAt: string;

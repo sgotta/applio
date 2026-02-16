@@ -6,6 +6,9 @@ import { CVData } from "@/lib/types";
 import { Separator } from "@/components/ui/separator";
 import { useColorScheme } from "@/lib/color-scheme-context";
 import { useSidebarPattern } from "@/lib/sidebar-pattern-context";
+import { useFontSettings } from "@/lib/font-context";
+import { getFontDefinition, FONT_SIZE_LEVELS, CJK_LOCALES, PDF_BASE_FONT_SCALE } from "@/lib/fonts";
+import { useAppLocale } from "@/lib/locale-context";
 import { type ColorScheme } from "@/lib/color-schemes";
 import { type PatternSettings, getSidebarPattern } from "@/lib/sidebar-patterns";
 import { renderFormattedText } from "@/lib/format-text";
@@ -50,12 +53,13 @@ interface PrintableCVProps {
   fontScaleOverride?: number;
   marginScaleOverride?: number;
   patternOverride?: PatternSettings;
+  fontFamilyOverride?: string;
   footer?: React.ReactNode;
 }
 
 export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
   function PrintableCV(
-    { data, forceInitials, photoUrl, colorSchemeOverride, fontScaleOverride, marginScaleOverride, patternOverride, footer },
+    { data, forceInitials, photoUrl, colorSchemeOverride, fontScaleOverride, marginScaleOverride, patternOverride, fontFamilyOverride, footer },
     ref
   ) {
     const {
@@ -72,6 +76,8 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
     const t = useTranslations("printable");
     const { colorScheme: contextColors } = useColorScheme();
     const { pattern: ctxPattern, sidebarIntensity: ctxSidebarIntensity, mainIntensity: ctxMainIntensity, scope: ctxScope } = useSidebarPattern();
+    const { fontFamilyId, fontSizeLevel } = useFontSettings();
+    const { locale } = useAppLocale();
 
     const colors = colorSchemeOverride ?? contextColors;
 
@@ -80,8 +86,14 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
     const sidebarIntensity = patternOverride?.sidebarIntensity ?? ctxSidebarIntensity;
     const mainIntensity = patternOverride?.mainIntensity ?? ctxMainIntensity;
     const scope = patternOverride?.scope ?? ctxScope;
+
+    // Determine font family: override (shared view) > context > default
+    const isCJK = CJK_LOCALES.has(locale);
+    const effectiveFontFamily = fontFamilyOverride
+      ?? (isCJK ? "var(--font-inter), Inter, sans-serif" : getFontDefinition(fontFamilyId).cssStack);
+
     /** Scale a base pixel size by the font-size factor */
-    const fs = (px: number) => Math.round(px * (fontScaleOverride ?? 1.08));
+    const fs = (px: number) => Math.round(px * (fontScaleOverride ?? FONT_SIZE_LEVELS[fontSizeLevel] * PDF_BASE_FONT_SCALE));
     /** Scale a base pixel size by the margin factor */
     const mg = (px: number) => Math.round(px * (marginScaleOverride ?? 1.6));
 
@@ -98,7 +110,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
       <div
         ref={ref}
         className="printable-cv font-sans"
-        style={{ fontFamily: "var(--font-inter), Inter, sans-serif", display: "flex", alignItems: "stretch" }}
+        style={{ fontFamily: effectiveFontFamily, display: "flex", alignItems: "stretch" }}
       >
         {/* ===== SIDEBAR ===== */}
         <div

@@ -13,6 +13,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { useTheme, Theme } from "@/lib/theme-context";
 import { useColorScheme } from "@/lib/color-scheme-context";
 import { useSidebarPattern } from "@/lib/sidebar-pattern-context";
+import { useFontSettings } from "@/lib/font-context";
+import { FONT_FAMILIES, FONT_SIZE_LEVEL_IDS, CJK_LOCALES, getFontDefinition, type FontFamilyId, type FontSizeLevel } from "@/lib/fonts";
 import { SIDEBAR_PATTERN_NAMES, SIDEBAR_PATTERNS, PATTERN_SCOPES, type PatternScope, type PatternIntensity } from "@/lib/sidebar-patterns";
 import { Slider } from "@/components/ui/slider";
 import { COLOR_SCHEME_NAMES, COLOR_SCHEMES, type ColorSchemeName } from "@/lib/color-schemes";
@@ -20,7 +22,7 @@ import { useEditMode } from "@/lib/edit-mode-context";
 import { buildSharedData, compressSharedData, generateShareURL } from "@/lib/sharing";
 import { toast } from "sonner";
 import {
-  Download, FileUp, FileDown, FileText, Globe,
+  Download, FileUp, FileDown, FileText, Globe, Type,
   SlidersHorizontal, Check, Sun, Moon, Monitor,
   Menu, X, ChevronRight, ChevronLeft, Palette, Layers,
   Loader2, MoreHorizontal, Link,
@@ -81,7 +83,7 @@ function SectionToggle({
   );
 }
 
-type MobileMenuPage = "main" | "language" | "theme" | "color" | "pattern" | "sections";
+type MobileMenuPage = "main" | "language" | "theme" | "color" | "pattern" | "font" | "sections";
 
 export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   const { data, importData, toggleSection } = useCV();
@@ -93,6 +95,8 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const { colorSchemeName, setColorScheme } = useColorScheme();
   const { patternName, setPattern, sidebarIntensity, mainIntensity, scope, setSidebarIntensity, setMainIntensity, setScope, patternSettings, setPatternSettings } = useSidebarPattern();
+  const { fontFamilyId, fontSizeLevel, setFontFamily, setFontSizeLevel } = useFontSettings();
+  const isCJKLocale = CJK_LOCALES.has(locale);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileMenuPage, setMobileMenuPage] = useState<MobileMenuPage>("main");
@@ -110,6 +114,8 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
       ...data,
       settings: {
         colorScheme: colorSchemeName,
+        fontFamily: fontFamilyId,
+        fontSizeLevel,
         pattern: patternSettings,
       },
     };
@@ -146,10 +152,12 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
           importData(parsed);
           // Restore visual settings if present
           const settings = (parsed as unknown as Record<string, unknown>).settings as
-            | { colorScheme?: string; pattern?: { name: string; sidebarIntensity?: number; mainIntensity?: number; intensity?: number; scope: string } }
+            | { colorScheme?: string; fontFamily?: string; fontSizeLevel?: number; pattern?: { name: string; sidebarIntensity?: number; mainIntensity?: number; intensity?: number; scope: string } }
             | undefined;
           if (settings) {
             if (settings.colorScheme) setColorScheme(settings.colorScheme as ColorSchemeName);
+            if (settings.fontFamily) setFontFamily(settings.fontFamily as FontFamilyId);
+            if (settings.fontSizeLevel) setFontSizeLevel(settings.fontSizeLevel as FontSizeLevel);
             if (settings.pattern) {
               setPatternSettings({
                 name: settings.pattern.name as Parameters<typeof setPattern>[0],
@@ -205,7 +213,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
     setIsSharing(true);
     setFileMenuOpen(false);
 
-    const settings = { colorScheme: colorSchemeName, fontSizeLevel: 1, marginLevel: 1, pattern: patternSettings };
+    const settings = { colorScheme: colorSchemeName, fontSizeLevel, marginLevel: 1, fontFamily: fontFamilyId, pattern: patternSettings };
     let photoUrl: string | undefined;
 
     if (data.personalInfo.photo) {
@@ -252,7 +260,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
     }
 
     setIsSharing(false);
-  }, [data, colorSchemeName, isSharing, canShare, patternSettings, t]);
+  }, [data, colorSchemeName, isSharing, canShare, patternSettings, fontFamilyId, fontSizeLevel, t]);
 
   const menuItemClass =
     "flex w-full items-center justify-between rounded-sm px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-accent transition-colors";
@@ -530,6 +538,74 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
               </PopoverContent>
             </Popover>
 
+            {/* Font settings */}
+            <Popover>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                    >
+                      <Type className="h-4 w-4" />
+                    </Button>
+                  </PopoverTrigger>
+                </TooltipTrigger>
+                <TooltipContent>{t("fontSettings")}</TooltipContent>
+              </Tooltip>
+              <PopoverContent className="w-56 p-3 space-y-4" align="end">
+                {/* Font Family list (hidden for CJK locales) */}
+                {!isCJKLocale && (
+                  <div>
+                    <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-2">
+                      {t("fontFamily")}
+                    </p>
+                    <div className="space-y-0.5 max-h-64 overflow-y-auto">
+                      {FONT_FAMILIES.map((font) => (
+                        <button
+                          key={font.id}
+                          onClick={() => setFontFamily(font.id)}
+                          className="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-accent transition-colors"
+                          style={{ fontFamily: font.cssStack }}
+                        >
+                          <span>{font.displayName}</span>
+                          {fontFamilyId === font.id && (
+                            <Check className="h-4 w-4 text-gray-900 dark:text-gray-100" />
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Font Size */}
+                <div>
+                  <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-2">
+                    {t("fontSize")}
+                  </p>
+                  <div className="flex gap-1.5">
+                    {FONT_SIZE_LEVEL_IDS.map((level) => {
+                      const labels: Record<number, string> = { 1: "S", 2: "M", 3: "L" };
+                      return (
+                        <button
+                          key={level}
+                          onClick={() => setFontSizeLevel(level)}
+                          className={`h-7 w-7 rounded-md flex items-center justify-center text-xs font-medium transition-colors ${
+                            fontSizeLevel === level
+                              ? "bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900"
+                              : "bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-accent dark:text-gray-400 dark:hover:bg-accent/80"
+                          }`}
+                        >
+                          {labels[level]}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
+
             {/* Sections toggle */}
             <Popover>
               <Tooltip>
@@ -708,6 +784,18 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     </span>
                     <span className="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500">
                       {t(`pattern${patternName.charAt(0).toUpperCase() + patternName.slice(1)}` as Parameters<typeof t>[0])}
+                      <ChevronRight className="h-3.5 w-3.5" />
+                    </span>
+                  </button>
+
+                  {/* Font */}
+                  <button onClick={() => setMobileMenuPage("font")} className={menuItemClass}>
+                    <span className="flex items-center gap-2.5">
+                      <Type className="h-4 w-4" />
+                      {t("fontSettings")}
+                    </span>
+                    <span className="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500">
+                      {getFontDefinition(fontFamilyId).displayName}
                       <ChevronRight className="h-3.5 w-3.5" />
                     </span>
                   </button>
@@ -962,6 +1050,58 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                               }`}
                             >
                               <ScopeIcon className="h-3.5 w-3.5" />
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {mobileMenuPage === "font" && (
+                <div>
+                  <button onClick={() => setMobileMenuPage("main")} className={backButtonClass}>
+                    <ChevronLeft className="h-3.5 w-3.5" />
+                    {t("fontSettings")}
+                  </button>
+                  <div className="px-3 pt-2 pb-1 space-y-4">
+                    {/* Font Family (hidden for CJK locales) */}
+                    {!isCJKLocale && (
+                      <div className="space-y-0.5">
+                        {FONT_FAMILIES.map((font) => (
+                          <button
+                            key={font.id}
+                            onClick={() => setFontFamily(font.id)}
+                            className={menuItemClass}
+                            style={{ fontFamily: font.cssStack }}
+                          >
+                            <span>{font.displayName}</span>
+                            {fontFamilyId === font.id && <Check className="h-4 w-4 text-gray-900 dark:text-gray-100" />}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Font Size */}
+                    <div>
+                      <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-2">
+                        {t("fontSize")}
+                      </p>
+                      <div className="flex gap-1.5">
+                        {FONT_SIZE_LEVEL_IDS.map((level) => {
+                          const labels: Record<number, string> = { 1: "S", 2: "M", 3: "L" };
+                          return (
+                            <button
+                              key={level}
+                              onClick={() => setFontSizeLevel(level)}
+                              className={`h-7 w-7 rounded-md flex items-center justify-center text-xs font-medium transition-colors ${
+                                fontSizeLevel === level
+                                  ? "bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900"
+                                  : "bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-accent dark:text-gray-400 dark:hover:bg-accent/80"
+                              }`}
+                            >
+                              {labels[level]}
                             </button>
                           );
                         })}

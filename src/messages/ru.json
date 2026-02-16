@@ -46,6 +46,8 @@
     "patternScopeSidebar": "Боковая панель",
     "patternScopeMain": "Основное содержание",
     "patternScopeFull": "Вся страница",
+    "fontSettings": "Типографика",
+    "fontFamily": "Шрифт",
     "fontSize": "Размер шрифта",
     "margins": "Поля",
     "share": "Копировать ссылку",

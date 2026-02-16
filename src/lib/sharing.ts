@@ -16,6 +16,7 @@ import {
   type PatternScope,
   type PatternIntensity,
 } from "./sidebar-patterns";
+import { FONT_FAMILY_IDS, type FontFamilyId } from "./fonts";
 
 /**
  * Build the shareable data payload from the editor state.
@@ -94,9 +95,14 @@ function validateSharedData(data: unknown): SharedCVData | null {
       : DEFAULT_COLOR_SCHEME;
   const fontSizeLevel =
     typeof rawSettings.fontSizeLevel === "number" &&
-    [1, 2].includes(rawSettings.fontSizeLevel)
+    [1, 2, 3].includes(rawSettings.fontSizeLevel)
       ? rawSettings.fontSizeLevel
-      : 1;
+      : 2;
+  const fontFamily =
+    typeof rawSettings.fontFamily === "string" &&
+    FONT_FAMILY_IDS.includes(rawSettings.fontFamily as FontFamilyId)
+      ? rawSettings.fontFamily
+      : undefined;
   const marginLevel =
     typeof rawSettings.marginLevel === "number" &&
     [1, 2].includes(rawSettings.marginLevel)
@@ -148,7 +154,7 @@ function validateSharedData(data: unknown): SharedCVData | null {
         ...((cv.visibility as object) || {}),
       },
     },
-    settings: { colorScheme, fontSizeLevel, marginLevel, ...(pattern ? { pattern } : {}) },
+    settings: { colorScheme, fontSizeLevel, marginLevel, ...(fontFamily ? { fontFamily } : {}), ...(pattern ? { pattern } : {}) },
     sharedAt:
       typeof d.sharedAt === "string" ? d.sharedAt : new Date().toISOString(),
   };

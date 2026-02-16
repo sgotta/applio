@@ -4,6 +4,9 @@ import { useCV } from "@/lib/cv-context";
 import { useTranslations } from "next-intl";
 import { useColorScheme } from "@/lib/color-scheme-context";
 import { useSidebarPattern } from "@/lib/sidebar-pattern-context";
+import { useFontSettings } from "@/lib/font-context";
+import { getFontDefinition, FONT_SIZE_LEVELS, CJK_LOCALES } from "@/lib/fonts";
+import { useAppLocale } from "@/lib/locale-context";
 
 import { EditableText } from "./EditableText";
 import { PersonalInfo } from "./PersonalInfo";
@@ -74,11 +77,20 @@ export function CVPreview() {
   const { data: { visibility } } = useCV();
   const { colorScheme } = useColorScheme();
   const { pattern, sidebarIntensity, mainIntensity, scope } = useSidebarPattern();
+  const { fontFamilyId, fontSizeLevel } = useFontSettings();
+  const { locale } = useAppLocale();
+  const isCJK = CJK_LOCALES.has(locale);
+  const fontDef = isCJK ? null : getFontDefinition(fontFamilyId);
   const mg = (px: number) => Math.round(px * 1.6);
 
   return (
     <>
-    <div className="cv-preview-content mx-auto w-full lg:w-[210mm] max-w-[210mm] bg-white dark:bg-background md:shadow-xl print:shadow-none">
+    <div
+      className="cv-preview-content mx-auto w-full lg:w-[210mm] max-w-[210mm] bg-white dark:bg-background md:shadow-xl print:shadow-none"
+      style={fontDef ? { fontFamily: fontDef.cssStack } : undefined}
+    >
+      {/* Font-size scale wrapper — multiplies the responsive base via em units */}
+      <div style={fontSizeLevel !== 2 ? { fontSize: `${FONT_SIZE_LEVELS[fontSizeLevel]}em` } : undefined}>
       {/* CV Content — A4-like aspect ratio */}
       <div className="grid grid-cols-1 md:grid-cols-[250px_1fr] min-h-[297mm]">
         {/* ===== MOBILE HEADER: photo + name centered (mobile only) ===== */}
@@ -127,6 +139,7 @@ export function CVPreview() {
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
     {/* FAB toggle — all devices, hidden when printing */}

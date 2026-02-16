@@ -108,15 +108,107 @@ Font.register({
   ],
 });
 
-/** Return the correct font family for a given locale */
-function getFontFamily(locale: string): string {
+/* ── User-selectable fonts (Latin + Cyrillic) ─────────── */
+
+Font.register({
+  family: "Lato",
+  fonts: [
+    { src: "https://fonts.gstatic.com/s/lato/v25/S6uyw4BMUTPHvxk.ttf", fontWeight: 400 },
+    { src: "https://fonts.gstatic.com/s/lato/v25/S6uyw4BMUTPHvxk.ttf", fontWeight: 500 },
+    { src: "https://fonts.gstatic.com/s/lato/v25/S6u9w4BMUTPHh6UVew8.ttf", fontWeight: 600 },
+    { src: "https://fonts.gstatic.com/s/lato/v25/S6u9w4BMUTPHh6UVew8.ttf", fontWeight: 700 },
+  ],
+});
+
+Font.register({
+  family: "OpenSans",
+  fonts: [
+    { src: "https://fonts.gstatic.com/s/opensans/v44/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0C4n.ttf", fontWeight: 400 },
+    { src: "https://fonts.gstatic.com/s/opensans/v44/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjr0C4n.ttf", fontWeight: 500 },
+    { src: "https://fonts.gstatic.com/s/opensans/v44/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsgH1y4n.ttf", fontWeight: 600 },
+    { src: "https://fonts.gstatic.com/s/opensans/v44/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsg-1y4n.ttf", fontWeight: 700 },
+  ],
+});
+
+Font.register({
+  family: "Montserrat",
+  fonts: [
+    { src: "https://fonts.gstatic.com/s/montserrat/v31/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCtr6Ew-.ttf", fontWeight: 400 },
+    { src: "https://fonts.gstatic.com/s/montserrat/v31/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCtZ6Ew-.ttf", fontWeight: 500 },
+    { src: "https://fonts.gstatic.com/s/montserrat/v31/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCu170w-.ttf", fontWeight: 600 },
+    { src: "https://fonts.gstatic.com/s/montserrat/v31/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCuM70w-.ttf", fontWeight: 700 },
+  ],
+});
+
+Font.register({
+  family: "SourceSans3",
+  fonts: [
+    { src: "https://fonts.gstatic.com/s/sourcesans3/v19/nwpBtKy2OAdR1K-IwhWudF-R9QMylBJAV3Bo8Ky461EN.ttf", fontWeight: 400 },
+    { src: "https://fonts.gstatic.com/s/sourcesans3/v19/nwpBtKy2OAdR1K-IwhWudF-R9QMylBJAV3Bo8KyK61EN.ttf", fontWeight: 500 },
+    { src: "https://fonts.gstatic.com/s/sourcesans3/v19/nwpBtKy2OAdR1K-IwhWudF-R9QMylBJAV3Bo8Kxm7FEN.ttf", fontWeight: 600 },
+    { src: "https://fonts.gstatic.com/s/sourcesans3/v19/nwpBtKy2OAdR1K-IwhWudF-R9QMylBJAV3Bo8Kxf7FEN.ttf", fontWeight: 700 },
+  ],
+});
+
+Font.register({
+  family: "Raleway",
+  fonts: [
+    { src: "https://fonts.gstatic.com/s/raleway/v37/1Ptxg8zYS_SKggPN4iEgvnHyvveLxVvaooCP.ttf", fontWeight: 400 },
+    { src: "https://fonts.gstatic.com/s/raleway/v37/1Ptxg8zYS_SKggPN4iEgvnHyvveLxVvoooCP.ttf", fontWeight: 500 },
+    { src: "https://fonts.gstatic.com/s/raleway/v37/1Ptxg8zYS_SKggPN4iEgvnHyvveLxVsEpYCP.ttf", fontWeight: 600 },
+    { src: "https://fonts.gstatic.com/s/raleway/v37/1Ptxg8zYS_SKggPN4iEgvnHyvveLxVs9pYCP.ttf", fontWeight: 700 },
+  ],
+});
+
+Font.register({
+  family: "NunitoSans",
+  fonts: [
+    { src: "https://fonts.gstatic.com/s/nunitosans/v19/pe1mMImSLYBIv1o4X1M8ce2xCx3yop4tQpF_MeTm0lfGWVpNn64CL7U8upHZIbMV51Q42ptCp5F5bxqqtQ1yiU4G1ilntA.ttf", fontWeight: 400 },
+    { src: "https://fonts.gstatic.com/s/nunitosans/v19/pe1mMImSLYBIv1o4X1M8ce2xCx3yop4tQpF_MeTm0lfGWVpNn64CL7U8upHZIbMV51Q42ptCp5F5bxqqtQ1yiU4G5ClntA.ttf", fontWeight: 500 },
+    { src: "https://fonts.gstatic.com/s/nunitosans/v19/pe1mMImSLYBIv1o4X1M8ce2xCx3yop4tQpF_MeTm0lfGWVpNn64CL7U8upHZIbMV51Q42ptCp5F5bxqqtQ1yiU4GCC5ntA.ttf", fontWeight: 600 },
+    { src: "https://fonts.gstatic.com/s/nunitosans/v19/pe1mMImSLYBIv1o4X1M8ce2xCx3yop4tQpF_MeTm0lfGWVpNn64CL7U8upHZIbMV51Q42ptCp5F5bxqqtQ1yiU4GMS5ntA.ttf", fontWeight: 700 },
+  ],
+});
+
+Font.register({
+  family: "Merriweather",
+  fonts: [
+    { src: "https://fonts.gstatic.com/s/merriweather/v33/u-4D0qyriQwlOrhSvowK_l5UcA6zuSYEqOzpPe3HOZJ5eX1WtLaQwmYiScCmDxhtNOKl8yDr3icqEw.ttf", fontWeight: 400 },
+    { src: "https://fonts.gstatic.com/s/merriweather/v33/u-4D0qyriQwlOrhSvowK_l5UcA6zuSYEqOzpPe3HOZJ5eX1WtLaQwmYiScCmDxhtNOKl8yDr7CcqEw.ttf", fontWeight: 500 },
+    { src: "https://fonts.gstatic.com/s/merriweather/v33/u-4D0qyriQwlOrhSvowK_l5UcA6zuSYEqOzpPe3HOZJ5eX1WtLaQwmYiScCmDxhtNOKl8yDrACAqEw.ttf", fontWeight: 600 },
+    { src: "https://fonts.gstatic.com/s/merriweather/v33/u-4D0qyriQwlOrhSvowK_l5UcA6zuSYEqOzpPe3HOZJ5eX1WtLaQwmYiScCmDxhtNOKl8yDrOSAqEw.ttf", fontWeight: 700 },
+  ],
+});
+
+Font.register({
+  family: "EBGaramond",
+  fonts: [
+    { src: "https://fonts.gstatic.com/s/ebgaramond/v32/SlGDmQSNjdsmc35JDF1K5E55YMjF_7DPuGi-6_RUAw.ttf", fontWeight: 400 },
+    { src: "https://fonts.gstatic.com/s/ebgaramond/v32/SlGDmQSNjdsmc35JDF1K5E55YMjF_7DPuGi-2fRUAw.ttf", fontWeight: 500 },
+    { src: "https://fonts.gstatic.com/s/ebgaramond/v32/SlGDmQSNjdsmc35JDF1K5E55YMjF_7DPuGi-NfNUAw.ttf", fontWeight: 600 },
+    { src: "https://fonts.gstatic.com/s/ebgaramond/v32/SlGDmQSNjdsmc35JDF1K5E55YMjF_7DPuGi-DPNUAw.ttf", fontWeight: 700 },
+  ],
+});
+
+Font.register({
+  family: "Lora",
+  fonts: [
+    { src: "https://fonts.gstatic.com/s/lora/v37/0QI6MX1D_JOuGQbT0gvTJPa787weuyJG.ttf", fontWeight: 400 },
+    { src: "https://fonts.gstatic.com/s/lora/v37/0QI6MX1D_JOuGQbT0gvTJPa787wsuyJG.ttf", fontWeight: 500 },
+    { src: "https://fonts.gstatic.com/s/lora/v37/0QI6MX1D_JOuGQbT0gvTJPa787zAvCJG.ttf", fontWeight: 600 },
+    { src: "https://fonts.gstatic.com/s/lora/v37/0QI6MX1D_JOuGQbT0gvTJPa787z5vCJG.ttf", fontWeight: 700 },
+  ],
+});
+
+/** Return the correct font family for a given locale and optional user choice */
+function getFontFamily(locale: string, userFontFamily?: string): string {
   switch (locale) {
     case "ja": return "NotoSansJP";
     case "zh": return "NotoSansSC";
     case "ko": return "NotoSansKR";
     case "hi": return "NotoSansDevanagari";
     case "th": return "NotoSansThai";
-    default:   return "Inter";
+    default:   return userFontFamily || "Inter";
   }
 }
 
@@ -290,6 +382,7 @@ export interface PDFDocumentProps {
   fontScale?: number;
   marginScale?: number;
   patternSettings?: PatternSettings;
+  fontFamily?: string;
 }
 
 /* ── Base styles ────────────────────────────────────────── */
@@ -401,7 +494,7 @@ function PdfDotsPattern({
 
 /* ── Document component ─────────────────────────────────── */
 
-function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, patternSettings }: PDFDocumentProps) {
+function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, patternSettings, fontFamily: userFontFamily }: PDFDocumentProps) {
   const {
     personalInfo,
     summary,
@@ -437,7 +530,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
   // Use sidebarText for icons — sidebarMuted may contain 8-digit hex (#ffffff66)
   // which React-PDF doesn't render correctly in SVG strokes
   const iconColor = colors.sidebarText;
-  const fontFamily = getFontFamily(locale);
+  const fontFamily = getFontFamily(locale, userFontFamily);
 
   return (
     <Document>

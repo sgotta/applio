@@ -7,6 +7,7 @@ import { filenameDateStamp } from "@/lib/utils";
 import { ThemeProvider } from "@/lib/theme-context";
 import { ColorSchemeProvider } from "@/lib/color-scheme-context";
 import { SidebarPatternProvider } from "@/lib/sidebar-pattern-context";
+import { FontSettingsProvider } from "@/lib/font-context";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { PrintableCV } from "@/components/cv-editor/PrintableCV";
 import { decompressSharedData } from "@/lib/sharing";
@@ -24,8 +25,9 @@ function ensureProtocol(url: string): string {
   return /^https?:\/\//i.test(url) ? url : `https://${url}`;
 }
 import { downloadPDF } from "@/lib/generate-pdf";
+import { FONT_SIZE_LEVELS, FONT_FAMILY_IDS, CJK_LOCALES, getFontDefinition, PDF_BASE_FONT_SCALE, type FontFamilyId } from "@/lib/fonts";
 
-const FONT_SIZE_SCALES: Record<number, number> = { 1: 1, 2: 1.08 };
+const FONT_SIZE_SCALES: Record<number, number> = { 1: 0.85, 2: 1.0, 3: 1.18 };
 const MARGIN_SCALES: Record<number, number> = { 1: 1.3, 2: 1.6 };
 
 /* ── Mobile-only read-only CV view ────────────────────────── */
@@ -59,11 +61,13 @@ function MobileCVView({
   colors,
   photoUrl,
   patternSettings,
+  fontFamilyOverride,
 }: {
   data: CVData;
   colors: ColorScheme;
   photoUrl?: string;
   patternSettings?: PatternSettings;
+  fontFamilyOverride?: string;
 }) {
   const t = useTranslations("printable");
   const { personalInfo, summary, experience, education, skills, courses, certifications, awards, visibility } = data;
@@ -94,7 +98,7 @@ function MobileCVView({
   return (
     <div
       className="cv-preview-content bg-white font-sans overflow-x-hidden"
-      style={{ fontFamily: "var(--font-inter), Inter, sans-serif" }}
+      style={{ fontFamily: fontFamilyOverride ?? "var(--font-inter), Inter, sans-serif" }}
     >
       {/* Mobile Header — extra top padding compensates for missing toolbar */}
       <div className="flex flex-col items-center px-6 pt-16">
@@ -525,7 +529,14 @@ function ViewContent() {
             scope: sharedData.settings.pattern.scope as import("@/lib/sidebar-patterns").PatternSettings["scope"],
           }
         : undefined;
-      await downloadPDF(cvData, `CV-${name}_${filenameDateStamp(locale)}.pdf`, colorScheme, labels, locale, patternSett);
+      // Resolve font for PDF
+      const sFontId = sharedData.settings.fontFamily as FontFamilyId | undefined;
+      const sIsCJK = CJK_LOCALES.has(locale);
+      const pdfFontFamily = sFontId && FONT_FAMILY_IDS.includes(sFontId) && !sIsCJK
+        ? getFontDefinition(sFontId).pdfFamilyName
+        : undefined;
+      const pdfFontScale = (FONT_SIZE_LEVELS[(sharedData.settings.fontSizeLevel ?? 2) as import("@/lib/fonts").FontSizeLevel] ?? 1) * PDF_BASE_FONT_SCALE;
+      await downloadPDF(cvData, `CV-${name}_${filenameDateStamp(locale)}.pdf`, colorScheme, labels, locale, patternSett, pdfFontFamily, pdfFontScale);
     } catch (err) {
       console.error("PDF generation failed:", err);
     } finally {
@@ -549,6 +560,22 @@ function ViewContent() {
     setSharedData(data);
     setLoading(false);
   }, []);
+
+  // Dynamically load Google Font for shared view (must be before early returns)
+  useEffect(() => {
+    if (!sharedData) return;
+    const sFontId = sharedData.settings.fontFamily as FontFamilyId | undefined;
+    if (!sFontId || !FONT_FAMILY_IDS.includes(sFontId) || CJK_LOCALES.has(locale)) return;
+    const def = getFontDefinition(sFontId);
+    if (!def.googleFontsCss2Url) return;
+    const id = `google-font-${def.id}`;
+    if (document.getElementById(id)) return;
+    const link = document.createElement("link");
+    link.id = id;
+    link.rel = "stylesheet";
+    link.href = def.googleFontsCss2Url;
+    document.head.appendChild(link);
+  }, [sharedData, locale]);
 
   if (loading) {
     return (
@@ -598,6 +625,13 @@ function ViewContent() {
     FONT_SIZE_SCALES[sharedData.settings.fontSizeLevel] ?? 1;
   const marginScale =
     MARGIN_SCALES[sharedData.settings.marginLevel] ?? 1.3;
+
+  // Resolve font family from shared settings
+  const sharedFontFamilyId = sharedData.settings.fontFamily as FontFamilyId | undefined;
+  const isCJK = CJK_LOCALES.has(locale);
+  const fontDef = sharedFontFamilyId && FONT_FAMILY_IDS.includes(sharedFontFamilyId) && !isCJK
+    ? getFontDefinition(sharedFontFamilyId)
+    : null;
   const sharedPattern: PatternSettings | undefined = sharedData.settings.pattern
     ? {
         name: sharedData.settings.pattern.name as PatternSettings["name"],
@@ -639,13 +673,14 @@ function ViewContent() {
             fontScaleOverride={fontScale}
             marginScaleOverride={marginScale}
             patternOverride={sharedPattern}
+            fontFamilyOverride={fontDef?.cssStack}
           />
         </div>
       </div>
 
       {/* Mobile/tablet: responsive single-column layout (hidden on desktop) */}
       <div className="lg:hidden">
-        <MobileCVView data={cvData} colors={colorScheme} photoUrl={photoUrl} patternSettings={sharedPattern} />
+        <MobileCVView data={cvData} colors={colorScheme} photoUrl={photoUrl} patternSettings={sharedPattern} fontFamilyOverride={fontDef?.cssStack} />
       </div>
 
       <div className="text-center py-6 space-y-1">
@@ -683,11 +718,13 @@ export default function ViewPage() {
     <ThemeProvider>
       <ColorSchemeProvider>
         <SidebarPatternProvider>
-          <LocaleProvider>
-            <TooltipProvider delayDuration={300}>
-              <ViewContent />
-            </TooltipProvider>
-          </LocaleProvider>
+          <FontSettingsProvider>
+            <LocaleProvider>
+              <TooltipProvider delayDuration={300}>
+                <ViewContent />
+              </TooltipProvider>
+            </LocaleProvider>
+          </FontSettingsProvider>
         </SidebarPatternProvider>
       </ColorSchemeProvider>
     </ThemeProvider>

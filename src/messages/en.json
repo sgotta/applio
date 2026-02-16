@@ -46,6 +46,8 @@
     "patternScopeSidebar": "Sidebar",
     "patternScopeMain": "Main content",
     "patternScopeFull": "Full page",
+    "fontSettings": "Typography",
+    "fontFamily": "Font",
     "fontSize": "Font size",
     "margins": "Margins",
     "share": "Copy link",

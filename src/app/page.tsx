@@ -8,9 +8,11 @@ import { LocaleProvider, useAppLocale } from "@/lib/locale-context";
 import { ThemeProvider } from "@/lib/theme-context";
 import { ColorSchemeProvider, useColorScheme } from "@/lib/color-scheme-context";
 import { SidebarPatternProvider, useSidebarPattern } from "@/lib/sidebar-pattern-context";
+import { FontSettingsProvider, useFontSettings } from "@/lib/font-context";
 import { EditModeProvider } from "@/lib/edit-mode-context";
 import { downloadPDF } from "@/lib/generate-pdf";
 import { filenameDateStamp } from "@/lib/utils";
+import { getFontDefinition, FONT_SIZE_LEVELS, PDF_BASE_FONT_SCALE, CJK_LOCALES } from "@/lib/fonts";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
@@ -23,6 +25,7 @@ function AppContent() {
   const tp = useTranslations("printable");
   const { colorScheme } = useColorScheme();
   const { patternSettings } = useSidebarPattern();
+  const { fontFamilyId, fontSizeLevel } = useFontSettings();
   const { locale } = useAppLocale();
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
@@ -42,13 +45,16 @@ function AppContent() {
         certifications: tp("certifications"),
         awards: tp("awards"),
       };
-      await downloadPDF(data, filename, colorScheme, labels, locale, patternSettings);
+      const isCJK = CJK_LOCALES.has(locale);
+      const pdfFontFamily = isCJK ? undefined : getFontDefinition(fontFamilyId).pdfFamilyName;
+      const pdfFontScale = FONT_SIZE_LEVELS[fontSizeLevel] * PDF_BASE_FONT_SCALE;
+      await downloadPDF(data, filename, colorScheme, labels, locale, patternSettings, pdfFontFamily, pdfFontScale);
     } catch (err) {
       console.error("PDF generation failed:", err);
     } finally {
       setIsGeneratingPDF(false);
     }
-  }, [isGeneratingPDF, data, colorScheme, tp, patternSettings, locale]);
+  }, [isGeneratingPDF, data, colorScheme, tp, patternSettings, locale, fontFamilyId, fontSizeLevel]);
 
   return (
     <div className="min-h-screen bg-stone-100 dark:bg-background">
@@ -86,6 +92,7 @@ export default function Home() {
     <ThemeProvider>
       <ColorSchemeProvider>
         <SidebarPatternProvider>
+          <FontSettingsProvider>
           <LocaleProvider>
             <CVProvider>
             <EditModeProvider>
@@ -105,6 +112,7 @@ export default function Home() {
             </EditModeProvider>
             </CVProvider>
           </LocaleProvider>
+          </FontSettingsProvider>
         </SidebarPatternProvider>
       </ColorSchemeProvider>
     </ThemeProvider>
