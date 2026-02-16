@@ -3,6 +3,7 @@
 import React, { memo, useState } from "react";
 import { useCV } from "@/lib/cv-context";
 import { useTranslations } from "next-intl";
+import { useIsViewMode } from "@/hooks/useIsViewMode";
 import { EducationItem } from "@/lib/types";
 import { EditableText } from "./EditableText";
 import { SectionTitle } from "./SectionTitle";
@@ -29,6 +30,7 @@ function EducationCard({
 }) {
   const { updateEducation, removeEducation, moveEducation } = useCV();
   const t = useTranslations("education");
+  const viewMode = useIsViewMode();
 
   const handleDelete = () => {
     const label = edu.institution.trim() || edu.degree.trim();
@@ -43,33 +45,35 @@ function EducationCard({
   return (
     <div className="group/edu relative rounded-sm transition-colors duration-150 -mx-1.5 px-1.5 py-1 hover:bg-gray-50/50 dark:hover:bg-accent/50">
       {/* Action buttons — always visible on mobile, hover-reveal on desktop */}
-      <div className="absolute -right-1 top-1 flex items-center gap-0.5 can-hover:opacity-0 can-hover:group-hover/edu:opacity-100 transition-opacity duration-150">
-        {!isFirst && (
+      {!viewMode && (
+        <div className="absolute -right-1 top-1 flex items-center gap-0.5 can-hover:opacity-0 can-hover:group-hover/edu:opacity-100 transition-opacity duration-150">
+          {!isFirst && (
+            <button
+              onClick={() => moveEducation(edu.id, "up")}
+              className="p-1 rounded hover:bg-gray-200 dark:hover:bg-muted transition-colors"
+              aria-label={t("moveUp")}
+            >
+              <ChevronUp className="h-3 w-3 text-gray-400 dark:text-gray-500" />
+            </button>
+          )}
+          {!isLast && (
+            <button
+              onClick={() => moveEducation(edu.id, "down")}
+              className="p-1 rounded hover:bg-gray-200 dark:hover:bg-muted transition-colors"
+              aria-label={t("moveDown")}
+            >
+              <ChevronDown className="h-3 w-3 text-gray-400 dark:text-gray-500" />
+            </button>
+          )}
           <button
-            onClick={() => moveEducation(edu.id, "up")}
-            className="p-1 rounded hover:bg-gray-200 dark:hover:bg-muted transition-colors"
-            aria-label={t("moveUp")}
+            onClick={handleDelete}
+            className="p-1 rounded hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+            aria-label={t("deleteEducation")}
           >
-            <ChevronUp className="h-3 w-3 text-gray-400 dark:text-gray-500" />
+            <Trash2 className="h-3 w-3 text-gray-400 hover:text-red-500" />
           </button>
-        )}
-        {!isLast && (
-          <button
-            onClick={() => moveEducation(edu.id, "down")}
-            className="p-1 rounded hover:bg-gray-200 dark:hover:bg-muted transition-colors"
-            aria-label={t("moveDown")}
-          >
-            <ChevronDown className="h-3 w-3 text-gray-400 dark:text-gray-500" />
-          </button>
-        )}
-        <button
-          onClick={handleDelete}
-          className="p-1 rounded hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
-          aria-label={t("deleteEducation")}
-        >
-          <Trash2 className="h-3 w-3 text-gray-400 hover:text-red-500" />
-        </button>
-      </div>
+        </div>
+      )}
 
       {/* Institution + dates */}
       <div className="flex items-baseline justify-between gap-2 pr-16">
@@ -124,6 +128,7 @@ export const Education = memo(function Education() {
     addEducation,
   } = useCV();
   const t = useTranslations("education");
+  const viewMode = useIsViewMode();
   const [pendingDelete, setPendingDelete] = useState<{
     message: string;
     onConfirm: () => void;
@@ -145,15 +150,17 @@ export const Education = memo(function Education() {
           />
         ))}
       </div>
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={addEducation}
-        className="mt-2 h-7 px-2 text-[11px] text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
-      >
-        <Plus className="mr-1 h-3 w-3" />
-        {t("addEducation")}
-      </Button>
+      {!viewMode && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={addEducation}
+          className="mt-2 h-7 px-2 text-[11px] text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+        >
+          <Plus className="mr-1 h-3 w-3" />
+          {t("addEducation")}
+        </Button>
+      )}
 
       {/* Delete confirmation dialog */}
       <Dialog

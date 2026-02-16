@@ -223,5 +223,11 @@
     "sharedOn": "{date}に共有",
     "madeWith": "アルゼンチン製",
     "generating": "PDFを生成中..."
+  },
+  "editMode": {
+    "edit": "編集",
+    "view": "表示",
+    "switchToEdit": "編集モードに切替",
+    "switchToView": "表示モードに切替"
   }
 }

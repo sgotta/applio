@@ -4,6 +4,7 @@ import { memo, useCallback, useState } from "react";
 import { useCV } from "@/lib/cv-context";
 import { useTranslations } from "next-intl";
 import { useColorScheme } from "@/lib/color-scheme-context";
+import { useIsViewMode } from "@/hooks/useIsViewMode";
 import { EditableText } from "./EditableText";
 import { SectionTitle } from "./SectionTitle";
 import { ProfilePhotoUpload } from "./ProfilePhotoUpload";
@@ -62,6 +63,12 @@ function ContactLine({
   const [editing, setEditing] = useState(false);
   const hasUrl = !!urlValue;
   const linkable = !!urlField;
+  const viewMode = useIsViewMode();
+
+  // Clickable href for view mode: external URLs, mailto:, or tel:
+  const viewHref = viewMode && value
+    ? urlValue || (field === "email" ? `mailto:${value}` : field === "phone" ? `tel:${value}` : undefined)
+    : undefined;
 
   // Reset to preview mode when popover closes
   const handleOpenChange = (open: boolean) => {
@@ -71,7 +78,7 @@ function ContactLine({
 
   return (
     <div className="flex items-center gap-1 group/contact">
-      {linkable ? (
+      {linkable && !viewMode ? (
         /* Icon is the popover trigger for linkable fields */
         <Popover open={linkOpen} onOpenChange={handleOpenChange}>
           <PopoverTrigger asChild>
@@ -140,13 +147,25 @@ function ContactLine({
         /* Non-linkable fields — plain icon */
         <Icon className="h-3 w-3 shrink-0" style={{ color: iconColor }} />
       )}
-      <EditableText
-        value={value}
-        onChange={(v) => onChange(field, v)}
-        as="small"
-        placeholder={placeholder}
-        displayStyle={{ color: iconColor }}
-      />
+      {viewHref ? (
+        <a
+          href={viewHref}
+          target={urlValue ? "_blank" : undefined}
+          rel={urlValue ? "noopener noreferrer" : undefined}
+          className="text-gray-600 dark:text-gray-300 inline-block rounded-sm px-1.5 py-0.5 -mx-1.5 -my-0.5 hover:opacity-80 transition-opacity"
+          style={{ fontSize: Math.round(11 * 1.08), color: iconColor }}
+        >
+          {value}
+        </a>
+      ) : (
+        <EditableText
+          value={value}
+          onChange={(v) => onChange(field, v)}
+          as="small"
+          placeholder={placeholder}
+          displayStyle={{ color: iconColor }}
+        />
+      )}
     </div>
   );
 }
@@ -170,9 +189,11 @@ function SkillBadge({
   badgeText: string;
   autoEdit?: boolean;
 }) {
+  const viewMode = useIsViewMode();
+
   return (
     <span
-      className="inline-flex items-center gap-0.5 rounded pl-2 pr-0.5 py-0.5 group/badge"
+      className={`inline-flex items-center gap-0.5 rounded pl-2 ${viewMode ? "pr-2" : "pr-0.5"} py-0.5 group/badge`}
       style={{ backgroundColor: badgeBg, color: badgeText }}
     >
       <EditableText
@@ -183,13 +204,15 @@ function SkillBadge({
         displayStyle={{ color: badgeText }}
         autoEdit={autoEdit}
       />
-      <button
-        onClick={onRemove}
-        className="inline-flex can-hover:opacity-0 can-hover:group-hover/badge:opacity-100 p-0.5 rounded hover:bg-white/20 transition-opacity duration-150"
-        aria-label={deleteAriaLabel}
-      >
-        <X className="h-2.5 w-2.5" style={{ color: badgeText }} />
-      </button>
+      {!viewMode && (
+        <button
+          onClick={onRemove}
+          className="inline-flex can-hover:opacity-0 can-hover:group-hover/badge:opacity-100 p-0.5 rounded hover:bg-white/20 transition-opacity duration-150"
+          aria-label={deleteAriaLabel}
+        >
+          <X className="h-2.5 w-2.5" style={{ color: badgeText }} />
+        </button>
+      )}
     </span>
   );
 }
@@ -201,6 +224,7 @@ function SortableSkillBadge({
   sortableId: string;
   children: React.ReactNode;
 }) {
+  const viewMode = useIsViewMode();
   const {
     attributes,
     listeners,
@@ -208,14 +232,14 @@ function SortableSkillBadge({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: sortableId });
+  } = useSortable({ id: sortableId, disabled: viewMode });
 
   const style: React.CSSProperties = {
     transform: CSS.Translate.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : undefined,
     zIndex: isDragging ? 10 : undefined,
-    cursor: isDragging ? "grabbing" : "grab",
+    cursor: viewMode ? "default" : isDragging ? "grabbing" : "grab",
   };
 
   return (
@@ -224,7 +248,7 @@ function SortableSkillBadge({
       style={style}
       className="inline-flex touch-manipulation"
       {...attributes}
-      {...listeners}
+      {...(viewMode ? {} : listeners)}
     >
       {children}
     </span>
@@ -260,6 +284,8 @@ function CategoryHeader({
   categoryColor: string;
   autoEdit?: boolean;
 }) {
+  const viewMode = useIsViewMode();
+
   return (
     <div className="flex items-center gap-1 mb-1 relative">
       <EditableText
@@ -271,33 +297,35 @@ function CategoryHeader({
         displayStyle={{ color: categoryColor }}
         autoEdit={autoEdit}
       />
-      <div className="flex items-center gap-0.5 can-hover:opacity-0 can-hover:group-hover/skillcat:opacity-100 transition-opacity duration-150">
-        {!isFirst && (
+      {!viewMode && (
+        <div className="flex items-center gap-0.5 can-hover:opacity-0 can-hover:group-hover/skillcat:opacity-100 transition-opacity duration-150">
+          {!isFirst && (
+            <button
+              onClick={onMoveUp}
+              className="p-0.5 rounded hover:bg-white/20 transition-colors"
+              aria-label={moveUpAriaLabel}
+            >
+              <ChevronUp className="h-3 w-3" style={{ color: categoryColor }} />
+            </button>
+          )}
+          {!isLast && (
+            <button
+              onClick={onMoveDown}
+              className="p-0.5 rounded hover:bg-white/20 transition-colors"
+              aria-label={moveDownAriaLabel}
+            >
+              <ChevronDown className="h-3 w-3" style={{ color: categoryColor }} />
+            </button>
+          )}
           <button
-            onClick={onMoveUp}
+            onClick={onRemove}
             className="p-0.5 rounded hover:bg-white/20 transition-colors"
-            aria-label={moveUpAriaLabel}
+            aria-label={deleteAriaLabel}
           >
-            <ChevronUp className="h-3 w-3" style={{ color: categoryColor }} />
+            <Trash2 className="h-3 w-3" style={{ color: categoryColor }} />
           </button>
-        )}
-        {!isLast && (
-          <button
-            onClick={onMoveDown}
-            className="p-0.5 rounded hover:bg-white/20 transition-colors"
-            aria-label={moveDownAriaLabel}
-          >
-            <ChevronDown className="h-3 w-3" style={{ color: categoryColor }} />
-          </button>
-        )}
-        <button
-          onClick={onRemove}
-          className="p-0.5 rounded hover:bg-white/20 transition-colors"
-          aria-label={deleteAriaLabel}
-        >
-          <Trash2 className="h-3 w-3" style={{ color: categoryColor }} />
-        </button>
-      </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -314,6 +342,7 @@ export const PersonalInfo = memo(function PersonalInfo() {
   } = useCV();
   const t = useTranslations("personalInfo");
   const { colorScheme } = useColorScheme();
+  const viewMode = useIsViewMode();
 
   // Confirmation dialog — only used for category deletion (destructive, removes all skills)
   const [pendingDelete, setPendingDelete] = useState<{
@@ -514,36 +543,40 @@ export const PersonalInfo = memo(function PersonalInfo() {
                         </SortableSkillBadge>
                       );
                     })}
-                    <button
-                      onClick={() => {
-                        setAutoEditTarget(skillGroup.id + ":" + Date.now());
-                        updateSkillCategory(skillGroup.id, {
-                          items: [...skillGroup.items, "Skill"],
-                        });
-                      }}
-                      className="inline-flex items-center gap-0.5 rounded border border-dashed px-2 py-0.5 text-[10px] transition-colors duration-150 hover:opacity-80"
-                      style={{ borderColor: colorScheme.sidebarMuted, color: colorScheme.sidebarMuted }}
-                    >
-                      <Plus className="h-2.5 w-2.5" />
-                    </button>
+                    {!viewMode && (
+                      <button
+                        onClick={() => {
+                          setAutoEditTarget(skillGroup.id + ":" + Date.now());
+                          updateSkillCategory(skillGroup.id, {
+                            items: [...skillGroup.items, "Skill"],
+                          });
+                        }}
+                        className="inline-flex items-center gap-0.5 rounded border border-dashed px-2 py-0.5 text-[10px] transition-colors duration-150 hover:opacity-80"
+                        style={{ borderColor: colorScheme.sidebarMuted, color: colorScheme.sidebarMuted }}
+                      >
+                        <Plus className="h-2.5 w-2.5" />
+                      </button>
+                    )}
                   </div>
                 </SortableContext>
               </DndContext>
             </div>
           ))}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              setAutoEditTarget("newCategory:" + Date.now());
-              addSkillCategory();
-            }}
-            className="h-6 px-2 text-[10px] hover:opacity-80"
-            style={{ color: colorScheme.sidebarMuted }}
-          >
-            <Plus className="mr-1 h-3 w-3" />
-            {t("addCategory")}
-          </Button>
+          {!viewMode && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setAutoEditTarget("newCategory:" + Date.now());
+                addSkillCategory();
+              }}
+              className="h-6 px-2 text-[10px] hover:opacity-80"
+              style={{ color: colorScheme.sidebarMuted }}
+            >
+              <Plus className="mr-1 h-3 w-3" />
+              {t("addCategory")}
+            </Button>
+          )}
         </div>
       </div>
 

@@ -223,5 +223,11 @@
     "sharedOn": "Partagé le {date}",
     "madeWith": "Fait en Argentine",
     "generating": "Génération du PDF..."
+  },
+  "editMode": {
+    "edit": "Modifier",
+    "view": "Voir",
+    "switchToEdit": "Passer en mode édition",
+    "switchToView": "Passer en mode visualisation"
   }
 }

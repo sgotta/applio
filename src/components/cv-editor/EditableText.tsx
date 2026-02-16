@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, KeyboardEvent, ClipboardEvent } from "react";
 import { useTranslations } from "next-intl";
+import { useIsViewMode } from "@/hooks/useIsViewMode";
 
 
 type EditableStyle = "heading" | "subheading" | "itemTitle" | "body" | "small" | "tiny";
@@ -56,13 +57,23 @@ export function EditableText({
   formatDisplay,
 }: EditableTextProps) {
   const t = useTranslations("editableText");
+  const viewMode = useIsViewMode();
   const fontScale = 1.08;
   const placeholder = placeholderProp ?? t("defaultPlaceholder");
-  const [editing, setEditing] = useState(autoEdit);
+  const [editing, setEditing] = useState(autoEdit && !viewMode);
   const [draft, setDraft] = useState(value);
   const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
 
   const scaledFontSize = Math.round(baseSizeMap[as] * fontScale);
+
+  // Cancel editing when switching to view mode
+  useEffect(() => {
+    if (viewMode && editing) {
+      setEditing(false);
+      const trimmed = draft.trim();
+      if (trimmed !== value) onChange(trimmed);
+    }
+  }, [viewMode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Sync draft when value changes externally
   useEffect(() => {
@@ -136,6 +147,26 @@ export function EditableText({
 
   const baseStyle = styleMap[as];
   const displayEmpty = !value && !editing;
+
+  // View mode: render as static non-interactive text
+  if (viewMode) {
+    const spanStyle: React.CSSProperties = {
+      fontSize: scaledFontSize,
+      ...(displayEmpty ? undefined : displayStyle),
+      ...(multiline ? { whiteSpace: "pre-wrap" as const } : undefined),
+    };
+
+    return (
+      <span
+        className={`${baseStyle} ${className} inline-block rounded-sm px-1.5 py-0.5 -mx-1.5 -my-0.5 ${
+          displayEmpty ? "text-gray-300 dark:text-gray-600 italic" : ""
+        }`}
+        style={spanStyle}
+      >
+        {displayEmpty ? placeholder : formatDisplay ? formatDisplay(value) : value}
+      </span>
+    );
+  }
 
   if (editing) {
     const onSidebar = !!displayStyle;

@@ -223,5 +223,11 @@
     "sharedOn": "{date}에 공유됨",
     "madeWith": "아르헨티나에서 제작",
     "generating": "PDF 생성 중..."
+  },
+  "editMode": {
+    "edit": "편집",
+    "view": "보기",
+    "switchToEdit": "편집 모드로 전환",
+    "switchToView": "보기 모드로 전환"
   }
 }

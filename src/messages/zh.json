@@ -223,5 +223,11 @@
     "sharedOn": "分享于 {date}",
     "madeWith": "阿根廷制造",
     "generating": "正在生成PDF..."
+  },
+  "editMode": {
+    "edit": "编辑",
+    "view": "查看",
+    "switchToEdit": "切换到编辑模式",
+    "switchToView": "切换到查看模式"
   }
 }

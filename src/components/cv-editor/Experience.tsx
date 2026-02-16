@@ -4,6 +4,7 @@ import React, { memo, useState } from "react";
 import { useCV } from "@/lib/cv-context";
 import { useTranslations } from "next-intl";
 import { useColorScheme } from "@/lib/color-scheme-context";
+import { useIsViewMode } from "@/hooks/useIsViewMode";
 import { ExperienceItem, BulletItem } from "@/lib/types";
 import { EditableText } from "./EditableText";
 import { SectionTitle } from "./SectionTitle";
@@ -56,35 +57,38 @@ function EditableBullet({
   const isBullet = bullet.type === "bullet";
   const config = BULLET_TYPE_CONFIG[bullet.type];
   const [menuOpen, setMenuOpen] = useState(false);
+  const viewMode = useIsViewMode();
 
   return (
     <li className={`flex items-start gap-1 group/bullet ${bullet.type === "title" ? "mt-2 first:mt-0" : ""}`}>
       {/* Grip handle — type menu trigger (all types) */}
-      <Popover open={menuOpen} onOpenChange={setMenuOpen}>
-        <PopoverTrigger asChild>
-          <button className="mt-0.5 p-0.5 rounded transition-colors hover:bg-gray-100 dark:hover:bg-accent shrink-0">
-            <GripVertical className="h-3 w-3 text-gray-300 dark:text-gray-600" />
-          </button>
-        </PopoverTrigger>
-        <PopoverContent className="w-40 p-1" align="start" side="left">
-          {(Object.keys(BULLET_TYPE_CONFIG) as BulletItem["type"][]).map((type) => {
-            const Icon = BULLET_TYPE_CONFIG[type].icon;
-            const isActive = bullet.type === type;
-            return (
-              <button
-                key={type}
-                onClick={() => { onSetType(type); setMenuOpen(false); }}
-                className={`flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-xs transition-colors ${
-                  isActive ? "bg-gray-100 dark:bg-accent font-medium text-gray-900 dark:text-gray-100" : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-accent/50"
-                }`}
-              >
-                <Icon className="h-3.5 w-3.5" />
-                {typeLabels[type]}
-              </button>
-            );
-          })}
-        </PopoverContent>
-      </Popover>
+      {!viewMode && (
+        <Popover open={menuOpen} onOpenChange={setMenuOpen}>
+          <PopoverTrigger asChild>
+            <button className="mt-0.5 p-0.5 rounded transition-colors hover:bg-gray-100 dark:hover:bg-accent shrink-0">
+              <GripVertical className="h-3 w-3 text-gray-300 dark:text-gray-600" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="w-40 p-1" align="start" side="left">
+            {(Object.keys(BULLET_TYPE_CONFIG) as BulletItem["type"][]).map((type) => {
+              const Icon = BULLET_TYPE_CONFIG[type].icon;
+              const isActive = bullet.type === type;
+              return (
+                <button
+                  key={type}
+                  onClick={() => { onSetType(type); setMenuOpen(false); }}
+                  className={`flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-xs transition-colors ${
+                    isActive ? "bg-gray-100 dark:bg-accent font-medium text-gray-900 dark:text-gray-100" : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-accent/50"
+                  }`}
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                  {typeLabels[type]}
+                </button>
+              );
+            })}
+          </PopoverContent>
+        </Popover>
+      )}
       {/* Bullet dot (decorative, only for bullet type) */}
       {isBullet && (
         <span className="text-[11px] select-none mt-0.5 shrink-0" style={{ color: bulletColor }}>&bull;</span>
@@ -97,31 +101,33 @@ function EditableBullet({
         placeholder={bulletPlaceholder}
         formatDisplay={renderFormattedText}
       />
-      <div className="flex items-center can-hover:opacity-0 can-hover:group-hover/bullet:opacity-100 transition-opacity duration-150 shrink-0">
-        {!isFirst && (
+      {!viewMode && (
+        <div className="flex items-center can-hover:opacity-0 can-hover:group-hover/bullet:opacity-100 transition-opacity duration-150 shrink-0">
+          {!isFirst && (
+            <button
+              onClick={onMoveUp}
+              className="mt-0.5 p-0.5 rounded hover:bg-gray-100 dark:hover:bg-accent"
+            >
+              <ChevronUp className="h-3 w-3 text-gray-400 dark:text-gray-500" />
+            </button>
+          )}
+          {!isLast && (
+            <button
+              onClick={onMoveDown}
+              className="mt-0.5 p-0.5 rounded hover:bg-gray-100 dark:hover:bg-accent"
+            >
+              <ChevronDown className="h-3 w-3 text-gray-400 dark:text-gray-500" />
+            </button>
+          )}
           <button
-            onClick={onMoveUp}
+            onClick={onRemove}
             className="mt-0.5 p-0.5 rounded hover:bg-gray-100 dark:hover:bg-accent"
+            aria-label={deleteAriaLabel}
           >
-            <ChevronUp className="h-3 w-3 text-gray-400 dark:text-gray-500" />
+            <X className="h-3 w-3 text-gray-400 dark:text-gray-500" />
           </button>
-        )}
-        {!isLast && (
-          <button
-            onClick={onMoveDown}
-            className="mt-0.5 p-0.5 rounded hover:bg-gray-100 dark:hover:bg-accent"
-          >
-            <ChevronDown className="h-3 w-3 text-gray-400 dark:text-gray-500" />
-          </button>
-        )}
-        <button
-          onClick={onRemove}
-          className="mt-0.5 p-0.5 rounded hover:bg-gray-100 dark:hover:bg-accent"
-          aria-label={deleteAriaLabel}
-        >
-          <X className="h-3 w-3 text-gray-400 dark:text-gray-500" />
-        </button>
-      </div>
+        </div>
+      )}
     </li>
   );
 }
@@ -140,6 +146,7 @@ function ExperienceCard({
   const { updateExperience, removeExperience, moveExperience } = useCV();
   const t = useTranslations("experience");
   const { colorScheme } = useColorScheme();
+  const viewMode = useIsViewMode();
 
   const updateBullet = (index: number, value: string) => {
     const newDesc = [...exp.description];
@@ -185,33 +192,35 @@ function ExperienceCard({
   return (
     <div className="group/exp relative rounded-sm transition-colors duration-150 -mx-1.5 px-1.5 py-1 hover:bg-gray-50/50 dark:hover:bg-accent/50">
       {/* Action buttons — always visible on mobile, hover-reveal on desktop */}
-      <div className="absolute -right-1 top-1 flex items-center gap-0.5 can-hover:opacity-0 can-hover:group-hover/exp:opacity-100 transition-opacity duration-150">
-        {!isFirst && (
+      {!viewMode && (
+        <div className="absolute -right-1 top-1 flex items-center gap-0.5 can-hover:opacity-0 can-hover:group-hover/exp:opacity-100 transition-opacity duration-150">
+          {!isFirst && (
+            <button
+              onClick={() => moveExperience(exp.id, "up")}
+              className="p-1 rounded hover:bg-gray-200 dark:hover:bg-muted transition-colors"
+              aria-label={t("moveUp")}
+            >
+              <ChevronUp className="h-3 w-3 text-gray-400 dark:text-gray-500" />
+            </button>
+          )}
+          {!isLast && (
+            <button
+              onClick={() => moveExperience(exp.id, "down")}
+              className="p-1 rounded hover:bg-gray-200 dark:hover:bg-muted transition-colors"
+              aria-label={t("moveDown")}
+            >
+              <ChevronDown className="h-3 w-3 text-gray-400 dark:text-gray-500" />
+            </button>
+          )}
           <button
-            onClick={() => moveExperience(exp.id, "up")}
-            className="p-1 rounded hover:bg-gray-200 dark:hover:bg-muted transition-colors"
-            aria-label={t("moveUp")}
+            onClick={handleDelete}
+            className="p-1 rounded hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+            aria-label={t("deleteExperience")}
           >
-            <ChevronUp className="h-3 w-3 text-gray-400 dark:text-gray-500" />
+            <Trash2 className="h-3 w-3 text-gray-400 hover:text-red-500" />
           </button>
-        )}
-        {!isLast && (
-          <button
-            onClick={() => moveExperience(exp.id, "down")}
-            className="p-1 rounded hover:bg-gray-200 dark:hover:bg-muted transition-colors"
-            aria-label={t("moveDown")}
-          >
-            <ChevronDown className="h-3 w-3 text-gray-400 dark:text-gray-500" />
-          </button>
-        )}
-        <button
-          onClick={handleDelete}
-          className="p-1 rounded hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
-          aria-label={t("deleteExperience")}
-        >
-          <Trash2 className="h-3 w-3 text-gray-400 hover:text-red-500" />
-        </button>
-      </div>
+        </div>
+      )}
 
       {/* Company + dates */}
       <div className="flex items-baseline justify-between gap-2 pr-16">
@@ -285,13 +294,15 @@ function ExperienceCard({
       </ul>
 
       {/* Add bullet */}
-      <button
-        onClick={addBullet}
-        className="mt-1 flex items-center gap-1 text-[10px] text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 transition-colors duration-150 pl-3"
-      >
-        <Plus className="h-2.5 w-2.5" />
-        {t("addBullet")}
-      </button>
+      {!viewMode && (
+        <button
+          onClick={addBullet}
+          className="mt-1 flex items-center gap-1 text-[10px] text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 transition-colors duration-150 pl-3"
+        >
+          <Plus className="h-2.5 w-2.5" />
+          {t("addBullet")}
+        </button>
+      )}
     </div>
   );
 }
@@ -302,6 +313,7 @@ export const Experience = memo(function Experience() {
     addExperience,
   } = useCV();
   const t = useTranslations("experience");
+  const viewMode = useIsViewMode();
   const [pendingDelete, setPendingDelete] = useState<{
     message: string;
     onConfirm: () => void;
@@ -323,15 +335,17 @@ export const Experience = memo(function Experience() {
           />
         ))}
       </div>
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={addExperience}
-        className="mt-2 h-7 px-2 text-[11px] text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
-      >
-        <Plus className="mr-1 h-3 w-3" />
-        {t("addExperience")}
-      </Button>
+      {!viewMode && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={addExperience}
+          className="mt-2 h-7 px-2 text-[11px] text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+        >
+          <Plus className="mr-1 h-3 w-3" />
+          {t("addExperience")}
+        </Button>
+      )}
 
       {/* Delete confirmation dialog */}
       <Dialog
