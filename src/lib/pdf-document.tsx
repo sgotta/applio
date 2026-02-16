@@ -86,12 +86,36 @@ Font.register({
   ],
 });
 
+/* Devanagari font for Hindi */
+Font.register({
+  family: "NotoSansDevanagari",
+  fonts: [
+    { src: "https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-devanagari@latest/devanagari-400-normal.ttf", fontWeight: 400 },
+    { src: "https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-devanagari@latest/devanagari-500-normal.ttf", fontWeight: 500 },
+    { src: "https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-devanagari@latest/devanagari-600-normal.ttf", fontWeight: 600 },
+    { src: "https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-devanagari@latest/devanagari-700-normal.ttf", fontWeight: 700 },
+  ],
+});
+
+/* Thai font */
+Font.register({
+  family: "NotoSansThai",
+  fonts: [
+    { src: "https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-thai@latest/thai-400-normal.ttf", fontWeight: 400 },
+    { src: "https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-thai@latest/thai-500-normal.ttf", fontWeight: 500 },
+    { src: "https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-thai@latest/thai-600-normal.ttf", fontWeight: 600 },
+    { src: "https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-thai@latest/thai-700-normal.ttf", fontWeight: 700 },
+  ],
+});
+
 /** Return the correct font family for a given locale */
 function getFontFamily(locale: string): string {
   switch (locale) {
     case "ja": return "NotoSansJP";
     case "zh": return "NotoSansSC";
     case "ko": return "NotoSansKR";
+    case "hi": return "NotoSansDevanagari";
+    case "th": return "NotoSansThai";
     default:   return "Inter";
   }
 }
