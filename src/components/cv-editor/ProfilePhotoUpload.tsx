@@ -45,7 +45,7 @@ export function ProfilePhotoUpload({
       <button
         type="button"
         onClick={() => setDialogOpen(true)}
-        className="relative w-32 h-32 rounded-full overflow-hidden grid place-items-center group cursor-pointer"
+        className="relative w-36 h-36 rounded-full overflow-hidden grid place-items-center group cursor-pointer"
         style={{ backgroundColor: placeholderBg ?? "#e5e7eb" }}
       >
         {currentPhoto ? (

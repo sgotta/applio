@@ -4,6 +4,7 @@ import { useRef, useState, useCallback, useEffect } from "react";
 import { useCV } from "@/lib/cv-context";
 import { useTranslations } from "next-intl";
 import { useAppLocale, LOCALES, LOCALE_NAMES } from "@/lib/locale-context";
+import { filenameDateStamp } from "@/lib/utils";
 import { CVData } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -11,14 +12,18 @@ import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useTheme, Theme } from "@/lib/theme-context";
 import { useColorScheme } from "@/lib/color-scheme-context";
+import { useSidebarPattern } from "@/lib/sidebar-pattern-context";
+import { SIDEBAR_PATTERN_NAMES, SIDEBAR_PATTERNS, PATTERN_SCOPES, type PatternScope, type PatternIntensity } from "@/lib/sidebar-patterns";
+import { Slider } from "@/components/ui/slider";
 import { COLOR_SCHEME_NAMES, COLOR_SCHEMES, type ColorSchemeName } from "@/lib/color-schemes";
 import { buildSharedData, compressSharedData, generateShareURL } from "@/lib/sharing";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { toast } from "sonner";
 import {
   Download, FileUp, FileDown, FileText, Globe,
   SlidersHorizontal, Check, Sun, Moon, Monitor,
-  Menu, X, ChevronRight, ChevronLeft, AlertTriangle, Palette,
-  Share2, Loader2, Copy,
+  Menu, X, ChevronRight, ChevronLeft, Palette, Layers,
+  Loader2, MoreHorizontal, Link,
+  PanelLeft, PanelRight, Square,
 } from "lucide-react";
 
 const CACHE_EXPIRY_MS = 15 * 24 * 60 * 60 * 1000; // 15 days
@@ -39,8 +44,8 @@ interface ImageUploadCache {
 }
 
 interface ToolbarProps {
-  onPrintPDF: () => void;
-  isOverflowing?: boolean;
+  onPrintPDF: () => void | Promise<void>;
+  isGeneratingPDF?: boolean;
 }
 
 function isValidCVData(data: unknown): data is CVData {
@@ -74,14 +79,15 @@ function SectionToggle({
   );
 }
 
-type MobileMenuPage = "main" | "language" | "theme" | "color" | "sections";
+type MobileMenuPage = "main" | "language" | "theme" | "color" | "pattern" | "sections";
 
-export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
+export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   const { data, importData, toggleSection } = useCV();
   const t = useTranslations("toolbar");
   const { locale, setLocale } = useAppLocale();
   const { theme, setTheme, resolvedTheme } = useTheme();
   const { colorSchemeName, setColorScheme } = useColorScheme();
+  const { patternName, setPattern, sidebarIntensity, mainIntensity, scope, setSidebarIntensity, setMainIntensity, setScope, patternSettings, setPatternSettings } = useSidebarPattern();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileMenuPage, setMobileMenuPage] = useState<MobileMenuPage>("main");
@@ -99,6 +105,7 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
       ...data,
       settings: {
         colorScheme: colorSchemeName,
+        pattern: patternSettings,
       },
     };
     const dataStr = JSON.stringify(exportData, null, 2);
@@ -107,9 +114,8 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
 
     const link = document.createElement("a");
     link.href = url;
-    link.download = `cv-${data.personalInfo.fullName
-      .toLowerCase()
-      .replace(/\s+/g, "-")}.json`;
+    const name = data.personalInfo.fullName.replace(/\s+/g, "-");
+    link.download = `CV-${name}_${filenameDateStamp(locale)}.json`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -135,10 +141,18 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
           importData(parsed);
           // Restore visual settings if present
           const settings = (parsed as unknown as Record<string, unknown>).settings as
-            | { colorScheme?: string }
+            | { colorScheme?: string; pattern?: { name: string; sidebarIntensity?: number; mainIntensity?: number; intensity?: number; scope: string } }
             | undefined;
           if (settings) {
             if (settings.colorScheme) setColorScheme(settings.colorScheme as ColorSchemeName);
+            if (settings.pattern) {
+              setPatternSettings({
+                name: settings.pattern.name as Parameters<typeof setPattern>[0],
+                sidebarIntensity: (settings.pattern.sidebarIntensity ?? 3) as PatternIntensity,
+                mainIntensity: (settings.pattern.mainIntensity ?? 2) as PatternIntensity,
+                scope: settings.pattern.scope as PatternScope,
+              });
+            }
           }
         }
       } catch {
@@ -157,28 +171,7 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
 
   const [isSharing, setIsSharing] = useState(false);
   const [showUploadOverlay, setShowUploadOverlay] = useState(false);
-  const [shareDialogOpen, setShareDialogOpen] = useState(false);
-  const [shareUrl, setShareUrl] = useState<string | null>(null);
-  const [sharePhotoNote, setSharePhotoNote] = useState<string | null>(null);
-  const [shareCopied, setShareCopied] = useState(false);
-  const shareCopiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const [overflowDialogOpen, setOverflowDialogOpen] = useState(false);
-  const [overflowAcknowledged, setOverflowAcknowledged] = useState(false);
-  const [overflowIndicatorDismissed, setOverflowIndicatorDismissed] = useState(false);
-  const overflowShownRef = useRef(false);
-
-  useEffect(() => {
-    if (isOverflowing && !overflowShownRef.current) {
-      setOverflowDialogOpen(true);
-      overflowShownRef.current = true;
-    }
-    if (!isOverflowing) {
-      overflowShownRef.current = false;
-      setOverflowAcknowledged(false);
-      setOverflowIndicatorDismissed(false);
-    }
-  }, [isOverflowing]);
+  const [fileMenuOpen, setFileMenuOpen] = useState(false);
 
   // Mejora 2: Image upload cache
   const imageCache = useRef<ImageUploadCache | null>(null);
@@ -190,11 +183,6 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
     }
   }, [data.personalInfo.photo]);
 
-  useEffect(() => {
-    return () => {
-      if (shareCopiedTimerRef.current) clearTimeout(shareCopiedTimerRef.current);
-    };
-  }, []);
 
   // Mejora 1: Prevent tab close during upload
   useEffect(() => {
@@ -210,10 +198,10 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
   const handleShare = useCallback(async () => {
     if (!canShare || isSharing) return;
     setIsSharing(true);
+    setFileMenuOpen(false);
 
-    const settings = { colorScheme: colorSchemeName, fontSizeLevel: 1, marginLevel: 1 };
+    const settings = { colorScheme: colorSchemeName, fontSizeLevel: 1, marginLevel: 1, pattern: patternSettings };
     let photoUrl: string | undefined;
-    let photoUploaded = false;
 
     if (data.personalInfo.photo) {
       const currentHash = hashString(data.personalInfo.photo);
@@ -221,7 +209,6 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
 
       if (cached && cached.hash === currentHash && (Date.now() - cached.uploadedAt) < CACHE_EXPIRY_MS) {
         photoUrl = cached.url;
-        photoUploaded = true;
       } else {
         setShowUploadOverlay(true);
         try {
@@ -237,7 +224,6 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
           const result = await uploadRes.json();
           if (result.success && result.url) {
             photoUrl = result.url;
-            photoUploaded = true;
             imageCache.current = { hash: currentHash, url: result.url, uploadedAt: Date.now() };
           }
         } catch {
@@ -252,32 +238,16 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
     const compressed = compressSharedData(shared);
     const url = generateShareURL(compressed);
 
-    // Set photo note for dialog
-    if (!photoUploaded && data.personalInfo.photo) {
-      setSharePhotoNote(t("sharePhotoFailed"));
-    } else if (!data.personalInfo.photo) {
-      setSharePhotoNote(t("sharePhotoNote"));
-    } else {
-      setSharePhotoNote(null);
-    }
-
-    setShareUrl(url);
-    setShareCopied(false);
-    setShareDialogOpen(true);
-    setIsSharing(false);
-  }, [data, colorSchemeName, t, isSharing, canShare]);
-
-  const handleCopyShareUrl = useCallback(async () => {
-    if (!shareUrl) return;
     try {
-      await navigator.clipboard.writeText(shareUrl);
-      setShareCopied(true);
-      if (shareCopiedTimerRef.current) clearTimeout(shareCopiedTimerRef.current);
-      shareCopiedTimerRef.current = setTimeout(() => setShareCopied(false), 2000);
+      await navigator.clipboard.writeText(url);
+      toast.success(t("shareLinkCopied"));
     } catch {
-      // Clipboard failed — no action needed
+      // Clipboard not available — open link in new tab as fallback
+      window.open(url, "_blank");
     }
-  }, [shareUrl]);
+
+    setIsSharing(false);
+  }, [data, colorSchemeName, isSharing, canShare, patternSettings]);
 
   const menuItemClass =
     "flex w-full items-center justify-between rounded-sm px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-accent transition-colors";
@@ -287,7 +257,7 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
 
   return (
     <>
-    <header className="no-print sticky top-0 z-50 border-b border-border bg-white/80 dark:bg-card/80 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 border-b border-border bg-white/80 dark:bg-card/80 backdrop-blur-sm">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6">
         {/* Logo */}
         <div className="flex items-center gap-1.5">
@@ -434,6 +404,120 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
               </PopoverContent>
             </Popover>
 
+            {/* Pattern picker (pattern + intensity + scope) */}
+            <Popover>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                    >
+                      <Layers className="h-4 w-4" />
+                    </Button>
+                  </PopoverTrigger>
+                </TooltipTrigger>
+                <TooltipContent>{t("sidebarPattern")}</TooltipContent>
+              </Tooltip>
+              <PopoverContent className="w-64 p-3 space-y-4" align="end">
+                {/* Pattern selection */}
+                <div>
+                  <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-2">
+                    {t("sidebarPattern")}
+                  </p>
+                  <div className="flex gap-3">
+                    {SIDEBAR_PATTERN_NAMES.map((name) => {
+                      const isActive = patternName === name;
+                      const isNone = name === "none";
+                      return (
+                        <div key={name} className="flex flex-col items-center gap-1">
+                          <button
+                            onClick={() => setPattern(name)}
+                            className={`relative h-9 w-9 rounded-md border overflow-hidden transition-all hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-400 ${
+                              isActive
+                                ? "border-gray-900 dark:border-gray-100 ring-1 ring-gray-900 dark:ring-gray-100"
+                                : "border-gray-200 dark:border-gray-700"
+                            }`}
+                            style={{
+                              backgroundColor: isNone ? "white" : COLOR_SCHEMES[colorSchemeName].sidebarBg,
+                              ...(!isNone ? SIDEBAR_PATTERNS[name].getStyle(COLOR_SCHEMES[colorSchemeName].sidebarText, sidebarIntensity) : {}),
+                            }}
+                          >
+                            {isNone && (
+                              <span className="absolute inset-0" style={{ background: "linear-gradient(to top left, transparent calc(50% - 1px), #ef4444 calc(50% - 1px), #ef4444 calc(50% + 1px), transparent calc(50% + 1px))" }} />
+                            )}
+                            {isActive && !isNone && (
+                              <Check className={`absolute inset-0 m-auto h-3.5 w-3.5 drop-shadow-sm ${
+                                COLOR_SCHEMES[colorSchemeName].sidebarText === "#ffffff" ? "text-white" : "text-gray-800"
+                              }`} />
+                            )}
+                          </button>
+                          <span className="text-[10px] text-gray-500 dark:text-gray-400">
+                            {t(`pattern${name.charAt(0).toUpperCase() + name.slice(1)}` as Parameters<typeof t>[0])}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Intensity sliders */}
+                <div className={patternName === "none" ? "opacity-40 pointer-events-none" : ""}>
+                  <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-2">
+                    {t("patternIntensity")}
+                  </p>
+                  <div className="space-y-2">
+                    <div className={scope === "main" ? "opacity-40 pointer-events-none" : ""}>
+                      <p className="text-[10px] text-gray-400 dark:text-gray-500 mb-1">{t("patternScopeSidebar")}</p>
+                      <div className="flex items-center gap-3">
+                        <Slider min={1} max={5} step={1} value={[sidebarIntensity]} onValueChange={([v]) => setSidebarIntensity(v as PatternIntensity)} className="flex-1" />
+                        <span className="text-xs font-medium text-gray-500 dark:text-gray-400 w-5 text-center">{sidebarIntensity}</span>
+                      </div>
+                    </div>
+                    <div className={scope === "sidebar" ? "opacity-40 pointer-events-none" : ""}>
+                      <p className="text-[10px] text-gray-400 dark:text-gray-500 mb-1">{t("patternScopeMain")}</p>
+                      <div className="flex items-center gap-3">
+                        <Slider min={1} max={5} step={1} value={[mainIntensity]} onValueChange={([v]) => setMainIntensity(v as PatternIntensity)} className="flex-1" />
+                        <span className="text-xs font-medium text-gray-500 dark:text-gray-400 w-5 text-center">{mainIntensity}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Scope selector */}
+                <div className={patternName === "none" ? "opacity-40 pointer-events-none" : ""}>
+                  <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-2">
+                    {t("patternScope")}
+                  </p>
+                  <div className="flex gap-1.5">
+                    {PATTERN_SCOPES.map((s) => {
+                      const ScopeIcon = s === "sidebar" ? PanelLeft : s === "main" ? PanelRight : Square;
+                      return (
+                        <Tooltip key={s}>
+                          <TooltipTrigger asChild>
+                            <button
+                              onClick={() => setScope(s)}
+                              className={`h-7 w-7 rounded-md flex items-center justify-center transition-colors ${
+                                scope === s
+                                  ? "bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900"
+                                  : "bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-accent dark:text-gray-400 dark:hover:bg-accent/80"
+                              }`}
+                            >
+                              <ScopeIcon className="h-3.5 w-3.5" />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            {t(`patternScope${s.charAt(0).toUpperCase() + s.slice(1)}` as Parameters<typeof t>[0])}
+                          </TooltipContent>
+                        </Tooltip>
+                      );
+                    })}
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
+
             {/* Sections toggle */}
             <Popover>
               <Tooltip>
@@ -471,51 +555,54 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
               </PopoverContent>
             </Popover>
 
-            {/* Import */}
-            <Tooltip>
-              <TooltipTrigger asChild>
+            {/* Divider between settings and file actions */}
+            <div className="h-5 w-px bg-gray-200 dark:bg-gray-700 mx-1" />
+
+            {/* File actions menu */}
+            <Popover open={fileMenuOpen} onOpenChange={setFileMenuOpen}>
+              <PopoverTrigger asChild>
                 <Button
                   variant="ghost"
                   size="icon"
                   className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
-                  onClick={() => fileInputRef.current?.click()}
                 >
-                  <FileUp className="h-4 w-4" />
+                  <MoreHorizontal className="h-4 w-4" />
                 </Button>
-              </TooltipTrigger>
-              <TooltipContent>{t("importTitle")}</TooltipContent>
-            </Tooltip>
-
-            {/* Export JSON */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
-                  onClick={exportToJSON}
-                >
-                  <FileDown className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>{t("exportTitle")}</TooltipContent>
-            </Tooltip>
-
-            {/* Share link */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className={`h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 ${!canShare ? "opacity-50 cursor-not-allowed" : ""}`}
-                  onClick={handleShare}
-                  disabled={isSharing || !canShare}
-                >
-                  {isSharing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Share2 className="h-4 w-4" />}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>{canShare ? t("shareTitle") : t("shareNameRequired")}</TooltipContent>
-            </Tooltip>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-1" align="end">
+                <div className="space-y-0.5">
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex w-full items-center gap-2.5 rounded-sm px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-accent transition-colors"
+                  >
+                    <FileUp className="h-4 w-4" />
+                    <span className="flex items-baseline gap-2.5">
+                      {t("import")}
+                      <span className="text-[10px] text-gray-400 dark:text-gray-500">{t("free")}</span>
+                    </span>
+                  </button>
+                  <button
+                    onClick={exportToJSON}
+                    className="flex w-full items-center gap-2.5 rounded-sm px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-accent transition-colors"
+                  >
+                    <FileDown className="h-4 w-4" />
+                    <span className="flex items-baseline gap-2.5">
+                      {t("export")}
+                      <span className="text-[10px] text-gray-400 dark:text-gray-500">{t("free")}</span>
+                    </span>
+                  </button>
+                  <div className="my-1 border-t border-gray-100 dark:border-border" />
+                  <button
+                    onClick={handleShare}
+                    disabled={isSharing || !canShare}
+                    className={`flex w-full items-center gap-2.5 rounded-sm px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-accent transition-colors ${!canShare ? "opacity-50" : ""}`}
+                  >
+                    <Link className="h-4 w-4" />
+                    {t("share")}
+                  </button>
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
 
           {/* ===== MOBILE HAMBURGER MENU (visible only on mobile) ===== */}
@@ -586,6 +673,18 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
                     </span>
                   </button>
 
+                  {/* Pattern */}
+                  <button onClick={() => setMobileMenuPage("pattern")} className={menuItemClass}>
+                    <span className="flex items-center gap-2.5">
+                      <Layers className="h-4 w-4" />
+                      {t("sidebarPattern")}
+                    </span>
+                    <span className="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500">
+                      {t(`pattern${patternName.charAt(0).toUpperCase() + patternName.slice(1)}` as Parameters<typeof t>[0])}
+                      <ChevronRight className="h-3.5 w-3.5" />
+                    </span>
+                  </button>
+
                   {/* Sections */}
                   <button onClick={() => setMobileMenuPage("sections")} className={menuItemClass}>
                     <span className="flex items-center gap-2.5">
@@ -602,7 +701,10 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
                   <button onClick={() => fileInputRef.current?.click()} className={menuItemClass}>
                     <span className="flex items-center gap-2.5">
                       <FileUp className="h-4 w-4" />
-                      {t("import")}
+                      <span className="flex items-baseline gap-2.5">
+                        {t("import")}
+                        <span className="text-[10px] text-gray-400 dark:text-gray-500">{t("free")}</span>
+                      </span>
                     </span>
                   </button>
 
@@ -610,15 +712,18 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
                   <button onClick={exportToJSON} className={menuItemClass}>
                     <span className="flex items-center gap-2.5">
                       <FileDown className="h-4 w-4" />
-                      {t("export")}
+                      <span className="flex items-baseline gap-2.5">
+                        {t("export")}
+                        <span className="text-[10px] text-gray-400 dark:text-gray-500">{t("free")}</span>
+                      </span>
                     </span>
                   </button>
 
-                  {/* Share link */}
-                  <button onClick={handleShare} disabled={isSharing || !canShare} className={`${menuItemClass} ${!canShare ? "opacity-50" : ""}`}>
+                  {/* Copy link */}
+                  <button onClick={() => { setMobileMenuOpen(false); handleShare(); }} disabled={isSharing || !canShare} className={`${menuItemClass} ${!canShare ? "opacity-50" : ""}`}>
                     <span className="flex items-center gap-2.5">
-                      {isSharing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Share2 className="h-4 w-4" />}
-                      {isSharing ? t("shareUploading") : t("share")}
+                      <Link className="h-4 w-4" />
+                      {t("share")}
                     </span>
                   </button>
 
@@ -628,9 +733,14 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
                   {/* Export PDF — prominent */}
                   <button
                     onClick={onPrintPDF}
-                    className="mx-auto mb-1.5 flex items-center justify-center gap-2 rounded-md px-8 py-2.5 text-sm font-medium transition-colors bg-gray-900 text-white hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
+                    disabled={isGeneratingPDF}
+                    className="mx-auto mb-1.5 flex items-center justify-center gap-2 rounded-md px-8 py-2.5 text-sm font-medium transition-colors bg-gray-900 text-white hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200 disabled:opacity-50"
                   >
-                    <Download className="h-4 w-4" />
+                    {isGeneratingPDF ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Download className="h-4 w-4" />
+                    )}
                     PDF
                   </button>
                 </div>
@@ -728,6 +838,103 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
                 </div>
               )}
 
+              {mobileMenuPage === "pattern" && (
+                <div>
+                  <button onClick={() => setMobileMenuPage("main")} className={backButtonClass}>
+                    <ChevronLeft className="h-3.5 w-3.5" />
+                    {t("sidebarPattern")}
+                  </button>
+                  <div className="px-3 pt-2 pb-1 space-y-4">
+                    {/* Pattern selection */}
+                    <div className="flex flex-wrap gap-2">
+                      {SIDEBAR_PATTERN_NAMES.map((name) => {
+                        const isActive = patternName === name;
+                        const scheme = COLOR_SCHEMES[colorSchemeName];
+                        const isLight = scheme.sidebarText !== "#ffffff";
+                        const isNone = name === "none";
+                        return (
+                          <button
+                            key={name}
+                            onClick={() => setPattern(name)}
+                            className="relative flex flex-col items-center gap-1"
+                          >
+                            <span
+                              className={`relative h-9 w-9 rounded-md border overflow-hidden transition-transform hover:scale-105 ${
+                                isActive
+                                  ? "border-gray-900 dark:border-gray-100 ring-1 ring-gray-900 dark:ring-gray-100"
+                                  : "border-gray-200 dark:border-gray-700"
+                              }`}
+                              style={{
+                                backgroundColor: isNone ? "white" : scheme.sidebarBg,
+                                ...(!isNone ? SIDEBAR_PATTERNS[name].getStyle(scheme.sidebarText, sidebarIntensity) : {}),
+                              }}
+                            >
+                              {isNone && (
+                                <span className="absolute inset-0" style={{ background: "linear-gradient(to top left, transparent calc(50% - 1px), #ef4444 calc(50% - 1px), #ef4444 calc(50% + 1px), transparent calc(50% + 1px))" }} />
+                              )}
+                              {isActive && !isNone && (
+                                <Check className={`absolute inset-0 m-auto h-4 w-4 drop-shadow-sm ${isLight ? "text-gray-800" : "text-white"}`} />
+                              )}
+                            </span>
+                            <span className="text-[10px] text-gray-500 dark:text-gray-400">
+                              {t(`pattern${name.charAt(0).toUpperCase() + name.slice(1)}` as Parameters<typeof t>[0])}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* Intensity sliders */}
+                    <div className={patternName === "none" ? "opacity-40 pointer-events-none" : ""}>
+                      <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-2">
+                        {t("patternIntensity")}
+                      </p>
+                      <div className="space-y-2">
+                        <div className={scope === "main" ? "opacity-40 pointer-events-none" : ""}>
+                          <p className="text-[10px] text-gray-400 dark:text-gray-500 mb-1">{t("patternScopeSidebar")}</p>
+                          <div className="flex items-center gap-3">
+                            <Slider min={1} max={5} step={1} value={[sidebarIntensity]} onValueChange={([v]) => setSidebarIntensity(v as PatternIntensity)} className="flex-1" />
+                            <span className="text-xs font-medium text-gray-500 dark:text-gray-400 w-5 text-center">{sidebarIntensity}</span>
+                          </div>
+                        </div>
+                        <div className={scope === "sidebar" ? "opacity-40 pointer-events-none" : ""}>
+                          <p className="text-[10px] text-gray-400 dark:text-gray-500 mb-1">{t("patternScopeMain")}</p>
+                          <div className="flex items-center gap-3">
+                            <Slider min={1} max={5} step={1} value={[mainIntensity]} onValueChange={([v]) => setMainIntensity(v as PatternIntensity)} className="flex-1" />
+                            <span className="text-xs font-medium text-gray-500 dark:text-gray-400 w-5 text-center">{mainIntensity}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Scope selector */}
+                    <div className={patternName === "none" ? "opacity-40 pointer-events-none" : ""}>
+                      <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-2">
+                        {t("patternScope")}
+                      </p>
+                      <div className="flex gap-1.5">
+                        {PATTERN_SCOPES.map((s) => {
+                          const ScopeIcon = s === "sidebar" ? PanelLeft : s === "main" ? PanelRight : Square;
+                          return (
+                            <button
+                              key={s}
+                              onClick={() => setScope(s)}
+                              className={`h-7 w-7 rounded-md flex items-center justify-center transition-colors ${
+                                scope === s
+                                  ? "bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900"
+                                  : "bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-accent dark:text-gray-400 dark:hover:bg-accent/80"
+                              }`}
+                            >
+                              <ScopeIcon className="h-3.5 w-3.5" />
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {mobileMenuPage === "sections" && (
                 <div>
                   <button onClick={() => setMobileMenuPage("main")} className={backButtonClass}>
@@ -763,8 +970,13 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
                 size="sm"
                 className="hidden md:inline-flex ml-1 bg-gray-900 text-white hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
                 onClick={onPrintPDF}
+                disabled={isGeneratingPDF}
               >
-                <Download className="mr-1.5 h-4 w-4" />
+                {isGeneratingPDF ? (
+                  <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
+                ) : (
+                  <Download className="mr-1.5 h-4 w-4" />
+                )}
                 <span>PDF</span>
               </Button>
             </TooltipTrigger>
@@ -773,79 +985,6 @@ export function Toolbar({ onPrintPDF, isOverflowing }: ToolbarProps) {
         </div>
       </div>
     </header>
-
-    {/* Overflow warning dialog */}
-    <Dialog open={overflowDialogOpen} onOpenChange={setOverflowDialogOpen}>
-      <DialogContent className="sm:max-w-sm">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4 text-amber-600" />
-            {t("overflowWarning")}
-          </DialogTitle>
-          <DialogDescription>{t("overflowDescription")}</DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => { setOverflowAcknowledged(true); setOverflowDialogOpen(false); }}
-          >
-            {t("overflowContinue")}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-
-    {/* Persistent overflow indicator (after user acknowledges) */}
-    {isOverflowing && overflowAcknowledged && !overflowIndicatorDismissed && (
-      <div className="no-print fixed bottom-4 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 border border-border bg-background px-3.5 py-2 shadow-md rounded-md">
-        <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-amber-600" />
-        <span className="text-xs font-medium text-foreground">{t("overflowWarning")}</span>
-        <button
-          onClick={() => setOverflowIndicatorDismissed(true)}
-          className="rounded-sm p-0.5 text-muted-foreground/60 hover:text-foreground transition-colors"
-        >
-          <X className="h-3 w-3" />
-        </button>
-      </div>
-    )}
-
-    {/* Share link dialog */}
-    <Dialog open={shareDialogOpen} onOpenChange={(open) => { setShareDialogOpen(open); if (!open) setShareCopied(false); }}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>{t("shareTitle")}</DialogTitle>
-          <DialogDescription className="sr-only">{t("shareTitle")}</DialogDescription>
-        </DialogHeader>
-        <div className="flex items-center gap-2 min-w-0">
-          <div className="min-w-0 flex-1 overflow-hidden rounded-md border border-border bg-muted/50 px-3 py-2">
-            <span className="block truncate text-sm font-mono text-muted-foreground">{shareUrl}</span>
-          </div>
-          <Button
-            variant="outline"
-            size="icon"
-            className="shrink-0"
-            onClick={handleCopyShareUrl}
-          >
-            <span className="relative h-4 w-4">
-              <Copy
-                className={`h-4 w-4 absolute inset-0 transition-all duration-200 ${
-                  shareCopied ? "opacity-0 scale-75" : "opacity-100 scale-100"
-                }`}
-              />
-              <Check
-                className={`h-4 w-4 absolute inset-0 transition-all duration-200 text-green-600 dark:text-green-400 ${
-                  shareCopied ? "opacity-100 scale-100" : "opacity-0 scale-75"
-                }`}
-              />
-            </span>
-          </Button>
-        </div>
-        {sharePhotoNote && (
-          <p className="text-xs text-muted-foreground">{sharePhotoNote}</p>
-        )}
-      </DialogContent>
-    </Dialog>
 
     {/* Full-screen overlay during photo upload */}
     {showUploadOverlay && (

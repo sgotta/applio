@@ -9,6 +9,13 @@ import {
   DEFAULT_COLOR_SCHEME,
   type ColorSchemeName,
 } from "./color-schemes";
+import {
+  SIDEBAR_PATTERN_NAMES,
+  PATTERN_SCOPES,
+  type SidebarPatternName,
+  type PatternScope,
+  type PatternIntensity,
+} from "./sidebar-patterns";
 
 /**
  * Build the shareable data payload from the editor state.
@@ -96,6 +103,17 @@ function validateSharedData(data: unknown): SharedCVData | null {
       ? rawSettings.marginLevel
       : 1;
 
+  // Validate pattern settings
+  const rawPattern = rawSettings.pattern as Record<string, unknown> | undefined;
+  const pattern = rawPattern && typeof rawPattern === "object"
+    ? {
+        name: typeof rawPattern.name === "string" && SIDEBAR_PATTERN_NAMES.includes(rawPattern.name as SidebarPatternName) ? rawPattern.name : "none",
+        sidebarIntensity: typeof rawPattern.sidebarIntensity === "number" && Number.isInteger(rawPattern.sidebarIntensity) && rawPattern.sidebarIntensity >= 1 && rawPattern.sidebarIntensity <= 5 ? rawPattern.sidebarIntensity : 3,
+        mainIntensity: typeof rawPattern.mainIntensity === "number" && Number.isInteger(rawPattern.mainIntensity) && rawPattern.mainIntensity >= 1 && rawPattern.mainIntensity <= 5 ? rawPattern.mainIntensity : 2,
+        scope: typeof rawPattern.scope === "string" && PATTERN_SCOPES.includes(rawPattern.scope as PatternScope) ? rawPattern.scope : "sidebar",
+      }
+    : undefined;
+
   return {
     cv: {
       personalInfo: {
@@ -106,6 +124,12 @@ function validateSharedData(data: unknown): SharedCVData | null {
         location: String(pi.location || ""),
         linkedin: String(pi.linkedin || ""),
         website: String(pi.website || ""),
+        ...(typeof pi.linkedinUrl === "string" && pi.linkedinUrl
+          ? { linkedinUrl: pi.linkedinUrl }
+          : {}),
+        ...(typeof pi.websiteUrl === "string" && pi.websiteUrl
+          ? { websiteUrl: pi.websiteUrl }
+          : {}),
         ...(typeof pi.photoUrl === "string" && pi.photoUrl
           ? { photoUrl: pi.photoUrl }
           : {}),
@@ -124,7 +148,7 @@ function validateSharedData(data: unknown): SharedCVData | null {
         ...((cv.visibility as object) || {}),
       },
     },
-    settings: { colorScheme, fontSizeLevel, marginLevel },
+    settings: { colorScheme, fontSizeLevel, marginLevel, ...(pattern ? { pattern } : {}) },
     sharedAt:
       typeof d.sharedAt === "string" ? d.sharedAt : new Date().toISOString(),
   };

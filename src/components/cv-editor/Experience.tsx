@@ -4,9 +4,10 @@ import React, { memo, useState } from "react";
 import { useCV } from "@/lib/cv-context";
 import { useTranslations } from "next-intl";
 import { useColorScheme } from "@/lib/color-scheme-context";
-import { ExperienceItem } from "@/lib/types";
+import { ExperienceItem, BulletItem } from "@/lib/types";
 import { EditableText } from "./EditableText";
 import { SectionTitle } from "./SectionTitle";
+import { renderFormattedText } from "@/lib/format-text";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -15,43 +16,112 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { SwipeToDelete } from "@/components/ui/swipe-to-delete";
-import { Plus, Trash2, ChevronUp, ChevronDown, X } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Plus, Trash2, ChevronUp, ChevronDown, X, Heading, Heading2, List, MessageSquareText, GripVertical } from "lucide-react";
+
+const BULLET_TYPE_CONFIG: Record<BulletItem["type"], { icon: typeof List; as: "itemTitle" | "body" | "small"; className?: string }> = {
+  bullet:   { icon: List,              as: "body" },
+  title:    { icon: Heading,           as: "itemTitle" },
+  subtitle: { icon: Heading2,          as: "body",  className: "!font-medium !text-gray-800 dark:!text-gray-200" },
+  comment:  { icon: MessageSquareText, as: "small", className: "!italic !text-gray-400 dark:!text-gray-500" },
+};
 
 function EditableBullet({
-  value,
+  bullet,
   onChange,
   onRemove,
+  onSetType,
+  onMoveUp,
+  onMoveDown,
+  isFirst,
+  isLast,
   bulletPlaceholder,
   deleteAriaLabel,
   bulletColor,
+  typeLabels,
 }: {
-  value: string;
+  bullet: BulletItem;
   onChange: (v: string) => void;
   onRemove: () => void;
+  onSetType: (type: BulletItem["type"]) => void;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
+  isFirst: boolean;
+  isLast: boolean;
   bulletPlaceholder: string;
   deleteAriaLabel: string;
   bulletColor: string;
+  typeLabels: Record<BulletItem["type"], string>;
 }) {
+  const isBullet = bullet.type === "bullet";
+  const config = BULLET_TYPE_CONFIG[bullet.type];
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
-    <li className="flex items-start gap-1 group/bullet pl-3 relative">
-      <span className="absolute left-0 text-[11px] select-none" style={{ color: bulletColor }}>
-        &bull;
-      </span>
+    <li className={`flex items-start gap-1 group/bullet ${bullet.type === "title" ? "mt-2 first:mt-0" : ""}`}>
+      {/* Grip handle — type menu trigger (all types) */}
+      <Popover open={menuOpen} onOpenChange={setMenuOpen}>
+        <PopoverTrigger asChild>
+          <button className="mt-0.5 p-0.5 rounded transition-colors hover:bg-gray-100 dark:hover:bg-accent shrink-0">
+            <GripVertical className="h-3 w-3 text-gray-300 dark:text-gray-600" />
+          </button>
+        </PopoverTrigger>
+        <PopoverContent className="w-40 p-1" align="start" side="left">
+          {(Object.keys(BULLET_TYPE_CONFIG) as BulletItem["type"][]).map((type) => {
+            const Icon = BULLET_TYPE_CONFIG[type].icon;
+            const isActive = bullet.type === type;
+            return (
+              <button
+                key={type}
+                onClick={() => { onSetType(type); setMenuOpen(false); }}
+                className={`flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-xs transition-colors ${
+                  isActive ? "bg-gray-100 dark:bg-accent font-medium text-gray-900 dark:text-gray-100" : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-accent/50"
+                }`}
+              >
+                <Icon className="h-3.5 w-3.5" />
+                {typeLabels[type]}
+              </button>
+            );
+          })}
+        </PopoverContent>
+      </Popover>
+      {/* Bullet dot (decorative, only for bullet type) */}
+      {isBullet && (
+        <span className="text-[11px] select-none mt-0.5 shrink-0" style={{ color: bulletColor }}>&bull;</span>
+      )}
       <EditableText
-        value={value}
+        value={bullet.text}
         onChange={onChange}
-        as="body"
-        className="flex-1"
+        as={config.as}
+        className={`flex-1 ${config.className || ""}`}
         placeholder={bulletPlaceholder}
+        formatDisplay={renderFormattedText}
       />
-      <button
-        onClick={onRemove}
-        className="opacity-0 group-hover/bullet:opacity-100 mt-0.5 p-0.5 rounded hover:bg-gray-100 dark:hover:bg-accent transition-opacity duration-150 flex-shrink-0 hidden md:inline-flex"
-        aria-label={deleteAriaLabel}
-      >
-        <X className="h-3 w-3 text-gray-400 dark:text-gray-500" />
-      </button>
+      <div className="flex items-center can-hover:opacity-0 can-hover:group-hover/bullet:opacity-100 transition-opacity duration-150 shrink-0">
+        {!isFirst && (
+          <button
+            onClick={onMoveUp}
+            className="mt-0.5 p-0.5 rounded hover:bg-gray-100 dark:hover:bg-accent"
+          >
+            <ChevronUp className="h-3 w-3 text-gray-400 dark:text-gray-500" />
+          </button>
+        )}
+        {!isLast && (
+          <button
+            onClick={onMoveDown}
+            className="mt-0.5 p-0.5 rounded hover:bg-gray-100 dark:hover:bg-accent"
+          >
+            <ChevronDown className="h-3 w-3 text-gray-400 dark:text-gray-500" />
+          </button>
+        )}
+        <button
+          onClick={onRemove}
+          className="mt-0.5 p-0.5 rounded hover:bg-gray-100 dark:hover:bg-accent"
+          aria-label={deleteAriaLabel}
+        >
+          <X className="h-3 w-3 text-gray-400 dark:text-gray-500" />
+        </button>
+      </div>
     </li>
   );
 }
@@ -73,7 +143,7 @@ function ExperienceCard({
 
   const updateBullet = (index: number, value: string) => {
     const newDesc = [...exp.description];
-    newDesc[index] = value;
+    newDesc[index] = { ...newDesc[index], text: value };
     updateExperience(exp.id, { description: newDesc });
   };
 
@@ -82,13 +152,27 @@ function ExperienceCard({
     updateExperience(exp.id, { description: newDesc });
   };
 
+  const setBulletType = (index: number, type: BulletItem["type"]) => {
+    const newDesc = [...exp.description];
+    newDesc[index] = { ...newDesc[index], type };
+    updateExperience(exp.id, { description: newDesc });
+  };
+
+  const moveBullet = (index: number, direction: "up" | "down") => {
+    const newDesc = [...exp.description];
+    const target = direction === "up" ? index - 1 : index + 1;
+    if (target < 0 || target >= newDesc.length) return;
+    [newDesc[index], newDesc[target]] = [newDesc[target], newDesc[index]];
+    updateExperience(exp.id, { description: newDesc });
+  };
+
   const addBullet = () => {
     updateExperience(exp.id, {
-      description: [...exp.description, t("newBulletDefault")],
+      description: [...exp.description, { text: t("newBulletDefault"), type: "bullet" as const }],
     });
   };
 
-  const handleSwipeDelete = () => {
+  const handleDelete = () => {
     const label = exp.company.trim() || exp.position.trim();
     onRequestDelete(
       label
@@ -99,95 +183,116 @@ function ExperienceCard({
   };
 
   return (
-    <SwipeToDelete onDelete={handleSwipeDelete}>
-      <div className="group/exp relative rounded-sm transition-colors duration-150 -mx-1.5 px-1.5 py-1 hover:bg-gray-50/50 dark:hover:bg-accent/50">
-        {/* Action buttons — desktop only, visible on hover */}
-        <div className="absolute -right-1 top-1 hidden md:flex items-center gap-0.5 opacity-0 group-hover/exp:opacity-100 transition-opacity duration-150">
-          {!isFirst && (
-            <button
-              onClick={() => moveExperience(exp.id, "up")}
-              className="p-1 rounded hover:bg-gray-200 dark:hover:bg-muted transition-colors"
-              aria-label={t("moveUp")}
-            >
-              <ChevronUp className="h-3 w-3 text-gray-400 dark:text-gray-500" />
-            </button>
-          )}
-          {!isLast && (
-            <button
-              onClick={() => moveExperience(exp.id, "down")}
-              className="p-1 rounded hover:bg-gray-200 dark:hover:bg-muted transition-colors"
-              aria-label={t("moveDown")}
-            >
-              <ChevronDown className="h-3 w-3 text-gray-400 dark:text-gray-500" />
-            </button>
-          )}
+    <div className="group/exp relative rounded-sm transition-colors duration-150 -mx-1.5 px-1.5 py-1 hover:bg-gray-50/50 dark:hover:bg-accent/50">
+      {/* Action buttons — always visible on mobile, hover-reveal on desktop */}
+      <div className="absolute -right-1 top-1 flex items-center gap-0.5 can-hover:opacity-0 can-hover:group-hover/exp:opacity-100 transition-opacity duration-150">
+        {!isFirst && (
           <button
-            onClick={() => removeExperience(exp.id)}
-            className="p-1 rounded hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
-            aria-label={t("deleteExperience")}
+            onClick={() => moveExperience(exp.id, "up")}
+            className="p-1 rounded hover:bg-gray-200 dark:hover:bg-muted transition-colors"
+            aria-label={t("moveUp")}
           >
-            <Trash2 className="h-3 w-3 text-gray-400 hover:text-red-500" />
+            <ChevronUp className="h-3 w-3 text-gray-400 dark:text-gray-500" />
           </button>
-        </div>
-
-        {/* Company + dates */}
-        <div className="flex items-baseline justify-between gap-2 pr-16">
-          <EditableText
-            value={exp.company}
-            onChange={(v) => updateExperience(exp.id, { company: v })}
-            as="itemTitle"
-            placeholder={t("companyPlaceholder")}
-          />
-          <div className="flex items-baseline gap-1 flex-shrink-0">
-            <EditableText
-              value={exp.startDate}
-              onChange={(v) => updateExperience(exp.id, { startDate: v })}
-              as="tiny"
-              placeholder={t("startDatePlaceholder")}
-            />
-            <span className="text-[10px] text-gray-400 dark:text-gray-500">—</span>
-            <EditableText
-              value={exp.endDate}
-              onChange={(v) => updateExperience(exp.id, { endDate: v })}
-              as="tiny"
-              placeholder={t("endDatePlaceholder")}
-            />
-          </div>
-        </div>
-
-        {/* Position */}
-        <EditableText
-          value={exp.position}
-          onChange={(v) => updateExperience(exp.id, { position: v })}
-          as="subheading"
-          placeholder={t("positionPlaceholder")}
-        />
-
-        {/* Bullet points */}
-        <ul className="mt-1.5 space-y-1">
-          {exp.description.map((bullet, i) => (
-            <EditableBullet
-              key={i}
-              value={bullet}
-              onChange={(v) => updateBullet(i, v)}
-              onRemove={() => removeBullet(i)}
-              bulletPlaceholder={t("bulletPlaceholder")}
-              deleteAriaLabel={t("deleteBullet")}
-              bulletColor={colorScheme.bullet}
-            />
-          ))}
-        </ul>
-
-        {/* Add bullet */}
+        )}
+        {!isLast && (
+          <button
+            onClick={() => moveExperience(exp.id, "down")}
+            className="p-1 rounded hover:bg-gray-200 dark:hover:bg-muted transition-colors"
+            aria-label={t("moveDown")}
+          >
+            <ChevronDown className="h-3 w-3 text-gray-400 dark:text-gray-500" />
+          </button>
+        )}
         <button
-          onClick={addBullet}
-          className="mt-1 flex items-center gap-1 text-[10px] text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 transition-colors duration-150 pl-3"
+          onClick={handleDelete}
+          className="p-1 rounded hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+          aria-label={t("deleteExperience")}
         >
-          <Plus className="h-2.5 w-2.5" />
-          {t("addBullet")}
+          <Trash2 className="h-3 w-3 text-gray-400 hover:text-red-500" />
         </button>
       </div>
-    </SwipeToDelete>
+
+      {/* Company + dates */}
+      <div className="flex items-baseline justify-between gap-2 pr-16">
+        <EditableText
+          value={exp.company}
+          onChange={(v) => updateExperience(exp.id, { company: v })}
+          as="itemTitle"
+          placeholder={t("companyPlaceholder")}
+        />
+        <div className="flex items-baseline gap-1 shrink-0">
+          <EditableText
+            value={exp.startDate}
+            onChange={(v) => updateExperience(exp.id, { startDate: v })}
+            as="tiny"
+            placeholder={t("startDatePlaceholder")}
+          />
+          <span className="text-[10px] text-gray-400 dark:text-gray-500">—</span>
+          <EditableText
+            value={exp.endDate}
+            onChange={(v) => updateExperience(exp.id, { endDate: v })}
+            as="tiny"
+            placeholder={t("endDatePlaceholder")}
+          />
+        </div>
+      </div>
+
+      {/* Position */}
+      <EditableText
+        value={exp.position}
+        onChange={(v) => updateExperience(exp.id, { position: v })}
+        as="subheading"
+        placeholder={t("positionPlaceholder")}
+      />
+
+      {/* Role description (optional intro paragraph) */}
+      <div className="mt-1">
+        <EditableText
+          value={exp.roleDescription || ""}
+          onChange={(v) => updateExperience(exp.id, { roleDescription: v })}
+          as="body"
+          multiline
+          placeholder={t("roleDescriptionPlaceholder")}
+          formatDisplay={renderFormattedText}
+        />
+      </div>
+
+      {/* Bullet points */}
+      <ul className="mt-1.5 space-y-1">
+        {exp.description.map((bullet, i) => (
+          <EditableBullet
+            key={i}
+            bullet={bullet}
+            onChange={(v) => updateBullet(i, v)}
+            onRemove={() => removeBullet(i)}
+            onSetType={(type) => setBulletType(i, type)}
+            onMoveUp={() => moveBullet(i, "up")}
+            onMoveDown={() => moveBullet(i, "down")}
+            isFirst={i === 0}
+            isLast={i === exp.description.length - 1}
+            bulletPlaceholder={t("bulletPlaceholder")}
+            deleteAriaLabel={t("deleteBullet")}
+            bulletColor={colorScheme.bullet}
+            typeLabels={{
+              bullet: t("typeBullet"),
+              title: t("typeTitle"),
+              subtitle: t("typeSubtitle"),
+              comment: t("typeComment"),
+            }}
+          />
+        ))}
+      </ul>
+
+      {/* Add bullet */}
+      <button
+        onClick={addBullet}
+        className="mt-1 flex items-center gap-1 text-[10px] text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 transition-colors duration-150 pl-3"
+      >
+        <Plus className="h-2.5 w-2.5" />
+        {t("addBullet")}
+      </button>
+    </div>
   );
 }
 
@@ -228,7 +333,7 @@ export const Experience = memo(function Experience() {
         {t("addExperience")}
       </Button>
 
-      {/* Delete confirmation dialog (mobile swipe) */}
+      {/* Delete confirmation dialog */}
       <Dialog
         open={!!pendingDelete}
         onOpenChange={(open) => !open && setPendingDelete(null)}

@@ -1,6 +1,6 @@
 {
   "toolbar": {
-    "tagline": "당신의 이력서. 당신의 컴퓨터에 저장됩니다. 우리 서버가 아닙니다.",
+    "tagline": "몇 분 만에 전문 이력서 완성",
     "language": "언어",
     "sections": "섹션",
     "sectionsTitle": "연락처",
@@ -12,7 +12,8 @@
     "importAriaLabel": "JSON 파일 가져오기",
     "importTitle": "JSON 파일에서 이력서 불러오기",
     "exportTitle": "이력서를 JSON 파일로 내보내기",
-    "pdfTitle": "인쇄 또는 전송용 PDF 생성",
+    "pdfTitle": "PDF 다운로드",
+    "pdfGenerating": "PDF 생성 중...",
     "optionalSections": "선택 섹션",
     "sectionCourses": "강좌 및 워크숍",
     "sectionCertifications": "자격증",
@@ -37,19 +38,25 @@
     "colorSchemeSunFlower": "해바라기",
     "colorSchemeCarrot": "당근",
     "colorSchemeWetAsphalt": "아스팔트",
+    "sidebarPattern": "패턴",
+    "patternNone": "없음",
+    "patternDots": "도트",
+    "patternIntensity": "강도",
+    "patternScope": "범위",
+    "patternScopeSidebar": "사이드바",
+    "patternScopeMain": "본문",
+    "patternScopeFull": "전체 페이지",
     "fontSize": "글꼴 크기",
     "margins": "여백",
-    "share": "링크 공유",
-    "shareTitle": "CV 링크 공유",
-    "shareCopied": "링크가 복사되었습니다!",
+    "share": "링크 복사",
+    "shareLinkCopied": "링크가 클립보드에 복사되었습니다",
     "sharePhotoNote": "공유된 CV에는 프로필 사진 대신 이니셜이 표시됩니다.",
     "sharePhotoUploaded": "프로필 사진이 공유된 CV에 포함됩니다.",
     "sharePhotoFailed": "CV가 프로필 사진 대신 이니셜로 공유됩니다.",
-    "shareUploading": "공유 중...",
-    "shareCopyFailed": "링크를 복사할 수 없습니다. 다시 시도해 주세요.",
+    "shareUploading": "복사 중...",
     "shareOverlayMessage": "CV를 공유할 준비를 하고 있습니다...",
-    "shareViewLink": "공유된 CV 보기",
-    "shareNameRequired": "CV를 공유하려면 이름을 입력하세요."
+    "shareNameRequired": "CV를 공유하려면 이름을 입력하세요.",
+    "free": "무료"
   },
   "cvPreview": {
     "fullNamePlaceholder": "성명",
@@ -62,7 +69,8 @@
     "locationPlaceholder": "도시, 국가",
     "linkedinPlaceholder": "linkedin.com/in/username",
     "websitePlaceholder": "yoursite.com",
-    "aboutMe": "자기소개",
+    "urlPlaceholder": "https://...",
+    "aboutMe": "전문 프로필",
     "summaryPlaceholder": "전문적인 요약을 작성하세요...",
     "skills": "기술",
     "categoryPlaceholder": "카테고리",
@@ -75,7 +83,9 @@
     "deleteSkillConfirm": "삭제",
     "deleteSkillCancel": "취소",
     "confirmDeleteCategory": "카테고리 \"{category}\" 삭제하시겠습니까?",
-    "confirmDeleteCategoryEmpty": "이 카테고리를 삭제하시겠습니까?"
+    "confirmDeleteCategoryEmpty": "이 카테고리를 삭제하시겠습니까?",
+    "moveUp": "위로 이동",
+    "moveDown": "아래로 이동"
   },
   "experience": {
     "title": "경력",
@@ -94,7 +104,12 @@
     "confirmDeleteExperience": "\"{name}\" 삭제하시겠습니까?",
     "confirmDeleteExperienceEmpty": "이 경력을 삭제하시겠습니까?",
     "deleteConfirm": "삭제",
-    "deleteCancel": "취소"
+    "deleteCancel": "취소",
+    "roleDescriptionPlaceholder": "선택적 설명...",
+    "typeBullet": "항목",
+    "typeTitle": "제목",
+    "typeSubtitle": "부제목",
+    "typeComment": "코멘트"
   },
   "education": {
     "title": "학력",
@@ -136,6 +151,8 @@
     "namePlaceholder": "과정명",
     "institutionPlaceholder": "기관",
     "datePlaceholder": "날짜",
+    "moveUp": "위로 이동",
+    "moveDown": "아래로 이동",
     "deleteCourse": "과정 삭제",
     "addCourse": "과정 추가",
     "confirmDeleteCourse": "\"{name}\" 삭제하시겠습니까?",
@@ -148,6 +165,8 @@
     "namePlaceholder": "자격증명",
     "issuerPlaceholder": "발급 기관",
     "datePlaceholder": "날짜",
+    "moveUp": "위로 이동",
+    "moveDown": "아래로 이동",
     "deleteCertification": "자격증 삭제",
     "addCertification": "자격증 추가",
     "confirmDeleteCertification": "\"{name}\" 삭제하시겠습니까?",
@@ -160,6 +179,8 @@
     "namePlaceholder": "수상명",
     "issuerPlaceholder": "수여 기관",
     "datePlaceholder": "날짜",
+    "moveUp": "위로 이동",
+    "moveDown": "아래로 이동",
     "deleteAward": "수상 삭제",
     "addAward": "수상 추가",
     "confirmDeleteAward": "\"{name}\" 삭제하시겠습니까?",
@@ -170,7 +191,7 @@
   "printable": {
     "profilePhotoAlt": "프로필 사진",
     "contact": "연락처",
-    "aboutMe": "자기소개",
+    "aboutMe": "전문 프로필",
     "skills": "기술",
     "experience": "경력",
     "education": "학력",
@@ -200,6 +221,7 @@
     "errorMessage": "이 링크는 유효하지 않거나 만료되었습니다.",
     "createYourCV": "CV 만들기",
     "sharedOn": "{date}에 공유됨",
-    "madeWith": "아르헨티나에서 제작"
+    "madeWith": "아르헨티나에서 제작",
+    "generating": "PDF 생성 중..."
   }
 }

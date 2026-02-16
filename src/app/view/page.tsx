@@ -1,20 +1,29 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { LocaleProvider } from "@/lib/locale-context";
+import { LocaleProvider, useAppLocale } from "@/lib/locale-context";
+import { filenameDateStamp } from "@/lib/utils";
 import { ThemeProvider } from "@/lib/theme-context";
 import { ColorSchemeProvider } from "@/lib/color-scheme-context";
+import { SidebarPatternProvider } from "@/lib/sidebar-pattern-context";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { PrintableCV } from "@/components/cv-editor/PrintableCV";
 import { decompressSharedData } from "@/lib/sharing";
-import type { SharedCVData, CVData } from "@/lib/types";
+import type { SharedCVData, CVData, BulletItem } from "@/lib/types";
 import { getColorScheme, type ColorSchemeName, type ColorScheme } from "@/lib/color-schemes";
+import { getSidebarPattern, type PatternSettings, DEFAULT_PATTERN_SETTINGS } from "@/lib/sidebar-patterns";
+import { renderFormattedText } from "@/lib/format-text";
 import { Separator } from "@/components/ui/separator";
 import {
   FileText, AlertCircle, Heart, Download,
-  Mail, Phone, MapPin, Linkedin, Globe,
+  Mail, Phone, MapPin, Linkedin, Globe, Loader2,
 } from "lucide-react";
+
+function ensureProtocol(url: string): string {
+  return /^https?:\/\//i.test(url) ? url : `https://${url}`;
+}
+import { downloadPDF } from "@/lib/generate-pdf";
 
 const FONT_SIZE_SCALES: Record<number, number> = { 1: 1, 2: 1.08 };
 const MARGIN_SCALES: Record<number, number> = { 1: 1.3, 2: 1.6 };
@@ -49,10 +58,12 @@ function MobileCVView({
   data,
   colors,
   photoUrl,
+  patternSettings,
 }: {
   data: CVData;
   colors: ColorScheme;
   photoUrl?: string;
+  patternSettings?: PatternSettings;
 }) {
   const t = useTranslations("printable");
   const { personalInfo, summary, experience, education, skills, courses, certifications, awards, visibility } = data;
@@ -91,7 +102,7 @@ function MobileCVView({
         {/* Photo circle — w-32 h-32 matches ProfilePhotoUpload, colors match MobileHeader */}
         <div className="flex flex-col items-center mb-6">
           <div
-            className="w-32 h-32 rounded-full grid place-items-center overflow-hidden relative"
+            className="w-36 h-36 rounded-full grid place-items-center overflow-hidden relative"
             style={{ backgroundColor: `${colors.nameAccent}18` }}
           >
             {/* Initials always rendered as base layer */}
@@ -140,7 +151,14 @@ function MobileCVView({
       </div>
 
       {/* Sidebar content — matches left column: sidebarBg, padding mg(24) */}
-      <div className="space-y-5" style={{ backgroundColor: colors.sidebarBg, padding: mg(24) }}>
+      <div className="relative" style={{ backgroundColor: colors.sidebarBg, padding: mg(24) }}>
+        {patternSettings && patternSettings.name !== "none" && (patternSettings.scope === "sidebar" || patternSettings.scope === "full") && (
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={getSidebarPattern(patternSettings.name).getStyle(colors.sidebarText, patternSettings.sidebarIntensity)}
+          />
+        )}
+        <div className="relative space-y-5">
         {/* Contact */}
         {(visibility.email || visibility.phone || visibility.location || visibility.linkedin || visibility.website) && (
           <div className="space-y-2">
@@ -151,13 +169,13 @@ function MobileCVView({
               {visibility.email && personalInfo.email && (
                 <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: fs.small }}>
                   <Mail className="h-3 w-3 shrink-0" />
-                  <span>{personalInfo.email}</span>
+                  <a href={`mailto:${personalInfo.email}`} style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.email}</a>
                 </div>
               )}
               {visibility.phone && personalInfo.phone && (
                 <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: fs.small }}>
                   <Phone className="h-3 w-3 shrink-0" />
-                  <span>{personalInfo.phone}</span>
+                  <a href={`tel:${personalInfo.phone}`} style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.phone}</a>
                 </div>
               )}
               {visibility.location && personalInfo.location && (
@@ -169,13 +187,21 @@ function MobileCVView({
               {visibility.linkedin && personalInfo.linkedin && (
                 <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: fs.small }}>
                   <Linkedin className="h-3 w-3 shrink-0" />
-                  <span>{personalInfo.linkedin}</span>
+                  {personalInfo.linkedinUrl ? (
+                    <a href={ensureProtocol(personalInfo.linkedinUrl)} target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.linkedin}</a>
+                  ) : (
+                    <span>{personalInfo.linkedin}</span>
+                  )}
                 </div>
               )}
               {visibility.website && personalInfo.website && (
                 <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: fs.small }}>
                   <Globe className="h-3 w-3 shrink-0" />
-                  <span>{personalInfo.website}</span>
+                  {personalInfo.websiteUrl ? (
+                    <a href={ensureProtocol(personalInfo.websiteUrl)} target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.website}</a>
+                  ) : (
+                    <span>{personalInfo.website}</span>
+                  )}
                 </div>
               )}
             </div>
@@ -225,10 +251,18 @@ function MobileCVView({
             </div>
           </div>
         )}
+        </div>
       </div>
 
       {/* Main content — matches right column: padding mg(16) mg(24) mg(24) */}
-      <div className="space-y-5" style={{ padding: `${mg(16)}px ${mg(24)}px ${mg(24)}px` }}>
+      <div className="relative" style={{ padding: `${mg(16)}px ${mg(24)}px ${mg(24)}px` }}>
+        {patternSettings && patternSettings.name !== "none" && (patternSettings.scope === "main" || patternSettings.scope === "full") && (
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={getSidebarPattern(patternSettings.name).getStyle(colors.heading, patternSettings.mainIntensity)}
+          />
+        )}
+        <div className="relative space-y-5">
         {/* Experience */}
         {experience.length > 0 && (
           <div>
@@ -261,23 +295,46 @@ function MobileCVView({
                   >
                     {exp.position}
                   </p>
+                  {exp.roleDescription && exp.roleDescription.trim() && (
+                    <p
+                      className="mt-1 leading-relaxed text-gray-600"
+                      style={{ fontSize: fs.body }}
+                    >
+                      {renderFormattedText(exp.roleDescription)}
+                    </p>
+                  )}
                   {exp.description.length > 0 && (
                     <ul className="mt-1.5 space-y-1">
-                      {exp.description.map((bullet, i) => (
-                        <li
-                          key={i}
-                          className="leading-relaxed text-gray-600 pl-3 relative"
-                          style={{ fontSize: fs.body }}
-                        >
-                          <span
-                            className="absolute left-0"
-                            style={{ color: colors.bullet, fontSize: fs.tiny }}
-                          >
-                            &bull;
-                          </span>
-                          {bullet}
-                        </li>
-                      ))}
+                      {exp.description.map((bullet: string | BulletItem, i: number) => {
+                        const item: BulletItem = typeof bullet === "string" ? { text: bullet, type: "bullet" } : bullet;
+                        if (item.type === "title") {
+                          return (
+                            <li key={i} className="font-semibold text-gray-900 mt-2 first:mt-0" style={{ fontSize: fs.body, listStyle: "none" }}>
+                              {renderFormattedText(item.text)}
+                            </li>
+                          );
+                        }
+                        if (item.type === "subtitle") {
+                          return (
+                            <li key={i} className="font-medium text-gray-800" style={{ fontSize: fs.body, listStyle: "none" }}>
+                              {renderFormattedText(item.text)}
+                            </li>
+                          );
+                        }
+                        if (item.type === "comment") {
+                          return (
+                            <li key={i} className="italic text-gray-400" style={{ fontSize: fs.body, listStyle: "none" }}>
+                              {renderFormattedText(item.text)}
+                            </li>
+                          );
+                        }
+                        return (
+                          <li key={i} className="leading-relaxed text-gray-600 pl-3 relative" style={{ fontSize: fs.body }}>
+                            <span className="absolute left-0" style={{ color: colors.bullet, fontSize: fs.tiny }}>&bull;</span>
+                            {renderFormattedText(item.text)}
+                          </li>
+                        );
+                      })}
                     </ul>
                   )}
                 </div>
@@ -418,6 +475,7 @@ function MobileCVView({
             </div>
           </div>
         )}
+        </div>
       </div>
     </div>
   );
@@ -427,9 +485,53 @@ function MobileCVView({
 
 function ViewContent() {
   const t = useTranslations("sharedView");
+  const tp = useTranslations("printable");
+  const { locale } = useAppLocale();
   const [sharedData, setSharedData] = useState<SharedCVData | null>(null);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+
+  const handleDownloadPDF = useCallback(async () => {
+    if (isGeneratingPDF || !sharedData) return;
+    setIsGeneratingPDF(true);
+    try {
+      // Use the R2 photo URL directly — React-PDF fetches it via CORS
+      const photoUrl = sharedData.cv.personalInfo.photoUrl;
+      const cvData: CVData = {
+        ...sharedData.cv,
+        personalInfo: {
+          ...sharedData.cv.personalInfo,
+          photo: photoUrl,
+        },
+      };
+      const colorScheme = getColorScheme(sharedData.settings.colorScheme as ColorSchemeName);
+      const name = sharedData.cv.personalInfo.fullName.replace(/\s+/g, "-");
+      const labels = {
+        contact: tp("contact"),
+        aboutMe: tp("aboutMe"),
+        skills: tp("skills"),
+        experience: tp("experience"),
+        education: tp("education"),
+        courses: tp("courses"),
+        certifications: tp("certifications"),
+        awards: tp("awards"),
+      };
+      const patternSett = sharedData.settings.pattern
+        ? {
+            name: sharedData.settings.pattern.name as import("@/lib/sidebar-patterns").PatternSettings["name"],
+            sidebarIntensity: ((sharedData.settings.pattern as Record<string, unknown>).sidebarIntensity as number ?? 3) as import("@/lib/sidebar-patterns").PatternIntensity,
+            mainIntensity: ((sharedData.settings.pattern as Record<string, unknown>).mainIntensity as number ?? 2) as import("@/lib/sidebar-patterns").PatternIntensity,
+            scope: sharedData.settings.pattern.scope as import("@/lib/sidebar-patterns").PatternSettings["scope"],
+          }
+        : undefined;
+      await downloadPDF(cvData, `CV-${name}_${filenameDateStamp(locale)}.pdf`, colorScheme, labels, locale, patternSett);
+    } catch (err) {
+      console.error("PDF generation failed:", err);
+    } finally {
+      setIsGeneratingPDF(false);
+    }
+  }, [isGeneratingPDF, sharedData, tp, locale]);
 
   useEffect(() => {
     const hash = window.location.hash.slice(1);
@@ -496,24 +598,37 @@ function ViewContent() {
     FONT_SIZE_SCALES[sharedData.settings.fontSizeLevel] ?? 1;
   const marginScale =
     MARGIN_SCALES[sharedData.settings.marginLevel] ?? 1.3;
+  const sharedPattern: PatternSettings | undefined = sharedData.settings.pattern
+    ? {
+        name: sharedData.settings.pattern.name as PatternSettings["name"],
+        sidebarIntensity: (((sharedData.settings.pattern as Record<string, unknown>).sidebarIntensity as number) ?? 3) as PatternSettings["sidebarIntensity"],
+        mainIntensity: (((sharedData.settings.pattern as Record<string, unknown>).mainIntensity as number) ?? 2) as PatternSettings["mainIntensity"],
+        scope: sharedData.settings.pattern.scope as PatternSettings["scope"],
+      }
+    : undefined;
 
   return (
-    <div className="min-h-screen bg-gray-50 md:bg-gray-100 md:py-8 md:px-4 print:bg-white print:p-0 overflow-x-hidden">
+    <div className="min-h-screen bg-gray-50 lg:bg-gray-100 lg:py-8 lg:px-4 overflow-x-auto">
       {/* PDF button */}
-      <div className="print:hidden fixed top-3 right-3 md:top-4 md:right-4 z-10">
+      <div className="fixed top-3 right-3 lg:top-4 lg:right-4 z-10">
         <button
-          onClick={() => window.print()}
-          className="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-800 shadow-lg transition-colors"
+          onClick={handleDownloadPDF}
+          disabled={isGeneratingPDF}
+          className="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-800 shadow-lg transition-colors disabled:opacity-50"
         >
-          <Download className="h-4 w-4" />
+          {isGeneratingPDF ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Download className="h-4 w-4" />
+          )}
           PDF
         </button>
       </div>
 
-      {/* Desktop: PrintableCV with zoom (hidden on mobile) */}
-      <div className="hidden md:block print:block">
+      {/* Desktop: PrintableCV with zoom (hidden on mobile/tablet) */}
+      <div className="hidden lg:block">
         <div
-          className="cv-zoom-shared mx-auto bg-white shadow-lg print:shadow-none"
+          className="cv-zoom-shared mx-auto bg-white shadow-lg"
           style={{ width: "210mm" }}
         >
           <PrintableCV
@@ -523,26 +638,41 @@ function ViewContent() {
             colorSchemeOverride={colorScheme}
             fontScaleOverride={fontScale}
             marginScaleOverride={marginScale}
+            patternOverride={sharedPattern}
           />
         </div>
       </div>
 
-      {/* Mobile: responsive single-column layout (hidden on desktop) */}
-      <div className="md:hidden print:hidden">
-        <MobileCVView data={cvData} colors={colorScheme} photoUrl={photoUrl} />
+      {/* Mobile/tablet: responsive single-column layout (hidden on desktop) */}
+      <div className="lg:hidden">
+        <MobileCVView data={cvData} colors={colorScheme} photoUrl={photoUrl} patternSettings={sharedPattern} />
       </div>
 
-      <div className="text-center py-6 print:hidden">
+      <div className="text-center py-6">
         <a
           href="/"
           className="inline-flex items-center gap-1.5 text-gray-400 hover:text-gray-500 transition-colors"
         >
-          <FileText className="h-3 w-3" />
-          <span className="text-[11px] font-semibold tracking-tight">Applio</span>
-          <Heart className="h-2.5 w-2.5 fill-current" />
-          <span className="text-[11px]">{t("madeWith")}</span>
+          <span className="text-sm font-semibold tracking-tight">Applio</span>
+          <Heart className="h-3 w-3 fill-current" />
         </a>
       </div>
+
+      {/* Loading overlay */}
+      {isGeneratingPDF && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+          role="alert"
+          aria-busy="true"
+        >
+          <div className="flex flex-col items-center gap-3">
+            <Loader2 className="h-7 w-7 animate-spin text-white" />
+            <p className="text-sm font-medium text-white">
+              {t("generating")}
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -551,11 +681,13 @@ export default function ViewPage() {
   return (
     <ThemeProvider>
       <ColorSchemeProvider>
-        <LocaleProvider>
-          <TooltipProvider delayDuration={300}>
-            <ViewContent />
-          </TooltipProvider>
-        </LocaleProvider>
+        <SidebarPatternProvider>
+          <LocaleProvider>
+            <TooltipProvider delayDuration={300}>
+              <ViewContent />
+            </TooltipProvider>
+          </LocaleProvider>
+        </SidebarPatternProvider>
       </ColorSchemeProvider>
     </ThemeProvider>
   );

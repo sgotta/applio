@@ -12,6 +12,7 @@ import { useTranslations, useLocale } from "next-intl";
 import {
   CVData,
   ExperienceItem,
+  BulletItem,
   EducationItem,
   SkillCategory,
   CourseItem,
@@ -37,15 +38,19 @@ interface CVContextValue {
   updateSkillCategory: (id: string, updates: Partial<SkillCategory>) => void;
   addSkillCategory: () => void;
   removeSkillCategory: (id: string) => void;
+  moveSkillCategory: (id: string, direction: "up" | "down") => void;
   updateCourse: (id: string, updates: Partial<CourseItem>) => void;
   addCourse: () => void;
   removeCourse: (id: string) => void;
+  moveCourse: (id: string, direction: "up" | "down") => void;
   updateCertification: (id: string, updates: Partial<CertificationItem>) => void;
   addCertification: () => void;
   removeCertification: (id: string) => void;
+  moveCertification: (id: string, direction: "up" | "down") => void;
   updateAward: (id: string, updates: Partial<AwardItem>) => void;
   addAward: () => void;
   removeAward: (id: string) => void;
+  moveAward: (id: string, direction: "up" | "down") => void;
   toggleSection: (key: keyof SectionVisibility) => void;
   resetData: () => void;
   importData: (data: CVData) => void;
@@ -76,7 +81,7 @@ function migrateCVData(data: any): CVData {
     const findContact = (type: string) =>
       contacts.find((c: { type: string }) => c.type === type)?.value || "";
 
-    return {
+    const oldResult: CVData = {
       personalInfo: {
         fullName: personalInfo.fullName || "",
         title: personalInfo.title || "",
@@ -86,6 +91,8 @@ function migrateCVData(data: any): CVData {
         location: findContact("location") || personalInfo.location || "",
         linkedin: findContact("linkedin") || personalInfo.linkedin || "",
         website: findContact("website") || personalInfo.website || "",
+        linkedinUrl: personalInfo.linkedinUrl,
+        websiteUrl: personalInfo.websiteUrl,
       },
       summary: data.summary || "",
       experience: data.experience || [],
@@ -96,10 +103,24 @@ function migrateCVData(data: any): CVData {
       awards: data.awards || [],
       visibility: { ...defaultVisibility, ...data.visibility },
     };
+
+    // Migrate string[] bullets to BulletItem[] + rename "subheading" → "title" + clean up roleDescription
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    oldResult.experience = oldResult.experience.map((exp: any) => ({
+      ...exp,
+      description: (exp.description || []).map((item: any) => {
+        if (typeof item === "string") return { text: item, type: "bullet" as const };
+        const type = item.type === "subheading" ? "title" : item.type;
+        return { ...item, type };
+      }),
+      roleDescription: exp.roleDescription?.trim() || undefined,
+    }));
+
+    return oldResult;
   }
 
   // Already in new format, just ensure all fields exist
-  return {
+  const result: CVData = {
     personalInfo: {
       fullName: personalInfo.fullName || "",
       title: personalInfo.title || "",
@@ -109,6 +130,8 @@ function migrateCVData(data: any): CVData {
       location: personalInfo.location || "",
       linkedin: personalInfo.linkedin || "",
       website: personalInfo.website || "",
+      linkedinUrl: personalInfo.linkedinUrl,
+      websiteUrl: personalInfo.websiteUrl,
     },
     summary: data.summary || "",
     experience: data.experience || [],
@@ -119,6 +142,20 @@ function migrateCVData(data: any): CVData {
     awards: data.awards || [],
     visibility: { ...defaultVisibility, ...data.visibility },
   };
+
+  // Migrate string[] bullets to BulletItem[] + rename "subheading" → "title" + clean up roleDescription
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  result.experience = result.experience.map((exp: any) => ({
+    ...exp,
+    description: (exp.description || []).map((item: any) => {
+      if (typeof item === "string") return { text: item, type: "bullet" as const };
+      const type = item.type === "subheading" ? "title" : item.type;
+      return { ...item, type };
+    }),
+    roleDescription: exp.roleDescription?.trim() || undefined,
+  }));
+
+  return result;
 }
 
 export function CVProvider({ children }: { children: React.ReactNode }) {
@@ -184,7 +221,7 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
       position: tRef.current("position"),
       startDate: "2024",
       endDate: tRef.current("endDatePresent"),
-      description: [tRef.current("experienceDescription")],
+      description: [{ text: tRef.current("experienceDescription"), type: "bullet" as const }],
     };
     setData((prev) => ({
       ...prev,
@@ -291,6 +328,20 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     }));
   }, []);
 
+  const moveSkillCategory = useCallback(
+    (id: string, direction: "up" | "down") => {
+      setData((prev) => {
+        const index = prev.skills.findIndex((s) => s.id === id);
+        if (index === -1) return prev;
+        return {
+          ...prev,
+          skills: moveItem(prev.skills, index, direction),
+        };
+      });
+    },
+    []
+  );
+
   const updateCourse = useCallback(
     (id: string, updates: Partial<CourseItem>) => {
       setData((prev) => ({
@@ -322,6 +373,20 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
       courses: prev.courses.filter((c) => c.id !== id),
     }));
   }, []);
+
+  const moveCourse = useCallback(
+    (id: string, direction: "up" | "down") => {
+      setData((prev) => {
+        const index = prev.courses.findIndex((c) => c.id === id);
+        if (index === -1) return prev;
+        return {
+          ...prev,
+          courses: moveItem(prev.courses, index, direction),
+        };
+      });
+    },
+    []
+  );
 
   const updateCertification = useCallback(
     (id: string, updates: Partial<CertificationItem>) => {
@@ -355,6 +420,20 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     }));
   }, []);
 
+  const moveCertification = useCallback(
+    (id: string, direction: "up" | "down") => {
+      setData((prev) => {
+        const index = prev.certifications.findIndex((c) => c.id === id);
+        if (index === -1) return prev;
+        return {
+          ...prev,
+          certifications: moveItem(prev.certifications, index, direction),
+        };
+      });
+    },
+    []
+  );
+
   const updateAward = useCallback(
     (id: string, updates: Partial<AwardItem>) => {
       setData((prev) => ({
@@ -386,6 +465,20 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
       awards: prev.awards.filter((a) => a.id !== id),
     }));
   }, []);
+
+  const moveAward = useCallback(
+    (id: string, direction: "up" | "down") => {
+      setData((prev) => {
+        const index = prev.awards.findIndex((a) => a.id === id);
+        if (index === -1) return prev;
+        return {
+          ...prev,
+          awards: moveItem(prev.awards, index, direction),
+        };
+      });
+    },
+    []
+  );
 
   const toggleSection = useCallback((key: keyof SectionVisibility) => {
     setData((prev) => ({
@@ -419,15 +512,19 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
         updateSkillCategory,
         addSkillCategory,
         removeSkillCategory,
+        moveSkillCategory,
         updateCourse,
         addCourse,
         removeCourse,
+        moveCourse,
         updateCertification,
         addCertification,
         removeCertification,
+        moveCertification,
         updateAward,
         addAward,
         removeAward,
+        moveAward,
         toggleSection,
         resetData,
         importData,

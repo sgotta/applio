@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, KeyboardEvent } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, KeyboardEvent, ClipboardEvent } from "react";
 import { useTranslations } from "next-intl";
 
 
@@ -15,6 +15,10 @@ interface EditableTextProps {
   as?: EditableStyle;
   /** Inline style applied to display span only (not the editing input) */
   displayStyle?: React.CSSProperties;
+  /** Start in edit mode on mount (useful for newly created items) */
+  autoEdit?: boolean;
+  /** Custom renderer for display mode (e.g. bold markdown). Edit mode shows raw text. */
+  formatDisplay?: (text: string) => React.ReactNode;
 }
 
 /** Tailwind classes WITHOUT font-size (font-size is applied via inline style) */
@@ -48,11 +52,13 @@ export function EditableText({
   className = "",
   as = "body",
   displayStyle,
+  autoEdit = false,
+  formatDisplay,
 }: EditableTextProps) {
   const t = useTranslations("editableText");
   const fontScale = 1.08;
   const placeholder = placeholderProp ?? t("defaultPlaceholder");
-  const [editing, setEditing] = useState(false);
+  const [editing, setEditing] = useState(autoEdit);
   const [draft, setDraft] = useState(value);
   const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
 
@@ -105,6 +111,29 @@ export function EditableText({
     [cancel, save, multiline]
   );
 
+  /** Strip hard line-breaks from pasted text (e.g. copied from PDFs).
+   *  Single \n → space, double \n\n (paragraph break) is preserved. */
+  const handlePaste = useCallback((e: ClipboardEvent) => {
+    const raw = e.clipboardData.getData("text/plain");
+    if (!raw.includes("\n")) return;           // nothing to clean
+    e.preventDefault();
+    const cleaned = raw
+      .replace(/\r\n/g, "\n")                  // normalise Windows CRLF
+      .replace(/\n\n+/g, "\x00")               // protect paragraph breaks
+      .replace(/\n/g, " ")                      // single newlines → space
+      .replace(/\x00/g, "\n\n")                 // restore paragraph breaks
+      .replace(/ {2,}/g, " ");                  // collapse multiple spaces
+    const el = inputRef.current!;
+    const start = el.selectionStart ?? 0;
+    const end = el.selectionEnd ?? 0;
+    const next = draft.slice(0, start) + cleaned + draft.slice(end);
+    setDraft(next);
+    requestAnimationFrame(() => {
+      const pos = start + cleaned.length;
+      el.setSelectionRange(pos, pos);
+    });
+  }, [draft]);
+
   const baseStyle = styleMap[as];
   const displayEmpty = !value && !editing;
 
@@ -133,6 +162,7 @@ export function EditableText({
           onChange={(e) => setDraft(e.target.value)}
           onBlur={save}
           onKeyDown={handleKeyDown}
+          onPaste={handlePaste}
           placeholder={placeholder}
           rows={1}
           className={`${inputClasses} resize-none overflow-hidden`}
@@ -149,6 +179,7 @@ export function EditableText({
         onChange={(e) => setDraft(e.target.value)}
         onBlur={save}
         onKeyDown={handleKeyDown}
+        onPaste={handlePaste}
         placeholder={placeholder}
         className={inputClasses}
         style={inputStyle}
@@ -159,6 +190,7 @@ export function EditableText({
   const spanStyle: React.CSSProperties = {
     fontSize: scaledFontSize,
     ...(displayEmpty ? undefined : displayStyle),
+    ...(multiline ? { whiteSpace: "pre-wrap" as const } : undefined),
   };
 
   return (
@@ -181,7 +213,7 @@ export function EditableText({
       } ${displayEmpty ? "text-gray-300 dark:text-gray-600 italic" : ""}`}
       style={spanStyle}
     >
-      {displayEmpty ? placeholder : value}
+      {displayEmpty ? placeholder : formatDisplay ? formatDisplay(value) : value}
     </span>
   );
 }

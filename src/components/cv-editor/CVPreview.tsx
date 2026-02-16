@@ -3,6 +3,7 @@
 import { useCV } from "@/lib/cv-context";
 import { useTranslations } from "next-intl";
 import { useColorScheme } from "@/lib/color-scheme-context";
+import { useSidebarPattern } from "@/lib/sidebar-pattern-context";
 
 import { EditableText } from "./EditableText";
 import { PersonalInfo } from "./PersonalInfo";
@@ -71,37 +72,58 @@ function MobileHeader() {
 export function CVPreview() {
   const { data: { visibility } } = useCV();
   const { colorScheme } = useColorScheme();
+  const { pattern, sidebarIntensity, mainIntensity, scope } = useSidebarPattern();
   const mg = (px: number) => Math.round(px * 1.6);
 
   return (
-    <div className="mx-auto w-full md:w-[210mm] max-w-[210mm] bg-white dark:bg-background md:shadow-sm md:border border-gray-100 dark:border-border print:shadow-none print:border-none">
+    <div className="mx-auto w-full lg:w-[210mm] max-w-[210mm] bg-white dark:bg-background md:shadow-xl print:shadow-none">
       {/* CV Content — A4-like aspect ratio */}
-      <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] min-h-[297mm]">
+      <div className="grid grid-cols-1 md:grid-cols-[250px_1fr] min-h-[297mm]">
         {/* ===== MOBILE HEADER: photo + name centered (mobile only) ===== */}
         <div className="order-1 md:hidden">
           <MobileHeader />
         </div>
 
-        {/* ===== NAME & TITLE — desktop only, top-right ===== */}
-        <div className="hidden md:block md:col-start-2 md:row-start-1" style={{ padding: `${mg(24)}px ${mg(24)}px 0` }}>
-          <CVHeader />
-        </div>
-
         {/* ===== LEFT COLUMN — sidebar on desktop, below header on mobile ===== */}
         <div
-          className="order-2 md:order-0 md:col-start-1 md:row-start-1 md:row-span-2 space-y-5"
+          className="order-2 md:order-0 md:col-start-1 md:row-start-1 relative"
           style={{ backgroundColor: colorScheme.sidebarBg, padding: mg(24) }}
         >
-          <PersonalInfo />
+          {pattern.name !== "none" && (scope === "sidebar" || scope === "full") && (
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={pattern.getStyle(colorScheme.sidebarText, sidebarIntensity)}
+            />
+          )}
+          <div className="relative space-y-5">
+            <PersonalInfo />
+          </div>
         </div>
 
-        {/* ===== RIGHT COLUMN — experience/education ===== */}
-        <div className="order-3 md:order-0 md:col-start-2 md:row-start-2 space-y-5" style={{ padding: `${mg(16)}px ${mg(24)}px ${mg(24)}px` }}>
-          <Experience />
-          <Education />
-          {visibility.courses && <Courses />}
-          {visibility.certifications && <Certifications />}
-          {visibility.awards && <Awards />}
+        {/* ===== RIGHT COLUMN — single cell so pattern tiles seamlessly ===== */}
+        <div className="order-3 md:order-0 md:col-start-2 md:row-start-1 relative">
+          {pattern.name !== "none" && (scope === "main" || scope === "full") && (
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={pattern.getStyle(colorScheme.heading, mainIntensity)}
+            />
+          )}
+          <div className="relative">
+            {/* Desktop header */}
+            <div className="hidden md:block" style={{ padding: `${mg(24)}px ${mg(24)}px 0` }}>
+              <CVHeader />
+            </div>
+            {/* Content */}
+            <div style={{ padding: `${mg(16)}px ${mg(24)}px ${mg(24)}px` }}>
+              <div className="space-y-5">
+                <Experience />
+                <Education />
+                {visibility.courses && <Courses />}
+                {visibility.certifications && <Certifications />}
+                {visibility.awards && <Awards />}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 {
   "toolbar": {
-    "tagline": "Dein Lebenslauf. Auf deinem Computer. Nicht auf unserem.",
+    "tagline": "Dein professioneller Lebenslauf in Minuten",
     "language": "Sprache",
     "sections": "Bereiche",
     "sectionsTitle": "Kontaktfelder",
@@ -12,7 +12,8 @@
     "importAriaLabel": "JSON-Datei importieren",
     "importTitle": "Lebenslauf aus JSON-Datei laden",
     "exportTitle": "Lebenslauf als JSON-Datei exportieren",
-    "pdfTitle": "PDF zum Drucken oder Versenden erstellen",
+    "pdfTitle": "PDF herunterladen",
+    "pdfGenerating": "PDF wird erstellt...",
     "optionalSections": "Optionale Bereiche",
     "sectionCourses": "Kurse & Workshops",
     "sectionCertifications": "Zertifizierungen",
@@ -37,19 +38,25 @@
     "colorSchemeSunFlower": "Sonnenblume",
     "colorSchemeCarrot": "Karotte",
     "colorSchemeWetAsphalt": "Asphalt",
+    "sidebarPattern": "Muster",
+    "patternNone": "Keins",
+    "patternDots": "Punkte",
+    "patternIntensity": "Intensität",
+    "patternScope": "Bereich",
+    "patternScopeSidebar": "Seitenleiste",
+    "patternScopeMain": "Hauptinhalt",
+    "patternScopeFull": "Ganze Seite",
     "fontSize": "Schriftgröße",
     "margins": "Ränder",
-    "share": "Link teilen",
-    "shareTitle": "CV-Link teilen",
-    "shareCopied": "Link kopiert!",
+    "share": "Link kopieren",
+    "shareLinkCopied": "Link in die Zwischenablage kopiert",
     "sharePhotoNote": "Der geteilte Lebenslauf zeigt Ihre Initialen anstelle Ihres Profilfotos.",
     "sharePhotoUploaded": "Ihr Profilfoto wird im geteilten Lebenslauf angezeigt.",
     "sharePhotoFailed": "Ihr Lebenslauf wird mit Ihren Initialen anstelle Ihres Profilfotos geteilt.",
-    "shareUploading": "Wird geteilt...",
-    "shareCopyFailed": "Link konnte nicht kopiert werden. Versuchen Sie es erneut.",
+    "shareUploading": "Wird kopiert...",
     "shareOverlayMessage": "Ihr Lebenslauf wird zum Teilen vorbereitet...",
-    "shareViewLink": "Meinen geteilten Lebenslauf ansehen",
-    "shareNameRequired": "Geben Sie Ihren Namen ein, um den Lebenslauf zu teilen."
+    "shareNameRequired": "Geben Sie Ihren Namen ein, um den Lebenslauf zu teilen.",
+    "free": "Kostenlos"
   },
   "cvPreview": {
     "fullNamePlaceholder": "Dein vollständiger Name",
@@ -62,7 +69,8 @@
     "locationPlaceholder": "Stadt, Land",
     "linkedinPlaceholder": "linkedin.com/in/benutzername",
     "websitePlaceholder": "deineseite.com",
-    "aboutMe": "Über mich",
+    "urlPlaceholder": "https://...",
+    "aboutMe": "Berufsprofil",
     "summaryPlaceholder": "Schreibe eine professionelle Zusammenfassung...",
     "skills": "Fähigkeiten",
     "categoryPlaceholder": "Kategorie",
@@ -75,7 +83,9 @@
     "deleteSkillConfirm": "Löschen",
     "deleteSkillCancel": "Abbrechen",
     "confirmDeleteCategory": "Kategorie \"{category}\" löschen?",
-    "confirmDeleteCategoryEmpty": "Diese Kategorie löschen?"
+    "confirmDeleteCategoryEmpty": "Diese Kategorie löschen?",
+    "moveUp": "Nach oben",
+    "moveDown": "Nach unten"
   },
   "experience": {
     "title": "Berufserfahrung",
@@ -94,7 +104,12 @@
     "confirmDeleteExperience": "\"{name}\" löschen?",
     "confirmDeleteExperienceEmpty": "Diese Erfahrung löschen?",
     "deleteConfirm": "Löschen",
-    "deleteCancel": "Abbrechen"
+    "deleteCancel": "Abbrechen",
+    "roleDescriptionPlaceholder": "Optionale Beschreibung...",
+    "typeBullet": "Aufzählung",
+    "typeTitle": "Titel",
+    "typeSubtitle": "Untertitel",
+    "typeComment": "Kommentar"
   },
   "education": {
     "title": "Bildung",
@@ -136,6 +151,8 @@
     "namePlaceholder": "Kursname",
     "institutionPlaceholder": "Einrichtung",
     "datePlaceholder": "Datum",
+    "moveUp": "Nach oben",
+    "moveDown": "Nach unten",
     "deleteCourse": "Kurs löschen",
     "addCourse": "Kurs hinzufügen",
     "confirmDeleteCourse": "\"{name}\" löschen?",
@@ -148,6 +165,8 @@
     "namePlaceholder": "Name der Zertifizierung",
     "issuerPlaceholder": "Ausstellende Organisation",
     "datePlaceholder": "Datum",
+    "moveUp": "Nach oben",
+    "moveDown": "Nach unten",
     "deleteCertification": "Zertifizierung löschen",
     "addCertification": "Zertifizierung hinzufügen",
     "confirmDeleteCertification": "\"{name}\" löschen?",
@@ -160,6 +179,8 @@
     "namePlaceholder": "Name der Auszeichnung",
     "issuerPlaceholder": "Verleihende Organisation",
     "datePlaceholder": "Datum",
+    "moveUp": "Nach oben",
+    "moveDown": "Nach unten",
     "deleteAward": "Auszeichnung löschen",
     "addAward": "Auszeichnung hinzufügen",
     "confirmDeleteAward": "\"{name}\" löschen?",
@@ -170,7 +191,7 @@
   "printable": {
     "profilePhotoAlt": "Profilfoto",
     "contact": "Kontakt",
-    "aboutMe": "Über mich",
+    "aboutMe": "Berufsprofil",
     "skills": "Fähigkeiten",
     "experience": "Berufserfahrung",
     "education": "Bildung",
@@ -200,6 +221,7 @@
     "errorMessage": "Dieser Link ist ungültig oder abgelaufen.",
     "createYourCV": "Erstellen Sie Ihren Lebenslauf",
     "sharedOn": "Geteilt am {date}",
-    "madeWith": "Hergestellt in Argentinien"
+    "madeWith": "Hergestellt in Argentinien",
+    "generating": "PDF wird erstellt..."
   }
 }

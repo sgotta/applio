@@ -3,6 +3,7 @@
 @import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
+@custom-variant can-hover (@media (hover: hover));
 
 @theme inline {
   --color-background: var(--background);
@@ -136,44 +137,12 @@
   }
 }
 
-/* Desktop CV zoom — uses zoom (not transform) so layout flow is preserved */
-@media (min-width: 768px) {
+/* CV zoom — only on screens wide enough to fit A4 (210mm ≈ 793px) + padding + zoom */
+@media (min-width: 1024px) {
   .cv-zoom {
-    zoom: 1.1;
+    zoom: 1.25;
   }
   .cv-zoom-shared {
     zoom: 1.25;
-  }
-}
-
-/* Print styles */
-@media print {
-  @page {
-    size: auto;
-    margin: 0;
-  }
-
-  html, body {
-    margin: 0;
-    padding: 0;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
-  .no-print {
-    display: none !important;
-  }
-
-  .printable-cv {
-    width: 100%;
-    min-height: 100vh;
-    margin: 0;
-    padding: 0;
-    box-shadow: none;
-    border: none;
-  }
-
-  .cv-zoom-shared {
-    zoom: 1;
   }
 }

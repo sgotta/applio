@@ -7,6 +7,13 @@ export interface PersonalInfo {
   location: string;
   linkedin: string;
   website: string;
+  linkedinUrl?: string;
+  websiteUrl?: string;
+}
+
+export interface BulletItem {
+  text: string;
+  type: "bullet" | "title" | "subtitle" | "comment";
 }
 
 export interface ExperienceItem {
@@ -15,7 +22,8 @@ export interface ExperienceItem {
   position: string;
   startDate: string;
   endDate: string;
-  description: string[];
+  description: BulletItem[];
+  roleDescription?: string;
 }
 
 export interface EducationItem {
@@ -85,6 +93,7 @@ export interface SharedCVData {
     colorScheme: string;
     fontSizeLevel: number;
     marginLevel: number;
+    pattern?: { name: string; sidebarIntensity?: number; mainIntensity?: number; intensity?: number; scope: string };
   };
   sharedAt: string;
 }

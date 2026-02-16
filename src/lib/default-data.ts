@@ -31,9 +31,9 @@ const enData: CVData = {
       startDate: "Mar 2021",
       endDate: "Present",
       description: [
-        "Led the development of a new digital onboarding system, reducing customer sign-up time by 40%.",
-        "Migrated monolithic application to microservices using Node.js and AWS Lambda.",
-        "Mentored a team of 4 junior developers through code reviews and pair programming.",
+        { text: "Led the development of a new digital onboarding system, reducing customer sign-up time by 40%.", type: "bullet" },
+        { text: "Migrated monolithic application to microservices using **Node.js** and **AWS Lambda**.", type: "bullet" },
+        { text: "Mentored a team of 4 junior developers through code reviews and pair programming.", type: "bullet" },
       ],
     },
     {
@@ -43,8 +43,8 @@ const enData: CVData = {
       startDate: "Sep 2019",
       endDate: "Feb 2021",
       description: [
-        "Built enterprise user interfaces for clients using React and TypeScript.",
-        "Implemented a shared design system adopted across 3 product teams.",
+        { text: "Built enterprise user interfaces for clients using **React** and **TypeScript**.", type: "bullet" },
+        { text: "Implemented a shared design system adopted across 3 product teams.", type: "bullet" },
       ],
     },
   ],
@@ -102,9 +102,9 @@ const esData: CVData = {
       startDate: "marzo 2021",
       endDate: "Actualidad",
       description: [
-        "Lideré el desarrollo del nuevo sistema de onboarding digital, reduciendo el tiempo de alta de clientes en un 40%.",
-        "Migración de aplicación monolítica a microservicios con Node.js y AWS Lambda.",
-        "Mentoría a equipo de 4 desarrolladores junior.",
+        { text: "Lideré el desarrollo del nuevo sistema de onboarding digital, reduciendo el tiempo de alta de clientes en un 40%.", type: "bullet" },
+        { text: "Migración de aplicación monolítica a microservicios con **Node.js** y **AWS Lambda**.", type: "bullet" },
+        { text: "Mentoría a equipo de 4 desarrolladores junior.", type: "bullet" },
       ],
     },
     {
@@ -114,8 +114,8 @@ const esData: CVData = {
       startDate: "septiembre 2019",
       endDate: "febrero 2021",
       description: [
-        "Desarrollo de interfaces de usuario para clientes enterprise con React y TypeScript.",
-        "Implementación de design system compartido entre 3 equipos.",
+        { text: "Desarrollo de interfaces de usuario para clientes enterprise con **React** y **TypeScript**.", type: "bullet" },
+        { text: "Implementación de design system compartido entre 3 equipos.", type: "bullet" },
       ],
     },
   ],

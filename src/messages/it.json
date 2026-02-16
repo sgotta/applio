@@ -1,6 +1,6 @@
 {
   "toolbar": {
-    "tagline": "Il tuo CV. Sul tuo computer. Non sul nostro.",
+    "tagline": "Il tuo CV professionale in pochi minuti",
     "language": "Lingua",
     "sections": "Sezioni",
     "sectionsTitle": "Campi di contatto",
@@ -12,7 +12,8 @@
     "importAriaLabel": "Importa file JSON",
     "importTitle": "Carica CV da file JSON",
     "exportTitle": "Esporta CV come file JSON",
-    "pdfTitle": "Genera PDF da stampare o inviare",
+    "pdfTitle": "Scarica PDF",
+    "pdfGenerating": "Generazione PDF...",
     "optionalSections": "Sezioni opzionali",
     "sectionCourses": "Corsi e Workshop",
     "sectionCertifications": "Certificazioni",
@@ -37,19 +38,25 @@
     "colorSchemeSunFlower": "Girasole",
     "colorSchemeCarrot": "Carota",
     "colorSchemeWetAsphalt": "Asfalto",
+    "sidebarPattern": "Motivo",
+    "patternNone": "Nessuno",
+    "patternDots": "Puntini",
+    "patternIntensity": "Intensità",
+    "patternScope": "Zona",
+    "patternScopeSidebar": "Barra laterale",
+    "patternScopeMain": "Contenuto",
+    "patternScopeFull": "Pagina intera",
     "fontSize": "Dimensione carattere",
     "margins": "Margini",
-    "share": "Condividi link",
-    "shareTitle": "Condividi link del CV",
-    "shareCopied": "Link copiato!",
+    "share": "Copia link",
+    "shareLinkCopied": "Link copiato negli appunti",
     "sharePhotoNote": "Il CV condiviso mostrerà le tue iniziali invece della tua foto profilo.",
     "sharePhotoUploaded": "La tua foto profilo sarà inclusa nel CV condiviso.",
     "sharePhotoFailed": "Il tuo CV verrà condiviso con le tue iniziali invece della tua foto profilo.",
-    "shareUploading": "Condivisione in corso...",
-    "shareCopyFailed": "Impossibile copiare il link. Riprova.",
+    "shareUploading": "Copia in corso...",
     "shareOverlayMessage": "Preparazione del tuo CV per la condivisione...",
-    "shareViewLink": "Vedi il mio CV condiviso",
-    "shareNameRequired": "Inserisci il tuo nome per condividere il CV."
+    "shareNameRequired": "Inserisci il tuo nome per condividere il CV.",
+    "free": "Gratis"
   },
   "cvPreview": {
     "fullNamePlaceholder": "Il Tuo Nome Completo",
@@ -62,7 +69,8 @@
     "locationPlaceholder": "Città, Paese",
     "linkedinPlaceholder": "linkedin.com/in/utente",
     "websitePlaceholder": "tuosito.com",
-    "aboutMe": "Chi sono",
+    "urlPlaceholder": "https://...",
+    "aboutMe": "Profilo professionale",
     "summaryPlaceholder": "Scrivi un riepilogo professionale...",
     "skills": "Competenze",
     "categoryPlaceholder": "Categoria",
@@ -75,7 +83,9 @@
     "deleteSkillConfirm": "Elimina",
     "deleteSkillCancel": "Annulla",
     "confirmDeleteCategory": "Eliminare la categoria \"{category}\"?",
-    "confirmDeleteCategoryEmpty": "Eliminare questa categoria?"
+    "confirmDeleteCategoryEmpty": "Eliminare questa categoria?",
+    "moveUp": "Sposta su",
+    "moveDown": "Sposta giù"
   },
   "experience": {
     "title": "Esperienza",
@@ -94,7 +104,12 @@
     "confirmDeleteExperience": "Eliminare \"{name}\"?",
     "confirmDeleteExperienceEmpty": "Eliminare questa esperienza?",
     "deleteConfirm": "Elimina",
-    "deleteCancel": "Annulla"
+    "deleteCancel": "Annulla",
+    "roleDescriptionPlaceholder": "Descrizione opzionale...",
+    "typeBullet": "Elenco",
+    "typeTitle": "Titolo",
+    "typeSubtitle": "Sottotitolo",
+    "typeComment": "Commento"
   },
   "education": {
     "title": "Istruzione",
@@ -136,6 +151,8 @@
     "namePlaceholder": "Nome del corso",
     "institutionPlaceholder": "Istituto",
     "datePlaceholder": "data",
+    "moveUp": "Sposta su",
+    "moveDown": "Sposta giù",
     "deleteCourse": "Elimina corso",
     "addCourse": "Aggiungi corso",
     "confirmDeleteCourse": "Eliminare \"{name}\"?",
@@ -148,6 +165,8 @@
     "namePlaceholder": "Nome della certificazione",
     "issuerPlaceholder": "Ente certificatore",
     "datePlaceholder": "data",
+    "moveUp": "Sposta su",
+    "moveDown": "Sposta giù",
     "deleteCertification": "Elimina certificazione",
     "addCertification": "Aggiungi certificazione",
     "confirmDeleteCertification": "Eliminare \"{name}\"?",
@@ -160,6 +179,8 @@
     "namePlaceholder": "Nome del premio",
     "issuerPlaceholder": "Organizzazione",
     "datePlaceholder": "data",
+    "moveUp": "Sposta su",
+    "moveDown": "Sposta giù",
     "deleteAward": "Elimina premio",
     "addAward": "Aggiungi premio",
     "confirmDeleteAward": "Eliminare \"{name}\"?",
@@ -170,7 +191,7 @@
   "printable": {
     "profilePhotoAlt": "Foto profilo",
     "contact": "Contatti",
-    "aboutMe": "Chi sono",
+    "aboutMe": "Profilo professionale",
     "skills": "Competenze",
     "experience": "Esperienza",
     "education": "Istruzione",
@@ -200,6 +221,7 @@
     "errorMessage": "Questo link non è valido o è scaduto.",
     "createYourCV": "Crea il tuo CV",
     "sharedOn": "Condiviso il {date}",
-    "madeWith": "Fatto in Argentina"
+    "madeWith": "Fatto in Argentina",
+    "generating": "Generazione PDF..."
   }
 }

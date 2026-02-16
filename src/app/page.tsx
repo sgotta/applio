@@ -1,56 +1,77 @@
 "use client";
 
-import { useRef } from "react";
-import { useReactToPrint } from "react-to-print";
+import { useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
+import { Loader2 } from "lucide-react";
 import { CVProvider, useCV } from "@/lib/cv-context";
-import { LocaleProvider } from "@/lib/locale-context";
+import { LocaleProvider, useAppLocale } from "@/lib/locale-context";
 import { ThemeProvider } from "@/lib/theme-context";
-import { ColorSchemeProvider } from "@/lib/color-scheme-context";
+import { ColorSchemeProvider, useColorScheme } from "@/lib/color-scheme-context";
+import { SidebarPatternProvider, useSidebarPattern } from "@/lib/sidebar-pattern-context";
+import { downloadPDF } from "@/lib/generate-pdf";
+import { filenameDateStamp } from "@/lib/utils";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/sonner";
 import { Toolbar } from "@/components/toolbar/Toolbar";
 import { CVEditor } from "@/components/cv-editor/CVEditor";
-import { PrintableCV } from "@/components/cv-editor/PrintableCV";
-import { useOverflowDetection } from "@/hooks/useOverflowDetection";
 
 function AppContent() {
   const { data } = useCV();
-  const printRef = useRef<HTMLDivElement>(null);
-  const printContainerRef = useRef<HTMLDivElement>(null);
-  const { isOverflowing } = useOverflowDetection(printContainerRef);
+  const t = useTranslations("toolbar");
+  const tp = useTranslations("printable");
+  const { colorScheme } = useColorScheme();
+  const { patternSettings } = useSidebarPattern();
+  const { locale } = useAppLocale();
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
-  const handlePrint = useReactToPrint({
-    contentRef: printRef,
-    documentTitle: `CV-${data.personalInfo.fullName.replace(/\s+/g, "-")}`,
-    pageStyle: `
-      @page {
-        size: auto;
-        margin: 0;
-      }
-      @media print {
-        html, body {
-          margin: 0;
-          padding: 0;
-          -webkit-print-color-adjust: exact;
-          print-color-adjust: exact;
-        }
-      }
-    `,
-  });
+  const handlePrint = useCallback(async () => {
+    if (isGeneratingPDF) return;
+    setIsGeneratingPDF(true);
+    try {
+      const name = data.personalInfo.fullName.replace(/\s+/g, "-");
+      const filename = `CV-${name}_${filenameDateStamp(locale)}.pdf`;
+      const labels = {
+        contact: tp("contact"),
+        aboutMe: tp("aboutMe"),
+        skills: tp("skills"),
+        experience: tp("experience"),
+        education: tp("education"),
+        courses: tp("courses"),
+        certifications: tp("certifications"),
+        awards: tp("awards"),
+      };
+      await downloadPDF(data, filename, colorScheme, labels, locale, patternSettings);
+    } catch (err) {
+      console.error("PDF generation failed:", err);
+    } finally {
+      setIsGeneratingPDF(false);
+    }
+  }, [isGeneratingPDF, data, colorScheme, tp, patternSettings, locale]);
 
   return (
-    <div className="min-h-screen bg-gray-50/50 dark:bg-background">
-      <Toolbar onPrintPDF={() => handlePrint()} isOverflowing={isOverflowing} />
+    <div className="min-h-screen transition-colors duration-300 dark:bg-background" style={{ backgroundColor: colorScheme.pageBg }}>
+      <Toolbar
+        onPrintPDF={handlePrint}
+        isGeneratingPDF={isGeneratingPDF}
+      />
       <CVEditor />
 
-      {/* Off-screen printable version for PDF generation & overflow detection */}
-      <div
-        ref={printContainerRef}
-        className="absolute -left-[9999px] top-0"
-        style={{ width: "210mm", height: "297mm", overflow: "hidden" }}
-      >
-        <PrintableCV ref={printRef} data={data} />
-      </div>
+      {/* Full-screen loading overlay while generating PDF */}
+      {isGeneratingPDF && (
+        <div
+          className="fixed inset-0 z-100 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+          role="alert"
+          aria-busy="true"
+        >
+          <div className="flex flex-col items-center gap-3">
+            <Loader2 className="h-7 w-7 animate-spin text-white" />
+            <p className="text-sm font-medium text-white">
+              {t("pdfGenerating")}
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -59,13 +80,25 @@ export default function Home() {
   return (
     <ThemeProvider>
       <ColorSchemeProvider>
-        <LocaleProvider>
-          <CVProvider>
+        <SidebarPatternProvider>
+          <LocaleProvider>
+            <CVProvider>
             <TooltipProvider delayDuration={300}>
               <AppContent />
+              <Toaster
+                position="bottom-center"
+                duration={5000}
+                icons={{ success: null }}
+                toastOptions={{
+                  classNames: {
+                    toast: "!bg-gray-900 !text-white !border-none !shadow-lg !rounded-xl !py-3 !px-5 !text-sm !max-w-[calc(100vw-2rem)] !w-auto dark:!bg-gray-100 dark:!text-gray-900",
+                  },
+                }}
+              />
             </TooltipProvider>
-          </CVProvider>
-        </LocaleProvider>
+            </CVProvider>
+          </LocaleProvider>
+        </SidebarPatternProvider>
       </ColorSchemeProvider>
     </ThemeProvider>
   );

@@ -1,6 +1,6 @@
 {
   "toolbar": {
-    "tagline": "Seu CV. No seu computador. Não no nosso.",
+    "tagline": "Seu CV profissional em minutos",
     "language": "Idioma",
     "sections": "Seções",
     "sectionsTitle": "Campos de contato",
@@ -12,7 +12,8 @@
     "importAriaLabel": "Importar arquivo JSON",
     "importTitle": "Carregar CV de um arquivo JSON",
     "exportTitle": "Exportar CV como arquivo JSON",
-    "pdfTitle": "Gerar PDF para imprimir ou enviar",
+    "pdfTitle": "Baixar PDF",
+    "pdfGenerating": "Gerando PDF...",
     "optionalSections": "Seções opcionais",
     "sectionCourses": "Cursos e Workshops",
     "sectionCertifications": "Certificações",
@@ -37,19 +38,25 @@
     "colorSchemeSunFlower": "Girassol",
     "colorSchemeCarrot": "Cenoura",
     "colorSchemeWetAsphalt": "Asfalto",
+    "sidebarPattern": "Padrão",
+    "patternNone": "Nenhum",
+    "patternDots": "Pontos",
+    "patternIntensity": "Intensidade",
+    "patternScope": "Zona",
+    "patternScopeSidebar": "Barra lateral",
+    "patternScopeMain": "Conteúdo",
+    "patternScopeFull": "Página inteira",
     "fontSize": "Tamanho da fonte",
     "margins": "Margens",
-    "share": "Compartilhar link",
-    "shareTitle": "Compartilhar link do CV",
-    "shareCopied": "Link copiado!",
+    "share": "Copiar link",
+    "shareLinkCopied": "Link copiado para a área de transferência",
     "sharePhotoNote": "O CV compartilhado mostrará suas iniciais em vez de sua foto de perfil.",
     "sharePhotoUploaded": "Sua foto de perfil será incluída no CV compartilhado.",
     "sharePhotoFailed": "Seu CV será compartilhado com suas iniciais em vez de sua foto de perfil.",
-    "shareUploading": "Compartilhando...",
-    "shareCopyFailed": "Não foi possível copiar o link. Tente novamente.",
+    "shareUploading": "Copiando...",
     "shareOverlayMessage": "Preparando seu CV para compartilhar...",
-    "shareViewLink": "Ver meu CV compartilhado",
-    "shareNameRequired": "Digite seu nome para compartilhar o CV."
+    "shareNameRequired": "Digite seu nome para compartilhar o CV.",
+    "free": "Grátis"
   },
   "cvPreview": {
     "fullNamePlaceholder": "Seu Nome Completo",
@@ -62,7 +69,8 @@
     "locationPlaceholder": "Cidade, País",
     "linkedinPlaceholder": "linkedin.com/in/usuario",
     "websitePlaceholder": "seusite.com",
-    "aboutMe": "Sobre mim",
+    "urlPlaceholder": "https://...",
+    "aboutMe": "Perfil profissional",
     "summaryPlaceholder": "Escreva um resumo profissional...",
     "skills": "Habilidades",
     "categoryPlaceholder": "Categoria",
@@ -75,7 +83,9 @@
     "deleteSkillConfirm": "Excluir",
     "deleteSkillCancel": "Cancelar",
     "confirmDeleteCategory": "Excluir categoria \"{category}\"?",
-    "confirmDeleteCategoryEmpty": "Excluir esta categoria?"
+    "confirmDeleteCategoryEmpty": "Excluir esta categoria?",
+    "moveUp": "Mover para cima",
+    "moveDown": "Mover para baixo"
   },
   "experience": {
     "title": "Experiência",
@@ -94,7 +104,12 @@
     "confirmDeleteExperience": "Excluir \"{name}\"?",
     "confirmDeleteExperienceEmpty": "Excluir esta experiência?",
     "deleteConfirm": "Excluir",
-    "deleteCancel": "Cancelar"
+    "deleteCancel": "Cancelar",
+    "roleDescriptionPlaceholder": "Descrição opcional...",
+    "typeBullet": "Marcador",
+    "typeTitle": "Título",
+    "typeSubtitle": "Subtítulo",
+    "typeComment": "Comentário"
   },
   "education": {
     "title": "Educação",
@@ -136,6 +151,8 @@
     "namePlaceholder": "Nome do curso",
     "institutionPlaceholder": "Instituição",
     "datePlaceholder": "data",
+    "moveUp": "Mover para cima",
+    "moveDown": "Mover para baixo",
     "deleteCourse": "Excluir curso",
     "addCourse": "Adicionar curso",
     "confirmDeleteCourse": "Excluir \"{name}\"?",
@@ -148,6 +165,8 @@
     "namePlaceholder": "Nome da certificação",
     "issuerPlaceholder": "Organização emissora",
     "datePlaceholder": "data",
+    "moveUp": "Mover para cima",
+    "moveDown": "Mover para baixo",
     "deleteCertification": "Excluir certificação",
     "addCertification": "Adicionar certificação",
     "confirmDeleteCertification": "Excluir \"{name}\"?",
@@ -160,6 +179,8 @@
     "namePlaceholder": "Nome do prêmio",
     "issuerPlaceholder": "Organização",
     "datePlaceholder": "data",
+    "moveUp": "Mover para cima",
+    "moveDown": "Mover para baixo",
     "deleteAward": "Excluir prêmio",
     "addAward": "Adicionar prêmio",
     "confirmDeleteAward": "Excluir \"{name}\"?",
@@ -170,7 +191,7 @@
   "printable": {
     "profilePhotoAlt": "Foto de perfil",
     "contact": "Contato",
-    "aboutMe": "Sobre mim",
+    "aboutMe": "Perfil profissional",
     "skills": "Habilidades",
     "experience": "Experiência",
     "education": "Educação",
@@ -200,6 +221,7 @@
     "errorMessage": "Este link não é válido ou expirou.",
     "createYourCV": "Crie seu CV",
     "sharedOn": "Compartilhado em {date}",
-    "madeWith": "Feito na Argentina"
+    "madeWith": "Feito na Argentina",
+    "generating": "Gerando PDF..."
   }
 }

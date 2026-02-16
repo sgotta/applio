@@ -25,6 +25,20 @@ export interface ColorScheme {
   separator: string;
   bullet: string;
   nameAccent: string;
+
+  /* ── Page background (behind the CV sheet) ── */
+  pageBg: string;
+}
+
+/** Pre-blend an 8-digit hex (#rrggbbaa) over a 6-digit hex (#rrggbb)
+ *  to get an opaque result. If fg is already 6/7 chars, return as-is. */
+function blend(fg: string, bg: string): string {
+  if (fg.length <= 7) return fg;
+  const a = parseInt(fg.slice(7, 9), 16) / 255;
+  const r = Math.round(parseInt(fg.slice(1, 3), 16) * a + parseInt(bg.slice(1, 3), 16) * (1 - a));
+  const g = Math.round(parseInt(fg.slice(3, 5), 16) * a + parseInt(bg.slice(3, 5), 16) * (1 - a));
+  const b = Math.round(parseInt(fg.slice(5, 7), 16) * a + parseInt(bg.slice(5, 7), 16) * (1 - a));
+  return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
 }
 
 export const COLOR_SCHEMES: Record<ColorSchemeName, ColorScheme> = {
@@ -42,6 +56,7 @@ export const COLOR_SCHEMES: Record<ColorSchemeName, ColorScheme> = {
     separator: "#e5e7eb",
     bullet: "#6b7280",
     nameAccent: "#b5b0a6",
+    pageBg: "#eeedeb",
   },
   /* Clear Child · Dodger Blue #1e90ff */
   peterRiver: {
@@ -51,12 +66,13 @@ export const COLOR_SCHEMES: Record<ColorSchemeName, ColorScheme> = {
     sidebarText: "#ffffff",
     sidebarMuted: "#ffffff66",
     sidebarSeparator: "#ffffff33",
-    sidebarBadgeBg: "#ffffff26",
+    sidebarBadgeBg: blend("#ffffff26", "#1a7ed6"),
     sidebarBadgeText: "#ffffff",
     heading: "#1a7ed6",
     separator: "#1e90ff40",
     bullet: "#1e90ff",
     nameAccent: "#1e90ff",
+    pageBg: "#e8f2fb",
   },
   /* Emerald · Nephritis #27ae60 */
   emerald: {
@@ -66,12 +82,13 @@ export const COLOR_SCHEMES: Record<ColorSchemeName, ColorScheme> = {
     sidebarText: "#ffffff",
     sidebarMuted: "#ffffff66",
     sidebarSeparator: "#ffffff33",
-    sidebarBadgeBg: "#ffffff26",
+    sidebarBadgeBg: blend("#ffffff26", "#27ae60"),
     sidebarBadgeText: "#ffffff",
     heading: "#27ae60",
     separator: "#2ecc7140",
     bullet: "#27ae60",
     nameAccent: "#2ecc71",
+    pageBg: "#e9f7ef",
   },
   /* Bruschetta Tomato #ff6348 */
   alizarin: {
@@ -81,12 +98,13 @@ export const COLOR_SCHEMES: Record<ColorSchemeName, ColorScheme> = {
     sidebarText: "#ffffff",
     sidebarMuted: "#ffffff66",
     sidebarSeparator: "#ffffff33",
-    sidebarBadgeBg: "#ffffff26",
+    sidebarBadgeBg: blend("#ffffff26", "#e04530"),
     sidebarBadgeText: "#ffffff",
     heading: "#e04530",
     separator: "#ff634840",
     bullet: "#e04530",
     nameAccent: "#ff6348",
+    pageBg: "#fcecea",
   },
   /* Sun Flower #f1c40f — light bg, dark text */
   sunFlower: {
@@ -96,12 +114,13 @@ export const COLOR_SCHEMES: Record<ColorSchemeName, ColorScheme> = {
     sidebarText: "#2c3e50",
     sidebarMuted: "#2c3e5066",
     sidebarSeparator: "#2c3e5033",
-    sidebarBadgeBg: "#2c3e501a",
+    sidebarBadgeBg: blend("#2c3e501a", "#f1c40f"),
     sidebarBadgeText: "#2c3e50",
     heading: "#9a7d0a",
     separator: "#f1c40f40",
     bullet: "#d4ac0d",
     nameAccent: "#f1c40f",
+    pageBg: "#fef9e7",
   },
   /* Carrot · Pumpkin #d35400 */
   carrot: {
@@ -111,12 +130,13 @@ export const COLOR_SCHEMES: Record<ColorSchemeName, ColorScheme> = {
     sidebarText: "#ffffff",
     sidebarMuted: "#ffffff66",
     sidebarSeparator: "#ffffff33",
-    sidebarBadgeBg: "#ffffff26",
+    sidebarBadgeBg: blend("#ffffff26", "#d35400"),
     sidebarBadgeText: "#ffffff",
     heading: "#d35400",
     separator: "#e67e2240",
     bullet: "#d35400",
     nameAccent: "#e67e22",
+    pageBg: "#fbeee6",
   },
   /* Wet Asphalt · Midnight Blue #2c3e50 */
   wetAsphalt: {
@@ -126,12 +146,13 @@ export const COLOR_SCHEMES: Record<ColorSchemeName, ColorScheme> = {
     sidebarText: "#ffffff",
     sidebarMuted: "#ffffff66",
     sidebarSeparator: "#ffffff33",
-    sidebarBadgeBg: "#ffffff26",
+    sidebarBadgeBg: blend("#ffffff26", "#2c3e50"),
     sidebarBadgeText: "#ffffff",
     heading: "#2c3e50",
     separator: "#34495e40",
     bullet: "#34495e",
     nameAccent: "#34495e",
+    pageBg: "#eaecee",
   },
 };
 

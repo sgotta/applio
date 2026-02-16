@@ -1,6 +1,6 @@
 {
   "toolbar": {
-    "tagline": "你的简历。存在你的电脑上。不在我们这里。",
+    "tagline": "几分钟创建专业简历",
     "language": "语言",
     "sections": "板块",
     "sectionsTitle": "联系方式",
@@ -12,7 +12,8 @@
     "importAriaLabel": "导入JSON文件",
     "importTitle": "从JSON文件加载简历",
     "exportTitle": "将简历导出为JSON文件",
-    "pdfTitle": "生成PDF用于打印或发送",
+    "pdfTitle": "下载PDF",
+    "pdfGenerating": "正在生成PDF...",
     "optionalSections": "可选板块",
     "sectionCourses": "课程与工作坊",
     "sectionCertifications": "证书",
@@ -37,19 +38,25 @@
     "colorSchemeSunFlower": "向日葵",
     "colorSchemeCarrot": "胡萝卜",
     "colorSchemeWetAsphalt": "沥青",
+    "sidebarPattern": "图案",
+    "patternNone": "无",
+    "patternDots": "圆点",
+    "patternIntensity": "强度",
+    "patternScope": "范围",
+    "patternScopeSidebar": "侧栏",
+    "patternScopeMain": "主内容",
+    "patternScopeFull": "整页",
     "fontSize": "字体大小",
     "margins": "边距",
-    "share": "分享链接",
-    "shareTitle": "分享简历链接",
-    "shareCopied": "链接已复制！",
+    "share": "复制链接",
+    "shareLinkCopied": "链接已复制到剪贴板",
     "sharePhotoNote": "分享的简历将显示您的姓名首字母，而非个人照片。",
     "sharePhotoUploaded": "您的个人照片将包含在分享的简历中。",
     "sharePhotoFailed": "您的简历将显示姓名首字母，而非个人照片。",
-    "shareUploading": "分享中...",
-    "shareCopyFailed": "无法复制链接。请重试。",
+    "shareUploading": "复制中...",
     "shareOverlayMessage": "正在准备分享您的简历...",
-    "shareViewLink": "查看我的分享简历",
-    "shareNameRequired": "请输入您的姓名以分享简历。"
+    "shareNameRequired": "请输入您的姓名以分享简历。",
+    "free": "免费"
   },
   "cvPreview": {
     "fullNamePlaceholder": "您的姓名",
@@ -62,7 +69,8 @@
     "locationPlaceholder": "城市，国家",
     "linkedinPlaceholder": "linkedin.com/in/username",
     "websitePlaceholder": "yoursite.com",
-    "aboutMe": "关于我",
+    "urlPlaceholder": "https://...",
+    "aboutMe": "职业简介",
     "summaryPlaceholder": "撰写专业简介...",
     "skills": "技能",
     "categoryPlaceholder": "类别",
@@ -75,7 +83,9 @@
     "deleteSkillConfirm": "删除",
     "deleteSkillCancel": "取消",
     "confirmDeleteCategory": "删除类别「{category}」？",
-    "confirmDeleteCategoryEmpty": "删除此类别？"
+    "confirmDeleteCategoryEmpty": "删除此类别？",
+    "moveUp": "上移",
+    "moveDown": "下移"
   },
   "experience": {
     "title": "工作经历",
@@ -94,7 +104,12 @@
     "confirmDeleteExperience": "删除「{name}」？",
     "confirmDeleteExperienceEmpty": "删除此经历？",
     "deleteConfirm": "删除",
-    "deleteCancel": "取消"
+    "deleteCancel": "取消",
+    "roleDescriptionPlaceholder": "可选描述...",
+    "typeBullet": "要点",
+    "typeTitle": "标题",
+    "typeSubtitle": "副标题",
+    "typeComment": "备注"
   },
   "education": {
     "title": "教育背景",
@@ -136,6 +151,8 @@
     "namePlaceholder": "课程名称",
     "institutionPlaceholder": "机构",
     "datePlaceholder": "日期",
+    "moveUp": "上移",
+    "moveDown": "下移",
     "deleteCourse": "删除课程",
     "addCourse": "添加课程",
     "confirmDeleteCourse": "删除「{name}」？",
@@ -148,6 +165,8 @@
     "namePlaceholder": "证书名称",
     "issuerPlaceholder": "颁发机构",
     "datePlaceholder": "日期",
+    "moveUp": "上移",
+    "moveDown": "下移",
     "deleteCertification": "删除证书",
     "addCertification": "添加证书",
     "confirmDeleteCertification": "删除「{name}」？",
@@ -160,6 +179,8 @@
     "namePlaceholder": "奖项名称",
     "issuerPlaceholder": "颁奖机构",
     "datePlaceholder": "日期",
+    "moveUp": "上移",
+    "moveDown": "下移",
     "deleteAward": "删除奖项",
     "addAward": "添加奖项",
     "confirmDeleteAward": "删除「{name}」？",
@@ -170,7 +191,7 @@
   "printable": {
     "profilePhotoAlt": "个人照片",
     "contact": "联系方式",
-    "aboutMe": "关于我",
+    "aboutMe": "职业简介",
     "skills": "技能",
     "experience": "工作经历",
     "education": "教育背景",
@@ -200,6 +221,7 @@
     "errorMessage": "此链接无效或已过期。",
     "createYourCV": "创建您的简历",
     "sharedOn": "分享于 {date}",
-    "madeWith": "阿根廷制造"
+    "madeWith": "阿根廷制造",
+    "generating": "正在生成PDF..."
   }
 }

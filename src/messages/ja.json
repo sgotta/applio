@@ -1,6 +1,6 @@
 {
   "toolbar": {
-    "tagline": "あなたの履歴書。あなたのパソコンに保存。私たちのではありません。",
+    "tagline": "数分でプロフェッショナルな履歴書を作成",
     "language": "言語",
     "sections": "セクション",
     "sectionsTitle": "連絡先",
@@ -12,7 +12,8 @@
     "importAriaLabel": "JSONファイルをインポート",
     "importTitle": "JSONファイルから履歴書を読み込む",
     "exportTitle": "履歴書をJSONファイルとしてエクスポート",
-    "pdfTitle": "印刷・送信用のPDFを生成",
+    "pdfTitle": "PDFをダウンロード",
+    "pdfGenerating": "PDFを生成中...",
     "optionalSections": "オプションセクション",
     "sectionCourses": "講座・ワークショップ",
     "sectionCertifications": "資格",
@@ -37,19 +38,25 @@
     "colorSchemeSunFlower": "ひまわり",
     "colorSchemeCarrot": "キャロット",
     "colorSchemeWetAsphalt": "アスファルト",
+    "sidebarPattern": "パターン",
+    "patternNone": "なし",
+    "patternDots": "ドット",
+    "patternIntensity": "強度",
+    "patternScope": "範囲",
+    "patternScopeSidebar": "サイドバー",
+    "patternScopeMain": "メインコンテンツ",
+    "patternScopeFull": "ページ全体",
     "fontSize": "フォントサイズ",
     "margins": "余白",
-    "share": "リンクを共有",
-    "shareTitle": "CVリンクを共有",
-    "shareCopied": "リンクがコピーされました！",
+    "share": "リンクをコピー",
+    "shareLinkCopied": "リンクがクリップボードにコピーされました",
     "sharePhotoNote": "共有されたCVにはプロフィール写真の代わりにイニシャルが表示されます。",
     "sharePhotoUploaded": "プロフィール写真が共有CVに含まれます。",
     "sharePhotoFailed": "CVはプロフィール写真の代わりにイニシャルで共有されます。",
-    "shareUploading": "共有中...",
-    "shareCopyFailed": "リンクをコピーできませんでした。もう一度お試しください。",
+    "shareUploading": "コピー中...",
     "shareOverlayMessage": "CVを共有する準備をしています...",
-    "shareViewLink": "共有したCVを見る",
-    "shareNameRequired": "CVを共有するには名前を入力してください。"
+    "shareNameRequired": "CVを共有するには名前を入力してください。",
+    "free": "無料"
   },
   "cvPreview": {
     "fullNamePlaceholder": "氏名",
@@ -62,7 +69,8 @@
     "locationPlaceholder": "市区町村、国",
     "linkedinPlaceholder": "linkedin.com/in/username",
     "websitePlaceholder": "yoursite.com",
-    "aboutMe": "自己紹介",
+    "urlPlaceholder": "https://...",
+    "aboutMe": "職務概要",
     "summaryPlaceholder": "職務要約を記入...",
     "skills": "スキル",
     "categoryPlaceholder": "カテゴリー",
@@ -75,7 +83,9 @@
     "deleteSkillConfirm": "削除",
     "deleteSkillCancel": "キャンセル",
     "confirmDeleteCategory": "カテゴリー「{category}」を削除しますか？",
-    "confirmDeleteCategoryEmpty": "このカテゴリーを削除しますか？"
+    "confirmDeleteCategoryEmpty": "このカテゴリーを削除しますか？",
+    "moveUp": "上へ移動",
+    "moveDown": "下へ移動"
   },
   "experience": {
     "title": "職歴",
@@ -94,7 +104,12 @@
     "confirmDeleteExperience": "「{name}」を削除しますか？",
     "confirmDeleteExperienceEmpty": "この職歴を削除しますか？",
     "deleteConfirm": "削除",
-    "deleteCancel": "キャンセル"
+    "deleteCancel": "キャンセル",
+    "roleDescriptionPlaceholder": "説明（任意）...",
+    "typeBullet": "箇条書き",
+    "typeTitle": "見出し",
+    "typeSubtitle": "小見出し",
+    "typeComment": "コメント"
   },
   "education": {
     "title": "学歴",
@@ -136,6 +151,8 @@
     "namePlaceholder": "講座名",
     "institutionPlaceholder": "機関",
     "datePlaceholder": "日付",
+    "moveUp": "上に移動",
+    "moveDown": "下に移動",
     "deleteCourse": "講座を削除",
     "addCourse": "講座を追加",
     "confirmDeleteCourse": "「{name}」を削除しますか？",
@@ -148,6 +165,8 @@
     "namePlaceholder": "資格名",
     "issuerPlaceholder": "発行機関",
     "datePlaceholder": "日付",
+    "moveUp": "上に移動",
+    "moveDown": "下に移動",
     "deleteCertification": "資格を削除",
     "addCertification": "資格を追加",
     "confirmDeleteCertification": "「{name}」を削除しますか？",
@@ -160,6 +179,8 @@
     "namePlaceholder": "賞の名称",
     "issuerPlaceholder": "授与機関",
     "datePlaceholder": "日付",
+    "moveUp": "上に移動",
+    "moveDown": "下に移動",
     "deleteAward": "受賞歴を削除",
     "addAward": "受賞歴を追加",
     "confirmDeleteAward": "「{name}」を削除しますか？",
@@ -170,7 +191,7 @@
   "printable": {
     "profilePhotoAlt": "プロフィール写真",
     "contact": "連絡先",
-    "aboutMe": "自己紹介",
+    "aboutMe": "職務概要",
     "skills": "スキル",
     "experience": "職歴",
     "education": "学歴",
@@ -200,6 +221,7 @@
     "errorMessage": "このリンクは無効または期限切れです。",
     "createYourCV": "CVを作成する",
     "sharedOn": "{date}に共有",
-    "madeWith": "アルゼンチン製"
+    "madeWith": "アルゼンチン製",
+    "generating": "PDFを生成中..."
   }
 }

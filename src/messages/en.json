@@ -1,6 +1,6 @@
 {
   "toolbar": {
-    "tagline": "Your CV. Stored on your computer. Not ours.",
+    "tagline": "Your professional CV in minutes",
     "language": "Language",
     "sections": "Sections",
     "sectionsTitle": "Contact Fields",
@@ -12,7 +12,8 @@
     "importAriaLabel": "Import JSON file",
     "importTitle": "Load CV from JSON file",
     "exportTitle": "Export CV as JSON file",
-    "pdfTitle": "Generate PDF to print or send",
+    "pdfTitle": "Download PDF",
+    "pdfGenerating": "Generating PDF...",
     "optionalSections": "Optional Sections",
     "sectionCourses": "Courses & Workshops",
     "sectionCertifications": "Certifications",
@@ -37,19 +38,25 @@
     "colorSchemeSunFlower": "Sun Flower",
     "colorSchemeCarrot": "Carrot",
     "colorSchemeWetAsphalt": "Wet Asphalt",
+    "sidebarPattern": "Pattern",
+    "patternNone": "None",
+    "patternDots": "Dots",
+    "patternIntensity": "Intensity",
+    "patternScope": "Scope",
+    "patternScopeSidebar": "Sidebar",
+    "patternScopeMain": "Main content",
+    "patternScopeFull": "Full page",
     "fontSize": "Font size",
     "margins": "Margins",
-    "share": "Share link",
-    "shareTitle": "Share CV link",
-    "shareCopied": "Link copied!",
+    "share": "Copy link",
+    "shareLinkCopied": "Link copied to clipboard",
     "sharePhotoNote": "The shared CV will show your initials instead of your profile photo.",
     "sharePhotoUploaded": "Your profile photo will be included in the shared CV.",
     "sharePhotoFailed": "Your CV will be shared with your initials instead of your profile photo.",
-    "shareUploading": "Sharing...",
-    "shareCopyFailed": "Could not copy the link. Try again.",
+    "shareUploading": "Copying...",
     "shareOverlayMessage": "Preparing your CV for sharing...",
-    "shareViewLink": "View my shared CV",
-    "shareNameRequired": "Enter your name to share your CV."
+    "shareNameRequired": "Enter your name to share your CV.",
+    "free": "Free"
   },
   "cvPreview": {
     "fullNamePlaceholder": "Your Full Name",
@@ -62,7 +69,8 @@
     "locationPlaceholder": "City, Country",
     "linkedinPlaceholder": "linkedin.com/in/username",
     "websitePlaceholder": "yoursite.com",
-    "aboutMe": "About me",
+    "urlPlaceholder": "https://...",
+    "aboutMe": "Professional profile",
     "summaryPlaceholder": "Write a professional summary...",
     "skills": "Skills",
     "categoryPlaceholder": "Category",
@@ -75,7 +83,9 @@
     "deleteSkillConfirm": "Delete",
     "deleteSkillCancel": "Cancel",
     "confirmDeleteCategory": "Delete category \"{category}\"?",
-    "confirmDeleteCategoryEmpty": "Delete this category?"
+    "confirmDeleteCategoryEmpty": "Delete this category?",
+    "moveUp": "Move up",
+    "moveDown": "Move down"
   },
   "experience": {
     "title": "Experience",
@@ -94,7 +104,12 @@
     "confirmDeleteExperience": "Delete \"{name}\"?",
     "confirmDeleteExperienceEmpty": "Delete this experience?",
     "deleteConfirm": "Delete",
-    "deleteCancel": "Cancel"
+    "deleteCancel": "Cancel",
+    "roleDescriptionPlaceholder": "Optional description...",
+    "typeBullet": "Bullet",
+    "typeTitle": "Title",
+    "typeSubtitle": "Subtitle",
+    "typeComment": "Comment"
   },
   "education": {
     "title": "Education",
@@ -136,6 +151,8 @@
     "namePlaceholder": "Course name",
     "institutionPlaceholder": "Institution",
     "datePlaceholder": "date",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
     "deleteCourse": "Delete course",
     "addCourse": "Add course",
     "confirmDeleteCourse": "Delete \"{name}\"?",
@@ -148,6 +165,8 @@
     "namePlaceholder": "Certification name",
     "issuerPlaceholder": "Issuing organization",
     "datePlaceholder": "date",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
     "deleteCertification": "Delete certification",
     "addCertification": "Add certification",
     "confirmDeleteCertification": "Delete \"{name}\"?",
@@ -160,6 +179,8 @@
     "namePlaceholder": "Award name",
     "issuerPlaceholder": "Awarding organization",
     "datePlaceholder": "date",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
     "deleteAward": "Delete award",
     "addAward": "Add award",
     "confirmDeleteAward": "Delete \"{name}\"?",
@@ -170,7 +191,7 @@
   "printable": {
     "profilePhotoAlt": "Profile photo",
     "contact": "Contact",
-    "aboutMe": "About me",
+    "aboutMe": "Professional profile",
     "skills": "Skills",
     "experience": "Experience",
     "education": "Education",
@@ -200,6 +221,7 @@
     "errorMessage": "This link is not valid or has expired.",
     "createYourCV": "Create your CV",
     "sharedOn": "Shared on {date}",
-    "madeWith": "Made in Argentina"
+    "madeWith": "Made in Argentina",
+    "generating": "Generating PDF..."
   }
 }
