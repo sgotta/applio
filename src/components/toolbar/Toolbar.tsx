@@ -611,18 +611,18 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="md:hidden h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                className="md:hidden text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
               >
-                <span className="relative h-4 w-4">
+                <span className="relative size-5">
                   <Menu
-                    className={`h-4 w-4 absolute inset-0 transition-all duration-200 ${
+                    className={`size-5 absolute inset-0 transition-all duration-200 ${
                       mobileMenuOpen
                         ? "opacity-0 rotate-90 scale-75"
                         : "opacity-100 rotate-0 scale-100"
                     }`}
                   />
                   <X
-                    className={`h-4 w-4 absolute inset-0 transition-all duration-200 ${
+                    className={`size-5 absolute inset-0 transition-all duration-200 ${
                       mobileMenuOpen
                         ? "opacity-100 rotate-0 scale-100"
                         : "opacity-0 -rotate-90 scale-75"
