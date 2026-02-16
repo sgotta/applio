@@ -6,6 +6,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Applio** is a free, no-login CV builder with a minimalist Notion-style design. Built with Next.js 16 App Router, React 19, and Tailwind CSS v4. The app runs entirely client-side with localStorage persistence.
 
+## Version Bumping
+
+When creating a commit, **always** bump the `version` field in `package.json` before committing:
+- **patch** (1.9.0 → 1.9.1): bug fixes, small tweaks, copy changes
+- **minor** (1.9.0 → 1.10.0): new features, new sections, significant UI changes
+- **major** (1.9.0 → 2.0.0): breaking changes, major rewrites (rare — only when explicitly requested)
+
+Ask the user to confirm the version bump level before applying it. A GitHub Action automatically creates a release when the version changes on `main`.
+
 ## Commands
 
 ```bash

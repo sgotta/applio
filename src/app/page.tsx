@@ -65,7 +65,7 @@ function AppContent() {
       <CVEditor />
 
       <footer className="text-center py-6">
-        <p className="text-xs text-gray-400 dark:text-gray-400">&copy; {new Date().getFullYear()} Applio. {t("copyright")}</p>
+        <p className="text-xs text-gray-400 dark:text-gray-400">&copy; {new Date().getFullYear()} Applio v{process.env.NEXT_PUBLIC_APP_VERSION}. {t("copyright")}</p>
       </footer>
 
       {/* Full-screen loading overlay while generating PDF */}
