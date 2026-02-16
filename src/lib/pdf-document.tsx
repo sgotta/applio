@@ -55,6 +55,47 @@ Font.register({
   ],
 });
 
+/* CJK fonts for Japanese, Chinese, and Korean */
+Font.register({
+  family: "NotoSansJP",
+  fonts: [
+    { src: "https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-jp@latest/japanese-400-normal.ttf", fontWeight: 400 },
+    { src: "https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-jp@latest/japanese-500-normal.ttf", fontWeight: 500 },
+    { src: "https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-jp@latest/japanese-600-normal.ttf", fontWeight: 600 },
+    { src: "https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-jp@latest/japanese-700-normal.ttf", fontWeight: 700 },
+  ],
+});
+
+Font.register({
+  family: "NotoSansSC",
+  fonts: [
+    { src: "https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-sc@latest/chinese-simplified-400-normal.ttf", fontWeight: 400 },
+    { src: "https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-sc@latest/chinese-simplified-500-normal.ttf", fontWeight: 500 },
+    { src: "https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-sc@latest/chinese-simplified-600-normal.ttf", fontWeight: 600 },
+    { src: "https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-sc@latest/chinese-simplified-700-normal.ttf", fontWeight: 700 },
+  ],
+});
+
+Font.register({
+  family: "NotoSansKR",
+  fonts: [
+    { src: "https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-kr@latest/korean-400-normal.ttf", fontWeight: 400 },
+    { src: "https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-kr@latest/korean-500-normal.ttf", fontWeight: 500 },
+    { src: "https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-kr@latest/korean-600-normal.ttf", fontWeight: 600 },
+    { src: "https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-kr@latest/korean-700-normal.ttf", fontWeight: 700 },
+  ],
+});
+
+/** Return the correct font family for a given locale */
+function getFontFamily(locale: string): string {
+  switch (locale) {
+    case "ja": return "NotoSansJP";
+    case "zh": return "NotoSansSC";
+    case "ko": return "NotoSansKR";
+    default:   return "Inter";
+  }
+}
+
 Font.registerHyphenationCallback((word) => [word]);
 
 /* ── Layout constants (points) ──────────────────────────── *
@@ -263,7 +304,6 @@ const styles = StyleSheet.create({
   pageNumber: {
     fontSize: 9,
     color: "#999999",
-    fontFamily: "Inter",
     fontWeight: 400,
   },
 });
@@ -373,10 +413,11 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
   // Use sidebarText for icons — sidebarMuted may contain 8-digit hex (#ffffff66)
   // which React-PDF doesn't render correctly in SVG strokes
   const iconColor = colors.sidebarText;
+  const fontFamily = getFontFamily(locale);
 
   return (
     <Document>
-      <Page size="A4" style={styles.page}>
+      <Page size="A4" style={[styles.page, { fontFamily }]}>
         {/* Fixed sidebar background — repeats on every page */}
         <View
           style={[styles.sidebarBg, { backgroundColor: colors.sidebarBg }]}
@@ -833,7 +874,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
             month: "2-digit",
             year: "numeric",
           }).format(new Date());
-          const footerStyle = { fontSize: 8, color: "#aaaaaa", fontFamily: "Inter" as const };
+          const footerStyle = { fontSize: 8, color: "#aaaaaa", fontFamily };
           return (
             <View
               style={{

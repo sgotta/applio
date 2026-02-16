@@ -484,6 +484,7 @@ function MobileCVView({
 
 function ViewContent() {
   const t = useTranslations("sharedView");
+  const tt = useTranslations("toolbar");
   const tp = useTranslations("printable");
   const { locale } = useAppLocale();
   const [sharedData, setSharedData] = useState<SharedCVData | null>(null);
@@ -647,14 +648,15 @@ function ViewContent() {
         <MobileCVView data={cvData} colors={colorScheme} photoUrl={photoUrl} patternSettings={sharedPattern} />
       </div>
 
-      <div className="text-center py-6">
+      <div className="text-center py-6 space-y-1">
         <a
           href="/"
           className="inline-flex items-center gap-1.5 text-gray-400 hover:text-gray-500 transition-colors"
         >
-          <span className="text-sm font-semibold tracking-tight">Applio</span>
+          <span className="text-sm font-normal tracking-tight">Applio</span>
           <Heart className="h-3 w-3 fill-current" />
         </a>
+        <p className="text-xs text-gray-400">&copy; {new Date().getFullYear()} Applio. {tt("copyright")}</p>
       </div>
 
       {/* Loading overlay */}

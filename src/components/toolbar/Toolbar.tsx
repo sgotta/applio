@@ -251,7 +251,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
     }
 
     setIsSharing(false);
-  }, [data, colorSchemeName, isSharing, canShare, patternSettings]);
+  }, [data, colorSchemeName, isSharing, canShare, patternSettings, t]);
 
   const menuItemClass =
     "flex w-full items-center justify-between rounded-sm px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-accent transition-colors";

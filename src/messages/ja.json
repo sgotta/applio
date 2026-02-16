@@ -56,7 +56,8 @@
     "shareUploading": "コピー中...",
     "shareOverlayMessage": "CVを共有する準備をしています...",
     "shareNameRequired": "CVを共有するには名前を入力してください。",
-    "free": "無料"
+    "free": "無料",
+    "copyright": "全著作権所有。"
   },
   "cvPreview": {
     "fullNamePlaceholder": "氏名",

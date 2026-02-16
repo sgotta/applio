@@ -56,7 +56,8 @@
     "shareUploading": "Wird kopiert...",
     "shareOverlayMessage": "Ihr Lebenslauf wird zum Teilen vorbereitet...",
     "shareNameRequired": "Geben Sie Ihren Namen ein, um den Lebenslauf zu teilen.",
-    "free": "Kostenlos"
+    "free": "Kostenlos",
+    "copyright": "Alle Rechte vorbehalten."
   },
   "cvPreview": {
     "fullNamePlaceholder": "Dein vollständiger Name",

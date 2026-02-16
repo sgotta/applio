@@ -56,7 +56,8 @@
     "shareUploading": "Copia in corso...",
     "shareOverlayMessage": "Preparazione del tuo CV per la condivisione...",
     "shareNameRequired": "Inserisci il tuo nome per condividere il CV.",
-    "free": "Gratis"
+    "free": "Gratis",
+    "copyright": "Tutti i diritti riservati."
   },
   "cvPreview": {
     "fullNamePlaceholder": "Il Tuo Nome Completo",

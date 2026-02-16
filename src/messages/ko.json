@@ -56,7 +56,8 @@
     "shareUploading": "복사 중...",
     "shareOverlayMessage": "CV를 공유할 준비를 하고 있습니다...",
     "shareNameRequired": "CV를 공유하려면 이름을 입력하세요.",
-    "free": "무료"
+    "free": "무료",
+    "copyright": "모든 권리 보유."
   },
   "cvPreview": {
     "fullNamePlaceholder": "성명",

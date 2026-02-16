@@ -51,12 +51,16 @@ function AppContent() {
   }, [isGeneratingPDF, data, colorScheme, tp, patternSettings, locale]);
 
   return (
-    <div className="min-h-screen transition-colors duration-300 dark:bg-background" style={{ backgroundColor: colorScheme.pageBg }}>
+    <div className="min-h-screen bg-stone-100 dark:bg-background">
       <Toolbar
         onPrintPDF={handlePrint}
         isGeneratingPDF={isGeneratingPDF}
       />
       <CVEditor />
+
+      <footer className="text-center py-6">
+        <p className="text-xs text-gray-400 dark:text-gray-500">&copy; {new Date().getFullYear()} Applio. {t("copyright")}</p>
+      </footer>
 
       {/* Full-screen loading overlay while generating PDF */}
       {isGeneratingPDF && (

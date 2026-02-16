@@ -56,7 +56,8 @@
     "shareUploading": "复制中...",
     "shareOverlayMessage": "正在准备分享您的简历...",
     "shareNameRequired": "请输入您的姓名以分享简历。",
-    "free": "免费"
+    "free": "免费",
+    "copyright": "版权所有。"
   },
   "cvPreview": {
     "fullNamePlaceholder": "您的姓名",
