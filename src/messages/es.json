@@ -230,5 +230,18 @@
     "view": "Ver",
     "switchToEdit": "Cambiar a modo edición",
     "switchToView": "Cambiar a modo vista"
+  },
+  "languages": {
+    "en": "Inglés",
+    "es": "Español",
+    "fr": "Francés",
+    "pt": "Portugués",
+    "de": "Alemán",
+    "it": "Italiano",
+    "zh": "Chino",
+    "ja": "Japonés",
+    "ko": "Coreano",
+    "ru": "Ruso",
+    "tr": "Turco"
   }
 }

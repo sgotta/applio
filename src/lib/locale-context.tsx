@@ -17,10 +17,13 @@ import itMessages from "@/messages/it.json";
 import zhMessages from "@/messages/zh.json";
 import jaMessages from "@/messages/ja.json";
 import koMessages from "@/messages/ko.json";
+import ruMessages from "@/messages/ru.json";
+import trMessages from "@/messages/tr.json";
 
-export type Locale = "en" | "es" | "fr" | "pt" | "de" | "it" | "zh" | "ja" | "ko";
+export type Locale = "en" | "es" | "fr" | "pt" | "de" | "it" | "zh" | "ja" | "ko" | "ru" | "tr";
 
-export const LOCALES: Locale[] = ["en", "es", "fr", "pt", "de", "it", "zh", "ja", "ko"];
+// Alphabetical by English name: Chinese, English, French, German, Italian, Japanese, Korean, Portuguese, Russian, Spanish, Turkish
+export const LOCALES: Locale[] = ["zh", "en", "fr", "de", "it", "ja", "ko", "pt", "ru", "es", "tr"];
 
 export const LOCALE_NAMES: Record<Locale, string> = {
   en: "English",
@@ -32,6 +35,8 @@ export const LOCALE_NAMES: Record<Locale, string> = {
   zh: "中文",
   ja: "日本語",
   ko: "한국어",
+  ru: "Русский",
+  tr: "Türkçe",
 };
 
 const STORAGE_KEY = "quickcv-locale";
@@ -47,6 +52,8 @@ const messages: Record<Locale, typeof enMessages> = {
   zh: zhMessages,
   ja: jaMessages,
   ko: koMessages,
+  ru: ruMessages,
+  tr: trMessages,
 };
 
 interface LocaleContextValue {

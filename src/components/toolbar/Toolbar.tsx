@@ -88,6 +88,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   const { isViewMode, toggleEditMode } = useEditMode();
   const t = useTranslations("toolbar");
   const te = useTranslations("editMode");
+  const tl = useTranslations("languages");
   const { locale, setLocale } = useAppLocale();
   const { theme, setTheme, resolvedTheme } = useTheme();
   const { colorSchemeName, setColorScheme } = useColorScheme();
@@ -308,18 +309,25 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
               </Tooltip>
               <PopoverContent className="w-48 p-1" align="end">
                 <div className="space-y-0.5">
-                  {LOCALES.map((code) => (
+                  {LOCALES.map((code) => {
+                    const translated = tl(code);
+                    const native = LOCALE_NAMES[code];
+                    return (
                     <button
                       key={code}
                       onClick={() => setLocale(code)}
                       className="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-accent transition-colors"
                     >
-                      <span>{LOCALE_NAMES[code]}</span>
+                      <span>
+                        {native}
+                        <span className="ml-1.5 text-xs text-gray-400 dark:text-gray-500">({translated})</span>
+                      </span>
                       {locale === code && (
                         <Check className="h-4 w-4 text-gray-900 dark:text-gray-100" />
                       )}
                     </button>
-                  ))}
+                    );
+                  })}
                 </div>
               </PopoverContent>
             </Popover>
@@ -772,7 +780,10 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     {t("language")}
                   </button>
                   <div className="space-y-0.5 mt-1">
-                    {LOCALES.map((code) => (
+                    {LOCALES.map((code) => {
+                      const translated = tl(code);
+                      const native = LOCALE_NAMES[code];
+                      return (
                       <button
                         key={code}
                         onClick={() => {
@@ -781,12 +792,18 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                         }}
                         className={menuItemClass}
                       >
-                        <span>{LOCALE_NAMES[code]}</span>
+                        <span>
+                          {native}
+                          {translated !== native && (
+                            <span className="ml-1.5 text-xs text-gray-400 dark:text-gray-500">({translated})</span>
+                          )}
+                        </span>
                         {locale === code && (
                           <Check className="h-4 w-4 text-gray-900 dark:text-gray-100" />
                         )}
                       </button>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               )}
