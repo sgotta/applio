@@ -153,7 +153,7 @@ function ContactLine({
           target={urlValue ? "_blank" : undefined}
           rel={urlValue ? "noopener noreferrer" : undefined}
           className="text-gray-600 dark:text-gray-300 inline-block rounded-sm px-1.5 py-0.5 -mx-1.5 -my-0.5 hover:opacity-80 transition-opacity"
-          style={{ fontSize: Math.round(11 * 1.08), color: iconColor }}
+          style={{ fontSize: "1em", color: iconColor }}
         >
           {value}
         </a>
@@ -551,7 +551,7 @@ export const PersonalInfo = memo(function PersonalInfo() {
                             items: [...skillGroup.items, "Skill"],
                           });
                         }}
-                        className="inline-flex items-center gap-0.5 rounded border border-dashed px-2 py-0.5 text-[10px] transition-colors duration-150 hover:opacity-80"
+                        className="inline-flex items-center gap-0.5 rounded border border-dashed px-2 py-0.5 text-[0.833em] transition-colors duration-150 hover:opacity-80"
                         style={{ borderColor: colorScheme.sidebarMuted, color: colorScheme.sidebarMuted }}
                       >
                         <Plus className="h-2.5 w-2.5" />
@@ -570,7 +570,7 @@ export const PersonalInfo = memo(function PersonalInfo() {
                 setAutoEditTarget("newCategory:" + Date.now());
                 addSkillCategory();
               }}
-              className="h-6 px-2 text-[10px] hover:opacity-80"
+              className="h-6 px-2 text-[0.833em] hover:opacity-80"
               style={{ color: colorScheme.sidebarMuted }}
             >
               <Plus className="mr-1 h-3 w-3" />

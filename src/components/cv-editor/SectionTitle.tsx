@@ -12,7 +12,6 @@ export function SectionTitle({
   sidebar?: boolean;
 }) {
   const { colorScheme } = useColorScheme();
-  const fontScale = 1.08;
 
   const headingColor = sidebar
     ? colorScheme.sidebarText
@@ -25,7 +24,7 @@ export function SectionTitle({
     <div className="mb-3 mt-1">
       <h3
         className="font-semibold uppercase tracking-[0.15em]"
-        style={{ color: headingColor, fontSize: Math.round(10 * fontScale) }}
+        style={{ color: headingColor, fontSize: "0.9em" }}
       >
         {children}
       </h3>

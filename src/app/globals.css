@@ -137,6 +137,23 @@
   }
 }
 
+/* Responsive base font-size for the CV preview.
+   All child text sizes use `em` so they scale automatically per breakpoint.
+   Only affects CVPreview (editor); PrintableCV (PDF) is not affected. */
+.cv-preview-content {
+  font-size: 12px;
+}
+@media (max-width: 767px) {
+  .cv-preview-content {
+    font-size: 15px;
+  }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .cv-preview-content {
+    font-size: 13px;
+  }
+}
+
 /* CV zoom — only on screens wide enough to fit A4 (210mm ≈ 793px) + padding + zoom */
 @media (min-width: 1024px) {
   .cv-zoom {

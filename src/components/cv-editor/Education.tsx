@@ -90,7 +90,7 @@ function EducationCard({
             as="tiny"
             placeholder={t("startDatePlaceholder")}
           />
-          <span className="text-[10px] text-gray-400 dark:text-gray-500">—</span>
+          <span className="text-[0.833em] text-gray-400 dark:text-gray-500">—</span>
           <EditableText
             value={edu.endDate}
             onChange={(v) => updateEducation(edu.id, { endDate: v })}
@@ -155,7 +155,7 @@ export const Education = memo(function Education() {
           variant="ghost"
           size="sm"
           onClick={addEducation}
-          className="mt-2 h-7 px-2 text-[11px] text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+          className="mt-2 h-7 px-2 text-[0.917em] text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
         >
           <Plus className="mr-1 h-3 w-3" />
           {t("addEducation")}

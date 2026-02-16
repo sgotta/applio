@@ -91,7 +91,7 @@ function EditableBullet({
       )}
       {/* Bullet dot (decorative, only for bullet type) */}
       {isBullet && (
-        <span className="text-[11px] select-none mt-0.5 shrink-0" style={{ color: bulletColor }}>&bull;</span>
+        <span className="text-[0.917em] select-none mt-0.5 shrink-0" style={{ color: bulletColor }}>&bull;</span>
       )}
       <EditableText
         value={bullet.text}
@@ -237,7 +237,7 @@ function ExperienceCard({
             as="tiny"
             placeholder={t("startDatePlaceholder")}
           />
-          <span className="text-[10px] text-gray-400 dark:text-gray-500">—</span>
+          <span className="text-[0.833em] text-gray-400 dark:text-gray-500">—</span>
           <EditableText
             value={exp.endDate}
             onChange={(v) => updateExperience(exp.id, { endDate: v })}
@@ -297,7 +297,7 @@ function ExperienceCard({
       {!viewMode && (
         <button
           onClick={addBullet}
-          className="mt-1 flex items-center gap-1 text-[10px] text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 transition-colors duration-150 pl-3"
+          className="mt-1 flex items-center gap-1 text-[0.833em] text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 transition-colors duration-150 pl-3"
         >
           <Plus className="h-2.5 w-2.5" />
           {t("addBullet")}
@@ -340,7 +340,7 @@ export const Experience = memo(function Experience() {
           variant="ghost"
           size="sm"
           onClick={addExperience}
-          className="mt-2 h-7 px-2 text-[11px] text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+          className="mt-2 h-7 px-2 text-[0.917em] text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
         >
           <Plus className="mr-1 h-3 w-3" />
           {t("addExperience")}

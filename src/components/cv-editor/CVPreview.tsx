@@ -79,7 +79,7 @@ export function CVPreview() {
 
   return (
     <EditModeProvider>
-    <div className="mx-auto w-full lg:w-[210mm] max-w-[210mm] bg-white dark:bg-background md:shadow-xl print:shadow-none">
+    <div className="cv-preview-content mx-auto w-full lg:w-[210mm] max-w-[210mm] bg-white dark:bg-background md:shadow-xl print:shadow-none">
       {/* CV Content — A4-like aspect ratio */}
       <div className="grid grid-cols-1 md:grid-cols-[250px_1fr] min-h-[297mm]">
         {/* ===== MOBILE HEADER: photo + name centered (mobile only) ===== */}

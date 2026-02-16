@@ -35,14 +35,20 @@ const styleMap: Record<EditableStyle, string> = {
   tiny: "text-gray-400 dark:text-gray-500",
 };
 
-/** Base pixel sizes for each style (before scaling) */
-const baseSizeMap: Record<EditableStyle, number> = {
-  heading: 24,
-  subheading: 14,
-  itemTitle: 13,
-  body: 11,
-  small: 11,
-  tiny: 10,
+/** Font sizes in em — scale automatically via container's responsive font-size.
+ *  Base reference: container = 12px on desktop.
+ *  heading   → 2.16em  (≈ 26px desktop, 32px mobile)
+ *  subheading→ 1.26em  (≈ 15px desktop, 19px mobile)
+ *  itemTitle → 1.17em  (≈ 14px desktop, 18px mobile)
+ *  body/small→ 1em     (= 12px desktop, 15px mobile)
+ *  tiny      → 0.9em   (≈ 11px desktop, 14px mobile) */
+const fontSizeMap: Record<EditableStyle, string> = {
+  heading: "2.16em",
+  subheading: "1.26em",
+  itemTitle: "1.17em",
+  body: "1em",
+  small: "1em",
+  tiny: "0.9em",
 };
 
 export function EditableText({
@@ -58,13 +64,12 @@ export function EditableText({
 }: EditableTextProps) {
   const t = useTranslations("editableText");
   const viewMode = useIsViewMode();
-  const fontScale = 1.08;
   const placeholder = placeholderProp ?? t("defaultPlaceholder");
   const [editing, setEditing] = useState(autoEdit && !viewMode);
   const [draft, setDraft] = useState(value);
   const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
 
-  const scaledFontSize = Math.round(baseSizeMap[as] * fontScale);
+  const fontSize = fontSizeMap[as];
 
   // Cancel editing when switching to view mode
   useEffect(() => {
@@ -151,7 +156,7 @@ export function EditableText({
   // View mode: render as static non-interactive text
   if (viewMode) {
     const spanStyle: React.CSSProperties = {
-      fontSize: scaledFontSize,
+      fontSize,
       ...(displayEmpty ? undefined : displayStyle),
       ...(multiline ? { whiteSpace: "pre-wrap" as const } : undefined),
     };
@@ -181,7 +186,7 @@ export function EditableText({
         : `${baseStyle} ${className} w-full bg-white dark:bg-accent border border-gray-300 dark:border-border rounded-sm px-1.5 py-0.5 outline-none focus:border-gray-400 dark:focus:border-ring focus:ring-1 focus:ring-gray-200 dark:focus:ring-ring/30 transition-all duration-150`;
 
     const inputStyle: React.CSSProperties = {
-      fontSize: scaledFontSize,
+      fontSize,
       ...(onSidebar ? displayStyle : undefined),
     };
 
@@ -219,7 +224,7 @@ export function EditableText({
   }
 
   const spanStyle: React.CSSProperties = {
-    fontSize: scaledFontSize,
+    fontSize,
     ...(displayEmpty ? undefined : displayStyle),
     ...(multiline ? { whiteSpace: "pre-wrap" as const } : undefined),
   };

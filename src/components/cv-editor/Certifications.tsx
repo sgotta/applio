@@ -135,7 +135,7 @@ export const Certifications = memo(function Certifications() {
           variant="ghost"
           size="sm"
           onClick={addCertification}
-          className="mt-2 h-7 px-2 text-[11px] text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+          className="mt-2 h-7 px-2 text-[0.917em] text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
         >
           <Plus className="mr-1 h-3 w-3" />
           {t("addCertification")}

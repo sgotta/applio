@@ -39,7 +39,7 @@ function MobileSectionHeading({
   children: React.ReactNode;
   color: string;
   separatorColor: string;
-  fontSize: number;
+  fontSize: string;
 }) {
   return (
     <div className="mb-3 mt-1">
@@ -77,24 +77,23 @@ function MobileCVView({
     .slice(0, 2)
     .toUpperCase();
 
-  /* Match editor's hardcoded scales (CVPreview, EditableText, SectionTitle) */
-  const fontScale = 1.08;
   const mg = (px: number) => Math.round(px * 1.6);
 
-  /* Scaled font sizes — same values as EditableText baseSizeMap × 1.08 */
+  /* Font sizes in em — same values as EditableText fontSizeMap.
+     Scale automatically via .cv-preview-content responsive font-size. */
   const fs = {
-    heading: Math.round(24 * fontScale),    /* 26px */
-    subheading: Math.round(14 * fontScale), /* 15px */
-    itemTitle: Math.round(13 * fontScale),  /* 14px */
-    body: Math.round(11 * fontScale),       /* 12px */
-    small: Math.round(11 * fontScale),      /* 12px */
-    tiny: Math.round(10 * fontScale),       /* 11px */
-    section: Math.round(10 * fontScale),    /* 11px */
+    heading: "2.16em",
+    subheading: "1.26em",
+    itemTitle: "1.17em",
+    body: "1em",
+    small: "1em",
+    tiny: "0.9em",
+    section: "0.9em",
   };
 
   return (
     <div
-      className="bg-white font-sans overflow-x-hidden"
+      className="cv-preview-content bg-white font-sans overflow-x-hidden"
       style={{ fontFamily: "var(--font-inter), Inter, sans-serif" }}
     >
       {/* Mobile Header — extra top padding compensates for missing toolbar */}
