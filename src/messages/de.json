@@ -229,7 +229,8 @@
     "edit": "Bearbeiten",
     "view": "Ansehen",
     "switchToEdit": "Zum Bearbeitungsmodus wechseln",
-    "switchToView": "Zum Ansichtsmodus wechseln"
+    "switchToView": "Zum Ansichtsmodus wechseln",
+    "viewModeHint": "Wechsle zum Bearbeitungsmodus"
   },
   "languages": {
     "en": "Englisch",

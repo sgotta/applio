@@ -229,7 +229,8 @@
     "edit": "แก้ไข",
     "view": "ดู",
     "switchToEdit": "สลับเป็นโหมดแก้ไข",
-    "switchToView": "สลับเป็นโหมดดู"
+    "switchToView": "สลับเป็นโหมดดู",
+    "viewModeHint": "สลับเป็นโหมดแก้ไข"
   },
   "languages": {
     "en": "อังกฤษ",

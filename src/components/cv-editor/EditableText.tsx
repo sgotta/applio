@@ -1,8 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, KeyboardEvent, ClipboardEvent } from "react";
+import { useCallback, useContext, useEffect, useLayoutEffect, useRef, useState, KeyboardEvent, ClipboardEvent } from "react";
 import { useTranslations } from "next-intl";
 import { useIsViewMode } from "@/hooks/useIsViewMode";
+import { EditModeContext } from "@/lib/edit-mode-context";
 
 
 type EditableStyle = "heading" | "subheading" | "itemTitle" | "body" | "small" | "tiny";
@@ -61,6 +62,7 @@ export function EditableText({
 }: EditableTextProps) {
   const t = useTranslations("editableText");
   const viewMode = useIsViewMode();
+  const editModeCtx = useContext(EditModeContext);
   const placeholder = placeholderProp ?? t("defaultPlaceholder");
   const [editing, setEditing] = useState(autoEdit && !viewMode);
   const [draft, setDraft] = useState(value);
@@ -150,7 +152,7 @@ export function EditableText({
   const baseStyle = styleMap[as];
   const displayEmpty = !value && !editing;
 
-  // View mode: render as static non-interactive text
+  // View mode: render as static text with hint toast on click
   if (viewMode) {
     const spanStyle: React.CSSProperties = {
       fontSize,
@@ -158,9 +160,22 @@ export function EditableText({
       ...(multiline ? { whiteSpace: "pre-wrap" as const } : undefined),
     };
 
+    const handleViewClick = () => {
+      editModeCtx?.showHint();
+    };
+
     return (
       <span
-        className={`${baseStyle} ${className} inline-block rounded-sm px-1.5 py-0.5 -mx-1.5 -my-0.5 ${
+        role="button"
+        tabIndex={0}
+        onClick={handleViewClick}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            handleViewClick();
+          }
+        }}
+        className={`${baseStyle} ${className} inline-block cursor-pointer rounded-sm px-1.5 py-0.5 -mx-1.5 -my-0.5 ${
           displayEmpty ? "text-gray-300 italic" : ""
         }`}
         style={spanStyle}

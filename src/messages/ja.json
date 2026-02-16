@@ -229,7 +229,8 @@
     "edit": "編集",
     "view": "表示",
     "switchToEdit": "編集モードに切替",
-    "switchToView": "表示モードに切替"
+    "switchToView": "表示モードに切替",
+    "viewModeHint": "編集モードに切り替えてください"
   },
   "languages": {
     "en": "英語",

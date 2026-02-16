@@ -229,7 +229,8 @@
     "edit": "편집",
     "view": "보기",
     "switchToEdit": "편집 모드로 전환",
-    "switchToView": "보기 모드로 전환"
+    "switchToView": "보기 모드로 전환",
+    "viewModeHint": "편집 모드로 전환하세요"
   },
   "languages": {
     "en": "영어",

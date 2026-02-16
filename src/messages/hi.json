@@ -229,7 +229,8 @@
     "edit": "संपादन",
     "view": "देखें",
     "switchToEdit": "संपादन मोड पर जाएँ",
-    "switchToView": "व्यू मोड पर जाएँ"
+    "switchToView": "व्यू मोड पर जाएँ",
+    "viewModeHint": "संपादन मोड पर जाएँ"
   },
   "languages": {
     "en": "अंग्रेज़ी",

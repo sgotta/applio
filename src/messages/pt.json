@@ -229,7 +229,8 @@
     "edit": "Editar",
     "view": "Ver",
     "switchToEdit": "Mudar para modo de edição",
-    "switchToView": "Mudar para modo de visualização"
+    "switchToView": "Mudar para modo de visualização",
+    "viewModeHint": "Mude para modo edição"
   },
   "languages": {
     "en": "Inglês",

@@ -12,6 +12,7 @@ import { EditableText } from "./EditableText";
 import { PersonalInfo } from "./PersonalInfo";
 import { ProfilePhotoUpload } from "./ProfilePhotoUpload";
 import { MobileEditFAB } from "./MobileEditFAB";
+import { ViewModeHint } from "./ViewModeHint";
 import { Experience } from "./Experience";
 import { Education } from "./Education";
 import { Courses } from "./Courses";
@@ -89,6 +90,7 @@ export function CVPreview() {
       className="cv-preview-content mx-auto w-full lg:w-[210mm] max-w-[210mm] bg-white md:shadow-xl dark:md:shadow-2xl dark:md:shadow-black/40 print:shadow-none"
       style={fontDef ? { fontFamily: fontDef.cssStack } : undefined}
     >
+      <ViewModeHint />
       {/* Font-size scale wrapper — multiplies the responsive base via em units */}
       <div style={fontSizeLevel !== 2 ? { fontSize: `${FONT_SIZE_LEVELS[fontSizeLevel]}em` } : undefined}>
       {/* CV Content — A4-like aspect ratio */}

@@ -229,7 +229,8 @@
     "edit": "Düzenle",
     "view": "Görüntüle",
     "switchToEdit": "Düzenleme moduna geç",
-    "switchToView": "Görüntüleme moduna geç"
+    "switchToView": "Görüntüleme moduna geç",
+    "viewModeHint": "Düzenleme moduna geçin"
   },
   "languages": {
     "en": "İngilizce",

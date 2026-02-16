@@ -229,7 +229,8 @@
     "edit": "Edit",
     "view": "View",
     "switchToEdit": "Switch to edit mode",
-    "switchToView": "Switch to view mode"
+    "switchToView": "Switch to view mode",
+    "viewModeHint": "Switch to edit mode"
   },
   "languages": {
     "en": "English",
