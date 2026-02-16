@@ -86,7 +86,7 @@ export function CVPreview() {
   return (
     <>
     <div
-      className="cv-preview-content mx-auto w-full lg:w-[210mm] max-w-[210mm] bg-white dark:bg-background md:shadow-xl print:shadow-none"
+      className="cv-preview-content mx-auto w-full lg:w-[210mm] max-w-[210mm] bg-white md:shadow-xl dark:md:shadow-2xl dark:md:shadow-black/40 print:shadow-none"
       style={fontDef ? { fontFamily: fontDef.cssStack } : undefined}
     >
       {/* Font-size scale wrapper — multiplies the responsive base via em units */}

@@ -189,7 +189,7 @@ export function SwipeToDelete({
 
       {/* Sliding content */}
       <div
-        className="relative bg-white dark:bg-background will-change-transform"
+        className="relative bg-white will-change-transform"
         style={{
           transform: `translateX(-${offset}px)`,
           transition: transition || "none",

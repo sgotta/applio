@@ -24,15 +24,12 @@ interface EditableTextProps {
 
 /** Tailwind classes WITHOUT font-size (font-size is applied via inline style) */
 const styleMap: Record<EditableStyle, string> = {
-  heading:
-    "font-semibold tracking-tight text-gray-900 dark:text-gray-100",
-  subheading:
-    "font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400",
-  itemTitle:
-    "font-semibold text-gray-900 dark:text-gray-100",
-  body: "leading-relaxed text-gray-600 dark:text-gray-300",
-  small: "text-gray-600 dark:text-gray-300",
-  tiny: "text-gray-400 dark:text-gray-500",
+  heading: "font-semibold tracking-tight text-gray-900",
+  subheading: "font-medium uppercase tracking-wide text-gray-500",
+  itemTitle: "font-semibold text-gray-900",
+  body: "leading-relaxed text-gray-600",
+  small: "text-gray-600",
+  tiny: "text-gray-400",
 };
 
 /** Font sizes in em — scale automatically via container's responsive font-size.
@@ -164,7 +161,7 @@ export function EditableText({
     return (
       <span
         className={`${baseStyle} ${className} inline-block rounded-sm px-1.5 py-0.5 -mx-1.5 -my-0.5 ${
-          displayEmpty ? "text-gray-300 dark:text-gray-600 italic" : ""
+          displayEmpty ? "text-gray-300 italic" : ""
         }`}
         style={spanStyle}
       >
@@ -183,7 +180,7 @@ export function EditableText({
       ? `${baseStyle} ${className} w-full bg-white/15 border border-white/20 rounded-sm px-1.5 py-0.5 outline-none focus:border-white/30 focus:ring-1 focus:ring-white/10 transition-all duration-150 placeholder:text-white/40`
       : onSidebar
         ? `${baseStyle} ${className} w-full bg-black/[0.08] border border-black/10 rounded-sm px-1.5 py-0.5 outline-none focus:border-black/15 focus:ring-1 focus:ring-black/[0.05] transition-all duration-150 placeholder:opacity-40`
-        : `${baseStyle} ${className} w-full bg-white dark:bg-accent border border-gray-300 dark:border-border rounded-sm px-1.5 py-0.5 outline-none focus:border-gray-400 dark:focus:border-ring focus:ring-1 focus:ring-gray-200 dark:focus:ring-ring/30 transition-all duration-150`;
+        : `${baseStyle} ${className} w-full bg-white border border-gray-300 rounded-sm px-1.5 py-0.5 outline-none focus:border-gray-400 focus:ring-1 focus:ring-gray-200 transition-all duration-150`;
 
     const inputStyle: React.CSSProperties = {
       fontSize,
@@ -245,8 +242,8 @@ export function EditableText({
           ? (displayStyle as Record<string, string>).color === "#ffffff"
             ? "hover:bg-white/15 focus:bg-white/15"
             : "hover:bg-black/[0.07] focus:bg-black/[0.07]"
-          : "hover:bg-gray-100 dark:hover:bg-accent focus:bg-gray-100 dark:focus:bg-accent"
-      } ${displayEmpty ? "text-gray-300 dark:text-gray-600 italic" : ""}`}
+          : "hover:bg-gray-100 focus:bg-gray-100"
+      } ${displayEmpty ? "text-gray-300 italic" : ""}`}
       style={spanStyle}
     >
       {displayEmpty ? placeholder : formatDisplay ? formatDisplay(value) : value}

@@ -43,31 +43,31 @@ function CourseCard({
   };
 
   return (
-    <div className="group/course relative rounded-sm transition-colors duration-150 -mx-1.5 px-1.5 py-1 hover:bg-gray-50/50 dark:hover:bg-accent/50">
+    <div className="group/course relative rounded-sm transition-colors duration-150 -mx-1.5 px-1.5 py-1 hover:bg-gray-50/50">
       {/* Action buttons — always visible on mobile, hover-reveal on desktop */}
       {!viewMode && (
         <div className="absolute -right-1 top-1 flex items-center gap-0.5 can-hover:opacity-0 can-hover:group-hover/course:opacity-100 transition-opacity duration-150">
           {!isFirst && (
             <button
               onClick={() => moveCourse(course.id, "up")}
-              className="p-1 rounded hover:bg-gray-200 dark:hover:bg-muted transition-colors"
+              className="p-1 rounded hover:bg-gray-200 transition-colors"
               aria-label={t("moveUp")}
             >
-              <ChevronUp className="h-3 w-3 text-gray-400 dark:text-gray-500" />
+              <ChevronUp className="h-3 w-3 text-gray-400" />
             </button>
           )}
           {!isLast && (
             <button
               onClick={() => moveCourse(course.id, "down")}
-              className="p-1 rounded hover:bg-gray-200 dark:hover:bg-muted transition-colors"
+              className="p-1 rounded hover:bg-gray-200 transition-colors"
               aria-label={t("moveDown")}
             >
-              <ChevronDown className="h-3 w-3 text-gray-400 dark:text-gray-500" />
+              <ChevronDown className="h-3 w-3 text-gray-400" />
             </button>
           )}
           <button
             onClick={handleDelete}
-            className="p-1 rounded hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+            className="p-1 rounded hover:bg-red-50 transition-colors"
             aria-label={t("deleteCourse")}
           >
             <Trash2 className="h-3 w-3 text-gray-400 hover:text-red-500" />
@@ -95,7 +95,7 @@ function CourseCard({
         value={course.institution}
         onChange={(v) => updateCourse(course.id, { institution: v })}
         as="small"
-        className="!font-medium !text-gray-500 dark:text-gray-400!"
+        className="!font-medium !text-gray-500"
         placeholder={t("institutionPlaceholder")}
       />
     </div>
@@ -135,7 +135,7 @@ export const Courses = memo(function Courses() {
           variant="ghost"
           size="sm"
           onClick={addCourse}
-          className="mt-2 h-7 px-2 text-[0.917em] text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+          className="mt-2 h-7 px-2 text-[0.917em] text-gray-400 hover:text-gray-600"
         >
           <Plus className="mr-1 h-3 w-3" />
           {t("addCourse")}

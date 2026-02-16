@@ -23,8 +23,8 @@ import { Plus, Trash2, ChevronUp, ChevronDown, X, Heading, Heading2, List, Messa
 const BULLET_TYPE_CONFIG: Record<BulletItem["type"], { icon: typeof List; as: "itemTitle" | "body" | "small"; className?: string }> = {
   bullet:   { icon: List,              as: "body" },
   title:    { icon: Heading,           as: "itemTitle" },
-  subtitle: { icon: Heading2,          as: "body",  className: "!font-medium !text-gray-800 dark:!text-gray-200" },
-  comment:  { icon: MessageSquareText, as: "small", className: "!italic !text-gray-400 dark:!text-gray-500" },
+  subtitle: { icon: Heading2,          as: "body",  className: "!font-medium !text-gray-800" },
+  comment:  { icon: MessageSquareText, as: "small", className: "!italic !text-gray-400" },
 };
 
 function EditableBullet({
@@ -65,8 +65,8 @@ function EditableBullet({
       {!viewMode && (
         <Popover open={menuOpen} onOpenChange={setMenuOpen}>
           <PopoverTrigger asChild>
-            <button className="mt-0.5 p-0.5 rounded transition-colors hover:bg-gray-100 dark:hover:bg-accent shrink-0">
-              <GripVertical className="h-3 w-3 text-gray-300 dark:text-gray-600" />
+            <button className="mt-0.5 p-0.5 rounded transition-colors hover:bg-gray-100 shrink-0">
+              <GripVertical className="h-3 w-3 text-gray-300" />
             </button>
           </PopoverTrigger>
           <PopoverContent className="w-40 p-1" align="start" side="left">
@@ -106,25 +106,25 @@ function EditableBullet({
           {!isFirst && (
             <button
               onClick={onMoveUp}
-              className="mt-0.5 p-0.5 rounded hover:bg-gray-100 dark:hover:bg-accent"
+              className="mt-0.5 p-0.5 rounded hover:bg-gray-100"
             >
-              <ChevronUp className="h-3 w-3 text-gray-400 dark:text-gray-500" />
+              <ChevronUp className="h-3 w-3 text-gray-400" />
             </button>
           )}
           {!isLast && (
             <button
               onClick={onMoveDown}
-              className="mt-0.5 p-0.5 rounded hover:bg-gray-100 dark:hover:bg-accent"
+              className="mt-0.5 p-0.5 rounded hover:bg-gray-100"
             >
-              <ChevronDown className="h-3 w-3 text-gray-400 dark:text-gray-500" />
+              <ChevronDown className="h-3 w-3 text-gray-400" />
             </button>
           )}
           <button
             onClick={onRemove}
-            className="mt-0.5 p-0.5 rounded hover:bg-gray-100 dark:hover:bg-accent"
+            className="mt-0.5 p-0.5 rounded hover:bg-gray-100"
             aria-label={deleteAriaLabel}
           >
-            <X className="h-3 w-3 text-gray-400 dark:text-gray-500" />
+            <X className="h-3 w-3 text-gray-400" />
           </button>
         </div>
       )}
@@ -190,31 +190,31 @@ function ExperienceCard({
   };
 
   return (
-    <div className="group/exp relative rounded-sm transition-colors duration-150 -mx-1.5 px-1.5 py-1 hover:bg-gray-50/50 dark:hover:bg-accent/50">
+    <div className="group/exp relative rounded-sm transition-colors duration-150 -mx-1.5 px-1.5 py-1 hover:bg-gray-50/50">
       {/* Action buttons — always visible on mobile, hover-reveal on desktop */}
       {!viewMode && (
         <div className="absolute -right-1 top-1 flex items-center gap-0.5 can-hover:opacity-0 can-hover:group-hover/exp:opacity-100 transition-opacity duration-150">
           {!isFirst && (
             <button
               onClick={() => moveExperience(exp.id, "up")}
-              className="p-1 rounded hover:bg-gray-200 dark:hover:bg-muted transition-colors"
+              className="p-1 rounded hover:bg-gray-200 transition-colors"
               aria-label={t("moveUp")}
             >
-              <ChevronUp className="h-3 w-3 text-gray-400 dark:text-gray-500" />
+              <ChevronUp className="h-3 w-3 text-gray-400" />
             </button>
           )}
           {!isLast && (
             <button
               onClick={() => moveExperience(exp.id, "down")}
-              className="p-1 rounded hover:bg-gray-200 dark:hover:bg-muted transition-colors"
+              className="p-1 rounded hover:bg-gray-200 transition-colors"
               aria-label={t("moveDown")}
             >
-              <ChevronDown className="h-3 w-3 text-gray-400 dark:text-gray-500" />
+              <ChevronDown className="h-3 w-3 text-gray-400" />
             </button>
           )}
           <button
             onClick={handleDelete}
-            className="p-1 rounded hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+            className="p-1 rounded hover:bg-red-50 transition-colors"
             aria-label={t("deleteExperience")}
           >
             <Trash2 className="h-3 w-3 text-gray-400 hover:text-red-500" />
@@ -237,7 +237,7 @@ function ExperienceCard({
             as="tiny"
             placeholder={t("startDatePlaceholder")}
           />
-          <span className="text-[0.833em] text-gray-400 dark:text-gray-500">—</span>
+          <span className="text-[0.833em] text-gray-400">—</span>
           <EditableText
             value={exp.endDate}
             onChange={(v) => updateExperience(exp.id, { endDate: v })}
@@ -297,7 +297,7 @@ function ExperienceCard({
       {!viewMode && (
         <button
           onClick={addBullet}
-          className="mt-1 flex items-center gap-1 text-[0.833em] text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 transition-colors duration-150 pl-3"
+          className="mt-1 flex items-center gap-1 text-[0.833em] text-gray-300 hover:text-gray-500 transition-colors duration-150 pl-3"
         >
           <Plus className="h-2.5 w-2.5" />
           {t("addBullet")}
@@ -340,7 +340,7 @@ export const Experience = memo(function Experience() {
           variant="ghost"
           size="sm"
           onClick={addExperience}
-          className="mt-2 h-7 px-2 text-[0.917em] text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+          className="mt-2 h-7 px-2 text-[0.917em] text-gray-400 hover:text-gray-600"
         >
           <Plus className="mr-1 h-3 w-3" />
           {t("addExperience")}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
 import { CVProvider, useCV } from "@/lib/cv-context";
@@ -65,7 +65,7 @@ function AppContent() {
       <CVEditor />
 
       <footer className="text-center py-6">
-        <p className="text-xs text-gray-400 dark:text-gray-500">&copy; {new Date().getFullYear()} Applio. {t("copyright")}</p>
+        <p className="text-xs text-gray-400 dark:text-gray-400">&copy; {new Date().getFullYear()} Applio. {t("copyright")}</p>
       </footer>
 
       {/* Full-screen loading overlay while generating PDF */}
@@ -88,6 +88,16 @@ function AppContent() {
 }
 
 export default function Home() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mql = window.matchMedia("(max-width: 768px)");
+    setIsMobile(mql.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mql.addEventListener("change", handler);
+    return () => mql.removeEventListener("change", handler);
+  }, []);
+
   return (
     <ThemeProvider>
       <ColorSchemeProvider>
@@ -99,7 +109,7 @@ export default function Home() {
             <TooltipProvider delayDuration={300}>
               <AppContent />
               <Toaster
-                position="bottom-center"
+                position={isMobile ? "top-center" : "bottom-center"}
                 duration={5000}
                 icons={{ success: null }}
                 toastOptions={{

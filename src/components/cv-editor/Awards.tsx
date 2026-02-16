@@ -43,31 +43,31 @@ function AwardCard({
   };
 
   return (
-    <div className="group/award relative rounded-sm transition-colors duration-150 -mx-1.5 px-1.5 py-1 hover:bg-gray-50/50 dark:hover:bg-accent/50">
+    <div className="group/award relative rounded-sm transition-colors duration-150 -mx-1.5 px-1.5 py-1 hover:bg-gray-50/50">
       {/* Action buttons — always visible on mobile, hover-reveal on desktop */}
       {!viewMode && (
         <div className="absolute -right-1 top-1 flex items-center gap-0.5 can-hover:opacity-0 can-hover:group-hover/award:opacity-100 transition-opacity duration-150">
           {!isFirst && (
             <button
               onClick={() => moveAward(award.id, "up")}
-              className="p-1 rounded hover:bg-gray-200 dark:hover:bg-muted transition-colors"
+              className="p-1 rounded hover:bg-gray-200 transition-colors"
               aria-label={t("moveUp")}
             >
-              <ChevronUp className="h-3 w-3 text-gray-400 dark:text-gray-500" />
+              <ChevronUp className="h-3 w-3 text-gray-400" />
             </button>
           )}
           {!isLast && (
             <button
               onClick={() => moveAward(award.id, "down")}
-              className="p-1 rounded hover:bg-gray-200 dark:hover:bg-muted transition-colors"
+              className="p-1 rounded hover:bg-gray-200 transition-colors"
               aria-label={t("moveDown")}
             >
-              <ChevronDown className="h-3 w-3 text-gray-400 dark:text-gray-500" />
+              <ChevronDown className="h-3 w-3 text-gray-400" />
             </button>
           )}
           <button
             onClick={handleDelete}
-            className="p-1 rounded hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+            className="p-1 rounded hover:bg-red-50 transition-colors"
             aria-label={t("deleteAward")}
           >
             <Trash2 className="h-3 w-3 text-gray-400 hover:text-red-500" />
@@ -95,7 +95,7 @@ function AwardCard({
         value={award.issuer}
         onChange={(v) => updateAward(award.id, { issuer: v })}
         as="small"
-        className="!font-medium !text-gray-500 dark:text-gray-400!"
+        className="!font-medium !text-gray-500"
         placeholder={t("issuerPlaceholder")}
       />
     </div>
@@ -135,7 +135,7 @@ export const Awards = memo(function Awards() {
           variant="ghost"
           size="sm"
           onClick={addAward}
-          className="mt-2 h-7 px-2 text-[0.917em] text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+          className="mt-2 h-7 px-2 text-[0.917em] text-gray-400 hover:text-gray-600"
         >
           <Plus className="mr-1 h-3 w-3" />
           {t("addAward")}

@@ -77,7 +77,7 @@ function SectionToggle({
 }) {
   return (
     <label className="flex items-center justify-between gap-3 py-1 cursor-pointer">
-      <span className="text-sm text-gray-700 dark:text-gray-300">{label}</span>
+      <span className="text-sm text-gray-700 dark:text-gray-200">{label}</span>
       <Switch checked={checked} onCheckedChange={onToggle} />
     </label>
   );
@@ -263,10 +263,10 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   }, [data, colorSchemeName, isSharing, canShare, patternSettings, fontFamilyId, fontSizeLevel, t]);
 
   const menuItemClass =
-    "flex w-full items-center justify-between rounded-sm px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-accent transition-colors";
+    "flex w-full items-center justify-between rounded-sm px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-accent transition-colors";
 
   const backButtonClass =
-    "flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors";
+    "flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200 transition-colors";
 
   return (
     <>
@@ -279,7 +279,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
             <span className="font-display text-base font-bold tracking-tight text-gray-900 dark:text-gray-100">
               Applio
             </span>
-            <span className="hidden text-[11px] font-light tracking-wide text-gray-400 dark:text-gray-500 sm:inline">
+            <span className="hidden text-[11px] font-light tracking-wide text-gray-400 dark:text-gray-400 sm:inline">
               {t("tagline")}
             </span>
           </div>
@@ -307,7 +307,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                      className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
                     >
                       <Globe className="h-4 w-4" />
                     </Button>
@@ -324,11 +324,11 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <button
                       key={code}
                       onClick={() => setLocale(code)}
-                      className="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-accent transition-colors"
+                      className="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-accent transition-colors"
                     >
                       <span>
                         {native}
-                        <span className="ml-1.5 text-xs text-gray-400 dark:text-gray-500">({translated})</span>
+                        <span className="ml-1.5 text-xs text-gray-400 dark:text-gray-400">({translated})</span>
                       </span>
                       {locale === code && (
                         <Check className="h-4 w-4 text-gray-900 dark:text-gray-100" />
@@ -348,7 +348,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                      className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
                     >
                       <ThemeIcon className="h-4 w-4" />
                     </Button>
@@ -362,7 +362,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <button
                       key={value}
                       onClick={() => setTheme(value)}
-                      className="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-accent transition-colors"
+                      className="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-accent transition-colors"
                     >
                       <span className="flex items-center gap-2">
                         <Icon className="h-4 w-4" />
@@ -385,7 +385,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                      className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
                     >
                       <Palette className="h-4 w-4" />
                     </Button>
@@ -394,7 +394,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                 <TooltipContent>{t("colorScheme")}</TooltipContent>
               </Tooltip>
               <PopoverContent className="w-auto p-3" align="end">
-                <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-2">
+                <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-2">
                   {t("colorScheme")}
                 </p>
                 <div className="flex gap-2">
@@ -432,7 +432,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                      className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
                     >
                       <Layers className="h-4 w-4" />
                     </Button>
@@ -443,7 +443,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
               <PopoverContent className="w-64 p-3 space-y-4" align="end">
                 {/* Pattern selection */}
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-2">
+                  <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-2">
                     {t("sidebarPattern")}
                   </p>
                   <div className="flex gap-3">
@@ -473,7 +473,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                               }`} />
                             )}
                           </button>
-                          <span className="text-[10px] text-gray-500 dark:text-gray-400">
+                          <span className="text-[10px] text-gray-500 dark:text-gray-300">
                             {t(`pattern${name.charAt(0).toUpperCase() + name.slice(1)}` as Parameters<typeof t>[0])}
                           </span>
                         </div>
@@ -484,22 +484,22 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
                 {/* Intensity sliders */}
                 <div className={patternName === "none" ? "opacity-40 pointer-events-none" : ""}>
-                  <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-2">
+                  <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-2">
                     {t("patternIntensity")}
                   </p>
                   <div className="space-y-2">
                     <div className={scope === "main" ? "opacity-40 pointer-events-none" : ""}>
-                      <p className="text-[10px] text-gray-400 dark:text-gray-500 mb-1">{t("patternScopeSidebar")}</p>
+                      <p className="text-[10px] text-gray-400 dark:text-gray-400 mb-1">{t("patternScopeSidebar")}</p>
                       <div className="flex items-center gap-3">
                         <Slider min={1} max={5} step={1} value={[sidebarIntensity]} onValueChange={([v]) => setSidebarIntensity(v as PatternIntensity)} className="flex-1" />
-                        <span className="text-xs font-medium text-gray-500 dark:text-gray-400 w-5 text-center">{sidebarIntensity}</span>
+                        <span className="text-xs font-medium text-gray-500 dark:text-gray-300 w-5 text-center">{sidebarIntensity}</span>
                       </div>
                     </div>
                     <div className={scope === "sidebar" ? "opacity-40 pointer-events-none" : ""}>
-                      <p className="text-[10px] text-gray-400 dark:text-gray-500 mb-1">{t("patternScopeMain")}</p>
+                      <p className="text-[10px] text-gray-400 dark:text-gray-400 mb-1">{t("patternScopeMain")}</p>
                       <div className="flex items-center gap-3">
                         <Slider min={1} max={5} step={1} value={[mainIntensity]} onValueChange={([v]) => setMainIntensity(v as PatternIntensity)} className="flex-1" />
-                        <span className="text-xs font-medium text-gray-500 dark:text-gray-400 w-5 text-center">{mainIntensity}</span>
+                        <span className="text-xs font-medium text-gray-500 dark:text-gray-300 w-5 text-center">{mainIntensity}</span>
                       </div>
                     </div>
                   </div>
@@ -507,7 +507,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
                 {/* Scope selector */}
                 <div className={patternName === "none" ? "opacity-40 pointer-events-none" : ""}>
-                  <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-2">
+                  <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-2">
                     {t("patternScope")}
                   </p>
                   <div className="flex gap-1.5">
@@ -521,7 +521,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                               className={`h-7 w-7 rounded-md flex items-center justify-center transition-colors ${
                                 scope === s
                                   ? "bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900"
-                                  : "bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-accent dark:text-gray-400 dark:hover:bg-accent/80"
+                                  : "bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-accent dark:text-gray-300 dark:hover:bg-accent/80"
                               }`}
                             >
                               <ScopeIcon className="h-3.5 w-3.5" />
@@ -546,7 +546,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                      className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
                     >
                       <Type className="h-4 w-4" />
                     </Button>
@@ -558,7 +558,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                 {/* Font Family list (hidden for CJK locales) */}
                 {!isCJKLocale && (
                   <div>
-                    <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-2">
+                    <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-2">
                       {t("fontFamily")}
                     </p>
                     <div className="space-y-0.5 max-h-64 overflow-y-auto">
@@ -566,7 +566,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                         <button
                           key={font.id}
                           onClick={() => setFontFamily(font.id)}
-                          className="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-accent transition-colors"
+                          className="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-accent transition-colors"
                           style={{ fontFamily: font.cssStack }}
                         >
                           <span>{font.displayName}</span>
@@ -581,7 +581,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
                 {/* Font Size */}
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-2">
+                  <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-2">
                     {t("fontSize")}
                   </p>
                   <div className="flex gap-1.5">
@@ -594,7 +594,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                           className={`h-7 w-7 rounded-md flex items-center justify-center text-xs font-medium transition-colors ${
                             fontSizeLevel === level
                               ? "bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900"
-                              : "bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-accent dark:text-gray-400 dark:hover:bg-accent/80"
+                              : "bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-accent dark:text-gray-300 dark:hover:bg-accent/80"
                           }`}
                         >
                           {labels[level]}
@@ -614,7 +614,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                      className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
                     >
                       <SlidersHorizontal className="h-4 w-4" />
                     </Button>
@@ -625,7 +625,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
               <PopoverContent className="w-64" align="end">
                 <div className="space-y-3">
                   <div className="space-y-1">
-                    <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-1">{t("sectionsTitle")}</p>
+                    <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-1">{t("sectionsTitle")}</p>
                     <SectionToggle label={t("sectionEmail")} checked={data.visibility.email} onToggle={() => toggleSection("email")} />
                     <SectionToggle label={t("sectionPhone")} checked={data.visibility.phone} onToggle={() => toggleSection("phone")} />
                     <SectionToggle label={t("sectionLocation")} checked={data.visibility.location} onToggle={() => toggleSection("location")} />
@@ -634,7 +634,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                   </div>
 
                   <div className="space-y-1">
-                    <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-1">{t("optionalSections")}</p>
+                    <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-1">{t("optionalSections")}</p>
                     <SectionToggle label={t("sectionCourses")} checked={data.visibility.courses} onToggle={() => toggleSection("courses")} />
                     <SectionToggle label={t("sectionCertifications")} checked={data.visibility.certifications} onToggle={() => toggleSection("certifications")} />
                     <SectionToggle label={t("sectionAwards")} checked={data.visibility.awards} onToggle={() => toggleSection("awards")} />
@@ -653,7 +653,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                   variant="ghost"
                   size="icon"
                   onClick={toggleEditMode}
-                  className="hidden md:inline-flex h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                  className="hidden md:inline-flex h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
                 >
                   {isViewMode ? <Pencil className="size-4" /> : <Eye className="size-4" />}
                 </Button>
@@ -667,7 +667,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                  className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
                 >
                   <MoreHorizontal className="h-4 w-4" />
                 </Button>
@@ -676,29 +676,29 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                 <div className="space-y-0.5">
                   <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="flex w-full items-center gap-2.5 rounded-sm px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-accent transition-colors"
+                    className="flex w-full items-center gap-2.5 rounded-sm px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-accent transition-colors"
                   >
                     <FileUp className="h-4 w-4" />
                     <span className="flex items-baseline gap-2.5">
                       {t("import")}
-                      <span className="text-[10px] text-gray-400 dark:text-gray-500">{t("free")}</span>
+                      <span className="text-[10px] text-gray-400 dark:text-gray-400">{t("free")}</span>
                     </span>
                   </button>
                   <button
                     onClick={exportToJSON}
-                    className="flex w-full items-center gap-2.5 rounded-sm px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-accent transition-colors"
+                    className="flex w-full items-center gap-2.5 rounded-sm px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-accent transition-colors"
                   >
                     <FileDown className="h-4 w-4" />
                     <span className="flex items-baseline gap-2.5">
                       {t("export")}
-                      <span className="text-[10px] text-gray-400 dark:text-gray-500">{t("free")}</span>
+                      <span className="text-[10px] text-gray-400 dark:text-gray-400">{t("free")}</span>
                     </span>
                   </button>
                   <div className="my-1 border-t border-gray-100 dark:border-border" />
                   <button
                     onClick={handleShare}
                     disabled={isSharing || !canShare}
-                    className={`flex w-full items-center gap-2.5 rounded-sm px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-accent transition-colors ${!canShare ? "opacity-50" : ""}`}
+                    className={`flex w-full items-center gap-2.5 rounded-sm px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-accent transition-colors ${!canShare ? "opacity-50" : ""}`}
                   >
                     <Link className="h-4 w-4" />
                     {t("share")}
@@ -714,7 +714,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="md:hidden text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                className="md:hidden text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
               >
                 <span className="relative size-5">
                   <Menu
@@ -743,7 +743,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       <Globe className="h-4 w-4" />
                       {t("language")}
                     </span>
-                    <span className="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500">
+                    <span className="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-400">
                       {LOCALE_NAMES[locale]}
                       <ChevronRight className="h-3.5 w-3.5" />
                     </span>
@@ -755,7 +755,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       <ThemeIcon className="h-4 w-4" />
                       {t("theme")}
                     </span>
-                    <span className="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500">
+                    <span className="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-400">
                       {THEME_OPTIONS.find((o) => o.value === theme)?.label}
                       <ChevronRight className="h-3.5 w-3.5" />
                     </span>
@@ -767,7 +767,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       <Palette className="h-4 w-4" />
                       {t("colorScheme")}
                     </span>
-                    <span className="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500">
+                    <span className="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-400">
                       <span
                         className="inline-block h-3 w-3 rounded-full"
                         style={{ backgroundColor: COLOR_SCHEMES[colorSchemeName].sidebarBg }}
@@ -782,7 +782,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       <Layers className="h-4 w-4" />
                       {t("sidebarPattern")}
                     </span>
-                    <span className="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500">
+                    <span className="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-400">
                       {t(`pattern${patternName.charAt(0).toUpperCase() + patternName.slice(1)}` as Parameters<typeof t>[0])}
                       <ChevronRight className="h-3.5 w-3.5" />
                     </span>
@@ -794,7 +794,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       <Type className="h-4 w-4" />
                       {t("fontSettings")}
                     </span>
-                    <span className="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500">
+                    <span className="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-400">
                       {getFontDefinition(fontFamilyId).displayName}
                       <ChevronRight className="h-3.5 w-3.5" />
                     </span>
@@ -806,7 +806,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       <SlidersHorizontal className="h-4 w-4" />
                       {t("sections")}
                     </span>
-                    <ChevronRight className="h-3.5 w-3.5 text-gray-400 dark:text-gray-500" />
+                    <ChevronRight className="h-3.5 w-3.5 text-gray-400 dark:text-gray-400" />
                   </button>
 
                   {/* Divider */}
@@ -818,7 +818,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       <FileUp className="h-4 w-4" />
                       <span className="flex items-baseline gap-2.5">
                         {t("import")}
-                        <span className="text-[10px] text-gray-400 dark:text-gray-500">{t("free")}</span>
+                        <span className="text-[10px] text-gray-400 dark:text-gray-400">{t("free")}</span>
                       </span>
                     </span>
                   </button>
@@ -829,7 +829,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       <FileDown className="h-4 w-4" />
                       <span className="flex items-baseline gap-2.5">
                         {t("export")}
-                        <span className="text-[10px] text-gray-400 dark:text-gray-500">{t("free")}</span>
+                        <span className="text-[10px] text-gray-400 dark:text-gray-400">{t("free")}</span>
                       </span>
                     </span>
                   </button>
@@ -883,7 +883,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                         <span>
                           {native}
                           {translated !== native && (
-                            <span className="ml-1.5 text-xs text-gray-400 dark:text-gray-500">({translated})</span>
+                            <span className="ml-1.5 text-xs text-gray-400 dark:text-gray-400">({translated})</span>
                           )}
                         </span>
                         {locale === code && (
@@ -952,7 +952,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                               <Check className={`absolute inset-0 m-auto h-4 w-4 drop-shadow-sm ${isLight ? "text-gray-800" : "text-white"}`} />
                             )}
                           </span>
-                          <span className="text-[10px] text-gray-500 dark:text-gray-400">
+                          <span className="text-[10px] text-gray-500 dark:text-gray-300">
                             {t(`colorScheme${name.charAt(0).toUpperCase() + name.slice(1)}` as Parameters<typeof t>[0])}
                           </span>
                         </button>
@@ -1000,7 +1000,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                                 <Check className={`absolute inset-0 m-auto h-4 w-4 drop-shadow-sm ${isLight ? "text-gray-800" : "text-white"}`} />
                               )}
                             </span>
-                            <span className="text-[10px] text-gray-500 dark:text-gray-400">
+                            <span className="text-[10px] text-gray-500 dark:text-gray-300">
                               {t(`pattern${name.charAt(0).toUpperCase() + name.slice(1)}` as Parameters<typeof t>[0])}
                             </span>
                           </button>
@@ -1010,22 +1010,22 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
                     {/* Intensity sliders */}
                     <div className={patternName === "none" ? "opacity-40 pointer-events-none" : ""}>
-                      <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-2">
+                      <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-2">
                         {t("patternIntensity")}
                       </p>
                       <div className="space-y-2">
                         <div className={scope === "main" ? "opacity-40 pointer-events-none" : ""}>
-                          <p className="text-[10px] text-gray-400 dark:text-gray-500 mb-1">{t("patternScopeSidebar")}</p>
+                          <p className="text-[10px] text-gray-400 dark:text-gray-400 mb-1">{t("patternScopeSidebar")}</p>
                           <div className="flex items-center gap-3">
                             <Slider min={1} max={5} step={1} value={[sidebarIntensity]} onValueChange={([v]) => setSidebarIntensity(v as PatternIntensity)} className="flex-1" />
-                            <span className="text-xs font-medium text-gray-500 dark:text-gray-400 w-5 text-center">{sidebarIntensity}</span>
+                            <span className="text-xs font-medium text-gray-500 dark:text-gray-300 w-5 text-center">{sidebarIntensity}</span>
                           </div>
                         </div>
                         <div className={scope === "sidebar" ? "opacity-40 pointer-events-none" : ""}>
-                          <p className="text-[10px] text-gray-400 dark:text-gray-500 mb-1">{t("patternScopeMain")}</p>
+                          <p className="text-[10px] text-gray-400 dark:text-gray-400 mb-1">{t("patternScopeMain")}</p>
                           <div className="flex items-center gap-3">
                             <Slider min={1} max={5} step={1} value={[mainIntensity]} onValueChange={([v]) => setMainIntensity(v as PatternIntensity)} className="flex-1" />
-                            <span className="text-xs font-medium text-gray-500 dark:text-gray-400 w-5 text-center">{mainIntensity}</span>
+                            <span className="text-xs font-medium text-gray-500 dark:text-gray-300 w-5 text-center">{mainIntensity}</span>
                           </div>
                         </div>
                       </div>
@@ -1033,7 +1033,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
                     {/* Scope selector */}
                     <div className={patternName === "none" ? "opacity-40 pointer-events-none" : ""}>
-                      <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-2">
+                      <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-2">
                         {t("patternScope")}
                       </p>
                       <div className="flex gap-1.5">
@@ -1046,7 +1046,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                               className={`h-7 w-7 rounded-md flex items-center justify-center transition-colors ${
                                 scope === s
                                   ? "bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900"
-                                  : "bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-accent dark:text-gray-400 dark:hover:bg-accent/80"
+                                  : "bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-accent dark:text-gray-300 dark:hover:bg-accent/80"
                               }`}
                             >
                               <ScopeIcon className="h-3.5 w-3.5" />
@@ -1085,7 +1085,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
                     {/* Font Size */}
                     <div>
-                      <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-2">
+                      <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-2">
                         {t("fontSize")}
                       </p>
                       <div className="flex gap-1.5">
@@ -1098,7 +1098,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                               className={`h-7 w-7 rounded-md flex items-center justify-center text-xs font-medium transition-colors ${
                                 fontSizeLevel === level
                                   ? "bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900"
-                                  : "bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-accent dark:text-gray-400 dark:hover:bg-accent/80"
+                                  : "bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-accent dark:text-gray-300 dark:hover:bg-accent/80"
                               }`}
                             >
                               {labels[level]}
@@ -1119,7 +1119,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                   </button>
                   <div className="px-2 pt-2 pb-1 space-y-3">
                     <div className="space-y-1">
-                      <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-1">{t("sectionsTitle")}</p>
+                      <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-1">{t("sectionsTitle")}</p>
                       <SectionToggle label={t("sectionEmail")} checked={data.visibility.email} onToggle={() => toggleSection("email")} />
                       <SectionToggle label={t("sectionPhone")} checked={data.visibility.phone} onToggle={() => toggleSection("phone")} />
                       <SectionToggle label={t("sectionLocation")} checked={data.visibility.location} onToggle={() => toggleSection("location")} />
@@ -1127,7 +1127,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       <SectionToggle label={t("sectionWebsite")} checked={data.visibility.website} onToggle={() => toggleSection("website")} />
                     </div>
                     <div className="space-y-1">
-                      <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-1">{t("optionalSections")}</p>
+                      <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-1">{t("optionalSections")}</p>
                       <SectionToggle label={t("sectionCourses")} checked={data.visibility.courses} onToggle={() => toggleSection("courses")} />
                       <SectionToggle label={t("sectionCertifications")} checked={data.visibility.certifications} onToggle={() => toggleSection("certifications")} />
                       <SectionToggle label={t("sectionAwards")} checked={data.visibility.awards} onToggle={() => toggleSection("awards")} />

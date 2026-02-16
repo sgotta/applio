@@ -2,8 +2,6 @@ export type ColorSchemeName =
   | "ivory"
   | "peterRiver"
   | "emerald"
-  | "alizarin"
-  | "sunFlower"
   | "carrot"
   | "wetAsphalt";
 
@@ -28,6 +26,8 @@ export interface ColorScheme {
 
   /* ── Page background (behind the CV sheet) ── */
   pageBg: string;
+  /** Dark mode page background — dark shade with subtle scheme tint */
+  pageBgDark: string;
 }
 
 /** Pre-blend an 8-digit hex (#rrggbbaa) over a 6-digit hex (#rrggbb)
@@ -57,6 +57,7 @@ export const COLOR_SCHEMES: Record<ColorSchemeName, ColorScheme> = {
     bullet: "#6b7280",
     nameAccent: "#b5b0a6",
     pageBg: "#eeedeb",
+    pageBgDark: "#1c1b1a",
   },
   /* Clear Child · Dodger Blue #1e90ff */
   peterRiver: {
@@ -73,6 +74,7 @@ export const COLOR_SCHEMES: Record<ColorSchemeName, ColorScheme> = {
     bullet: "#1e90ff",
     nameAccent: "#1e90ff",
     pageBg: "#e8f2fb",
+    pageBgDark: "#181d22",
   },
   /* Emerald · Nephritis #27ae60 */
   emerald: {
@@ -89,38 +91,7 @@ export const COLOR_SCHEMES: Record<ColorSchemeName, ColorScheme> = {
     bullet: "#27ae60",
     nameAccent: "#2ecc71",
     pageBg: "#e9f7ef",
-  },
-  /* Bruschetta Tomato #ff6348 */
-  alizarin: {
-    name: "alizarin",
-    swatch: "#ff6348",
-    sidebarBg: "#e04530",
-    sidebarText: "#ffffff",
-    sidebarMuted: "#ffffff66",
-    sidebarSeparator: "#ffffff33",
-    sidebarBadgeBg: blend("#ffffff26", "#e04530"),
-    sidebarBadgeText: "#ffffff",
-    heading: "#e04530",
-    separator: "#ff634840",
-    bullet: "#e04530",
-    nameAccent: "#ff6348",
-    pageBg: "#fcecea",
-  },
-  /* Sun Flower #f1c40f — light bg, dark text */
-  sunFlower: {
-    name: "sunFlower",
-    swatch: "#f1c40f",
-    sidebarBg: "#f1c40f",
-    sidebarText: "#2c3e50",
-    sidebarMuted: "#2c3e5066",
-    sidebarSeparator: "#2c3e5033",
-    sidebarBadgeBg: blend("#2c3e501a", "#f1c40f"),
-    sidebarBadgeText: "#2c3e50",
-    heading: "#9a7d0a",
-    separator: "#f1c40f40",
-    bullet: "#d4ac0d",
-    nameAccent: "#f1c40f",
-    pageBg: "#fef9e7",
+    pageBgDark: "#181e1a",
   },
   /* Carrot · Pumpkin #d35400 */
   carrot: {
@@ -137,6 +108,7 @@ export const COLOR_SCHEMES: Record<ColorSchemeName, ColorScheme> = {
     bullet: "#d35400",
     nameAccent: "#e67e22",
     pageBg: "#fbeee6",
+    pageBgDark: "#1e1b18",
   },
   /* Wet Asphalt · Midnight Blue #2c3e50 */
   wetAsphalt: {
@@ -153,6 +125,7 @@ export const COLOR_SCHEMES: Record<ColorSchemeName, ColorScheme> = {
     bullet: "#34495e",
     nameAccent: "#34495e",
     pageBg: "#eaecee",
+    pageBgDark: "#191b1d",
   },
 };
 
@@ -160,8 +133,6 @@ export const COLOR_SCHEME_NAMES: ColorSchemeName[] = [
   "ivory",
   "peterRiver",
   "emerald",
-  "alizarin",
-  "sunFlower",
   "carrot",
   "wetAsphalt",
 ];
