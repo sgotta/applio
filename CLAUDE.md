@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Applio** is a free, no-login CV builder with a minimalist Notion-style design. Built with Next.js 16 App Router, React 19, and Tailwind CSS v4. The app runs entirely client-side with localStorage persistence.
+**Applio** is a CV builder with a minimalist Notion-style inline editing experience. Built with Next.js 16 App Router, React 19, and Tailwind CSS v4. Currently client-side with localStorage persistence, exploring auth and server-side persistence.
 
 ## Version Bumping
 
@@ -255,3 +255,14 @@ When implementing new features, these files almost always need updates:
 3. **src/lib/default-data.ts** - Add default values
 4. **src/components/cv-editor/CVPreview.tsx** - Add to editor UI
 5. **src/components/cv-editor/PrintableCV.tsx** - Add to PDF output
+
+## Notion Documentation
+
+There is onboarding documentation in Notion (root page ID: `30ae66e2-f906-81c1-9a44-f4f364803bbe`). When making **significant changes** to the project, remind the user to update the corresponding Notion page. Significant changes include:
+- Adding/removing CV sections
+- Adding new libraries or replacing existing ones
+- Changes to architecture (new providers, new contexts, auth, database)
+- Changes to the sharing/PDF flow
+- Changes to i18n (new languages, changed setup)
+
+Do NOT auto-update the docs on every commit. Only flag it when the change would make the docs inaccurate.

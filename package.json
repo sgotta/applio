@@ -1,6 +1,6 @@
 {
-  "name": "fast-cv-maker",
-  "version": "1.11.1",
+  "name": "applio",
+  "version": "1.12.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
