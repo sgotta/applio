@@ -29,7 +29,7 @@
     "overflowDescription": "Reducí contenido para que el PDF se genere correctamente.",
     "overflowContinue": "Continuar de todos modos",
     "colorScheme": "Color del CV",
-    "colorSchemeIvory": "Marfil",
+    "colorSchemeDefault": "Default",
     "colorSchemePeterRiver": "Clear Child",
     "colorSchemeEmerald": "Esmeralda",
     "colorSchemeCarrot": "Zanahoria",
@@ -59,7 +59,8 @@
   },
   "cvPreview": {
     "fullNamePlaceholder": "Tu Nombre Completo",
-    "titlePlaceholder": "Tu Título Profesional"
+    "titlePlaceholder": "Tu Título Profesional",
+    "paginationHint": "Ilustrativo — la paginación real se calcula al generar el PDF."
   },
   "personalInfo": {
     "contact": "Contacto",
@@ -108,7 +109,10 @@
     "typeBullet": "Viñeta",
     "typeTitle": "Título",
     "typeSubtitle": "Subtítulo",
-    "typeComment": "Comentario"
+    "typeNumbered": "Numerada",
+    "gripDragHint": "Arrastrá para mover",
+    "gripClickHint": "Clic para cambiar tipo",
+    "gripLongPressHint": "Mantené presionado para mover"
   },
   "education": {
     "title": "Educación",
@@ -228,7 +232,9 @@
     "view": "Ver",
     "switchToEdit": "Cambiar a modo edición",
     "switchToView": "Cambiar a modo vista",
-    "viewModeHint": "Cambiá a modo edición"
+    "viewModeHint": "Cambiá a modo edición",
+    "doubleClickHint": "Hacé doble click para editar",
+    "exitedEditMode": "Volviste a modo vista"
   },
   "languages": {
     "en": "Inglés",

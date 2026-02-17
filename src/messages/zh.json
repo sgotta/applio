@@ -29,7 +29,7 @@
     "overflowDescription": "请减少内容以确保PDF正确生成。",
     "overflowContinue": "仍然继续",
     "colorScheme": "简历配色",
-    "colorSchemeIvory": "象牙白",
+    "colorSchemeDefault": "默认",
     "colorSchemePeterRiver": "清澈蓝",
     "colorSchemeEmerald": "翡翠",
     "colorSchemeCarrot": "胡萝卜",
@@ -59,7 +59,8 @@
   },
   "cvPreview": {
     "fullNamePlaceholder": "您的姓名",
-    "titlePlaceholder": "您的职业头衔"
+    "titlePlaceholder": "您的职业头衔",
+    "paginationHint": "仅供参考——实际分页在生成 PDF 时计算。"
   },
   "personalInfo": {
     "contact": "联系方式",
@@ -108,7 +109,10 @@
     "typeBullet": "要点",
     "typeTitle": "标题",
     "typeSubtitle": "副标题",
-    "typeComment": "备注"
+    "typeNumbered": "编号",
+    "gripDragHint": "拖动排序",
+    "gripClickHint": "点击更改类型",
+    "gripLongPressHint": "长按拖动"
   },
   "education": {
     "title": "教育背景",
@@ -228,7 +232,9 @@
     "view": "查看",
     "switchToEdit": "切换到编辑模式",
     "switchToView": "切换到查看模式",
-    "viewModeHint": "切换到编辑模式"
+    "viewModeHint": "切换到编辑模式",
+    "doubleClickHint": "双击以编辑",
+    "exitedEditMode": "已返回查看模式"
   },
   "languages": {
     "en": "英语",

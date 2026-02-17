@@ -29,7 +29,7 @@
     "overflowDescription": "PDF सही बने, इसके लिए सामग्री कम करें।",
     "overflowContinue": "फिर भी जारी रखें",
     "colorScheme": "CV रंग",
-    "colorSchemeIvory": "आइवरी",
+    "colorSchemeDefault": "डिफ़ॉल्ट",
     "colorSchemePeterRiver": "क्लियर चाइल्ड",
     "colorSchemeEmerald": "एमरल्ड",
     "colorSchemeCarrot": "कैरट",
@@ -59,7 +59,8 @@
   },
   "cvPreview": {
     "fullNamePlaceholder": "आपका पूरा नाम",
-    "titlePlaceholder": "आपका पेशेवर पद"
+    "titlePlaceholder": "आपका पेशेवर पद",
+    "paginationHint": "केवल सांकेतिक — वास्तविक पृष्ठ संख्या PDF बनाते समय निर्धारित होती है।"
   },
   "personalInfo": {
     "contact": "संपर्क",
@@ -108,7 +109,10 @@
     "typeBullet": "बुलेट",
     "typeTitle": "शीर्षक",
     "typeSubtitle": "उपशीर्षक",
-    "typeComment": "टिप्पणी"
+    "typeNumbered": "क्रमांकित",
+    "gripDragHint": "क्रम बदलने के लिए खींचें",
+    "gripClickHint": "प्रकार बदलने के लिए क्लिक करें",
+    "gripLongPressHint": "खींचने के लिए दबाए रखें"
   },
   "education": {
     "title": "शिक्षा",
@@ -228,7 +232,9 @@
     "view": "देखें",
     "switchToEdit": "संपादन मोड पर जाएँ",
     "switchToView": "व्यू मोड पर जाएँ",
-    "viewModeHint": "संपादन मोड पर जाएँ"
+    "viewModeHint": "संपादन मोड पर जाएँ",
+    "doubleClickHint": "संपादित करने के लिए डबल क्लिक करें",
+    "exitedEditMode": "दृश्य मोड में वापस"
   },
   "languages": {
     "en": "अंग्रेज़ी",

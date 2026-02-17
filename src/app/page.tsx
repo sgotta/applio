@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
 import { CVProvider, useCV } from "@/lib/cv-context";
@@ -64,7 +64,7 @@ function AppContent() {
       />
       <CVEditor />
 
-      <footer className="text-center py-6">
+      <footer className="text-center pt-3 pb-6">
         <p className="text-xs text-gray-400 dark:text-gray-400">&copy; {new Date().getFullYear()} Applio v{process.env.NEXT_PUBLIC_APP_VERSION}. {t("copyright")}</p>
       </footer>
 
@@ -88,16 +88,6 @@ function AppContent() {
 }
 
 export default function Home() {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const mql = window.matchMedia("(max-width: 768px)");
-    setIsMobile(mql.matches);
-    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
-    mql.addEventListener("change", handler);
-    return () => mql.removeEventListener("change", handler);
-  }, []);
-
   return (
     <ThemeProvider>
       <ColorSchemeProvider>
@@ -109,12 +99,13 @@ export default function Home() {
             <TooltipProvider delayDuration={300}>
               <AppContent />
               <Toaster
-                position={isMobile ? "top-center" : "bottom-center"}
+                position="top-center"
+                offset="4.5rem"
                 duration={5000}
                 icons={{ success: null }}
                 toastOptions={{
                   classNames: {
-                    toast: "!bg-gray-900 !text-white !border-none !shadow-lg !rounded-xl !py-3 !px-5 !text-sm !max-w-[calc(100vw-2rem)] !w-auto dark:!bg-gray-100 dark:!text-gray-900",
+                    toast: "!bg-gray-900 !text-white !border-none !shadow-lg !rounded-xl !py-3 !px-5 !text-sm !max-w-[calc(100vw-2rem)] dark:!bg-gray-100 dark:!text-gray-900",
                   },
                 }}
               />

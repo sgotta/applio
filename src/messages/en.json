@@ -29,7 +29,7 @@
     "overflowDescription": "Reduce content so the PDF generates correctly.",
     "overflowContinue": "Continue anyway",
     "colorScheme": "CV Color",
-    "colorSchemeIvory": "Ivory",
+    "colorSchemeDefault": "Default",
     "colorSchemePeterRiver": "Clear Child",
     "colorSchemeEmerald": "Emerald",
     "colorSchemeCarrot": "Carrot",
@@ -59,7 +59,8 @@
   },
   "cvPreview": {
     "fullNamePlaceholder": "Your Full Name",
-    "titlePlaceholder": "Your Professional Title"
+    "titlePlaceholder": "Your Professional Title",
+    "paginationHint": "Illustrative only — actual pagination is calculated when generating the PDF."
   },
   "personalInfo": {
     "contact": "Contact",
@@ -108,7 +109,10 @@
     "typeBullet": "Bullet",
     "typeTitle": "Title",
     "typeSubtitle": "Subtitle",
-    "typeComment": "Comment"
+    "typeNumbered": "Numbered",
+    "gripDragHint": "Drag to reorder",
+    "gripClickHint": "Click to change type",
+    "gripLongPressHint": "Hold to drag"
   },
   "education": {
     "title": "Education",
@@ -228,7 +232,9 @@
     "view": "View",
     "switchToEdit": "Switch to edit mode",
     "switchToView": "Switch to view mode",
-    "viewModeHint": "Switch to edit mode"
+    "viewModeHint": "Switch to edit mode",
+    "doubleClickHint": "Double click to edit",
+    "exitedEditMode": "Back to view mode"
   },
   "languages": {
     "en": "English",

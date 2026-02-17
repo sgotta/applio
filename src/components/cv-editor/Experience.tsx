@@ -1,6 +1,6 @@
 "use client";
 
-import React, { memo, useState } from "react";
+import React, { memo, useState, useCallback } from "react";
 import { useCV } from "@/lib/cv-context";
 import { useTranslations } from "next-intl";
 import { useColorScheme } from "@/lib/color-scheme-context";
@@ -18,80 +18,200 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Plus, Trash2, ChevronUp, ChevronDown, X, Heading, Heading2, List, MessageSquareText, GripVertical } from "lucide-react";
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
+import { Plus, Trash2, ChevronUp, ChevronDown, X, Heading, Heading2, List, ListOrdered, GripVertical, Move, MousePointerClick } from "lucide-react";
+import {
+  DndContext,
+  closestCenter,
+  MouseSensor,
+  TouchSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  useSortable,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+  arrayMove,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 const BULLET_TYPE_CONFIG: Record<BulletItem["type"], { icon: typeof List; as: "itemTitle" | "body" | "small"; className?: string }> = {
-  bullet:   { icon: List,              as: "body" },
-  title:    { icon: Heading,           as: "itemTitle" },
-  subtitle: { icon: Heading2,          as: "body",  className: "!font-medium !text-gray-800" },
-  comment:  { icon: MessageSquareText, as: "small", className: "!italic !text-gray-400" },
+  title:    { icon: Heading,     as: "itemTitle" },
+  subtitle: { icon: Heading2,    as: "body",  className: "font-semibold! text-gray-800!" },
+  bullet:   { icon: List,        as: "body" },
+  numbered: { icon: ListOrdered, as: "body" },
 };
 
 function EditableBullet({
   bullet,
+  bulletNumber,
+  sortableId,
   onChange,
   onRemove,
   onSetType,
-  onMoveUp,
-  onMoveDown,
-  isFirst,
-  isLast,
   bulletPlaceholder,
   deleteAriaLabel,
   bulletColor,
+  gripDragHint,
+  gripClickHint,
+  gripLongPressHint,
+  hasSeenHint,
+  onHintSeen,
   typeLabels,
 }: {
   bullet: BulletItem;
+  bulletNumber: number;
+  sortableId: string;
   onChange: (v: string) => void;
   onRemove: () => void;
   onSetType: (type: BulletItem["type"]) => void;
-  onMoveUp: () => void;
-  onMoveDown: () => void;
-  isFirst: boolean;
-  isLast: boolean;
   bulletPlaceholder: string;
   deleteAriaLabel: string;
   bulletColor: string;
+  gripDragHint: string;
+  gripClickHint: string;
+  gripLongPressHint: string;
+  hasSeenHint: boolean;
+  onHintSeen: () => void;
   typeLabels: Record<BulletItem["type"], string>;
 }) {
   const isBullet = bullet.type === "bullet";
+  const isNumbered = bullet.type === "numbered";
   const config = BULLET_TYPE_CONFIG[bullet.type];
   const [menuOpen, setMenuOpen] = useState(false);
+  const [tooltipOpen, setTooltipOpen] = useState(false);
   const viewMode = useIsViewMode();
 
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: sortableId, disabled: viewMode });
+
+  const style: React.CSSProperties = {
+    transform: CSS.Translate.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : undefined,
+    zIndex: isDragging ? 10 : undefined,
+  };
+
   return (
-    <li className={`flex items-start gap-1 group/bullet ${bullet.type === "title" ? "mt-2 first:mt-0" : ""}`}>
-      {/* Grip handle — type menu trigger (all types) */}
+    <li
+      ref={setNodeRef}
+      style={style}
+      className={`flex items-start gap-1 group/bullet ${bullet.type === "title" ? "mt-2 first:mt-0" : ""}`}
+    >
+      {/* Grip handle — drag to reorder, click to open type menu */}
       {!viewMode && (
-        <Popover open={menuOpen} onOpenChange={setMenuOpen}>
-          <PopoverTrigger asChild>
-            <button className="mt-0.5 p-0.5 rounded transition-colors hover:bg-gray-100 shrink-0">
-              <GripVertical className="h-3 w-3 text-gray-300" />
-            </button>
-          </PopoverTrigger>
-          <PopoverContent className="w-40 p-1" align="start" side="left">
-            {(Object.keys(BULLET_TYPE_CONFIG) as BulletItem["type"][]).map((type) => {
-              const Icon = BULLET_TYPE_CONFIG[type].icon;
-              const isActive = bullet.type === type;
-              return (
-                <button
-                  key={type}
-                  onClick={() => { onSetType(type); setMenuOpen(false); }}
-                  className={`flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-xs transition-colors ${
-                    isActive ? "bg-gray-100 dark:bg-accent font-medium text-gray-900 dark:text-gray-100" : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-accent/50"
-                  }`}
-                >
-                  <Icon className="h-3.5 w-3.5" />
-                  {typeLabels[type]}
-                </button>
-              );
-            })}
-          </PopoverContent>
-        </Popover>
+        <TooltipProvider>
+          <Tooltip open={tooltipOpen && !menuOpen}>
+            <Popover
+              open={menuOpen}
+              onOpenChange={(open) => {
+                setMenuOpen(open);
+                if (!open && !hasSeenHint) onHintSeen();
+              }}
+            >
+              <TooltipTrigger asChild>
+                <PopoverTrigger asChild>
+                  <button
+                    className="mt-0.5 p-0.5 rounded transition-colors hover:bg-gray-100 shrink-0 touch-manipulation cursor-grab active:cursor-grabbing"
+                    onPointerEnter={(e) => {
+                      if (e.pointerType === "mouse") {
+                        setTooltipOpen(true);
+                        onHintSeen();
+                      }
+                    }}
+                    onPointerLeave={(e) => {
+                      if (e.pointerType === "mouse") setTooltipOpen(false);
+                    }}
+                    {...attributes}
+                    {...listeners}
+                  >
+                    <GripVertical className="h-3 w-3 text-gray-300" />
+                  </button>
+                </PopoverTrigger>
+              </TooltipTrigger>
+              <PopoverContent
+                className={hasSeenHint ? "w-44 p-1" : "w-auto bg-foreground text-background border-foreground p-2"}
+                align="start"
+                side="left"
+              >
+                {hasSeenHint ? (
+                  <>
+                    {(Object.keys(BULLET_TYPE_CONFIG) as BulletItem["type"][]).map((type) => {
+                      const Icon = BULLET_TYPE_CONFIG[type].icon;
+                      const isActive = bullet.type === type;
+                      return (
+                        <button
+                          key={type}
+                          onClick={() => { onSetType(type); setMenuOpen(false); }}
+                          className={`flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-xs transition-colors ${
+                            isActive ? "bg-gray-100 dark:bg-accent font-medium text-gray-900 dark:text-gray-100" : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-accent/50"
+                          }`}
+                        >
+                          <Icon className="h-3.5 w-3.5" />
+                          {typeLabels[type]}
+                        </button>
+                      );
+                    })}
+                    <div className="mt-1 border-t border-gray-100 dark:border-gray-700 pt-1.5 px-2 pb-1">
+                      <p className="hidden can-hover:flex items-center gap-1.5 text-[10px] text-gray-400 dark:text-gray-500">
+                        <Move className="h-3 w-3 shrink-0" />
+                        {gripDragHint}
+                      </p>
+                      <p className="flex can-hover:hidden items-center gap-1.5 text-[10px] text-gray-400 dark:text-gray-500">
+                        <Move className="h-3 w-3 shrink-0" />
+                        {gripLongPressHint}
+                      </p>
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex flex-col gap-1 text-xs">
+                    <span className="hidden can-hover:flex items-center gap-1.5">
+                      <Move className="h-3 w-3 shrink-0" />
+                      {gripDragHint}
+                    </span>
+                    <span className="flex can-hover:hidden items-center gap-1.5">
+                      <Move className="h-3 w-3 shrink-0" />
+                      {gripLongPressHint}
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <MousePointerClick className="h-3 w-3 shrink-0" />
+                      {gripClickHint}
+                    </span>
+                  </div>
+                )}
+              </PopoverContent>
+            </Popover>
+            <TooltipContent side="left" className="p-2">
+              <div className="flex flex-col gap-1 text-xs">
+                <span className="flex items-center gap-1.5">
+                  <Move className="h-3 w-3 shrink-0" />
+                  {gripDragHint}
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <MousePointerClick className="h-3 w-3 shrink-0" />
+                  {gripClickHint}
+                </span>
+              </div>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       )}
-      {/* Bullet dot (decorative, only for bullet type) */}
+      {/* Bullet marker (dot or number) */}
       {isBullet && (
         <span className="text-[0.917em] select-none mt-0.5 shrink-0" style={{ color: bulletColor }}>&bull;</span>
+      )}
+      {isNumbered && (
+        <span className="text-[0.917em] select-none mt-0.5 shrink-0 tabular-nums" style={{ color: bulletColor }}>{bulletNumber}.</span>
       )}
       <EditableText
         value={bullet.text}
@@ -102,31 +222,13 @@ function EditableBullet({
         formatDisplay={renderFormattedText}
       />
       {!viewMode && (
-        <div className="flex items-center can-hover:opacity-0 can-hover:group-hover/bullet:opacity-100 transition-opacity duration-150 shrink-0">
-          {!isFirst && (
-            <button
-              onClick={onMoveUp}
-              className="mt-0.5 p-0.5 rounded hover:bg-gray-100"
-            >
-              <ChevronUp className="h-3 w-3 text-gray-400" />
-            </button>
-          )}
-          {!isLast && (
-            <button
-              onClick={onMoveDown}
-              className="mt-0.5 p-0.5 rounded hover:bg-gray-100"
-            >
-              <ChevronDown className="h-3 w-3 text-gray-400" />
-            </button>
-          )}
-          <button
-            onClick={onRemove}
-            className="mt-0.5 p-0.5 rounded hover:bg-gray-100"
-            aria-label={deleteAriaLabel}
-          >
-            <X className="h-3 w-3 text-gray-400" />
-          </button>
-        </div>
+        <button
+          onClick={onRemove}
+          className="mt-0.5 p-0.5 rounded hover:bg-gray-100 can-hover:opacity-0 can-hover:group-hover/bullet:opacity-100 transition-opacity duration-150 shrink-0"
+          aria-label={deleteAriaLabel}
+        >
+          <X className="h-3 w-3 text-gray-400" />
+        </button>
       )}
     </li>
   );
@@ -137,11 +239,15 @@ function ExperienceCard({
   isFirst,
   isLast,
   onRequestDelete,
+  hintSeen,
+  onHintSeen,
 }: {
   exp: ExperienceItem;
   isFirst: boolean;
   isLast: boolean;
   onRequestDelete: (message: string, onConfirm: () => void) => void;
+  hintSeen: boolean;
+  onHintSeen: () => void;
 }) {
   const { updateExperience, removeExperience, moveExperience } = useCV();
   const t = useTranslations("experience");
@@ -165,13 +271,29 @@ function ExperienceCard({
     updateExperience(exp.id, { description: newDesc });
   };
 
-  const moveBullet = (index: number, direction: "up" | "down") => {
-    const newDesc = [...exp.description];
-    const target = direction === "up" ? index - 1 : index + 1;
-    if (target < 0 || target >= newDesc.length) return;
-    [newDesc[index], newDesc[target]] = [newDesc[target], newDesc[index]];
-    updateExperience(exp.id, { description: newDesc });
-  };
+  // Precompute running counter for numbered bullets (1, 2, 3…)
+  const numberedCounters = (() => {
+    let counter = 0;
+    return exp.description.map(b => b.type === "numbered" ? ++counter : 0);
+  })();
+
+  // Drag-and-drop sensors: click = edit/menu, drag 8px+ = reorder, long-press on mobile
+  const sensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const handleBulletDragEnd = useCallback((event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = Number(active.id);
+      const newIndex = Number(over.id);
+      updateExperience(exp.id, {
+        description: arrayMove(exp.description, oldIndex, newIndex),
+      });
+    }
+  }, [exp.id, exp.description, updateExperience]);
 
   const addBullet = () => {
     updateExperience(exp.id, {
@@ -223,11 +345,12 @@ function ExperienceCard({
       )}
 
       {/* Company + dates */}
-      <div className="flex items-baseline justify-between gap-2 pr-16">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0 pr-16">
         <EditableText
           value={exp.company}
           onChange={(v) => updateExperience(exp.id, { company: v })}
           as="itemTitle"
+          className="min-w-[60%]"
           placeholder={t("companyPlaceholder")}
         />
         <div className="flex items-baseline gap-1 shrink-0">
@@ -251,7 +374,8 @@ function ExperienceCard({
       <EditableText
         value={exp.position}
         onChange={(v) => updateExperience(exp.id, { position: v })}
-        as="subheading"
+        as="small"
+        className="font-medium! text-gray-500!"
         placeholder={t("positionPlaceholder")}
       />
 
@@ -267,31 +391,46 @@ function ExperienceCard({
         />
       </div>
 
-      {/* Bullet points */}
-      <ul className="mt-1.5 space-y-1">
-        {exp.description.map((bullet, i) => (
-          <EditableBullet
-            key={i}
-            bullet={bullet}
-            onChange={(v) => updateBullet(i, v)}
-            onRemove={() => removeBullet(i)}
-            onSetType={(type) => setBulletType(i, type)}
-            onMoveUp={() => moveBullet(i, "up")}
-            onMoveDown={() => moveBullet(i, "down")}
-            isFirst={i === 0}
-            isLast={i === exp.description.length - 1}
-            bulletPlaceholder={t("bulletPlaceholder")}
-            deleteAriaLabel={t("deleteBullet")}
-            bulletColor={colorScheme.bullet}
-            typeLabels={{
-              bullet: t("typeBullet"),
-              title: t("typeTitle"),
-              subtitle: t("typeSubtitle"),
-              comment: t("typeComment"),
-            }}
-          />
-        ))}
-      </ul>
+      {/* Bullet points — drag to reorder, click grip for type menu */}
+      <DndContext
+        id={`bullets-dnd-${exp.id}`}
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleBulletDragEnd}
+      >
+        <SortableContext
+          items={exp.description.map((_, i) => String(i))}
+          strategy={verticalListSortingStrategy}
+        >
+          <ul className="mt-1.5 space-y-1">
+            {exp.description.map((bullet, i) => (
+              <EditableBullet
+                key={i}
+                bullet={bullet}
+                bulletNumber={numberedCounters[i]}
+                sortableId={String(i)}
+                onChange={(v) => updateBullet(i, v)}
+                onRemove={() => removeBullet(i)}
+                onSetType={(type) => setBulletType(i, type)}
+                bulletPlaceholder={t("bulletPlaceholder")}
+                deleteAriaLabel={t("deleteBullet")}
+                bulletColor={colorScheme.bullet}
+                gripDragHint={t("gripDragHint")}
+                gripClickHint={t("gripClickHint")}
+                gripLongPressHint={t("gripLongPressHint")}
+                hasSeenHint={hintSeen}
+                onHintSeen={onHintSeen}
+                typeLabels={{
+                  title: t("typeTitle"),
+                  subtitle: t("typeSubtitle"),
+                  bullet: t("typeBullet"),
+                  numbered: t("typeNumbered"),
+                }}
+              />
+            ))}
+          </ul>
+        </SortableContext>
+      </DndContext>
 
       {/* Add bullet */}
       {!viewMode && (
@@ -314,6 +453,7 @@ export const Experience = memo(function Experience() {
   } = useCV();
   const t = useTranslations("experience");
   const viewMode = useIsViewMode();
+  const [hintSeen, setHintSeen] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<{
     message: string;
     onConfirm: () => void;
@@ -332,6 +472,8 @@ export const Experience = memo(function Experience() {
             onRequestDelete={(message, onConfirm) =>
               setPendingDelete({ message, onConfirm })
             }
+            hintSeen={hintSeen}
+            onHintSeen={() => setHintSeen(true)}
           />
         ))}
       </div>

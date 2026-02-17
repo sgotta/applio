@@ -110,7 +110,7 @@ function migrateCVData(data: any): CVData {
       ...exp,
       description: (exp.description || []).map((item: any) => {
         if (typeof item === "string") return { text: item, type: "bullet" as const };
-        const type = item.type === "subheading" ? "title" : item.type;
+        const type = item.type === "subheading" ? "title" : item.type === "comment" ? "bullet" : item.type;
         return { ...item, type };
       }),
       roleDescription: exp.roleDescription?.trim() || undefined,
@@ -149,7 +149,7 @@ function migrateCVData(data: any): CVData {
     ...exp,
     description: (exp.description || []).map((item: any) => {
       if (typeof item === "string") return { text: item, type: "bullet" as const };
-      const type = item.type === "subheading" ? "title" : item.type;
+      const type = item.type === "subheading" ? "title" : item.type === "comment" ? "bullet" : item.type;
       return { ...item, type };
     }),
     roleDescription: exp.roleDescription?.trim() || undefined,

@@ -140,7 +140,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
             {/* Photo / Initials */}
             <div
               className="mx-auto h-36 w-36 rounded-full grid place-items-center overflow-hidden relative"
-              style={{ backgroundColor: colors.sidebarBadgeBg }}
+              style={{ backgroundColor: colors.sidebarText + "33" }}
             >
               {hasLocalPhoto ? (
                 <img
@@ -355,7 +355,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
                         </span>
                       </div>
                       <p
-                        className="font-medium uppercase tracking-wide text-gray-600"
+                        className="font-medium text-gray-500"
                         style={{ fontSize: fs(11) }}
                       >
                         {exp.position}
@@ -370,35 +370,40 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
                       )}
                       {exp.description.length > 0 && (
                         <ul className="mt-1.5 space-y-1">
-                          {exp.description.map((bullet, i) => {
-                            if (bullet.type === "title") {
+                          {(() => {
+                            let numCounter = 0;
+                            return exp.description.map((bullet, i) => {
+                              if (bullet.type === "title") {
+                                return (
+                                  <li key={i} className="font-semibold text-gray-900 mt-2 first:mt-0" style={{ fontSize: fs(11), listStyle: "none" }}>
+                                    {renderFormattedText(bullet.text)}
+                                  </li>
+                                );
+                              }
+                              if (bullet.type === "subtitle") {
+                                return (
+                                  <li key={i} className="font-semibold text-gray-800" style={{ fontSize: fs(11), listStyle: "none" }}>
+                                    {renderFormattedText(bullet.text)}
+                                  </li>
+                                );
+                              }
+                              if (bullet.type === "numbered") {
+                                numCounter++;
+                                return (
+                                  <li key={i} className="leading-relaxed text-gray-700 pl-3 relative" style={{ fontSize: fs(11) }}>
+                                    <span className="absolute left-0 tabular-nums" style={{ color: colors.bullet }}>{numCounter}.</span>
+                                    {renderFormattedText(bullet.text)}
+                                  </li>
+                                );
+                              }
                               return (
-                                <li key={i} className="font-semibold text-gray-900 mt-2 first:mt-0" style={{ fontSize: fs(11), listStyle: "none" }}>
+                                <li key={i} className="leading-relaxed text-gray-700 pl-3 relative" style={{ fontSize: fs(11) }}>
+                                  <span className="absolute left-0" style={{ color: colors.bullet }}>&bull;</span>
                                   {renderFormattedText(bullet.text)}
                                 </li>
                               );
-                            }
-                            if (bullet.type === "subtitle") {
-                              return (
-                                <li key={i} className="font-medium text-gray-800" style={{ fontSize: fs(11), listStyle: "none" }}>
-                                  {renderFormattedText(bullet.text)}
-                                </li>
-                              );
-                            }
-                            if (bullet.type === "comment") {
-                              return (
-                                <li key={i} className="italic text-gray-400" style={{ fontSize: fs(11), listStyle: "none" }}>
-                                  {renderFormattedText(bullet.text)}
-                                </li>
-                              );
-                            }
-                            return (
-                              <li key={i} className="leading-relaxed text-gray-700 pl-3 relative" style={{ fontSize: fs(11) }}>
-                                <span className="absolute left-0" style={{ color: colors.bullet }}>&bull;</span>
-                                {renderFormattedText(bullet.text)}
-                              </li>
-                            );
-                          })}
+                            });
+                          })()}
                         </ul>
                       )}
                     </div>

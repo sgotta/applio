@@ -29,7 +29,7 @@
     "overflowDescription": "Сократите содержание, чтобы PDF сформировался корректно.",
     "overflowContinue": "Продолжить всё равно",
     "colorScheme": "Цвет резюме",
-    "colorSchemeIvory": "Слоновая кость",
+    "colorSchemeDefault": "По умолчанию",
     "colorSchemePeterRiver": "Чистое небо",
     "colorSchemeEmerald": "Изумруд",
     "colorSchemeCarrot": "Морковь",
@@ -59,7 +59,8 @@
   },
   "cvPreview": {
     "fullNamePlaceholder": "Ваше полное имя",
-    "titlePlaceholder": "Ваша должность"
+    "titlePlaceholder": "Ваша должность",
+    "paginationHint": "Иллюстративно — реальная нумерация рассчитывается при создании PDF."
   },
   "personalInfo": {
     "contact": "Контакты",
@@ -108,7 +109,10 @@
     "typeBullet": "Пункт",
     "typeTitle": "Заголовок",
     "typeSubtitle": "Подзаголовок",
-    "typeComment": "Комментарий"
+    "typeNumbered": "Нумерованный",
+    "gripDragHint": "Перетащите для сортировки",
+    "gripClickHint": "Нажмите для смены типа",
+    "gripLongPressHint": "Удерживайте для перемещения"
   },
   "education": {
     "title": "Образование",
@@ -228,7 +232,9 @@
     "view": "Просмотр",
     "switchToEdit": "Перейти в режим редактирования",
     "switchToView": "Перейти в режим просмотра",
-    "viewModeHint": "Переключитесь в режим редактирования"
+    "viewModeHint": "Переключитесь в режим редактирования",
+    "doubleClickHint": "Дважды щёлкните для редактирования",
+    "exitedEditMode": "Вы вернулись в режим просмотра"
   },
   "languages": {
     "en": "Английский",

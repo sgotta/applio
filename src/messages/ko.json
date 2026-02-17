@@ -29,7 +29,7 @@
     "overflowDescription": "PDF가 올바르게 생성되도록 내용을 줄여주세요.",
     "overflowContinue": "그래도 계속",
     "colorScheme": "이력서 색상",
-    "colorSchemeIvory": "아이보리",
+    "colorSchemeDefault": "기본",
     "colorSchemePeterRiver": "클리어 차일드",
     "colorSchemeEmerald": "에메랄드",
     "colorSchemeCarrot": "당근",
@@ -59,7 +59,8 @@
   },
   "cvPreview": {
     "fullNamePlaceholder": "성명",
-    "titlePlaceholder": "직함"
+    "titlePlaceholder": "직함",
+    "paginationHint": "참고용입니다. 실제 페이지 번호는 PDF 생성 시 계산됩니다."
   },
   "personalInfo": {
     "contact": "연락처",
@@ -108,7 +109,10 @@
     "typeBullet": "항목",
     "typeTitle": "제목",
     "typeSubtitle": "부제목",
-    "typeComment": "코멘트"
+    "typeNumbered": "번호 매기기",
+    "gripDragHint": "드래그하여 정렬",
+    "gripClickHint": "클릭하여 유형 변경",
+    "gripLongPressHint": "길게 눌러 이동"
   },
   "education": {
     "title": "학력",
@@ -228,7 +232,9 @@
     "view": "보기",
     "switchToEdit": "편집 모드로 전환",
     "switchToView": "보기 모드로 전환",
-    "viewModeHint": "편집 모드로 전환하세요"
+    "viewModeHint": "편집 모드로 전환하세요",
+    "doubleClickHint": "더블 클릭하여 편집",
+    "exitedEditMode": "보기 모드로 돌아왔습니다"
   },
   "languages": {
     "en": "영어",

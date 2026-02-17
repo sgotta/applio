@@ -29,7 +29,7 @@
     "overflowDescription": "กรุณาลดเนื้อหาเพื่อให้ PDF สร้างได้อย่างถูกต้อง",
     "overflowContinue": "ดำเนินการต่อ",
     "colorScheme": "สี CV",
-    "colorSchemeIvory": "งาช้าง",
+    "colorSchemeDefault": "ค่าเริ่มต้น",
     "colorSchemePeterRiver": "ฟ้าใส",
     "colorSchemeEmerald": "มรกต",
     "colorSchemeCarrot": "แครอท",
@@ -59,7 +59,8 @@
   },
   "cvPreview": {
     "fullNamePlaceholder": "ชื่อ-นามสกุล",
-    "titlePlaceholder": "ตำแหน่งงานของคุณ"
+    "titlePlaceholder": "ตำแหน่งงานของคุณ",
+    "paginationHint": "แสดงเป็นตัวอย่างเท่านั้น — การแบ่งหน้าจริงจะคำนวณเมื่อสร้าง PDF"
   },
   "personalInfo": {
     "contact": "ข้อมูลติดต่อ",
@@ -108,7 +109,10 @@
     "typeBullet": "จุดนำ",
     "typeTitle": "หัวข้อ",
     "typeSubtitle": "หัวข้อย่อย",
-    "typeComment": "หมายเหตุ"
+    "typeNumbered": "ลำดับเลข",
+    "gripDragHint": "ลากเพื่อเรียงลำดับ",
+    "gripClickHint": "คลิกเพื่อเปลี่ยนประเภท",
+    "gripLongPressHint": "กดค้างเพื่อลาก"
   },
   "education": {
     "title": "การศึกษา",
@@ -228,7 +232,9 @@
     "view": "ดู",
     "switchToEdit": "สลับเป็นโหมดแก้ไข",
     "switchToView": "สลับเป็นโหมดดู",
-    "viewModeHint": "สลับเป็นโหมดแก้ไข"
+    "viewModeHint": "สลับเป็นโหมดแก้ไข",
+    "doubleClickHint": "ดับเบิลคลิกเพื่อแก้ไข",
+    "exitedEditMode": "กลับสู่โหมดดู"
   },
   "languages": {
     "en": "อังกฤษ",

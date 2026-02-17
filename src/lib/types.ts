@@ -13,7 +13,7 @@ export interface PersonalInfo {
 
 export interface BulletItem {
   text: string;
-  type: "bullet" | "title" | "subtitle" | "comment";
+  type: "bullet" | "title" | "subtitle" | "numbered";
 }
 
 export interface ExperienceItem {

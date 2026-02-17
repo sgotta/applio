@@ -437,6 +437,17 @@ function safePdfColor(hex: string): string {
   return `rgba(${r}, ${g}, ${b}, ${+(a.toFixed(3))})`;
 }
 
+/** Blend 8-digit hex (#rrggbbaa) over a solid background (#rrggbb)
+ *  to produce an opaque hex safe for SVG fills. */
+function blendOver(fg: string, bg: string): string {
+  if (fg.length <= 7) return fg;
+  const a = parseInt(fg.slice(7, 9), 16) / 255;
+  const r = Math.round(parseInt(fg.slice(1, 3), 16) * a + parseInt(bg.slice(1, 3), 16) * (1 - a));
+  const g = Math.round(parseInt(fg.slice(3, 5), 16) * a + parseInt(bg.slice(3, 5), 16) * (1 - a));
+  const b = Math.round(parseInt(fg.slice(5, 7), 16) * a + parseInt(bg.slice(5, 7), 16) * (1 - a));
+  return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+}
+
 
 /* ── PDF Dots Pattern ──────────────────────────────────── */
 
@@ -730,7 +741,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                           <View
                             key={i}
                             style={{
-                              backgroundColor: colors.sidebarBadgeBg,
+                              backgroundColor: safePdfColor(colors.sidebarBadgeBg),
                               borderRadius: 3,
                               paddingHorizontal: 5,
                               paddingVertical: 2,
@@ -812,11 +823,9 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                       </View>
                       <Text
                         style={{
-                          fontSize: fs(11),
+                          fontSize: fs(10),
                           fontWeight: 500,
-                          color: "#4b5563",
-                          textTransform: "uppercase",
-                          letterSpacing: 0.5,
+                          color: "#6b7280",
                         }}
                       >
                         {exp.position}
@@ -831,24 +840,33 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                       )}
                       {exp.description.length > 0 && (
                         <View style={{ marginTop: 4, gap: 3 }}>
-                          {exp.description.map((bullet: string | BulletItem, i: number) => {
-                            const item: BulletItem = typeof bullet === "string" ? { text: bullet, type: "bullet" } : bullet;
-                            if (item.type === "title") {
-                              return <PdfFormattedText key={i} text={item.text} style={{ fontSize: fs(11), fontWeight: 600, color: "#111827", marginTop: 6 }} />;
-                            }
-                            if (item.type === "subtitle") {
-                              return <PdfFormattedText key={i} text={item.text} style={{ fontSize: fs(11), fontWeight: 500, color: "#1f2937" }} />;
-                            }
-                            if (item.type === "comment") {
-                              return <PdfFormattedText key={i} text={item.text} style={{ fontSize: fs(11), fontStyle: "italic", color: "#9ca3af" }} />;
-                            }
-                            return (
-                              <View key={i} style={{ flexDirection: "row", paddingLeft: 9 }}>
-                                <Text style={{ color: colors.bullet, marginRight: 5, fontSize: fs(11) }}>{"\u2022"}</Text>
-                                <PdfFormattedText text={item.text} style={{ fontSize: fs(11), color: "#374151", flex: 1, lineHeight: 1.55 }} />
-                              </View>
-                            );
-                          })}
+                          {(() => {
+                            let numCounter = 0;
+                            return exp.description.map((bullet: string | BulletItem, i: number) => {
+                              const item: BulletItem = typeof bullet === "string" ? { text: bullet, type: "bullet" } : bullet;
+                              if (item.type === "title") {
+                                return <PdfFormattedText key={i} text={item.text} style={{ fontSize: fs(11), fontWeight: 600, color: "#111827", marginTop: 6 }} />;
+                              }
+                              if (item.type === "subtitle") {
+                                return <PdfFormattedText key={i} text={item.text} style={{ fontSize: fs(11), fontWeight: 600, color: "#1f2937" }} />;
+                              }
+                              if (item.type === "numbered") {
+                                numCounter++;
+                                return (
+                                  <View key={i} style={{ flexDirection: "row", paddingLeft: 9 }}>
+                                    <Text style={{ color: colors.bullet, marginRight: 5, fontSize: fs(11) }}>{numCounter}.</Text>
+                                    <PdfFormattedText text={item.text} style={{ fontSize: fs(11), color: "#374151", flex: 1, lineHeight: 1.55 }} />
+                                  </View>
+                                );
+                              }
+                              return (
+                                <View key={i} style={{ flexDirection: "row", paddingLeft: 9 }}>
+                                  <Text style={{ color: colors.bullet, marginRight: 5, fontSize: fs(11) }}>{"\u2022"}</Text>
+                                  <PdfFormattedText text={item.text} style={{ fontSize: fs(11), color: "#374151", flex: 1, lineHeight: 1.55 }} />
+                                </View>
+                              );
+                            });
+                          })()}
                         </View>
                       )}
                     </View>
@@ -984,40 +1002,56 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
           </View>
         </View>
 
-        {/* Fixed footer: branding left, name + date + page right */}
+        {/* Fixed footer — split across columns */}
         {(() => {
           const footerDate = new Intl.DateTimeFormat(locale, {
             day: "2-digit",
             month: "2-digit",
             year: "numeric",
           }).format(new Date());
-          const footerStyle = { fontSize: 8, color: "#aaaaaa", fontFamily };
+          const footerColor = blendOver(colors.sidebarMuted, colors.sidebarBg);
           return (
-            <View
-              style={{
-                position: "absolute",
-                bottom: 10,
-                left: SIDEBAR_WIDTH + MAIN_H_PAD,
-                right: MAIN_H_PAD,
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-              fixed
-            >
-              <Link src="https://www.applio.dev/" style={{ textDecoration: "none" }}>
-                <View style={{ flexDirection: "row", alignItems: "center", gap: 2 }}>
-                  <Text style={footerStyle}>Applio</Text>
-                  <HeartIcon size={7} color="#aaaaaa" />
-                </View>
-              </Link>
-              <Text
-                style={footerStyle}
-                render={({ pageNumber, totalPages }) =>
-                  `${personalInfo.fullName}  ·  ${footerDate}  ·  ${pageNumber} / ${totalPages}`
-                }
-              />
-            </View>
+            <>
+              {/* Left: branding on the sidebar */}
+              <View
+                style={{
+                  position: "absolute",
+                  bottom: 10,
+                  left: 0,
+                  width: SIDEBAR_WIDTH,
+                  alignItems: "center",
+                }}
+                fixed
+              >
+                <Link src="https://www.applio.dev/" style={{ textDecoration: "none" }}>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: 2 }}>
+                    <Text style={{ fontSize: 8, color: footerColor, fontFamily }}>
+                      Applio
+                    </Text>
+                    <HeartIcon size={7} color={footerColor} />
+                  </View>
+                </Link>
+              </View>
+
+              {/* Right: name · date · page on the main area */}
+              <View
+                style={{
+                  position: "absolute",
+                  bottom: 10,
+                  left: SIDEBAR_WIDTH + MAIN_H_PAD,
+                  right: MAIN_H_PAD,
+                  alignItems: "flex-end",
+                }}
+                fixed
+              >
+                <Text
+                  style={{ fontSize: 8, color: "#aaaaaa", fontFamily }}
+                  render={({ pageNumber, totalPages }) =>
+                    `${personalInfo.fullName}  ·  ${footerDate}  ·  ${pageNumber} / ${totalPages}`
+                  }
+                />
+              </View>
+            </>
           );
         })()}
       </Page>

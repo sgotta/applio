@@ -75,11 +75,12 @@ function CourseCard({
         </div>
       )}
 
-      <div className="flex items-baseline justify-between gap-2 pr-8">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0 pr-8">
         <EditableText
           value={course.name}
           onChange={(v) => updateCourse(course.id, { name: v })}
           as="itemTitle"
+          className="min-w-[60%]"
           placeholder={t("namePlaceholder")}
         />
         <EditableText

@@ -29,7 +29,7 @@
     "overflowDescription": "PDFが正しく生成されるよう、内容を減らしてください。",
     "overflowContinue": "このまま続ける",
     "colorScheme": "CV カラー",
-    "colorSchemeIvory": "アイボリー",
+    "colorSchemeDefault": "デフォルト",
     "colorSchemePeterRiver": "クリアチャイルド",
     "colorSchemeEmerald": "エメラルド",
     "colorSchemeCarrot": "キャロット",
@@ -59,7 +59,8 @@
   },
   "cvPreview": {
     "fullNamePlaceholder": "氏名",
-    "titlePlaceholder": "職種・肩書き"
+    "titlePlaceholder": "職種・肩書き",
+    "paginationHint": "参考表示です。実際のページ番号は PDF 生成時に計算されます。"
   },
   "personalInfo": {
     "contact": "連絡先",
@@ -108,7 +109,10 @@
     "typeBullet": "箇条書き",
     "typeTitle": "見出し",
     "typeSubtitle": "小見出し",
-    "typeComment": "コメント"
+    "typeNumbered": "番号付き",
+    "gripDragHint": "ドラッグで並べ替え",
+    "gripClickHint": "クリックでタイプ変更",
+    "gripLongPressHint": "長押しでドラッグ"
   },
   "education": {
     "title": "学歴",
@@ -228,7 +232,9 @@
     "view": "表示",
     "switchToEdit": "編集モードに切替",
     "switchToView": "表示モードに切替",
-    "viewModeHint": "編集モードに切り替えてください"
+    "viewModeHint": "編集モードに切り替えてください",
+    "doubleClickHint": "ダブルクリックで編集",
+    "exitedEditMode": "閲覧モードに戻りました"
   },
   "languages": {
     "en": "英語",

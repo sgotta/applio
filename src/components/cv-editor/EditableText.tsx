@@ -1,9 +1,11 @@
 "use client";
 
-import { useCallback, useContext, useEffect, useLayoutEffect, useRef, useState, KeyboardEvent, ClipboardEvent } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, KeyboardEvent, ClipboardEvent } from "react";
 import { useTranslations } from "next-intl";
 import { useIsViewMode } from "@/hooks/useIsViewMode";
-import { EditModeContext } from "@/lib/edit-mode-context";
+import { useEditMode } from "@/lib/edit-mode-context";
+import { toast } from "sonner";
+import { Pencil, MousePointerClick } from "lucide-react";
 
 
 type EditableStyle = "heading" | "subheading" | "itemTitle" | "body" | "small" | "tiny";
@@ -61,12 +63,14 @@ export function EditableText({
   formatDisplay,
 }: EditableTextProps) {
   const t = useTranslations("editableText");
+  const te = useTranslations("editMode");
   const viewMode = useIsViewMode();
-  const editModeCtx = useContext(EditModeContext);
+  const { enterEditMode } = useEditMode();
   const placeholder = placeholderProp ?? t("defaultPlaceholder");
   const [editing, setEditing] = useState(autoEdit && !viewMode);
   const [draft, setDraft] = useState(value);
   const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
+  const clickTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const fontSize = fontSizeMap[as];
 
@@ -87,7 +91,7 @@ export function EditableText({
   // Auto-focus when entering edit mode
   useEffect(() => {
     if (editing && inputRef.current) {
-      inputRef.current.focus();
+      inputRef.current.focus({ preventScroll: true });
       inputRef.current.select();
     }
   }, [editing]);
@@ -161,7 +165,35 @@ export function EditableText({
     };
 
     const handleViewClick = () => {
-      editModeCtx?.showHint();
+      if (window.matchMedia("(min-width: 768px)").matches) {
+        // Desktop: delay toast to allow double-click detection
+        if (clickTimerRef.current) clearTimeout(clickTimerRef.current);
+        clickTimerRef.current = setTimeout(() => {
+          toast(
+            <span className="flex items-center gap-2">
+              <MousePointerClick className="h-3.5 w-3.5 shrink-0" />
+              {te("doubleClickHint")}
+            </span>,
+            { duration: 2000 },
+          );
+        }, 250);
+      } else {
+        // Mobile: show hint immediately
+        toast(
+          <span className="flex items-center gap-2">
+            <Pencil className="h-3.5 w-3.5 shrink-0" />
+            {te("viewModeHint")}
+          </span>,
+          { duration: 2000 },
+        );
+      }
+    };
+
+    const handleViewDoubleClick = () => {
+      if (!window.matchMedia("(min-width: 768px)").matches) return;
+      if (clickTimerRef.current) clearTimeout(clickTimerRef.current);
+      enterEditMode();
+      setEditing(true);
     };
 
     return (
@@ -169,6 +201,7 @@ export function EditableText({
         role="button"
         tabIndex={0}
         onClick={handleViewClick}
+        onDoubleClick={handleViewDoubleClick}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
@@ -192,10 +225,10 @@ export function EditableText({
       (displayStyle as Record<string, string>).color === "#ffffff";
 
     const inputClasses = isDarkSidebar
-      ? `${baseStyle} ${className} w-full bg-white/15 border border-white/20 rounded-sm px-1.5 py-0.5 outline-none focus:border-white/30 focus:ring-1 focus:ring-white/10 transition-all duration-150 placeholder:text-white/40`
+      ? `${baseStyle} ${className} w-full bg-white/15 border border-white/20 rounded-sm px-1.5 py-0.5 outline-none focus:border-white/30 focus:ring-1 focus:ring-white/10 transition-all duration-150 placeholder:text-white/40 selection:bg-white/25`
       : onSidebar
-        ? `${baseStyle} ${className} w-full bg-black/[0.08] border border-black/10 rounded-sm px-1.5 py-0.5 outline-none focus:border-black/15 focus:ring-1 focus:ring-black/[0.05] transition-all duration-150 placeholder:opacity-40`
-        : `${baseStyle} ${className} w-full bg-white border border-gray-300 rounded-sm px-1.5 py-0.5 outline-none focus:border-gray-400 focus:ring-1 focus:ring-gray-200 transition-all duration-150`;
+        ? `${baseStyle} ${className} w-full bg-black/[0.08] border border-black/10 rounded-sm px-1.5 py-0.5 outline-none focus:border-black/15 focus:ring-1 focus:ring-black/[0.05] transition-all duration-150 placeholder:opacity-40 selection:bg-black/10`
+        : `${baseStyle} ${className} w-full bg-white border border-gray-300 rounded-sm px-1.5 py-0.5 outline-none focus:border-gray-400 focus:ring-1 focus:ring-gray-200 transition-all duration-150 selection:bg-gray-200`;
 
     const inputStyle: React.CSSProperties = {
       fontSize,

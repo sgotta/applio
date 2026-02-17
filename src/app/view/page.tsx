@@ -308,36 +308,41 @@ function MobileCVView({
                   )}
                   {exp.description.length > 0 && (
                     <ul className="mt-1.5 space-y-1">
-                      {exp.description.map((bullet: string | BulletItem, i: number) => {
-                        const item: BulletItem = typeof bullet === "string" ? { text: bullet, type: "bullet" } : bullet;
-                        if (item.type === "title") {
+                      {(() => {
+                        let numCounter = 0;
+                        return exp.description.map((bullet: string | BulletItem, i: number) => {
+                          const item: BulletItem = typeof bullet === "string" ? { text: bullet, type: "bullet" } : bullet;
+                          if (item.type === "title") {
+                            return (
+                              <li key={i} className="font-semibold text-gray-900 mt-2 first:mt-0" style={{ fontSize: fs.body, listStyle: "none" }}>
+                                {renderFormattedText(item.text)}
+                              </li>
+                            );
+                          }
+                          if (item.type === "subtitle") {
+                            return (
+                              <li key={i} className="font-semibold text-gray-800" style={{ fontSize: fs.body, listStyle: "none" }}>
+                                {renderFormattedText(item.text)}
+                              </li>
+                            );
+                          }
+                          if (item.type === "numbered") {
+                            numCounter++;
+                            return (
+                              <li key={i} className="leading-relaxed text-gray-600 pl-3 relative" style={{ fontSize: fs.body }}>
+                                <span className="absolute left-0 tabular-nums" style={{ color: colors.bullet, fontSize: fs.tiny }}>{numCounter}.</span>
+                                {renderFormattedText(item.text)}
+                              </li>
+                            );
+                          }
                           return (
-                            <li key={i} className="font-semibold text-gray-900 mt-2 first:mt-0" style={{ fontSize: fs.body, listStyle: "none" }}>
+                            <li key={i} className="leading-relaxed text-gray-600 pl-3 relative" style={{ fontSize: fs.body }}>
+                              <span className="absolute left-0" style={{ color: colors.bullet, fontSize: fs.tiny }}>&bull;</span>
                               {renderFormattedText(item.text)}
                             </li>
                           );
-                        }
-                        if (item.type === "subtitle") {
-                          return (
-                            <li key={i} className="font-medium text-gray-800" style={{ fontSize: fs.body, listStyle: "none" }}>
-                              {renderFormattedText(item.text)}
-                            </li>
-                          );
-                        }
-                        if (item.type === "comment") {
-                          return (
-                            <li key={i} className="italic text-gray-400" style={{ fontSize: fs.body, listStyle: "none" }}>
-                              {renderFormattedText(item.text)}
-                            </li>
-                          );
-                        }
-                        return (
-                          <li key={i} className="leading-relaxed text-gray-600 pl-3 relative" style={{ fontSize: fs.body }}>
-                            <span className="absolute left-0" style={{ color: colors.bullet, fontSize: fs.tiny }}>&bull;</span>
-                            {renderFormattedText(item.text)}
-                          </li>
-                        );
-                      })}
+                        });
+                      })()}
                     </ul>
                   )}
                 </div>

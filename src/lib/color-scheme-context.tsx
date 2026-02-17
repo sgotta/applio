@@ -28,7 +28,9 @@ const ColorSchemeContext = createContext<ColorSchemeContextValue | null>(null);
 
 function getInitialScheme(): ColorSchemeName {
   if (typeof window === "undefined") return DEFAULT_COLOR_SCHEME;
-  const saved = localStorage.getItem(STORAGE_KEY);
+  let saved = localStorage.getItem(STORAGE_KEY);
+  // Migrate legacy name
+  if (saved === "ivory") saved = "default";
   if (saved && COLOR_SCHEME_NAMES.includes(saved as ColorSchemeName)) {
     return saved as ColorSchemeName;
   }

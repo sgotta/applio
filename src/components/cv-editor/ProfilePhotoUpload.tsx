@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { Camera } from "lucide-react";
+import { useState, useCallback, useRef, useEffect } from "react";
+import { Camera, Pencil, MousePointerClick } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useIsViewMode } from "@/hooks/useIsViewMode";
+import { useEditMode } from "@/lib/edit-mode-context";
+import { toast } from "sonner";
 import { PhotoCropDialog } from "./PhotoCropDialog";
 
 interface ProfilePhotoUploadProps {
@@ -24,8 +26,15 @@ export function ProfilePhotoUpload({
   placeholderText,
 }: ProfilePhotoUploadProps) {
   const t = useTranslations("photo");
+  const te = useTranslations("editMode");
   const viewMode = useIsViewMode();
+  const { enterEditMode } = useEditMode();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const clickTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => { if (clickTimerRef.current) clearTimeout(clickTimerRef.current); };
+  }, []);
 
   const handlePhotoChange = useCallback(
     (photo: string | undefined) => {
@@ -40,6 +49,35 @@ export function ProfilePhotoUpload({
       return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
     }
     return name.substring(0, 2).toUpperCase();
+  };
+
+  const handleViewClick = () => {
+    if (window.matchMedia("(min-width: 768px)").matches) {
+      if (clickTimerRef.current) clearTimeout(clickTimerRef.current);
+      clickTimerRef.current = setTimeout(() => {
+        toast(
+          <span className="flex items-center gap-2">
+            <MousePointerClick className="h-3.5 w-3.5 shrink-0" />
+            {te("doubleClickHint")}
+          </span>,
+          { duration: 2000 },
+        );
+      }, 250);
+    } else {
+      toast(
+        <span className="flex items-center gap-2">
+          <Pencil className="h-3.5 w-3.5 shrink-0" />
+          {te("viewModeHint")}
+        </span>,
+        { duration: 2000 },
+      );
+    }
+  };
+
+  const handleViewDoubleClick = () => {
+    if (!window.matchMedia("(min-width: 768px)").matches) return;
+    if (clickTimerRef.current) clearTimeout(clickTimerRef.current);
+    enterEditMode();
   };
 
   const photoContent = currentPhoto ? (
@@ -61,7 +99,17 @@ export function ProfilePhotoUpload({
     <div className="flex flex-col items-center mb-6">
       {viewMode ? (
         <div
-          className="relative w-36 h-36 rounded-full overflow-hidden grid place-items-center"
+          role="button"
+          tabIndex={0}
+          onClick={handleViewClick}
+          onDoubleClick={handleViewDoubleClick}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              handleViewClick();
+            }
+          }}
+          className="relative w-36 h-36 rounded-full overflow-hidden grid place-items-center cursor-pointer"
           style={{ backgroundColor: placeholderBg ?? "#e5e7eb" }}
         >
           {photoContent}

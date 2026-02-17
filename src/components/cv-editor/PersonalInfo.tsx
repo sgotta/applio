@@ -393,7 +393,7 @@ export const PersonalInfo = memo(function PersonalInfo() {
           currentPhoto={personalInfo.photo}
           fullName={personalInfo.fullName}
           onPhotoChange={(photo) => updatePersonalInfo("photo", photo)}
-          placeholderBg={colorScheme.sidebarBadgeBg}
+          placeholderBg={colorScheme.sidebarText + "28"}
           placeholderText={colorScheme.sidebarMuted}
         />
       </div>

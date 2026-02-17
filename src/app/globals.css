@@ -196,6 +196,12 @@
 .cv-preview-content {
   font-size: 12px;
 }
+.cv-preview-content *::selection {
+  background: rgba(0, 0, 0, 0.12);
+}
+.cv-sidebar-dark *::selection {
+  background: rgba(255, 255, 255, 0.2);
+}
 @media (max-width: 767px) {
   .cv-preview-content {
     font-size: 15px;

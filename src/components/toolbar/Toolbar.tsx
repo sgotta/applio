@@ -18,7 +18,6 @@ import { FONT_FAMILIES, FONT_SIZE_LEVEL_IDS, CJK_LOCALES, getFontDefinition, typ
 import { SIDEBAR_PATTERN_NAMES, SIDEBAR_PATTERNS, PATTERN_SCOPES, type PatternScope, type PatternIntensity } from "@/lib/sidebar-patterns";
 import { Slider } from "@/components/ui/slider";
 import { COLOR_SCHEME_NAMES, COLOR_SCHEMES, type ColorSchemeName } from "@/lib/color-schemes";
-import { useEditMode } from "@/lib/edit-mode-context";
 import { buildSharedData, compressSharedData, generateShareURL } from "@/lib/sharing";
 import { toast } from "sonner";
 import {
@@ -27,7 +26,6 @@ import {
   Menu, X, ChevronRight, ChevronLeft, Palette, Layers,
   Loader2, MoreHorizontal, Link,
   PanelLeft, PanelRight, Square,
-  Pencil, Eye,
 } from "lucide-react";
 
 const CACHE_EXPIRY_MS = 15 * 24 * 60 * 60 * 1000; // 15 days
@@ -87,9 +85,7 @@ type MobileMenuPage = "main" | "language" | "color" | "pattern" | "font" | "sect
 
 export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   const { data, importData, toggleSection } = useCV();
-  const { isViewMode, toggleEditMode } = useEditMode();
   const t = useTranslations("toolbar");
-  const te = useTranslations("editMode");
   const tl = useTranslations("languages");
   const { locale, setLocale } = useAppLocale();
   const { theme, setTheme } = useTheme();
@@ -678,21 +674,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
               </PopoverContent>
             </Popover>
 
-            {/* Edit/View mode toggle — primary action */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="default"
-                  size="sm"
-                  onClick={toggleEditMode}
-                  className="hidden md:inline-flex ml-1 h-8 gap-1.5 px-3 bg-gray-900 text-white hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
-                >
-                  {isViewMode ? <Pencil className="size-3.5" /> : <Eye className="size-3.5" />}
-                  <span className="text-xs font-medium">{isViewMode ? te("edit") : te("view")}</span>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>{isViewMode ? te("switchToEdit") : te("switchToView")}</TooltipContent>
-            </Tooltip>
+            {/* Edit/View mode toggle moved to floating FAB (MobileEditFAB) for all devices */}
           </div>
 
           {/* ===== MOBILE HAMBURGER MENU (visible only on mobile) ===== */}

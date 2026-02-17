@@ -29,7 +29,7 @@
     "overflowDescription": "PDF'nin doğru oluşturulması için içeriği azaltın.",
     "overflowContinue": "Yine de devam et",
     "colorScheme": "CV Rengi",
-    "colorSchemeIvory": "Fildişi",
+    "colorSchemeDefault": "Varsayılan",
     "colorSchemePeterRiver": "Berrak Mavi",
     "colorSchemeEmerald": "Zümrüt",
     "colorSchemeCarrot": "Havuç",
@@ -59,7 +59,8 @@
   },
   "cvPreview": {
     "fullNamePlaceholder": "Ad Soyad",
-    "titlePlaceholder": "Profesyonel Ünvanınız"
+    "titlePlaceholder": "Profesyonel Ünvanınız",
+    "paginationHint": "Yalnızca görsel — gerçek sayfalama PDF oluşturulurken hesaplanır."
   },
   "personalInfo": {
     "contact": "İletişim",
@@ -108,7 +109,10 @@
     "typeBullet": "Madde",
     "typeTitle": "Başlık",
     "typeSubtitle": "Alt başlık",
-    "typeComment": "Yorum"
+    "typeNumbered": "Numaralı",
+    "gripDragHint": "Sıralamak için sürükle",
+    "gripClickHint": "Türü değiştirmek için tıkla",
+    "gripLongPressHint": "Taşımak için basılı tut"
   },
   "education": {
     "title": "Eğitim",
@@ -228,7 +232,9 @@
     "view": "Görüntüle",
     "switchToEdit": "Düzenleme moduna geç",
     "switchToView": "Görüntüleme moduna geç",
-    "viewModeHint": "Düzenleme moduna geçin"
+    "viewModeHint": "Düzenleme moduna geçin",
+    "doubleClickHint": "Düzenlemek için çift tıklayın",
+    "exitedEditMode": "Görüntüleme moduna dönüldü"
   },
   "languages": {
     "en": "İngilizce",
