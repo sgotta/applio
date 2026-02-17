@@ -246,5 +246,14 @@
     "tr": "तुर्की",
     "hi": "हिन्दी",
     "th": "थाई"
+  },
+  "auth": {
+    "loginTitle": "Applio में साइन इन करें",
+    "loginDescription": "अपनी प्रोफ़ाइल प्रकाशित करने और अधिक सुविधाओं तक पहुँचने के लिए साइन इन करें।",
+    "continueWithGoogle": "Google से जारी रखें",
+    "continueWithGitHub": "GitHub से जारी रखें",
+    "loginDisclaimer": "हम केवल आपके नाम, ईमेल और प्रोफ़ाइल चित्र तक पहुँचते हैं।",
+    "signOut": "साइन आउट",
+    "login": "साइन इन"
   }
 }

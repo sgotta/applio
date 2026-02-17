@@ -10,6 +10,7 @@ import { ColorSchemeProvider, useColorScheme } from "@/lib/color-scheme-context"
 import { SidebarPatternProvider, useSidebarPattern } from "@/lib/sidebar-pattern-context";
 import { FontSettingsProvider, useFontSettings } from "@/lib/font-context";
 import { EditModeProvider } from "@/lib/edit-mode-context";
+import { AuthProvider } from "@/lib/auth-context";
 import { downloadPDF } from "@/lib/generate-pdf";
 import { filenameDateStamp } from "@/lib/utils";
 import { getFontDefinition, FONT_SIZE_LEVELS, PDF_BASE_FONT_SCALE, CJK_LOCALES } from "@/lib/fonts";
@@ -100,6 +101,7 @@ export default function Home() {
 
   return (
     <ThemeProvider>
+      <AuthProvider>
       <ColorSchemeProvider>
         <SidebarPatternProvider>
           <FontSettingsProvider>
@@ -125,6 +127,7 @@ export default function Home() {
           </FontSettingsProvider>
         </SidebarPatternProvider>
       </ColorSchemeProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

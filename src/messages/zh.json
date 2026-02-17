@@ -246,5 +246,14 @@
     "tr": "土耳其语",
     "hi": "印地语",
     "th": "泰语"
+  },
+  "auth": {
+    "loginTitle": "登录 Applio",
+    "loginDescription": "登录以发布您的个人主页并访问更多功能。",
+    "continueWithGoogle": "使用 Google 继续",
+    "continueWithGitHub": "使用 GitHub 继续",
+    "loginDisclaimer": "我们仅访问您的姓名、邮箱和头像。",
+    "signOut": "退出登录",
+    "login": "登录"
   }
 }

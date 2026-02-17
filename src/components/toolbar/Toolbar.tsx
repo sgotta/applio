@@ -21,11 +21,13 @@ import { COLOR_SCHEME_NAMES, COLOR_SCHEMES, type ColorSchemeName } from "@/lib/c
 import { useEditMode } from "@/lib/edit-mode-context";
 import { buildSharedData, compressSharedData, generateShareURL } from "@/lib/sharing";
 import { toast } from "sonner";
+import { useAuth } from "@/lib/auth-context";
+import { LoginDialog } from "@/components/auth/LoginDialog";
 import {
   Download, FileUp, FileDown, FileText, Globe, Type,
   SlidersHorizontal, Check, Sun, Moon, Monitor,
   Menu, X, ChevronRight, ChevronLeft, Palette, Layers,
-  Loader2, MoreHorizontal, Link,
+  Loader2, MoreHorizontal, Link, LogIn, LogOut, User,
   PanelLeft, PanelRight, Square,
   Pencil, Eye,
 } from "lucide-react";
@@ -88,9 +90,12 @@ type MobileMenuPage = "main" | "language" | "theme" | "color" | "pattern" | "fon
 export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   const { data, importData, toggleSection } = useCV();
   const { isViewMode, toggleEditMode } = useEditMode();
+  const { user, signOut } = useAuth();
   const t = useTranslations("toolbar");
+  const ta = useTranslations("auth");
   const te = useTranslations("editMode");
   const tl = useTranslations("languages");
+  const [loginDialogOpen, setLoginDialogOpen] = useState(false);
   const { locale, setLocale } = useAppLocale();
   const { theme, setTheme, resolvedTheme } = useTheme();
   const { colorSchemeName, setColorScheme } = useColorScheme();
@@ -812,6 +817,42 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                   {/* Divider */}
                   <div className="my-1.5 border-t border-gray-100 dark:border-border" />
 
+                  {/* Auth: Login or User info — mobile */}
+                  {user ? (
+                    <div>
+                      <div className="flex items-center gap-2.5 px-3 py-2">
+                        <div className="h-7 w-7 rounded-full overflow-hidden ring-1 ring-gray-200 dark:ring-gray-700 shrink-0">
+                          {user.user_metadata?.avatar_url ? (
+                            <img src={user.user_metadata.avatar_url} alt="" className="h-7 w-7 object-cover" />
+                          ) : (
+                            <div className="h-7 w-7 flex items-center justify-center bg-gray-100 dark:bg-accent">
+                              <User className="h-3.5 w-3.5 text-gray-500" />
+                            </div>
+                          )}
+                        </div>
+                        <span className="text-sm text-gray-700 dark:text-gray-200 truncate">
+                          {user.user_metadata?.full_name || user.email}
+                        </span>
+                      </div>
+                      <button onClick={() => { signOut(); setMobileMenuOpen(false); }} className={menuItemClass}>
+                        <span className="flex items-center gap-2.5">
+                          <LogOut className="h-4 w-4" />
+                          {ta("signOut")}
+                        </span>
+                      </button>
+                    </div>
+                  ) : (
+                    <button onClick={() => { setMobileMenuOpen(false); setLoginDialogOpen(true); }} className={menuItemClass}>
+                      <span className="flex items-center gap-2.5">
+                        <LogIn className="h-4 w-4" />
+                        {ta("login")}
+                      </span>
+                    </button>
+                  )}
+
+                  {/* Divider */}
+                  <div className="my-1.5 border-t border-gray-100 dark:border-border" />
+
                   {/* Import */}
                   <button onClick={() => fileInputRef.current?.click()} className={menuItemClass}>
                     <span className="flex items-center gap-2.5">
@@ -1138,6 +1179,56 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
             </PopoverContent>
           </Popover>
 
+          {/* Auth: Login button or User avatar — desktop */}
+          {user ? (
+            <Popover>
+              <PopoverTrigger asChild>
+                <button className="hidden md:flex h-8 w-8 items-center justify-center rounded-full overflow-hidden ring-1 ring-gray-200 dark:ring-gray-700 hover:ring-gray-300 dark:hover:ring-gray-600 transition-all">
+                  {user.user_metadata?.avatar_url ? (
+                    <img
+                      src={user.user_metadata.avatar_url}
+                      alt=""
+                      className="h-8 w-8 object-cover"
+                    />
+                  ) : (
+                    <User className="h-4 w-4 text-gray-500" />
+                  )}
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-1" align="end">
+                <div className="px-3 py-2 border-b border-gray-100 dark:border-border">
+                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate max-w-48">
+                    {user.user_metadata?.full_name || user.email}
+                  </p>
+                  {user.email && user.user_metadata?.full_name && (
+                    <p className="text-xs text-gray-400 truncate max-w-48">{user.email}</p>
+                  )}
+                </div>
+                <button
+                  onClick={() => signOut()}
+                  className="flex w-full items-center gap-2.5 rounded-sm px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-accent transition-colors mt-0.5"
+                >
+                  <LogOut className="h-4 w-4" />
+                  {ta("signOut")}
+                </button>
+              </PopoverContent>
+            </Popover>
+          ) : (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setLoginDialogOpen(true)}
+                  className="hidden md:inline-flex h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
+                >
+                  <LogIn className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>{ta("login")}</TooltipContent>
+            </Tooltip>
+          )}
+
           {/* Export PDF — desktop only (on mobile it's inside the hamburger menu) */}
           <Tooltip>
             <TooltipTrigger asChild>
@@ -1161,6 +1252,9 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
         </div>
       </div>
     </header>
+
+    {/* Login dialog */}
+    <LoginDialog open={loginDialogOpen} onOpenChange={setLoginDialogOpen} />
 
     {/* Full-screen overlay during photo upload */}
     {showUploadOverlay && (

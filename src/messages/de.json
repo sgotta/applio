@@ -246,5 +246,14 @@
     "tr": "Türkisch",
     "hi": "Hindi",
     "th": "Thailändisch"
+  },
+  "auth": {
+    "loginTitle": "Bei Applio anmelden",
+    "loginDescription": "Melden Sie sich an, um Ihr Profil zu veröffentlichen und auf weitere Funktionen zuzugreifen.",
+    "continueWithGoogle": "Weiter mit Google",
+    "continueWithGitHub": "Weiter mit GitHub",
+    "loginDisclaimer": "Wir greifen nur auf Ihren Namen, E-Mail und Profilbild zu.",
+    "signOut": "Abmelden",
+    "login": "Anmelden"
   }
 }

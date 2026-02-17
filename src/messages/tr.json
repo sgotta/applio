@@ -246,5 +246,14 @@
     "tr": "Türkçe",
     "hi": "Hintçe",
     "th": "Tayca"
+  },
+  "auth": {
+    "loginTitle": "Applio'ya giriş yap",
+    "loginDescription": "Profilini yayınlamak ve daha fazla özelliğe erişmek için giriş yap.",
+    "continueWithGoogle": "Google ile devam et",
+    "continueWithGitHub": "GitHub ile devam et",
+    "loginDisclaimer": "Yalnızca adınıza, e-postanıza ve profil fotoğrafınıza erişiyoruz.",
+    "signOut": "Çıkış yap",
+    "login": "Giriş yap"
   }
 }

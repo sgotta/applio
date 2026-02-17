@@ -246,5 +246,14 @@
     "tr": "터키어",
     "hi": "힌디어",
     "th": "태국어"
+  },
+  "auth": {
+    "loginTitle": "Applio 로그인",
+    "loginDescription": "로그인하여 프로필을 게시하고 더 많은 기능에 접근하세요.",
+    "continueWithGoogle": "Google로 계속",
+    "continueWithGitHub": "GitHub로 계속",
+    "loginDisclaimer": "이름, 이메일, 프로필 사진에만 접근합니다.",
+    "signOut": "로그아웃",
+    "login": "로그인"
   }
 }

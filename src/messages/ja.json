@@ -246,5 +246,14 @@
     "tr": "トルコ語",
     "hi": "ヒンディー語",
     "th": "タイ語"
+  },
+  "auth": {
+    "loginTitle": "Applio にサインイン",
+    "loginDescription": "サインインしてプロフィールを公開し、より多くの機能にアクセスしましょう。",
+    "continueWithGoogle": "Google で続ける",
+    "continueWithGitHub": "GitHub で続ける",
+    "loginDisclaimer": "お名前、メール、プロフィール写真のみアクセスします。",
+    "signOut": "サインアウト",
+    "login": "サインイン"
   }
 }

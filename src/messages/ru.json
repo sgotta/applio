@@ -246,5 +246,14 @@
     "tr": "Турецкий",
     "hi": "Хинди",
     "th": "Тайский"
+  },
+  "auth": {
+    "loginTitle": "Войти в Applio",
+    "loginDescription": "Войдите, чтобы опубликовать свой профиль и получить доступ к дополнительным функциям.",
+    "continueWithGoogle": "Продолжить с Google",
+    "continueWithGitHub": "Продолжить с GitHub",
+    "loginDisclaimer": "Мы получаем доступ только к вашему имени, email и фото профиля.",
+    "signOut": "Выйти",
+    "login": "Войти"
   }
 }
