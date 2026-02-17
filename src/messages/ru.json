@@ -255,5 +255,33 @@
     "loginDisclaimer": "Мы получаем доступ только к вашему имени, email и фото профиля.",
     "signOut": "Выйти",
     "login": "Войти"
+  },
+  "publish": {
+    "title": "Опубликовать профиль",
+    "updateTitle": "Обновить профиль",
+    "description": "Поделитесь своим профилем по публичной ссылке, которую может посетить любой.",
+    "slugLabel": "URL профиля",
+    "slugTaken": "Занято",
+    "slugHint": "Это будет публичный URL вашего профиля.",
+    "bioLabel": "Био",
+    "bioPlaceholder": "Напишите короткую биографию о себе...",
+    "sectionsLabel": "Разделы для отображения",
+    "section_bio": "Био",
+    "section_skills": "Навыки",
+    "section_experience": "Опыт",
+    "section_education": "Образование",
+    "section_courses": "Курсы",
+    "section_certifications": "Сертификации",
+    "section_awards": "Награды",
+    "socialLabel": "Социальные сети",
+    "publishButton": "Опубликовать",
+    "updateButton": "Обновить",
+    "saveError": "Ошибка сохранения профиля. Попробуйте снова.",
+    "published": "Профиль опубликован!",
+    "updated": "Профиль обновлён!",
+    "publishedTitle": "Профиль опубликован!",
+    "publishedDescription": "Ваш профиль теперь доступен. Поделитесь ссылкой:",
+    "linkCopied": "Ссылка скопирована в буфер обмена",
+    "publishProfile": "Опубликовать профиль"
   }
 }

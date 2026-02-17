@@ -85,6 +85,54 @@ export interface CVData {
   visibility: SectionVisibility;
 }
 
+export interface ProfileSocialLinks {
+  linkedin_url?: string;
+  website_url?: string;
+  github_url?: string;
+  twitter_url?: string;
+  instagram_url?: string;
+  youtube_url?: string;
+  tiktok_url?: string;
+  dribbble_url?: string;
+  behance_url?: string;
+  medium_url?: string;
+  dev_to_url?: string;
+  stackoverflow_url?: string;
+}
+
+export interface ProfileVisibleSections {
+  bio: boolean;
+  skills: boolean;
+  experience: boolean;
+  education: boolean;
+  courses: boolean;
+  certifications: boolean;
+  awards: boolean;
+}
+
+export interface ProfileData {
+  id?: string;
+  user_id?: string;
+  slug: string;
+  display_name: string;
+  title?: string;
+  bio?: string;
+  photo_url?: string;
+  email?: string;
+  phone?: string;
+  location?: string;
+  skills: SkillCategory[];
+  experience: ExperienceItem[];
+  education: EducationItem[];
+  courses: CourseItem[];
+  certifications: CertificationItem[];
+  awards: AwardItem[];
+  color_scheme: string;
+  visible_sections: ProfileVisibleSections;
+  star_count?: number;
+  social_links: ProfileSocialLinks;
+}
+
 export interface SharedCVData {
   cv: Omit<CVData, "personalInfo"> & {
     personalInfo: Omit<PersonalInfo, "photo"> & { photoUrl?: string };

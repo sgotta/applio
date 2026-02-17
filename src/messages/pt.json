@@ -255,5 +255,33 @@
     "loginDisclaimer": "Acessamos apenas seu nome, email e foto de perfil.",
     "signOut": "Sair",
     "login": "Entrar"
+  },
+  "publish": {
+    "title": "Publicar perfil",
+    "updateTitle": "Atualizar perfil",
+    "description": "Compartilhe seu perfil com um link público que qualquer pessoa pode visitar.",
+    "slugLabel": "URL do perfil",
+    "slugTaken": "Indisponível",
+    "slugHint": "Esta será a URL pública do seu perfil.",
+    "bioLabel": "Bio",
+    "bioPlaceholder": "Escreva uma breve bio sobre você...",
+    "sectionsLabel": "Seções a exibir",
+    "section_bio": "Bio",
+    "section_skills": "Habilidades",
+    "section_experience": "Experiência",
+    "section_education": "Educação",
+    "section_courses": "Cursos",
+    "section_certifications": "Certificações",
+    "section_awards": "Prêmios",
+    "socialLabel": "Redes sociais",
+    "publishButton": "Publicar",
+    "updateButton": "Atualizar",
+    "saveError": "Erro ao salvar perfil. Tente novamente.",
+    "published": "Perfil publicado!",
+    "updated": "Perfil atualizado!",
+    "publishedTitle": "Perfil publicado!",
+    "publishedDescription": "Seu perfil está no ar. Compartilhe este link:",
+    "linkCopied": "Link copiado para a área de transferência",
+    "publishProfile": "Publicar perfil"
   }
 }

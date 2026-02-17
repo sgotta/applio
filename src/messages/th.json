@@ -255,5 +255,33 @@
     "loginDisclaimer": "เราเข้าถึงเฉพาะชื่อ อีเมล และรูปโปรไฟล์ของคุณเท่านั้น",
     "signOut": "ออกจากระบบ",
     "login": "เข้าสู่ระบบ"
+  },
+  "publish": {
+    "title": "เผยแพร่โปรไฟล์",
+    "updateTitle": "อัปเดตโปรไฟล์",
+    "description": "แชร์โปรไฟล์ของคุณด้วยลิงก์สาธารณะที่ทุกคนสามารถเยี่ยมชมได้",
+    "slugLabel": "URL โปรไฟล์",
+    "slugTaken": "ถูกใช้แล้ว",
+    "slugHint": "นี่จะเป็น URL สาธารณะของโปรไฟล์คุณ",
+    "bioLabel": "ประวัติย่อ",
+    "bioPlaceholder": "เขียนประวัติย่อเกี่ยวกับตัวคุณ...",
+    "sectionsLabel": "ส่วนที่จะแสดง",
+    "section_bio": "ประวัติย่อ",
+    "section_skills": "ทักษะ",
+    "section_experience": "ประสบการณ์",
+    "section_education": "การศึกษา",
+    "section_courses": "คอร์ส",
+    "section_certifications": "ใบรับรอง",
+    "section_awards": "รางวัล",
+    "socialLabel": "ลิงก์โซเชียล",
+    "publishButton": "เผยแพร่",
+    "updateButton": "อัปเดต",
+    "saveError": "เกิดข้อผิดพลาดในการบันทึกโปรไฟล์ กรุณาลองอีกครั้ง",
+    "published": "เผยแพร่โปรไฟล์แล้ว!",
+    "updated": "อัปเดตโปรไฟล์แล้ว!",
+    "publishedTitle": "เผยแพร่โปรไฟล์แล้ว!",
+    "publishedDescription": "โปรไฟล์ของคุณพร้อมใช้งานแล้ว แชร์ลิงก์นี้:",
+    "linkCopied": "คัดลอกลิงก์ไปยังคลิปบอร์ดแล้ว",
+    "publishProfile": "เผยแพร่โปรไฟล์"
   }
 }

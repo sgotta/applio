@@ -255,5 +255,33 @@
     "loginDisclaimer": "我们仅访问您的姓名、邮箱和头像。",
     "signOut": "退出登录",
     "login": "登录"
+  },
+  "publish": {
+    "title": "发布个人主页",
+    "updateTitle": "更新个人主页",
+    "description": "通过公共链接分享您的个人主页，任何人都可以访问。",
+    "slugLabel": "主页 URL",
+    "slugTaken": "已被占用",
+    "slugHint": "这将是您的公共主页 URL。",
+    "bioLabel": "个人简介",
+    "bioPlaceholder": "写一段关于自己的简介...",
+    "sectionsLabel": "显示的板块",
+    "section_bio": "个人简介",
+    "section_skills": "技能",
+    "section_experience": "经验",
+    "section_education": "教育",
+    "section_courses": "课程",
+    "section_certifications": "证书",
+    "section_awards": "奖项",
+    "socialLabel": "社交链接",
+    "publishButton": "发布",
+    "updateButton": "更新",
+    "saveError": "保存主页时出错，请重试。",
+    "published": "主页已发布！",
+    "updated": "主页已更新！",
+    "publishedTitle": "主页已发布！",
+    "publishedDescription": "您的主页现已上线。分享此链接：",
+    "linkCopied": "链接已复制到剪贴板",
+    "publishProfile": "发布个人主页"
   }
 }

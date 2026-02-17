@@ -255,5 +255,33 @@
     "loginDisclaimer": "हम केवल आपके नाम, ईमेल और प्रोफ़ाइल चित्र तक पहुँचते हैं।",
     "signOut": "साइन आउट",
     "login": "साइन इन"
+  },
+  "publish": {
+    "title": "प्रोफ़ाइल प्रकाशित करें",
+    "updateTitle": "प्रोफ़ाइल अपडेट करें",
+    "description": "अपनी प्रोफ़ाइल एक सार्वजनिक लिंक से साझा करें जिसे कोई भी देख सकता है।",
+    "slugLabel": "प्रोफ़ाइल URL",
+    "slugTaken": "उपलब्ध नहीं",
+    "slugHint": "यह आपकी सार्वजनिक प्रोफ़ाइल URL होगी।",
+    "bioLabel": "परिचय",
+    "bioPlaceholder": "अपने बारे में एक संक्षिप्त परिचय लिखें...",
+    "sectionsLabel": "दिखाने के लिए अनुभाग",
+    "section_bio": "परिचय",
+    "section_skills": "कौशल",
+    "section_experience": "अनुभव",
+    "section_education": "शिक्षा",
+    "section_courses": "पाठ्यक्रम",
+    "section_certifications": "प्रमाणपत्र",
+    "section_awards": "पुरस्कार",
+    "socialLabel": "सोशल लिंक",
+    "publishButton": "प्रकाशित करें",
+    "updateButton": "अपडेट करें",
+    "saveError": "प्रोफ़ाइल सहेजने में त्रुटि। कृपया पुनः प्रयास करें।",
+    "published": "प्रोफ़ाइल प्रकाशित!",
+    "updated": "प्रोफ़ाइल अपडेट!",
+    "publishedTitle": "प्रोफ़ाइल प्रकाशित!",
+    "publishedDescription": "आपकी प्रोफ़ाइल अब लाइव है। यह लिंक साझा करें:",
+    "linkCopied": "लिंक क्लिपबोर्ड पर कॉपी किया गया",
+    "publishProfile": "प्रोफ़ाइल प्रकाशित करें"
   }
 }

@@ -23,13 +23,14 @@ import { buildSharedData, compressSharedData, generateShareURL } from "@/lib/sha
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth-context";
 import { LoginDialog } from "@/components/auth/LoginDialog";
+import { PublishDialog } from "@/components/profile/PublishDialog";
 import {
   Download, FileUp, FileDown, FileText, Globe, Type,
   SlidersHorizontal, Check, Sun, Moon, Monitor,
   Menu, X, ChevronRight, ChevronLeft, Palette, Layers,
   Loader2, MoreHorizontal, Link, LogIn, LogOut, User,
   PanelLeft, PanelRight, Square,
-  Pencil, Eye,
+  Pencil, Eye, Share2,
 } from "lucide-react";
 
 const CACHE_EXPIRY_MS = 15 * 24 * 60 * 60 * 1000; // 15 days
@@ -96,6 +97,8 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   const te = useTranslations("editMode");
   const tl = useTranslations("languages");
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
+  const [publishDialogOpen, setPublishDialogOpen] = useState(false);
+  const tp = useTranslations("publish");
   const { locale, setLocale } = useAppLocale();
   const { theme, setTheme, resolvedTheme } = useTheme();
   const { colorSchemeName, setColorScheme } = useColorScheme();
@@ -666,6 +669,21 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
               <TooltipContent>{isViewMode ? te("switchToEdit") : te("switchToView")}</TooltipContent>
             </Tooltip>
 
+            {/* Publish profile — desktop */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => user ? setPublishDialogOpen(true) : setLoginDialogOpen(true)}
+                  className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
+                >
+                  <Share2 className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>{tp("publishProfile")}</TooltipContent>
+            </Tooltip>
+
             {/* File actions menu */}
             <Popover open={fileMenuOpen} onOpenChange={setFileMenuOpen}>
               <PopoverTrigger asChild>
@@ -849,6 +867,21 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       </span>
                     </button>
                   )}
+
+                  {/* Publish profile — mobile */}
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      if (user) setPublishDialogOpen(true);
+                      else setLoginDialogOpen(true);
+                    }}
+                    className={menuItemClass}
+                  >
+                    <span className="flex items-center gap-2.5">
+                      <Share2 className="h-4 w-4" />
+                      {tp("publishProfile")}
+                    </span>
+                  </button>
 
                   {/* Divider */}
                   <div className="my-1.5 border-t border-gray-100 dark:border-border" />
@@ -1255,6 +1288,9 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
     {/* Login dialog */}
     <LoginDialog open={loginDialogOpen} onOpenChange={setLoginDialogOpen} />
+
+    {/* Publish profile dialog */}
+    <PublishDialog open={publishDialogOpen} onOpenChange={setPublishDialogOpen} />
 
     {/* Full-screen overlay during photo upload */}
     {showUploadOverlay && (

@@ -255,5 +255,33 @@
     "loginDisclaimer": "Yalnızca adınıza, e-postanıza ve profil fotoğrafınıza erişiyoruz.",
     "signOut": "Çıkış yap",
     "login": "Giriş yap"
+  },
+  "publish": {
+    "title": "Profili Yayınla",
+    "updateTitle": "Profili Güncelle",
+    "description": "Profilinizi herkesin ziyaret edebileceği bir herkese açık bağlantıyla paylaşın.",
+    "slugLabel": "Profil URL'si",
+    "slugTaken": "Alınmış",
+    "slugHint": "Bu, profilinizin herkese açık URL'si olacak.",
+    "bioLabel": "Biyografi",
+    "bioPlaceholder": "Kendiniz hakkında kısa bir biyografi yazın...",
+    "sectionsLabel": "Gösterilecek bölümler",
+    "section_bio": "Biyografi",
+    "section_skills": "Beceriler",
+    "section_experience": "Deneyim",
+    "section_education": "Eğitim",
+    "section_courses": "Kurslar",
+    "section_certifications": "Sertifikalar",
+    "section_awards": "Ödüller",
+    "socialLabel": "Sosyal bağlantılar",
+    "publishButton": "Yayınla",
+    "updateButton": "Güncelle",
+    "saveError": "Profil kaydedilirken hata oluştu. Lütfen tekrar deneyin.",
+    "published": "Profil yayınlandı!",
+    "updated": "Profil güncellendi!",
+    "publishedTitle": "Profil Yayınlandı!",
+    "publishedDescription": "Profiliniz artık yayında. Bu bağlantıyı paylaşın:",
+    "linkCopied": "Bağlantı panoya kopyalandı",
+    "publishProfile": "Profili yayınla"
   }
 }

@@ -255,5 +255,33 @@
     "loginDisclaimer": "お名前、メール、プロフィール写真のみアクセスします。",
     "signOut": "サインアウト",
     "login": "サインイン"
+  },
+  "publish": {
+    "title": "プロフィールを公開",
+    "updateTitle": "プロフィールを更新",
+    "description": "誰でもアクセスできる公開リンクでプロフィールを共有しましょう。",
+    "slugLabel": "プロフィール URL",
+    "slugTaken": "使用済み",
+    "slugHint": "これがあなたの公開プロフィール URL になります。",
+    "bioLabel": "自己紹介",
+    "bioPlaceholder": "自分についての短い紹介を書いてください...",
+    "sectionsLabel": "表示するセクション",
+    "section_bio": "自己紹介",
+    "section_skills": "スキル",
+    "section_experience": "経験",
+    "section_education": "学歴",
+    "section_courses": "コース",
+    "section_certifications": "資格",
+    "section_awards": "受賞歴",
+    "socialLabel": "SNSリンク",
+    "publishButton": "公開",
+    "updateButton": "更新",
+    "saveError": "プロフィールの保存中にエラーが発生しました。もう一度お試しください。",
+    "published": "プロフィールを公開しました！",
+    "updated": "プロフィールを更新しました！",
+    "publishedTitle": "プロフィール公開完了！",
+    "publishedDescription": "プロフィールが公開されました。このリンクを共有してください：",
+    "linkCopied": "リンクをクリップボードにコピーしました",
+    "publishProfile": "プロフィールを公開"
   }
 }

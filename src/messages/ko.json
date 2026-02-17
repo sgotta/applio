@@ -255,5 +255,33 @@
     "loginDisclaimer": "이름, 이메일, 프로필 사진에만 접근합니다.",
     "signOut": "로그아웃",
     "login": "로그인"
+  },
+  "publish": {
+    "title": "프로필 게시",
+    "updateTitle": "프로필 업데이트",
+    "description": "누구나 방문할 수 있는 공개 링크로 프로필을 공유하세요.",
+    "slugLabel": "프로필 URL",
+    "slugTaken": "사용 중",
+    "slugHint": "이것이 공개 프로필 URL이 됩니다.",
+    "bioLabel": "소개",
+    "bioPlaceholder": "자신에 대한 짧은 소개를 작성하세요...",
+    "sectionsLabel": "표시할 섹션",
+    "section_bio": "소개",
+    "section_skills": "기술",
+    "section_experience": "경력",
+    "section_education": "학력",
+    "section_courses": "강좌",
+    "section_certifications": "자격증",
+    "section_awards": "수상",
+    "socialLabel": "소셜 링크",
+    "publishButton": "게시",
+    "updateButton": "업데이트",
+    "saveError": "프로필 저장 중 오류가 발생했습니다. 다시 시도해 주세요.",
+    "published": "프로필이 게시되었습니다!",
+    "updated": "프로필이 업데이트되었습니다!",
+    "publishedTitle": "프로필 게시 완료!",
+    "publishedDescription": "프로필이 공개되었습니다. 이 링크를 공유하세요:",
+    "linkCopied": "링크가 클립보드에 복사되었습니다",
+    "publishProfile": "프로필 게시"
   }
 }

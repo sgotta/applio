@@ -255,5 +255,33 @@
     "loginDisclaimer": "Accediamo solo al tuo nome, email e foto profilo.",
     "signOut": "Esci",
     "login": "Accedi"
+  },
+  "publish": {
+    "title": "Pubblica profilo",
+    "updateTitle": "Aggiorna profilo",
+    "description": "Condividi il tuo profilo con un link pubblico che chiunque può visitare.",
+    "slugLabel": "URL del profilo",
+    "slugTaken": "Non disponibile",
+    "slugHint": "Questo sarà l'URL pubblico del tuo profilo.",
+    "bioLabel": "Bio",
+    "bioPlaceholder": "Scrivi una breve bio su di te...",
+    "sectionsLabel": "Sezioni da mostrare",
+    "section_bio": "Bio",
+    "section_skills": "Competenze",
+    "section_experience": "Esperienza",
+    "section_education": "Formazione",
+    "section_courses": "Corsi",
+    "section_certifications": "Certificazioni",
+    "section_awards": "Premi",
+    "socialLabel": "Social network",
+    "publishButton": "Pubblica",
+    "updateButton": "Aggiorna",
+    "saveError": "Errore nel salvataggio del profilo. Riprova.",
+    "published": "Profilo pubblicato!",
+    "updated": "Profilo aggiornato!",
+    "publishedTitle": "Profilo pubblicato!",
+    "publishedDescription": "Il tuo profilo è ora online. Condividi questo link:",
+    "linkCopied": "Link copiato negli appunti",
+    "publishProfile": "Pubblica profilo"
   }
 }

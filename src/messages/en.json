@@ -255,5 +255,33 @@
     "loginDisclaimer": "We only access your name, email, and profile picture.",
     "signOut": "Sign out",
     "login": "Sign in"
+  },
+  "publish": {
+    "title": "Publish Profile",
+    "updateTitle": "Update Profile",
+    "description": "Share your profile with a public link anyone can visit.",
+    "slugLabel": "Profile URL",
+    "slugTaken": "Taken",
+    "slugHint": "This will be your public profile URL.",
+    "bioLabel": "Bio",
+    "bioPlaceholder": "Write a short bio about yourself...",
+    "sectionsLabel": "Sections to show",
+    "section_bio": "Bio",
+    "section_skills": "Skills",
+    "section_experience": "Experience",
+    "section_education": "Education",
+    "section_courses": "Courses",
+    "section_certifications": "Certifications",
+    "section_awards": "Awards",
+    "socialLabel": "Social links",
+    "publishButton": "Publish",
+    "updateButton": "Update",
+    "saveError": "Error saving profile. Please try again.",
+    "published": "Profile published!",
+    "updated": "Profile updated!",
+    "publishedTitle": "Profile Published!",
+    "publishedDescription": "Your profile is now live. Share this link:",
+    "linkCopied": "Link copied to clipboard",
+    "publishProfile": "Publish profile"
   }
 }
