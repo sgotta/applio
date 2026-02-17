@@ -87,7 +87,7 @@ export function CVPreview() {
   return (
     <>
     <div
-      className="cv-preview-content mx-auto w-full lg:w-[210mm] max-w-[210mm] bg-white md:shadow-xl dark:md:shadow-2xl dark:md:shadow-black/40 print:shadow-none"
+      className="cv-preview-content mx-auto w-full lg:w-[210mm] max-w-[210mm] bg-white md:shadow-[0_2px_20px_-6px_rgba(0,0,0,0.12)] dark:md:shadow-[0_2px_20px_-6px_rgba(0,0,0,0.45)] print:shadow-none"
       style={fontDef ? { fontFamily: fontDef.cssStack } : undefined}
     >
       <ViewModeHint />
