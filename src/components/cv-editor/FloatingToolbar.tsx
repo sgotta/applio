@@ -474,7 +474,12 @@ export function FloatingToolbar({
   }, [keyboard.isOpen]);
 
   useEffect(() => {
-    if (!visible) setStayDocked(false);
+    // Delay clearing stayDocked so transient focus loss during keyboard
+    // dismiss (editor blur → re-focus) doesn't accidentally reset it.
+    if (!visible) {
+      const timer = setTimeout(() => setStayDocked(false), 300);
+      return () => clearTimeout(timer);
+    }
   }, [visible]);
 
   const docked = keyboard.isOpen || stayDocked;
