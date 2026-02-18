@@ -34,6 +34,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToolbarFeatures } from "@/lib/toolbar-features-context";
+import { useVirtualKeyboard } from "@/lib/use-virtual-keyboard";
 
 const isMac =
   typeof navigator !== "undefined" &&
@@ -338,6 +339,7 @@ export function FloatingToolbar({
 }) {
   const t = useTranslations("floatingToolbar");
   const { features: TOOLBAR_FEATURES } = useToolbarFeatures();
+  const keyboard = useVirtualKeyboard();
   const hasColorGroup = TOOLBAR_FEATURES.textColor || TOOLBAR_FEATURES.highlight;
   const [visible, setVisible] = useState(false);
   const [coords, setCoords] = useState({ top: 0, left: 0 });
@@ -463,19 +465,37 @@ export function FloatingToolbar({
 
   if (!visible) return null;
 
+  const docked = keyboard.isOpen;
+
   return createPortal(
     <TooltipProvider delayDuration={400}>
       <div
         ref={toolbarRef}
-        style={{
-          position: "absolute",
-          top: coords.top,
-          left: coords.left,
-          transform: "translate(-50%, -100%)",
-          zIndex: 9999,
-        }}
+        style={
+          docked
+            ? {
+                position: "fixed",
+                bottom: keyboard.height,
+                left: 0,
+                right: 0,
+                zIndex: 9999,
+                paddingBottom: "env(safe-area-inset-bottom, 0px)",
+                transition: "bottom 150ms ease-out",
+              }
+            : {
+                position: "absolute",
+                top: coords.top,
+                left: coords.left,
+                transform: "translate(-50%, -100%)",
+                zIndex: 9999,
+              }
+        }
         onMouseDown={(e) => e.preventDefault()}
-        className="flex items-center gap-0.5 rounded-md border border-border bg-popover text-popover-foreground shadow-md px-1 py-0.5"
+        className={
+          docked
+            ? "flex items-center justify-center gap-0.5 border-t border-border bg-popover text-popover-foreground shadow-[0_-2px_8px_rgba(0,0,0,0.08)] px-2 py-1"
+            : "flex items-center gap-0.5 rounded-md border border-border bg-popover text-popover-foreground shadow-md px-1 py-0.5"
+        }
       >
         {/* Block type dropdown */}
         {blockEditing && currentTypeOption && visibleBlockTypes.length > 0 && (
