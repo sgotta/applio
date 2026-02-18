@@ -475,7 +475,7 @@ export function FloatingToolbar({
           docked
             ? {
                 position: "fixed",
-                bottom: 0,
+                bottom: keyboard.height,
                 left: 0,
                 right: 0,
                 zIndex: 9999,
