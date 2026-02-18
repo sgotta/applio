@@ -463,9 +463,34 @@ export function FloatingToolbar({
     [editor]
   );
 
-  if (!visible) return null;
-
   const docked = keyboard.isOpen;
+
+  // Keep toolbar pinned above the keyboard while the page scrolls.
+  // Uses direct DOM manipulation (transform) to avoid React re-render lag.
+  useEffect(() => {
+    if (!docked || !visible) return;
+    const vv = window.visualViewport;
+    const el = toolbarRef.current;
+    if (!vv || !el) return;
+
+    function reposition() {
+      // bottom:0 sits at the layout viewport bottom. Translate up so the
+      // toolbar's bottom edge aligns with the visual viewport bottom (= above keyboard).
+      const offset = vv!.offsetTop + vv!.height - window.innerHeight;
+      el!.style.transform = `translateY(${offset}px)`;
+    }
+
+    vv.addEventListener("scroll", reposition);
+    vv.addEventListener("resize", reposition);
+    reposition();
+
+    return () => {
+      vv.removeEventListener("scroll", reposition);
+      vv.removeEventListener("resize", reposition);
+    };
+  }, [docked, visible]);
+
+  if (!visible) return null;
 
   return createPortal(
     <TooltipProvider delayDuration={400}>
@@ -475,12 +500,11 @@ export function FloatingToolbar({
           docked
             ? {
                 position: "fixed",
-                bottom: keyboard.height,
+                bottom: 0,
                 left: 0,
                 right: 0,
                 zIndex: 9999,
                 paddingBottom: "env(safe-area-inset-bottom, 0px)",
-                transition: "bottom 150ms ease-out",
               }
             : {
                 position: "absolute",
@@ -493,7 +517,7 @@ export function FloatingToolbar({
         onMouseDown={(e) => e.preventDefault()}
         className={
           docked
-            ? "flex items-center justify-center gap-0.5 border-t border-border bg-popover text-popover-foreground shadow-[0_-2px_8px_rgba(0,0,0,0.08)] px-2 py-1"
+            ? "flex items-center gap-1.5 border-t border-border bg-popover shadow-[0_-4px_12px_rgba(0,0,0,0.1)] px-3 py-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [&_button]:h-9 [&_button]:min-w-9 [&_button]:text-foreground [&_svg]:h-5 [&_svg]:w-5"
             : "flex items-center gap-0.5 rounded-md border border-border bg-popover text-popover-foreground shadow-md px-1 py-0.5"
         }
       >
@@ -547,7 +571,7 @@ export function FloatingToolbar({
               </PopoverContent>
             </Popover>
 
-            <div className="w-px h-4 bg-border mx-0.5" />
+            <div className={`w-px bg-border ${docked ? "h-5 mx-1" : "h-4 mx-0.5"}`} />
           </>
         )}
 
@@ -623,7 +647,7 @@ export function FloatingToolbar({
         )}
 
         {/* Separator — only if color group is visible */}
-        {hasColorGroup && <div className="w-px h-4 bg-border mx-0.5" />}
+        {hasColorGroup && <div className={`w-px bg-border ${docked ? "h-5 mx-1" : "h-4 mx-0.5"}`} />}
 
         {/* Text color */}
         {TOOLBAR_FEATURES.textColor && (
@@ -734,7 +758,7 @@ export function FloatingToolbar({
         {/* Move block up/down — only in block editing mode */}
         {TOOLBAR_FEATURES.moveBlocks && blockEditing && (
           <>
-            <div className="w-px h-4 bg-border mx-0.5" />
+            <div className={`w-px bg-border ${docked ? "h-5 mx-1" : "h-4 mx-0.5"}`} />
             <ToolbarButton
               active={false}
               onClick={() => { pinnedUntilRef.current = Date.now() + 1000; moveBlockUp(editor); }}
