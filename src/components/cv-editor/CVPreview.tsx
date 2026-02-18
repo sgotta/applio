@@ -104,6 +104,7 @@ export function CVPreview() {
 
         {/* ===== LEFT COLUMN — sidebar on desktop, below header on mobile ===== */}
         <div
+          data-testid="cv-sidebar"
           className={`order-2 md:order-0 md:col-start-1 md:row-start-1 relative${colorScheme.sidebarText === "#ffffff" ? " cv-sidebar-dark" : ""}`}
           style={{ backgroundColor: colorScheme.sidebarBg, padding: mg(24) }}
         >

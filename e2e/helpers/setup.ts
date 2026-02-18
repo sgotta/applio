@@ -39,7 +39,7 @@ export const minimalCV: CVData = {
     {
       id: "skill-test-1",
       category: "Testing",
-      items: ["Playwright", "Stagehand", "E2E"],
+      items: ["Playwright", "Selenium", "E2E"],
     },
   ],
   courses: [],
@@ -111,9 +111,38 @@ export function titleField(page: Page) {
  * Returns a locator for all `.group/entry` elements within that section.
  */
 export function sectionEntries(page: Page, sectionTitle: string) {
-  // h3 is inside SectionTitle div (.mb-3.mt-1), which is a child of the section wrapper div
-  // Navigate: h3 -> SectionTitle wrapper -> Section wrapper -> find entries inside
   return page.locator(`h3:has-text("${sectionTitle}")`).locator("../..").locator(".group\\/entry");
+}
+
+/**
+ * Get the CV sidebar element.
+ */
+export function cvSidebar(page: Page) {
+  return page.locator("[data-testid='cv-sidebar']");
+}
+
+/**
+ * Get skill categories in the sidebar. Each is a .group/entry inside the skills section.
+ */
+export function skillCategories(page: Page) {
+  return page.locator("h3").filter({ hasText: /^Skills$/i }).locator("../..").locator(".group\\/entry");
+}
+
+// ─── Toolbar helpers ──────────────────────────────────────
+
+/**
+ * Click a toolbar button by data-testid and wait for the Radix popover to open.
+ */
+export async function openToolbarPopover(page: Page, testId: string) {
+  await page.locator(`[data-testid="${testId}"]`).click();
+  await page.locator("[data-radix-popper-content-wrapper]").first().waitFor({ state: "visible" });
+}
+
+/**
+ * Get the currently visible Radix popover content.
+ */
+export function popoverContent(page: Page) {
+  return page.locator("[data-radix-popper-content-wrapper]").first();
 }
 
 // ─── Interaction helpers ───────────────────────────────────
@@ -143,10 +172,8 @@ export async function editTextbox(page: Page, textbox: Locator, newText: string)
  */
 export async function openGripMenu(page: Page, entry: Locator) {
   await entry.hover();
-  // The grip button is positioned absolutely to the left, contains GripVertical SVG
   const grip = entry.locator("button").first();
   await grip.click();
-  // Wait for Radix popover to open
   await page.locator("[data-radix-popper-content-wrapper]").waitFor({ state: "visible" });
 }
 

@@ -303,6 +303,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <Button
                       variant="ghost"
                       size="icon"
+                      data-testid="btn-color-scheme"
                       className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
                     >
                       <Palette className="h-4 w-4" />
@@ -464,6 +465,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <Button
                       variant="ghost"
                       size="icon"
+                      data-testid="btn-font"
                       className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
                     >
                       <Type className="h-4 w-4" />
@@ -532,6 +534,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <Button
                       variant="ghost"
                       size="icon"
+                      data-testid="btn-sections"
                       className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
                     >
                       <SlidersHorizontal className="h-4 w-4" />
@@ -621,6 +624,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                 <Button
                   variant="ghost"
                   size="icon"
+                  data-testid="btn-theme"
                   onClick={toggleTheme}
                   className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
                 >
@@ -680,6 +684,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                 <Button
                   variant="ghost"
                   size="icon"
+                  data-testid="btn-file-menu"
                   className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
                 >
                   <MoreHorizontal className="h-4 w-4" />
