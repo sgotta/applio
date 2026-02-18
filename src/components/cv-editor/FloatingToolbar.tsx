@@ -465,31 +465,6 @@ export function FloatingToolbar({
 
   const docked = keyboard.isOpen;
 
-  // Keep toolbar pinned above the keyboard while the page scrolls.
-  // Uses direct DOM manipulation (transform) to avoid React re-render lag.
-  useEffect(() => {
-    if (!docked || !visible) return;
-    const vv = window.visualViewport;
-    const el = toolbarRef.current;
-    if (!vv || !el) return;
-
-    function reposition() {
-      // bottom:0 sits at the layout viewport bottom. Translate up so the
-      // toolbar's bottom edge aligns with the visual viewport bottom (= above keyboard).
-      const offset = vv!.offsetTop + vv!.height - window.innerHeight;
-      el!.style.transform = `translateY(${offset}px)`;
-    }
-
-    vv.addEventListener("scroll", reposition);
-    vv.addEventListener("resize", reposition);
-    reposition();
-
-    return () => {
-      vv.removeEventListener("scroll", reposition);
-      vv.removeEventListener("resize", reposition);
-    };
-  }, [docked, visible]);
-
   if (!visible) return null;
 
   return createPortal(
