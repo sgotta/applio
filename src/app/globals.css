@@ -127,14 +127,7 @@
   }
 }
 
-/* Smooth transitions for editable elements */
 @layer utilities {
-  .editable-hover {
-    @apply transition-colors duration-150 rounded-sm;
-  }
-  .editable-hover:hover {
-    @apply bg-muted;
-  }
   .scrollbar-thin {
     scrollbar-width: thin;
     scrollbar-color: rgba(0, 0, 0, 0.1) transparent;

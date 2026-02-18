@@ -15,7 +15,7 @@ import type { SharedCVData, CVData } from "@/lib/types";
 import { DEFAULT_SIDEBAR_ORDER } from "@/lib/default-data";
 import { getColorScheme, type ColorSchemeName, type ColorScheme } from "@/lib/color-schemes";
 import { getSidebarPattern, type PatternSettings, DEFAULT_PATTERN_SETTINGS } from "@/lib/sidebar-patterns";
-import { renderRichText, renderRichDocument } from "@/lib/render-rich-text";
+import { renderRichDocument } from "@/lib/render-rich-text";
 import { Separator } from "@/components/ui/separator";
 import {
   FileText, AlertCircle, Heart, Download,
@@ -224,9 +224,9 @@ function MobileCVView({
                 <MobileSectionHeading color={colors.sidebarText} separatorColor={colors.sidebarSeparator} fontSize={fs.section}>
                   {t("aboutMe")}
                 </MobileSectionHeading>
-                <p className="leading-relaxed" style={{ color: colors.sidebarText, fontSize: fs.body }}>
-                  {renderRichText(summary)}
-                </p>
+                <div className="leading-relaxed" style={{ color: colors.sidebarText, fontSize: fs.body }}>
+                  {renderRichDocument(summary)}
+                </div>
               </div>
             );
           }
@@ -353,12 +353,9 @@ function MobileCVView({
                     {edu.degree}
                   </p>
                   {edu.description && (
-                    <p
-                      className="mt-1 leading-relaxed text-gray-600"
-                      style={{ fontSize: fs.body }}
-                    >
-                      {renderRichText(edu.description)}
-                    </p>
+                    <div className="mt-1.5" style={{ fontSize: fs.body, "--bullet-color": colors.bullet } as React.CSSProperties}>
+                      {renderRichDocument(edu.description)}
+                    </div>
                   )}
                 </div>
               ))}
@@ -389,6 +386,11 @@ function MobileCVView({
                   <p className="font-medium text-gray-500" style={{ fontSize: fs.small }}>
                     {course.institution}
                   </p>
+                  {course.description && (
+                    <div className="mt-1.5" style={{ fontSize: fs.body, "--bullet-color": colors.bullet } as React.CSSProperties}>
+                      {renderRichDocument(course.description)}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -418,6 +420,11 @@ function MobileCVView({
                   <p className="font-medium text-gray-500" style={{ fontSize: fs.small }}>
                     {cert.issuer}
                   </p>
+                  {cert.description && (
+                    <div className="mt-1.5" style={{ fontSize: fs.body, "--bullet-color": colors.bullet } as React.CSSProperties}>
+                      {renderRichDocument(cert.description)}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -447,6 +454,11 @@ function MobileCVView({
                   <p className="font-medium text-gray-500" style={{ fontSize: fs.small }}>
                     {award.issuer}
                   </p>
+                  {award.description && (
+                    <div className="mt-1.5" style={{ fontSize: fs.body, "--bullet-color": colors.bullet } as React.CSSProperties}>
+                      {renderRichDocument(award.description)}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

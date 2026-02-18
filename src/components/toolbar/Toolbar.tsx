@@ -111,6 +111,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
         colorScheme: colorSchemeName,
         fontFamily: fontFamilyId,
         fontSizeLevel,
+        marginLevel: 1,
         pattern: patternSettings,
       },
     };
