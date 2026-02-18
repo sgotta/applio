@@ -479,7 +479,11 @@ export function FloatingToolbar({
 
   const docked = keyboard.isOpen || stayDocked;
 
-  if (!visible) return null;
+  // On touch devices (phones/tablets), only show the toolbar when docked.
+  // The floating toolbar would overlap with the OS native selection menu.
+  const isCoarsePointer = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches;
+
+  if (!visible || (!docked && isCoarsePointer)) return null;
 
   return createPortal(
     <TooltipProvider delayDuration={400}>
