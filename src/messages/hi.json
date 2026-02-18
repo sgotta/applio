@@ -81,6 +81,7 @@
     "deleteCategoryAriaLabel": "श्रेणी {category} हटाएँ",
     "addCategory": "श्रेणी जोड़ें",
     "skillPlaceholder": "कौशल",
+    "skillDeleted": "हटाया गया \"{tag}\"",
     "deleteSkillAriaLabel": "{skill} हटाएँ",
     "confirmDeleteSkill": "\"{skill}\" हटाएँ?",
     "confirmDeleteSkillEmpty": "यह कौशल हटाएँ?",

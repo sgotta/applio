@@ -81,6 +81,7 @@
     "deleteCategoryAriaLabel": "Kategorie {category} löschen",
     "addCategory": "Kategorie hinzufügen",
     "skillPlaceholder": "Fähigkeit",
+    "skillDeleted": "Gelöscht \"{tag}\"",
     "deleteSkillAriaLabel": "{skill} löschen",
     "confirmDeleteSkill": "\"{skill}\" löschen?",
     "confirmDeleteSkillEmpty": "Diese Fähigkeit löschen?",

@@ -81,6 +81,7 @@
     "deleteCategoryAriaLabel": "{category} kategorisini sil",
     "addCategory": "Kategori ekle",
     "skillPlaceholder": "beceri",
+    "skillDeleted": "Silindi \"{tag}\"",
     "deleteSkillAriaLabel": "{skill} becerisini sil",
     "confirmDeleteSkill": "\"{skill}\" silinsin mi?",
     "confirmDeleteSkillEmpty": "Bu beceri silinsin mi?",

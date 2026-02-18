@@ -4,6 +4,7 @@ import React, { memo, useCallback, useState } from "react";
 import { useCV } from "@/lib/cv-context";
 import { useTranslations } from "next-intl";
 import { useColorScheme } from "@/lib/color-scheme-context";
+import { toast } from "sonner";
 
 import { EditableText } from "./EditableText";
 import { EntryGrip } from "./EntryGrip";
@@ -193,6 +194,7 @@ function SortableSkillBadge({
   badgeBg,
   badgeText,
   autoEdit,
+  isGroupDragging,
 }: {
   sortableId: string;
   value: string;
@@ -201,6 +203,7 @@ function SortableSkillBadge({
   badgeBg: string;
   badgeText: string;
   autoEdit?: boolean;
+  isGroupDragging?: boolean;
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const {
@@ -211,6 +214,8 @@ function SortableSkillBadge({
     transition,
     isDragging,
   } = useSortable({ id: sortableId, disabled: isEditing });
+
+  const isSibling = isGroupDragging && !isDragging;
 
   const style: React.CSSProperties = {
     transform: CSS.Translate.toString(transform),
@@ -224,7 +229,7 @@ function SortableSkillBadge({
     <span
       ref={setNodeRef}
       style={style}
-      className="inline-flex touch-manipulation"
+      className={`inline-flex touch-manipulation${isSibling ? " animate-wiggle" : ""}`}
       {...attributes}
       {...listeners}
     >
@@ -264,6 +269,7 @@ function SortableSkillCategory({
   const t = useTranslations("personalInfo");
   const tc = useTranslations("common");
   const { colorScheme } = useColorScheme();
+  const [isDraggingSkills, setIsDraggingSkills] = useState(false);
 
   const {
     attributes,
@@ -324,7 +330,16 @@ function SortableSkillCategory({
           id={`skills-dnd-${skillGroup.id}`}
           sensors={sensors}
           collisionDetection={closestCenter}
-          onDragEnd={onSkillDragEnd(skillGroup.id, skillGroup.items)}
+          onDragStart={() => setIsDraggingSkills(true)}
+          onDragEnd={(e) => {
+            setIsDraggingSkills(false);
+            (document.activeElement as HTMLElement)?.blur?.();
+            onSkillDragEnd(skillGroup.id, skillGroup.items)(e);
+          }}
+          onDragCancel={() => {
+            setIsDraggingSkills(false);
+            (document.activeElement as HTMLElement)?.blur?.();
+          }}
         >
           <SortableContext
             items={skillGroup.items.map((_, i) => String(i))}
@@ -340,11 +355,13 @@ function SortableSkillCategory({
                     badgeBg={colorScheme.sidebarBadgeBg}
                     badgeText={colorScheme.sidebarBadgeText}
                     autoEdit={!!autoEditTarget?.startsWith(skillGroup.id + ":") && i === skillGroup.items.length - 1}
+                    isGroupDragging={isDraggingSkills}
                     onChange={(v) => {
                       if (!v) {
-                        // Empty badge → auto-delete
+                        const deleted = skillGroup.items[i];
                         const newItems = skillGroup.items.filter((_, idx) => idx !== i);
                         updateSkillCategory(skillGroup.id, { items: newItems });
+                        if (deleted) toast(t("skillDeleted", { tag: deleted }));
                       } else {
                         const newItems = [...skillGroup.items];
                         newItems[i] = v;

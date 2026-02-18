@@ -81,6 +81,7 @@
     "deleteCategoryAriaLabel": "カテゴリー {category} を削除",
     "addCategory": "カテゴリーを追加",
     "skillPlaceholder": "スキル",
+    "skillDeleted": "削除しました \"{tag}\"",
     "deleteSkillAriaLabel": "{skill} を削除",
     "confirmDeleteSkill": "「{skill}」を削除しますか？",
     "confirmDeleteSkillEmpty": "このスキルを削除しますか？",

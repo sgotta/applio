@@ -81,6 +81,7 @@
     "deleteCategoryAriaLabel": "카테고리 {category} 삭제",
     "addCategory": "카테고리 추가",
     "skillPlaceholder": "기술",
+    "skillDeleted": "삭제됨 \"{tag}\"",
     "deleteSkillAriaLabel": "{skill} 삭제",
     "confirmDeleteSkill": "\"{skill}\" 삭제하시겠습니까?",
     "confirmDeleteSkillEmpty": "이 기술을 삭제하시겠습니까?",

@@ -81,6 +81,7 @@
     "deleteCategoryAriaLabel": "删除类别 {category}",
     "addCategory": "添加类别",
     "skillPlaceholder": "技能",
+    "skillDeleted": "已删除 \"{tag}\"",
     "deleteSkillAriaLabel": "删除 {skill}",
     "confirmDeleteSkill": "删除「{skill}」？",
     "confirmDeleteSkillEmpty": "删除此技能？",

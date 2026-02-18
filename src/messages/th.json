@@ -81,6 +81,7 @@
     "deleteCategoryAriaLabel": "ลบหมวดหมู่ {category}",
     "addCategory": "เพิ่มหมวดหมู่",
     "skillPlaceholder": "ทักษะ",
+    "skillDeleted": "ลบแล้ว \"{tag}\"",
     "deleteSkillAriaLabel": "ลบ {skill}",
     "confirmDeleteSkill": "ลบ \"{skill}\" หรือไม่?",
     "confirmDeleteSkillEmpty": "ลบทักษะนี้หรือไม่?",

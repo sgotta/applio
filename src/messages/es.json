@@ -81,6 +81,7 @@
     "deleteCategoryAriaLabel": "Eliminar categoría {category}",
     "addCategory": "Agregar categoría",
     "skillPlaceholder": "skill",
+    "skillDeleted": "Se borró \"{tag}\"",
     "deleteSkillAriaLabel": "Eliminar {skill}",
     "confirmDeleteSkill": "¿Eliminar \"{skill}\"?",
     "confirmDeleteSkillEmpty": "¿Eliminar esta habilidad?",

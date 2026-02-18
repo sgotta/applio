@@ -81,6 +81,7 @@
     "deleteCategoryAriaLabel": "Удалить категорию {category}",
     "addCategory": "Добавить категорию",
     "skillPlaceholder": "навык",
+    "skillDeleted": "Удалено \"{tag}\"",
     "deleteSkillAriaLabel": "Удалить {skill}",
     "confirmDeleteSkill": "Удалить «{skill}»?",
     "confirmDeleteSkillEmpty": "Удалить этот навык?",

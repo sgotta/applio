@@ -81,6 +81,7 @@
     "deleteCategoryAriaLabel": "Excluir categoria {category}",
     "addCategory": "Adicionar categoria",
     "skillPlaceholder": "habilidade",
+    "skillDeleted": "Excluído \"{tag}\"",
     "deleteSkillAriaLabel": "Excluir {skill}",
     "confirmDeleteSkill": "Excluir \"{skill}\"?",
     "confirmDeleteSkillEmpty": "Excluir esta habilidade?",
