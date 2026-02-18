@@ -465,7 +465,25 @@ export function FloatingToolbar({
 
   const docked = keyboard.isOpen;
 
-  if (!visible) return null;
+  // When the keyboard dismisses (docked → floating), hide briefly so the
+  // toolbar doesn't flash at stale coordinates while the layout settles.
+  const wasDocked = useRef(false);
+  const [undocking, setUndocking] = useState(false);
+
+  useEffect(() => {
+    if (wasDocked.current && !docked) {
+      setUndocking(true);
+      const timer = setTimeout(() => {
+        updatePosition();
+        setUndocking(false);
+      }, 200);
+      wasDocked.current = false;
+      return () => { clearTimeout(timer); setUndocking(false); };
+    }
+    wasDocked.current = docked;
+  }, [docked, updatePosition]);
+
+  if (!visible || undocking) return null;
 
   return createPortal(
     <TooltipProvider delayDuration={400}>
