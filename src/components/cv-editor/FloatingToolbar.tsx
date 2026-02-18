@@ -463,27 +463,23 @@ export function FloatingToolbar({
     [editor]
   );
 
-  const docked = keyboard.isOpen;
-
-  // When the keyboard dismisses (docked → floating), hide briefly so the
-  // toolbar doesn't flash at stale coordinates while the layout settles.
-  const wasDocked = useRef(false);
-  const [undocking, setUndocking] = useState(false);
+  // Once the keyboard opens we enter "sticky dock" mode: the toolbar stays
+  // docked at the bottom even after the keyboard is dismissed, as long as
+  // text is still selected.  This prevents the toolbar from jumping to a
+  // floating position and colliding with Android's native copy/paste menu.
+  const [stayDocked, setStayDocked] = useState(false);
 
   useEffect(() => {
-    if (wasDocked.current && !docked) {
-      setUndocking(true);
-      const timer = setTimeout(() => {
-        updatePosition();
-        setUndocking(false);
-      }, 200);
-      wasDocked.current = false;
-      return () => { clearTimeout(timer); setUndocking(false); };
-    }
-    wasDocked.current = docked;
-  }, [docked, updatePosition]);
+    if (keyboard.isOpen) setStayDocked(true);
+  }, [keyboard.isOpen]);
 
-  if (!visible || undocking) return null;
+  useEffect(() => {
+    if (!visible) setStayDocked(false);
+  }, [visible]);
+
+  const docked = keyboard.isOpen || stayDocked;
+
+  if (!visible) return null;
 
   return createPortal(
     <TooltipProvider delayDuration={400}>
