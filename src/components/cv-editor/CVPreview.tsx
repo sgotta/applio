@@ -128,7 +128,7 @@ export function CVPreview() {
           )}
           <div className="relative">
             {/* Desktop header */}
-            <div className="hidden md:block" style={{ padding: `${mg(24)}px ${mg(24)}px 0` }}>
+            <div data-testid="desktop-header" className="hidden md:block" style={{ padding: `${mg(24)}px ${mg(24)}px 0` }}>
               <CVHeader />
             </div>
             {/* Content */}
