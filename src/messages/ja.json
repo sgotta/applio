@@ -14,6 +14,10 @@
     "exportTitle": "履歴書をJSONファイルとしてエクスポート",
     "pdfTitle": "PDFをダウンロード",
     "pdfGenerating": "PDFを生成中...",
+    "sidebarSections": "サイドバーセクション",
+    "sectionContact": "連絡先",
+    "sectionSummary": "職務概要",
+    "sectionSkills": "スキル",
     "optionalSections": "オプションセクション",
     "sectionCourses": "講座・ワークショップ",
     "sectionCertifications": "資格",
@@ -97,21 +101,12 @@
     "endDatePlaceholder": "終了",
     "positionPlaceholder": "役職",
     "bulletPlaceholder": "実績や職務内容を記入...",
-    "deleteBullet": "項目を削除",
-    "addBullet": "実績を追加",
     "addExperience": "職歴を追加",
-    "newBulletDefault": "新しい実績または職務内容。",
     "confirmDeleteExperience": "「{name}」を削除しますか？",
     "confirmDeleteExperienceEmpty": "この職歴を削除しますか？",
     "deleteConfirm": "削除",
     "deleteCancel": "キャンセル",
-    "roleDescriptionPlaceholder": "説明（任意）...",
-    "typeBullet": "箇条書き",
-    "typeTitle": "見出し",
-    "typeSubtitle": "小見出し",
-    "typeNumbered": "番号付き",
     "gripDragHint": "ドラッグで並べ替え",
-    "gripClickHint": "クリックでタイプ変更",
     "gripLongPressHint": "長押しでドラッグ"
   },
   "education": {
@@ -147,7 +142,49 @@
     "adjust": "調整"
   },
   "editableText": {
-    "defaultPlaceholder": "クリックして編集..."
+    "defaultPlaceholder": "クリックして編集...",
+    "pasteLineBreaksCleaned": "改行を整理しました。Ctrl+Zで元に戻せます。"
+  },
+  "floatingToolbar": {
+    "bold": "太字",
+    "italic": "斜体",
+    "underline": "下線",
+    "strikethrough": "取り消し線",
+    "code": "コード",
+    "textColor": "文字色",
+    "highlight": "ハイライト",
+    "turnInto": "変換",
+    "typeText": "テキスト",
+    "typeHeading2": "見出し 1",
+    "typeHeading3": "見出し 2",
+    "typeHeading4": "見出し 3",
+    "typeBulletList": "箇条書き",
+    "typeOrderedList": "番号付きリスト",
+    "typeBlockquote": "引用",
+    "clearFormatting": "書式をクリア",
+    "moveUp": "上に移動",
+    "moveDown": "下に移動"
+  },
+  "admin": {
+    "title": "管理者専用",
+    "bold": "太字",
+    "italic": "斜体",
+    "underline": "下線",
+    "strikethrough": "取り消し線",
+    "code": "コード",
+    "clearFormatting": "書式をクリア",
+    "textColor": "文字色",
+    "highlight": "ハイライト",
+    "moveBlocks": "ブロック移動",
+    "blockTypes": "ブロックタイプ",
+    "blockTypesSection": "表示するブロックタイプ",
+    "typeParagraph": "テキスト",
+    "typeHeading2": "見出し 1",
+    "typeHeading3": "見出し 2",
+    "typeHeading4": "見出し 3",
+    "typeBulletList": "箇条書き",
+    "typeOrderedList": "番号付きリスト",
+    "typeBlockquote": "引用"
   },
   "courses": {
     "title": "講座・ワークショップ",
@@ -161,7 +198,8 @@
     "confirmDeleteCourse": "「{name}」を削除しますか？",
     "confirmDeleteCourseEmpty": "この講座を削除しますか？",
     "deleteConfirm": "削除",
-    "deleteCancel": "キャンセル"
+    "deleteCancel": "キャンセル",
+    "descriptionPlaceholder": "任意の説明..."
   },
   "certifications": {
     "title": "資格",
@@ -175,7 +213,8 @@
     "confirmDeleteCertification": "「{name}」を削除しますか？",
     "confirmDeleteCertificationEmpty": "この資格を削除しますか？",
     "deleteConfirm": "削除",
-    "deleteCancel": "キャンセル"
+    "deleteCancel": "キャンセル",
+    "descriptionPlaceholder": "任意の説明..."
   },
   "awards": {
     "title": "受賞歴",
@@ -189,7 +228,8 @@
     "confirmDeleteAward": "「{name}」を削除しますか？",
     "confirmDeleteAwardEmpty": "この受賞歴を削除しますか？",
     "deleteConfirm": "削除",
-    "deleteCancel": "キャンセル"
+    "deleteCancel": "キャンセル",
+    "descriptionPlaceholder": "任意の説明..."
   },
   "printable": {
     "profilePhotoAlt": "プロフィール写真",
@@ -227,15 +267,6 @@
     "madeWith": "アルゼンチン製",
     "generating": "PDFを生成中..."
   },
-  "editMode": {
-    "edit": "編集",
-    "view": "表示",
-    "switchToEdit": "編集モードに切替",
-    "switchToView": "表示モードに切替",
-    "viewModeHint": "編集モードに切り替えてください",
-    "doubleClickHint": "ダブルクリックで編集",
-    "exitedEditMode": "閲覧モードに戻りました"
-  },
   "languages": {
     "en": "英語",
     "es": "スペイン語",
@@ -250,5 +281,13 @@
     "tr": "トルコ語",
     "hi": "ヒンディー語",
     "th": "タイ語"
+  },
+  "common": {
+    "delete": "削除",
+    "moveUp": "上に移動",
+    "moveDown": "下に移動",
+    "addBelow": "下に追加",
+    "gripDragHint": "ドラッグして並べ替え",
+    "gripLongPressHint": "長押しして並べ替え"
   }
 }

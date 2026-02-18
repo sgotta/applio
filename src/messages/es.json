@@ -14,6 +14,10 @@
     "exportTitle": "Exportar CV como archivo JSON",
     "pdfTitle": "Descargar PDF",
     "pdfGenerating": "Generando PDF...",
+    "sidebarSections": "Secciones del Sidebar",
+    "sectionContact": "Contacto",
+    "sectionSummary": "Perfil Profesional",
+    "sectionSkills": "Habilidades",
     "optionalSections": "Secciones Opcionales",
     "sectionCourses": "Cursos y Talleres",
     "sectionCertifications": "Certificaciones",
@@ -97,21 +101,12 @@
     "endDatePlaceholder": "fin",
     "positionPlaceholder": "Título del puesto",
     "bulletPlaceholder": "Describe un logro o responsabilidad...",
-    "deleteBullet": "Eliminar bullet",
-    "addBullet": "Agregar logro",
     "addExperience": "Agregar experiencia",
-    "newBulletDefault": "Nuevo logro o responsabilidad.",
     "confirmDeleteExperience": "¿Eliminar \"{name}\"?",
     "confirmDeleteExperienceEmpty": "¿Eliminar esta experiencia?",
     "deleteConfirm": "Eliminar",
     "deleteCancel": "Cancelar",
-    "roleDescriptionPlaceholder": "Descripción opcional...",
-    "typeBullet": "Viñeta",
-    "typeTitle": "Título",
-    "typeSubtitle": "Subtítulo",
-    "typeNumbered": "Numerada",
     "gripDragHint": "Arrastrá para mover",
-    "gripClickHint": "Clic para cambiar tipo",
     "gripLongPressHint": "Mantené presionado para mover"
   },
   "education": {
@@ -124,7 +119,7 @@
     "endDatePlaceholder": "fin",
     "degreePlaceholder": "Título obtenido",
     "descriptionPlaceholder": "Descripción opcional...",
-    "addEducation": "Agregar educación",
+    "addEducation": "Agregar estudios",
     "confirmDeleteEducation": "¿Eliminar \"{name}\"?",
     "confirmDeleteEducationEmpty": "¿Eliminar esta educación?",
     "deleteConfirm": "Eliminar",
@@ -147,7 +142,49 @@
     "adjust": "Ajustar"
   },
   "editableText": {
-    "defaultPlaceholder": "Click para editar..."
+    "defaultPlaceholder": "Click para editar...",
+    "pasteLineBreaksCleaned": "Se limpiaron saltos de línea. Ctrl+Z para deshacer."
+  },
+  "floatingToolbar": {
+    "bold": "Negrita",
+    "italic": "Cursiva",
+    "underline": "Subrayado",
+    "strikethrough": "Tachado",
+    "code": "Código",
+    "textColor": "Color de texto",
+    "highlight": "Resaltado",
+    "turnInto": "Convertir en",
+    "typeText": "Texto",
+    "typeHeading2": "Título 1",
+    "typeHeading3": "Título 2",
+    "typeHeading4": "Título 3",
+    "typeBulletList": "Lista con viñetas",
+    "typeOrderedList": "Lista numerada",
+    "typeBlockquote": "Cita",
+    "clearFormatting": "Quitar formato",
+    "moveUp": "Mover arriba",
+    "moveDown": "Mover abajo"
+  },
+  "admin": {
+    "title": "Exclusivo admin",
+    "bold": "Negrita",
+    "italic": "Cursiva",
+    "underline": "Subrayado",
+    "strikethrough": "Tachado",
+    "code": "Código",
+    "clearFormatting": "Quitar formato",
+    "textColor": "Color de texto",
+    "highlight": "Resaltado",
+    "moveBlocks": "Mover bloques",
+    "blockTypes": "Tipos de bloque",
+    "blockTypesSection": "Tipos de bloque visibles",
+    "typeParagraph": "Texto",
+    "typeHeading2": "Título 1",
+    "typeHeading3": "Título 2",
+    "typeHeading4": "Título 3",
+    "typeBulletList": "Lista con viñetas",
+    "typeOrderedList": "Lista numerada",
+    "typeBlockquote": "Cita"
   },
   "courses": {
     "title": "Cursos y Talleres",
@@ -161,7 +198,8 @@
     "confirmDeleteCourse": "¿Eliminar \"{name}\"?",
     "confirmDeleteCourseEmpty": "¿Eliminar este curso?",
     "deleteConfirm": "Eliminar",
-    "deleteCancel": "Cancelar"
+    "deleteCancel": "Cancelar",
+    "descriptionPlaceholder": "Descripción opcional..."
   },
   "certifications": {
     "title": "Certificaciones",
@@ -175,7 +213,8 @@
     "confirmDeleteCertification": "¿Eliminar \"{name}\"?",
     "confirmDeleteCertificationEmpty": "¿Eliminar esta certificación?",
     "deleteConfirm": "Eliminar",
-    "deleteCancel": "Cancelar"
+    "deleteCancel": "Cancelar",
+    "descriptionPlaceholder": "Descripción opcional..."
   },
   "awards": {
     "title": "Premios y Reconocimientos",
@@ -189,7 +228,8 @@
     "confirmDeleteAward": "¿Eliminar \"{name}\"?",
     "confirmDeleteAwardEmpty": "¿Eliminar este premio?",
     "deleteConfirm": "Eliminar",
-    "deleteCancel": "Cancelar"
+    "deleteCancel": "Cancelar",
+    "descriptionPlaceholder": "Descripción opcional..."
   },
   "printable": {
     "profilePhotoAlt": "Foto de perfil",
@@ -227,15 +267,6 @@
     "madeWith": "Hecho en Argentina",
     "generating": "Generando PDF..."
   },
-  "editMode": {
-    "edit": "Editar",
-    "view": "Ver",
-    "switchToEdit": "Cambiar a modo edición",
-    "switchToView": "Cambiar a modo vista",
-    "viewModeHint": "Cambiá a modo edición",
-    "doubleClickHint": "Hacé doble click para editar",
-    "exitedEditMode": "Volviste a modo vista"
-  },
   "languages": {
     "en": "Inglés",
     "es": "Español",
@@ -250,5 +281,13 @@
     "tr": "Turco",
     "hi": "Hindi",
     "th": "Tailandés"
+  },
+  "common": {
+    "delete": "Eliminar",
+    "moveUp": "Subir",
+    "moveDown": "Bajar",
+    "addBelow": "Agregar debajo",
+    "gripDragHint": "Arrastrá para reordenar",
+    "gripLongPressHint": "Mantené presionado para reordenar"
   }
 }

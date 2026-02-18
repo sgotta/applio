@@ -14,6 +14,10 @@
     "exportTitle": "Exporter le CV en fichier JSON",
     "pdfTitle": "Télécharger le PDF",
     "pdfGenerating": "Génération du PDF...",
+    "sidebarSections": "Sections de la barre latérale",
+    "sectionContact": "Contact",
+    "sectionSummary": "Profil professionnel",
+    "sectionSkills": "Compétences",
     "optionalSections": "Sections optionnelles",
     "sectionCourses": "Cours et Ateliers",
     "sectionCertifications": "Certifications",
@@ -97,21 +101,12 @@
     "endDatePlaceholder": "fin",
     "positionPlaceholder": "Intitulé du poste",
     "bulletPlaceholder": "Décrivez une réalisation ou responsabilité...",
-    "deleteBullet": "Supprimer le point",
-    "addBullet": "Ajouter une réalisation",
     "addExperience": "Ajouter une expérience",
-    "newBulletDefault": "Nouvelle réalisation ou responsabilité.",
     "confirmDeleteExperience": "Supprimer \"{name}\" ?",
     "confirmDeleteExperienceEmpty": "Supprimer cette expérience ?",
     "deleteConfirm": "Supprimer",
     "deleteCancel": "Annuler",
-    "roleDescriptionPlaceholder": "Description optionnelle...",
-    "typeBullet": "Puce",
-    "typeTitle": "Titre",
-    "typeSubtitle": "Sous-titre",
-    "typeNumbered": "Numérotée",
     "gripDragHint": "Glisser pour réordonner",
-    "gripClickHint": "Cliquer pour changer le type",
     "gripLongPressHint": "Maintenir appuyé pour déplacer"
   },
   "education": {
@@ -147,7 +142,49 @@
     "adjust": "Ajuster"
   },
   "editableText": {
-    "defaultPlaceholder": "Cliquez pour modifier..."
+    "defaultPlaceholder": "Cliquez pour modifier...",
+    "pasteLineBreaksCleaned": "Sauts de ligne nettoyés. Ctrl+Z pour annuler."
+  },
+  "floatingToolbar": {
+    "bold": "Gras",
+    "italic": "Italique",
+    "underline": "Souligné",
+    "strikethrough": "Barré",
+    "code": "Code",
+    "textColor": "Couleur du texte",
+    "highlight": "Surlignage",
+    "turnInto": "Transformer en",
+    "typeText": "Texte",
+    "typeHeading2": "Titre 1",
+    "typeHeading3": "Titre 2",
+    "typeHeading4": "Titre 3",
+    "typeBulletList": "Liste à puces",
+    "typeOrderedList": "Liste numérotée",
+    "typeBlockquote": "Citation",
+    "clearFormatting": "Effacer la mise en forme",
+    "moveUp": "Déplacer vers le haut",
+    "moveDown": "Déplacer vers le bas"
+  },
+  "admin": {
+    "title": "Admin uniquement",
+    "bold": "Gras",
+    "italic": "Italique",
+    "underline": "Souligné",
+    "strikethrough": "Barré",
+    "code": "Code",
+    "clearFormatting": "Effacer le format",
+    "textColor": "Couleur du texte",
+    "highlight": "Surlignage",
+    "moveBlocks": "Déplacer les blocs",
+    "blockTypes": "Types de bloc",
+    "blockTypesSection": "Types de bloc visibles",
+    "typeParagraph": "Texte",
+    "typeHeading2": "Titre 1",
+    "typeHeading3": "Titre 2",
+    "typeHeading4": "Titre 3",
+    "typeBulletList": "Liste à puces",
+    "typeOrderedList": "Liste numérotée",
+    "typeBlockquote": "Citation"
   },
   "courses": {
     "title": "Cours et Ateliers",
@@ -161,7 +198,8 @@
     "confirmDeleteCourse": "Supprimer \"{name}\" ?",
     "confirmDeleteCourseEmpty": "Supprimer cette formation ?",
     "deleteConfirm": "Supprimer",
-    "deleteCancel": "Annuler"
+    "deleteCancel": "Annuler",
+    "descriptionPlaceholder": "Description optionnelle..."
   },
   "certifications": {
     "title": "Certifications",
@@ -175,7 +213,8 @@
     "confirmDeleteCertification": "Supprimer \"{name}\" ?",
     "confirmDeleteCertificationEmpty": "Supprimer cette certification ?",
     "deleteConfirm": "Supprimer",
-    "deleteCancel": "Annuler"
+    "deleteCancel": "Annuler",
+    "descriptionPlaceholder": "Description optionnelle..."
   },
   "awards": {
     "title": "Prix et Distinctions",
@@ -189,7 +228,8 @@
     "confirmDeleteAward": "Supprimer \"{name}\" ?",
     "confirmDeleteAwardEmpty": "Supprimer ce prix ?",
     "deleteConfirm": "Supprimer",
-    "deleteCancel": "Annuler"
+    "deleteCancel": "Annuler",
+    "descriptionPlaceholder": "Description optionnelle..."
   },
   "printable": {
     "profilePhotoAlt": "Photo de profil",
@@ -227,15 +267,6 @@
     "madeWith": "Fait en Argentine",
     "generating": "Génération du PDF..."
   },
-  "editMode": {
-    "edit": "Modifier",
-    "view": "Voir",
-    "switchToEdit": "Passer en mode édition",
-    "switchToView": "Passer en mode visualisation",
-    "viewModeHint": "Passez en mode édition",
-    "doubleClickHint": "Double-cliquez pour modifier",
-    "exitedEditMode": "Retour en mode lecture"
-  },
   "languages": {
     "en": "Anglais",
     "es": "Espagnol",
@@ -250,5 +281,13 @@
     "tr": "Turc",
     "hi": "Hindi",
     "th": "Thaï"
+  },
+  "common": {
+    "delete": "Supprimer",
+    "moveUp": "Monter",
+    "moveDown": "Descendre",
+    "addBelow": "Ajouter en dessous",
+    "gripDragHint": "Glissez pour réorganiser",
+    "gripLongPressHint": "Appuyez longuement pour réorganiser"
   }
 }

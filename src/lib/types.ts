@@ -11,19 +11,13 @@ export interface PersonalInfo {
   websiteUrl?: string;
 }
 
-export interface BulletItem {
-  text: string;
-  type: "bullet" | "title" | "subtitle" | "numbered";
-}
-
 export interface ExperienceItem {
   id: string;
   company: string;
   position: string;
   startDate: string;
   endDate: string;
-  description: BulletItem[];
-  roleDescription?: string;
+  description: string;
 }
 
 export interface EducationItem {
@@ -46,6 +40,7 @@ export interface CourseItem {
   name: string;
   institution: string;
   date: string;
+  description?: string;
 }
 
 export interface CertificationItem {
@@ -53,6 +48,7 @@ export interface CertificationItem {
   name: string;
   issuer: string;
   date: string;
+  description?: string;
 }
 
 export interface AwardItem {
@@ -60,7 +56,10 @@ export interface AwardItem {
   name: string;
   issuer: string;
   date: string;
+  description?: string;
 }
+
+export type SidebarSectionId = "contact" | "summary" | "skills";
 
 export interface SectionVisibility {
   email: boolean;
@@ -71,6 +70,9 @@ export interface SectionVisibility {
   courses: boolean;
   certifications: boolean;
   awards: boolean;
+  contact: boolean;
+  summary: boolean;
+  skills: boolean;
 }
 
 export interface CVData {
@@ -83,6 +85,7 @@ export interface CVData {
   certifications: CertificationItem[];
   awards: AwardItem[];
   visibility: SectionVisibility;
+  sidebarOrder: SidebarSectionId[];
 }
 
 export interface SharedCVData {

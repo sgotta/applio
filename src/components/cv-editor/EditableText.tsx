@@ -1,12 +1,17 @@
 "use client";
 
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, KeyboardEvent, ClipboardEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { useIsViewMode } from "@/hooks/useIsViewMode";
-import { useEditMode } from "@/lib/edit-mode-context";
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import TiptapUnderline from "@tiptap/extension-underline";
+import { TextStyle } from "@tiptap/extension-text-style";
+import TiptapColor from "@tiptap/extension-color";
+import TiptapHighlight from "@tiptap/extension-highlight";
+import Placeholder from "@tiptap/extension-placeholder";
 import { toast } from "sonner";
-import { Pencil, MousePointerClick } from "lucide-react";
-
+import { renderRichText, renderRichDocument } from "@/lib/render-rich-text";
+import { FloatingToolbar } from "./FloatingToolbar";
 
 type EditableStyle = "heading" | "subheading" | "itemTitle" | "body" | "small" | "tiny";
 
@@ -17,12 +22,22 @@ interface EditableTextProps {
   multiline?: boolean;
   className?: string;
   as?: EditableStyle;
-  /** Inline style applied to display span only (not the editing input) */
+  /** Inline style applied to display span (and inherited by editor) */
   displayStyle?: React.CSSProperties;
+  /** Enable rich text formatting (Bold, Italic, Underline, Strikethrough, Color, Highlight) */
+  richText?: boolean;
+  /** Enable block-level editing (headings, lists, blockquotes). Implies richText + multiline. */
+  blockEditing?: boolean;
   /** Start in edit mode on mount (useful for newly created items) */
   autoEdit?: boolean;
-  /** Custom renderer for display mode (e.g. bold markdown). Edit mode shows raw text. */
-  formatDisplay?: (text: string) => React.ReactNode;
+  /** Show dashed outline when editing (default true). Set false for compact badges. */
+  editOutline?: boolean;
+  /** Require double-click to enter edit mode (useful when drag gestures share the same surface) */
+  doubleClickToEdit?: boolean;
+  /** Called when the component enters or exits editing mode */
+  onEditingChange?: (editing: boolean) => void;
+  /** Delete the element when Backspace is pressed on an empty editor (useful for skill badges) */
+  deleteOnEmpty?: boolean;
 }
 
 /** Tailwind classes WITHOUT font-size (font-size is applied via inline style) */
@@ -35,13 +50,7 @@ const styleMap: Record<EditableStyle, string> = {
   tiny: "text-gray-400",
 };
 
-/** Font sizes in em — scale automatically via container's responsive font-size.
- *  Base reference: container = 12px on desktop.
- *  heading   → 2.16em  (≈ 26px desktop, 32px mobile)
- *  subheading→ 1.26em  (≈ 15px desktop, 19px mobile)
- *  itemTitle → 1.17em  (≈ 14px desktop, 18px mobile)
- *  body/small→ 1em     (= 12px desktop, 15px mobile)
- *  tiny      → 0.9em   (≈ 11px desktop, 14px mobile) */
+/** Font sizes in em — scale automatically via container's responsive font-size */
 const fontSizeMap: Record<EditableStyle, string> = {
   heading: "2.16em",
   subheading: "1.26em",
@@ -59,242 +68,437 @@ export function EditableText({
   className = "",
   as = "body",
   displayStyle,
+  richText = false,
+  blockEditing = false,
   autoEdit = false,
-  formatDisplay,
+  editOutline = true,
+  doubleClickToEdit = false,
+  onEditingChange,
+  deleteOnEmpty = false,
 }: EditableTextProps) {
   const t = useTranslations("editableText");
-  const te = useTranslations("editMode");
-  const viewMode = useIsViewMode();
-  const { enterEditMode } = useEditMode();
   const placeholder = placeholderProp ?? t("defaultPlaceholder");
-  const [editing, setEditing] = useState(autoEdit && !viewMode);
-  const [draft, setDraft] = useState(value);
-  const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
-  const clickTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [isActive, setIsActive] = useState(autoEdit);
+  const clickCoordsRef = useRef<{ x: number; y: number } | null>(null);
+  const lastClickTimeRef = useRef(0);
+  const clickCountRef = useRef(0);
+  const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const longPressFiredRef = useRef(false);
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+
+  // Notify parent when editing state changes
+  useEffect(() => {
+    onEditingChange?.(isActive);
+  }, [isActive, onEditingChange]);
 
   const fontSize = fontSizeMap[as];
+  const baseStyle = styleMap[as];
+  const displayEmpty = !value;
 
-  // Cancel editing when switching to view mode
-  useEffect(() => {
-    if (viewMode && editing) {
-      setEditing(false);
-      const trimmed = draft.trim();
+  const handleClick = useCallback((e: React.MouseEvent) => {
+    // Skip if this click follows a long press (long press already activated)
+    if (longPressFiredRef.current) {
+      longPressFiredRef.current = false;
+      return;
+    }
+
+    const now = Date.now();
+    if (now - lastClickTimeRef.current < 400) {
+      clickCountRef.current = Math.min(clickCountRef.current + 1, 3);
+    } else {
+      clickCountRef.current = 1;
+    }
+    lastClickTimeRef.current = now;
+
+    // Double-click mode: ignore single clicks (let drag system handle them)
+    if (doubleClickToEdit && clickCountRef.current < 2) return;
+
+    clickCoordsRef.current = { x: e.clientX, y: e.clientY };
+    setIsActive(true);
+  }, [doubleClickToEdit]);
+
+  // Long press on mobile: select word at touch position
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    touchStartRef.current = { x: touch.clientX, y: touch.clientY };
+    longPressFiredRef.current = false;
+
+    longPressTimerRef.current = setTimeout(() => {
+      longPressFiredRef.current = true;
+      clickCoordsRef.current = touchStartRef.current;
+      clickCountRef.current = 2; // select word
+      setIsActive(true);
+    }, 500);
+  }, []);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (!longPressTimerRef.current || !touchStartRef.current) return;
+    const touch = e.touches[0];
+    const dx = touch.clientX - touchStartRef.current.x;
+    const dy = touch.clientY - touchStartRef.current.y;
+    // Cancel if finger moved more than 10px (scrolling)
+    if (dx * dx + dy * dy > 100) {
+      clearTimeout(longPressTimerRef.current);
+      longPressTimerRef.current = null;
+    }
+  }, []);
+
+  const handleTouchEnd = useCallback(() => {
+    if (longPressTimerRef.current) {
+      clearTimeout(longPressTimerRef.current);
+      longPressTimerRef.current = null;
+    }
+  }, []);
+
+  const handleSave = useCallback(
+    (newValue: string) => {
+      setIsActive(false);
+      const trimmed = newValue.trim();
       if (trimmed !== value) onChange(trimmed);
-    }
-  }, [viewMode]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Sync draft when value changes externally
-  useEffect(() => {
-    if (!editing) setDraft(value);
-  }, [value, editing]);
-
-  // Auto-focus when entering edit mode
-  useEffect(() => {
-    if (editing && inputRef.current) {
-      inputRef.current.focus({ preventScroll: true });
-      inputRef.current.select();
-    }
-  }, [editing]);
-
-  // Auto-resize textarea to match content height (avoids size jump)
-  useLayoutEffect(() => {
-    if (editing && multiline && inputRef.current) {
-      const el = inputRef.current as HTMLTextAreaElement;
-      el.style.height = "auto";
-      el.style.height = `${el.scrollHeight}px`;
-    }
-  }, [editing, multiline, draft]);
-
-  const save = useCallback(() => {
-    setEditing(false);
-    const trimmed = draft.trim();
-    if (trimmed !== value) {
-      onChange(trimmed);
-    }
-  }, [draft, value, onChange]);
-
-  const cancel = useCallback(() => {
-    setEditing(false);
-    setDraft(value);
-  }, [value]);
-
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        cancel();
-      } else if (e.key === "Enter" && !multiline) {
-        e.preventDefault();
-        save();
-      }
     },
-    [cancel, save, multiline]
+    [value, onChange]
   );
 
-  /** Strip hard line-breaks from pasted text (e.g. copied from PDFs).
-   *  Single \n → space, double \n\n (paragraph break) is preserved. */
-  const handlePaste = useCallback((e: ClipboardEvent) => {
-    const raw = e.clipboardData.getData("text/plain");
-    if (!raw.includes("\n")) return;           // nothing to clean
-    e.preventDefault();
-    const cleaned = raw
-      .replace(/\r\n/g, "\n")                  // normalise Windows CRLF
-      .replace(/\n\n+/g, "\x00")               // protect paragraph breaks
-      .replace(/\n/g, " ")                      // single newlines → space
-      .replace(/\x00/g, "\n\n")                 // restore paragraph breaks
-      .replace(/ {2,}/g, " ");                  // collapse multiple spaces
-    const el = inputRef.current!;
-    const start = el.selectionStart ?? 0;
-    const end = el.selectionEnd ?? 0;
-    const next = draft.slice(0, start) + cleaned + draft.slice(end);
-    setDraft(next);
-    requestAnimationFrame(() => {
-      const pos = start + cleaned.length;
-      el.setSelectionRange(pos, pos);
-    });
-  }, [draft]);
+  const handleCancel = useCallback(() => {
+    setIsActive(false);
+  }, []);
 
-  const baseStyle = styleMap[as];
-  const displayEmpty = !value && !editing;
-
-  // View mode: render as static text with hint toast on click
-  if (viewMode) {
-    const spanStyle: React.CSSProperties = {
-      fontSize,
-      ...(displayEmpty ? undefined : displayStyle),
-      ...(multiline ? { whiteSpace: "pre-wrap" as const } : undefined),
-    };
-
-    const handleViewClick = () => {
-      if (window.matchMedia("(min-width: 768px)").matches) {
-        // Desktop: delay toast to allow double-click detection
-        if (clickTimerRef.current) clearTimeout(clickTimerRef.current);
-        clickTimerRef.current = setTimeout(() => {
-          toast(
-            <span className="flex items-center gap-2">
-              <MousePointerClick className="h-3.5 w-3.5 shrink-0" />
-              {te("doubleClickHint")}
-            </span>,
-            { duration: 2000 },
-          );
-        }, 250);
-      } else {
-        // Mobile: show hint immediately
-        toast(
-          <span className="flex items-center gap-2">
-            <Pencil className="h-3.5 w-3.5 shrink-0" />
-            {te("viewModeHint")}
-          </span>,
-          { duration: 2000 },
-        );
-      }
-    };
-
-    const handleViewDoubleClick = () => {
-      if (!window.matchMedia("(min-width: 768px)").matches) return;
-      if (clickTimerRef.current) clearTimeout(clickTimerRef.current);
-      enterEditMode();
-      setEditing(true);
-    };
-
+  if (isActive) {
     return (
-      <span
-        role="button"
-        tabIndex={0}
-        onClick={handleViewClick}
-        onDoubleClick={handleViewDoubleClick}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            handleViewClick();
-          }
-        }}
-        className={`${baseStyle} ${className} inline-block cursor-pointer rounded-sm px-1.5 py-0.5 -mx-1.5 -my-0.5 ${
-          displayEmpty ? "text-gray-300 italic" : ""
-        }`}
-        style={spanStyle}
-      >
-        {displayEmpty ? placeholder : formatDisplay ? formatDisplay(value) : value}
-      </span>
-    );
-  }
-
-  if (editing) {
-    const onSidebar = !!displayStyle;
-    const isDarkSidebar =
-      onSidebar &&
-      (displayStyle as Record<string, string>).color === "#ffffff";
-
-    const inputClasses = isDarkSidebar
-      ? `${baseStyle} ${className} w-full bg-white/15 border border-white/20 rounded-sm px-1.5 py-0.5 outline-none focus:border-white/30 focus:ring-1 focus:ring-white/10 transition-all duration-150 placeholder:text-white/40 selection:bg-white/25`
-      : onSidebar
-        ? `${baseStyle} ${className} w-full bg-black/[0.08] border border-black/10 rounded-sm px-1.5 py-0.5 outline-none focus:border-black/15 focus:ring-1 focus:ring-black/[0.05] transition-all duration-150 placeholder:opacity-40 selection:bg-black/10`
-        : `${baseStyle} ${className} w-full bg-white border border-gray-300 rounded-sm px-1.5 py-0.5 outline-none focus:border-gray-400 focus:ring-1 focus:ring-gray-200 transition-all duration-150 selection:bg-gray-200`;
-
-    const inputStyle: React.CSSProperties = {
-      fontSize,
-      ...(onSidebar ? displayStyle : undefined),
-    };
-
-    if (multiline) {
-      return (
-        <textarea
-          ref={inputRef as React.RefObject<HTMLTextAreaElement>}
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          onBlur={save}
-          onKeyDown={handleKeyDown}
-          onPaste={handlePaste}
-          placeholder={placeholder}
-          rows={1}
-          className={`${inputClasses} resize-none overflow-hidden`}
-          style={inputStyle}
-        />
-      );
-    }
-
-    return (
-      <input
-        ref={inputRef as React.RefObject<HTMLInputElement>}
-        type="text"
-        value={draft}
-        onChange={(e) => setDraft(e.target.value)}
-        onBlur={save}
-        onKeyDown={handleKeyDown}
-        onPaste={handlePaste}
+      <TiptapEditor
+        value={value}
+        onSave={handleSave}
+        onCancel={handleCancel}
+        clickCoords={clickCoordsRef.current}
+        clickCount={clickCountRef.current}
+        richText={richText || blockEditing}
+        blockEditing={blockEditing}
+        multiline={multiline || blockEditing}
         placeholder={placeholder}
-        className={inputClasses}
-        style={inputStyle}
+        className={className}
+        baseStyle={baseStyle}
+        fontSize={fontSize}
+        displayStyle={displayStyle}
+        editOutline={editOutline}
+        deleteOnEmpty={deleteOnEmpty}
       />
     );
   }
 
+  // --- Display mode ---
+
+  const onSidebar = !!displayStyle;
+  const isDarkSidebar =
+    onSidebar &&
+    (displayStyle as Record<string, string>).color === "#ffffff";
+
   const spanStyle: React.CSSProperties = {
     fontSize,
+    // Match ProseMirror's exact text rendering CSS (prosemirror.css)
+    // so text wraps at the same pixel in both display and edit modes
+    wordWrap: "break-word",
+    whiteSpace: "break-spaces",            // ProseMirror uses break-spaces, NOT pre-wrap
+    fontVariantLigatures: "none",
+    WebkitFontVariantLigatures: "none",
+    fontFeatureSettings: '"liga" 0',        // ProseMirror disables ligatures via this too
     ...(displayEmpty ? undefined : displayStyle),
+  };
+
+  return (
+    <div
+      role="textbox"
+      tabIndex={0}
+      onClick={handleClick}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onContextMenu={(e) => {
+        if (longPressFiredRef.current) e.preventDefault();
+      }}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          handleClick(e as unknown as React.MouseEvent);
+        }
+      }}
+      className={`${baseStyle} ${className} ${multiline ? "block" : "inline-block"} ${doubleClickToEdit ? "" : "cursor-text"} rounded-sm px-1.5 py-0.5 -mx-1.5 -my-0.5 transition-colors duration-150 focus:outline-none ${
+        doubleClickToEdit
+          ? ""
+          : isDarkSidebar
+            ? "hover:bg-white/15 focus:bg-white/15"
+            : onSidebar
+              ? "hover:bg-black/[0.07] focus:bg-black/[0.07]"
+              : "hover:bg-gray-100 focus:bg-gray-100"
+      } ${displayEmpty ? "text-gray-300 italic" : ""}`}
+      style={spanStyle}
+    >
+      {displayEmpty
+        ? placeholder
+        : blockEditing
+          ? renderRichDocument(value)
+          : richText
+            ? renderRichText(value)
+            : value}
+    </div>
+  );
+}
+
+// ─── Tiptap Editor (lazy-mounted on click) ──────────────────
+
+/** Strip outer <p></p> from single-paragraph HTML */
+function unwrapSingleParagraph(html: string): string {
+  if (html === "<p></p>") return "";
+  const match = html.match(/^<p>([\s\S]*)<\/p>$/);
+  if (match && !match[1].includes("</p>")) {
+    return match[1];
+  }
+  return html;
+}
+
+/** Ensure content has <p> wrapper for Tiptap */
+function wrapContent(value: string): string {
+  if (!value) return "<p></p>";
+  if (value.startsWith("<p>")) return value;
+  return `<p>${value}</p>`;
+}
+
+/** Select the word at a given ProseMirror position */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function selectWordAtPos(editor: any, pos: number) {
+  try {
+    const $pos = editor.state.doc.resolve(pos);
+    const text = $pos.parent.textContent;
+    const offset = $pos.parentOffset;
+
+    // Unicode-aware: letters, numbers, combining marks
+    const isWordChar = (ch: string) => /[\p{L}\p{N}\p{M}]/u.test(ch);
+
+    let start = offset;
+    let end = offset;
+    while (start > 0 && isWordChar(text[start - 1])) start--;
+    while (end < text.length && isWordChar(text[end])) end++;
+
+    if (start !== end) {
+      const nodeStart = pos - offset;
+      editor.commands.setTextSelection({ from: nodeStart + start, to: nodeStart + end });
+    } else {
+      editor.commands.setTextSelection(pos);
+    }
+  } catch {
+    editor.commands.setTextSelection(pos);
+  }
+}
+
+/**
+ * Clean pasted plain text — remove PDF line-break artifacts.
+ * Single \n → space (PDF line wraps), double \n\n → paragraph break (real paragraphs).
+ */
+function cleanPastedText(text: string, multiline: boolean): string {
+  if (!multiline) return text.replace(/\n/g, " ").replace(/ {2,}/g, " ").trim();
+  return text
+    .replace(/\r\n/g, "\n")
+    .replace(/\n\n+/g, "\x00")   // preserve real paragraph breaks
+    .replace(/\n/g, " ")          // single \n → space (PDF artifact)
+    .replace(/\x00/g, "\n\n")     // restore paragraph breaks
+    .replace(/ {2,}/g, " ");      // collapse multiple spaces
+}
+
+/** Sanitize pasted HTML — only keep our supported tags + clean PDF artifacts */
+function sanitizePastedHTML(html: string, allowBlocks = false): string {
+  // Strip unsupported tags — allow block tags when blockEditing is enabled
+  const inlineTags = "strong|b|em|i|u|s|code|span|mark|p|br";
+  const blockTags = "ul|ol|li|h2|h3|h4|blockquote";
+  const allowed = allowBlocks ? `${inlineTags}|${blockTags}` : inlineTags;
+  const tagRegex = new RegExp(`<(?!\\/?(?:${allowed})\\b)[^>]*>`, "gi");
+  let clean = html.replace(tagRegex, "");
+  // Clean text between tags: single \n → space (PDF line wraps)
+  clean = clean
+    .replace(/\r\n/g, "\n")
+    .replace(/([^>])\n(?!\n)([^<])/g, "$1 $2");
+  return clean;
+}
+
+function TiptapEditor({
+  value,
+  onSave,
+  onCancel,
+  clickCoords,
+  clickCount,
+  richText,
+  blockEditing,
+  multiline,
+  placeholder,
+  className,
+  baseStyle,
+  fontSize,
+  displayStyle,
+  editOutline,
+  deleteOnEmpty,
+}: {
+  value: string;
+  onSave: (value: string) => void;
+  onCancel: () => void;
+  clickCoords: { x: number; y: number } | null;
+  clickCount: number;
+  richText: boolean;
+  blockEditing: boolean;
+  multiline: boolean;
+  placeholder: string;
+  className: string;
+  baseStyle: string;
+  fontSize: string;
+  displayStyle?: React.CSSProperties;
+  editOutline: boolean;
+  deleteOnEmpty: boolean;
+}) {
+  const t = useTranslations("editableText");
+  const cancelledRef = useRef(false);
+  const savedRef = useRef(false);
+  const onSaveRef = useRef(onSave);
+  onSaveRef.current = onSave;
+  const onCancelRef = useRef(onCancel);
+  onCancelRef.current = onCancel;
+  const clickCoordsRef = useRef(clickCoords);
+  const clickCountRef = useRef(clickCount);
+  const pasteToastMsgRef = useRef(t("pasteLineBreaksCleaned"));
+
+  const extensions = useMemo(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const exts: any[] = [
+      StarterKit.configure({
+        heading: blockEditing ? { levels: [2, 3, 4] } : false,
+        bulletList: blockEditing ? {} : false,
+        orderedList: blockEditing ? {} : false,
+        blockquote: blockEditing ? {} : false,
+        codeBlock: false,
+        horizontalRule: false,
+        ...(richText ? {} : { bold: false, italic: false, strike: false, code: false }),
+      }),
+      Placeholder.configure({ placeholder }),
+    ];
+    if (richText) {
+      exts.push(
+        TiptapUnderline,
+        TextStyle,
+        TiptapColor,
+        TiptapHighlight.configure({ multicolor: true })
+      );
+    }
+    return exts;
+  }, [richText, blockEditing, placeholder]);
+
+  const editor = useEditor({
+    extensions,
+    content: blockEditing ? (value || "<p></p>") : richText ? wrapContent(value) : value || undefined,
+    immediatelyRender: false,
+    editorProps: {
+      attributes: {
+        class: `${baseStyle} ${className} outline-none cursor-text`,
+      },
+      handleKeyDown: (_view, event) => {
+        if (event.key === "Escape") {
+          cancelledRef.current = true;
+          onCancelRef.current();
+          return true;
+        }
+        if (event.key === "Enter" && !multiline) {
+          event.preventDefault();
+          _view.dom.blur();
+          return true;
+        }
+        // Backspace on empty editor → delete the element (e.g. skill badge)
+        if (deleteOnEmpty && event.key === "Backspace" && _view.state.doc.textContent === "") {
+          event.preventDefault();
+          savedRef.current = true;
+          onSaveRef.current("");
+          return true;
+        }
+        return false;
+      },
+      transformPastedText: (text: string) => {
+        const cleaned = cleanPastedText(text, multiline);
+        if (cleaned !== text) {
+          setTimeout(() => toast.info(pasteToastMsgRef.current), 0);
+        }
+        return cleaned;
+      },
+      ...(richText
+        ? { transformPastedHTML: (html: string) => sanitizePastedHTML(html, blockEditing) }
+        : {}),
+    },
+    onBlur: ({ editor: ed }) => {
+      if (cancelledRef.current || savedRef.current) return;
+      savedRef.current = true;
+      const content = blockEditing
+        ? ed.getHTML().replace(/(<p><\/p>)+$/, "")
+        : richText
+          ? unwrapSingleParagraph(ed.getHTML())
+          : ed.getText().trim();
+      onSaveRef.current(content);
+    },
+    onCreate: ({ editor: ed }) => {
+      // Small delay to let the DOM settle, then focus and place cursor.
+      // Wrapped in try-catch: on mobile, the editor state can change between
+      // creation and this frame due to touch/focus timing, causing a
+      // "mismatched transaction" RangeError that is safe to ignore.
+      requestAnimationFrame(() => {
+        if (ed.isDestroyed) return;
+        try {
+          ed.commands.focus("end");
+          const coords = clickCoordsRef.current;
+          const clicks = clickCountRef.current;
+          if (coords) {
+            const pos = ed.view.posAtCoords({
+              left: coords.x,
+              top: coords.y,
+            });
+            if (pos) {
+              if (clicks >= 3) {
+                ed.commands.selectAll();
+              } else if (clicks >= 2) {
+                selectWordAtPos(ed, pos.pos);
+              } else {
+                ed.commands.setTextSelection(pos.pos);
+              }
+            }
+          }
+        } catch {
+          // State mismatch or coords outside bounds — editor still works
+        }
+      });
+    },
+  });
+
+  // Cleanup: destroy editor on unmount
+  useEffect(() => {
+    return () => {
+      editor?.destroy();
+    };
+  }, [editor]);
+
+  if (!editor) return null;
+
+  const onSidebar = !!displayStyle;
+
+  // Wrapper div inherits font styles so the editor text matches display
+  const wrapperStyle: React.CSSProperties = {
+    fontSize,
+    ...(displayStyle || {}),
     ...(multiline ? { whiteSpace: "pre-wrap" as const } : undefined),
   };
 
   return (
-    <span
-      role="button"
-      tabIndex={0}
-      onClick={() => setEditing(true)}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          setEditing(true);
-        }
-      }}
-      className={`${baseStyle} ${className} inline-block cursor-text rounded-sm px-1.5 py-0.5 -mx-1.5 -my-0.5 transition-colors duration-150 focus:outline-none ${
-        displayStyle
-          ? (displayStyle as Record<string, string>).color === "#ffffff"
-            ? "hover:bg-white/15 focus:bg-white/15"
-            : "hover:bg-black/[0.07] focus:bg-black/[0.07]"
-          : "hover:bg-gray-100 focus:bg-gray-100"
-      } ${displayEmpty ? "text-gray-300 italic" : ""}`}
-      style={spanStyle}
+    <div
+      style={wrapperStyle}
+      className={`${multiline ? "block" : "inline-block"} rounded-sm px-1.5 py-0.5 -mx-1.5 -my-0.5 ${editOutline ? "outline-[1.5px] outline-dashed outline-offset-1 outline-gray-300/80 dark:outline-gray-500/60" : ""}`}
     >
-      {displayEmpty ? placeholder : formatDisplay ? formatDisplay(value) : value}
-    </span>
+      <EditorContent editor={editor} />
+      {richText && (
+        <FloatingToolbar
+          editor={editor}
+          blockEditing={blockEditing}
+        />
+      )}
+    </div>
   );
 }

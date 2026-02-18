@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import { useCV } from "@/lib/cv-context";
 import { useTranslations } from "next-intl";
 import { useColorScheme } from "@/lib/color-scheme-context";
@@ -8,15 +7,12 @@ import { useSidebarPattern } from "@/lib/sidebar-pattern-context";
 import { useFontSettings } from "@/lib/font-context";
 import { getFontDefinition, FONT_SIZE_LEVELS, CJK_LOCALES } from "@/lib/fonts";
 import { useAppLocale } from "@/lib/locale-context";
-import { useEditMode } from "@/lib/edit-mode-context";
 
-import { Heart, Eye } from "lucide-react";
-import { toast } from "sonner";
+import { Heart } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { EditableText } from "./EditableText";
 import { PersonalInfo } from "./PersonalInfo";
 import { ProfilePhotoUpload } from "./ProfilePhotoUpload";
-import { EditFAB } from "./MobileEditFAB";
 import { Experience } from "./Experience";
 import { Education } from "./Education";
 import { Courses } from "./Courses";
@@ -85,50 +81,12 @@ export function CVPreview() {
   const { pattern, sidebarIntensity, mainIntensity, scope } = useSidebarPattern();
   const { fontFamilyId, fontSizeLevel } = useFontSettings();
   const { locale } = useAppLocale();
-  const { isViewMode, enterEditMode, exitEditMode, cvContainerRef } = useEditMode();
-  const te = useTranslations("editMode");
   const isCJK = CJK_LOCALES.has(locale);
   const fontDef = isCJK ? null : getFontDefinition(fontFamilyId);
   const mg = (px: number) => Math.round(px * 1.6);
 
-  // Desktop: click outside CV container → exit edit mode + show toast
-  useEffect(() => {
-    if (isViewMode) return;
-    const mql = window.matchMedia("(min-width: 768px)");
-    if (!mql.matches) return;
-
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      // Ignore clicks on floating UI (dialogs, popovers, toasts)
-      if (target.closest("[data-radix-popper-content-wrapper], [role='dialog'], [data-sonner-toaster]")) return;
-      if (cvContainerRef.current && !cvContainerRef.current.contains(target)) {
-        exitEditMode();
-        toast(
-          <span className="flex items-center gap-2">
-            <Eye className="h-3.5 w-3.5 shrink-0" />
-            {te("exitedEditMode")}
-          </span>,
-          { duration: 2000 },
-        );
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isViewMode, exitEditMode, cvContainerRef, te]);
-
-  // Desktop: double-click on CV container in view mode → enter edit mode
-  const handleCVDoubleClick = () => {
-    if (isViewMode && window.matchMedia("(min-width: 768px)").matches) {
-      enterEditMode();
-    }
-  };
-
   return (
-    <>
     <div
-      ref={cvContainerRef}
-      onDoubleClick={handleCVDoubleClick}
       className="cv-preview-content mx-auto w-full lg:w-[210mm] max-w-[210mm] bg-white md:shadow-[0_2px_20px_-6px_rgba(0,0,0,0.12)] dark:md:shadow-[0_2px_20px_-6px_rgba(0,0,0,0.45)] print:shadow-none"
       style={fontDef ? { fontFamily: fontDef.cssStack } : undefined}
     >
@@ -238,10 +196,5 @@ export function CVPreview() {
       </div>
       </div>
     </div>
-    {/* FAB toggle — all devices, hidden when printing */}
-    <div className="print:hidden">
-      <EditFAB />
-    </div>
-    </>
   );
 }

@@ -25,8 +25,9 @@ import {
   SlidersHorizontal, Check, Sun, Moon,
   Menu, X, ChevronRight, ChevronLeft, Palette, Layers,
   Loader2, MoreHorizontal, Link,
-  PanelLeft, PanelRight, Square,
+  PanelLeft, PanelRight, Square, Shield,
 } from "lucide-react";
+import { useToolbarFeatures, TOOLBAR_INLINE_KEYS, TOOLBAR_BLOCK_TYPE_KEYS } from "@/lib/toolbar-features-context";
 
 const CACHE_EXPIRY_MS = 15 * 24 * 60 * 60 * 1000; // 15 days
 
@@ -81,7 +82,7 @@ function SectionToggle({
   );
 }
 
-type MobileMenuPage = "main" | "language" | "color" | "pattern" | "font" | "sections";
+type MobileMenuPage = "main" | "language" | "color" | "pattern" | "font" | "sections" | "admin";
 
 export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   const { data, importData, toggleSection } = useCV();
@@ -92,6 +93,8 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   const { colorSchemeName, setColorScheme } = useColorScheme();
   const { patternName, setPattern, sidebarIntensity, mainIntensity, scope, setSidebarIntensity, setMainIntensity, setScope, patternSettings, setPatternSettings } = useSidebarPattern();
   const { fontFamilyId, fontSizeLevel, setFontFamily, setFontSizeLevel } = useFontSettings();
+  const { features: toolbarFeatures, toggleFeature } = useToolbarFeatures();
+  const ta = useTranslations("admin");
   const isCJKLocale = CJK_LOCALES.has(locale);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -539,6 +542,13 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
               <PopoverContent className="w-64" align="end">
                 <div className="space-y-3">
                   <div className="space-y-1">
+                    <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-1">{t("sidebarSections")}</p>
+                    <SectionToggle label={t("sectionContact")} checked={data.visibility.contact} onToggle={() => toggleSection("contact")} />
+                    <SectionToggle label={t("sectionSummary")} checked={data.visibility.summary} onToggle={() => toggleSection("summary")} />
+                    <SectionToggle label={t("sectionSkills")} checked={data.visibility.skills} onToggle={() => toggleSection("skills")} />
+                  </div>
+
+                  <div className={`space-y-1${!data.visibility.contact ? " opacity-40 pointer-events-none" : ""}`}>
                     <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-1">{t("sectionsTitle")}</p>
                     <SectionToggle label={t("sectionEmail")} checked={data.visibility.email} onToggle={() => toggleSection("email")} />
                     <SectionToggle label={t("sectionPhone")} checked={data.visibility.phone} onToggle={() => toggleSection("phone")} />
@@ -552,6 +562,50 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <SectionToggle label={t("sectionCourses")} checked={data.visibility.courses} onToggle={() => toggleSection("courses")} />
                     <SectionToggle label={t("sectionCertifications")} checked={data.visibility.certifications} onToggle={() => toggleSection("certifications")} />
                     <SectionToggle label={t("sectionAwards")} checked={data.visibility.awards} onToggle={() => toggleSection("awards")} />
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
+
+            {/* Admin — toolbar feature flags */}
+            <Popover>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
+                    >
+                      <Shield className="h-4 w-4" />
+                    </Button>
+                  </PopoverTrigger>
+                </TooltipTrigger>
+                <TooltipContent>{ta("title")}</TooltipContent>
+              </Tooltip>
+              <PopoverContent className="w-64 max-h-[70vh] overflow-y-auto overscroll-contain scrollbar-thin" align="end">
+                <div className="space-y-3">
+                  <div className="space-y-1">
+                    <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-1">{ta("title")}</p>
+                    {TOOLBAR_INLINE_KEYS.map((key) => (
+                      <SectionToggle
+                        key={key}
+                        label={ta(key)}
+                        checked={toolbarFeatures[key]}
+                        onToggle={() => toggleFeature(key)}
+                      />
+                    ))}
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-1">{ta("blockTypesSection")}</p>
+                    {TOOLBAR_BLOCK_TYPE_KEYS.map((key) => (
+                      <SectionToggle
+                        key={key}
+                        label={ta(key)}
+                        checked={toolbarFeatures[key]}
+                        onToggle={() => toggleFeature(key)}
+                      />
+                    ))}
                   </div>
                 </div>
               </PopoverContent>
@@ -674,7 +728,6 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
               </PopoverContent>
             </Popover>
 
-            {/* Edit/View mode toggle moved to floating FAB (MobileEditFAB) for all devices */}
           </div>
 
           {/* ===== MOBILE HAMBURGER MENU (visible only on mobile) ===== */}
@@ -750,6 +803,15 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <span className="flex items-center gap-2.5">
                       <SlidersHorizontal className="h-4 w-4" />
                       {t("sections")}
+                    </span>
+                    <ChevronRight className="h-3.5 w-3.5 text-gray-400 dark:text-gray-400" />
+                  </button>
+
+                  {/* Admin */}
+                  <button onClick={() => setMobileMenuPage("admin")} className={menuItemClass}>
+                    <span className="flex items-center gap-2.5">
+                      <Shield className="h-4 w-4" />
+                      {ta("title")}
                     </span>
                     <ChevronRight className="h-3.5 w-3.5 text-gray-400 dark:text-gray-400" />
                   </button>
@@ -1055,6 +1117,12 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                   </button>
                   <div className="px-3.5 pt-2.5 pb-1.5 space-y-3">
                     <div className="space-y-1">
+                      <p className="text-[13px] font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-1">{t("sidebarSections")}</p>
+                      <SectionToggle label={t("sectionContact")} checked={data.visibility.contact} onToggle={() => toggleSection("contact")} />
+                      <SectionToggle label={t("sectionSummary")} checked={data.visibility.summary} onToggle={() => toggleSection("summary")} />
+                      <SectionToggle label={t("sectionSkills")} checked={data.visibility.skills} onToggle={() => toggleSection("skills")} />
+                    </div>
+                    <div className={`space-y-1${!data.visibility.contact ? " opacity-40 pointer-events-none" : ""}`}>
                       <p className="text-[13px] font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-1">{t("sectionsTitle")}</p>
                       <SectionToggle label={t("sectionEmail")} checked={data.visibility.email} onToggle={() => toggleSection("email")} />
                       <SectionToggle label={t("sectionPhone")} checked={data.visibility.phone} onToggle={() => toggleSection("phone")} />
@@ -1067,6 +1135,38 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       <SectionToggle label={t("sectionCourses")} checked={data.visibility.courses} onToggle={() => toggleSection("courses")} />
                       <SectionToggle label={t("sectionCertifications")} checked={data.visibility.certifications} onToggle={() => toggleSection("certifications")} />
                       <SectionToggle label={t("sectionAwards")} checked={data.visibility.awards} onToggle={() => toggleSection("awards")} />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {mobileMenuPage === "admin" && (
+                <div>
+                  <button onClick={() => setMobileMenuPage("main")} className={backButtonClass}>
+                    <ChevronLeft className="h-3.5 w-3.5" />
+                    {ta("title")}
+                  </button>
+                  <div className="px-3.5 pt-2.5 pb-1.5 space-y-3">
+                    <div className="space-y-1">
+                      {TOOLBAR_INLINE_KEYS.map((key) => (
+                        <SectionToggle
+                          key={key}
+                          label={ta(key)}
+                          checked={toolbarFeatures[key]}
+                          onToggle={() => toggleFeature(key)}
+                        />
+                      ))}
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-[13px] font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-1">{ta("blockTypesSection")}</p>
+                      {TOOLBAR_BLOCK_TYPE_KEYS.map((key) => (
+                        <SectionToggle
+                          key={key}
+                          label={ta(key)}
+                          checked={toolbarFeatures[key]}
+                          onToggle={() => toggleFeature(key)}
+                        />
+                      ))}
                     </div>
                   </div>
                 </div>

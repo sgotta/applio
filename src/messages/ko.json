@@ -14,6 +14,10 @@
     "exportTitle": "이력서를 JSON 파일로 내보내기",
     "pdfTitle": "PDF 다운로드",
     "pdfGenerating": "PDF 생성 중...",
+    "sidebarSections": "사이드바 섹션",
+    "sectionContact": "연락처",
+    "sectionSummary": "전문 프로필",
+    "sectionSkills": "기술",
     "optionalSections": "선택 섹션",
     "sectionCourses": "강좌 및 워크숍",
     "sectionCertifications": "자격증",
@@ -97,21 +101,12 @@
     "endDatePlaceholder": "종료",
     "positionPlaceholder": "직함",
     "bulletPlaceholder": "성과 또는 책임을 설명하세요...",
-    "deleteBullet": "항목 삭제",
-    "addBullet": "성과 추가",
     "addExperience": "경력 추가",
-    "newBulletDefault": "새로운 성과 또는 책임.",
     "confirmDeleteExperience": "\"{name}\" 삭제하시겠습니까?",
     "confirmDeleteExperienceEmpty": "이 경력을 삭제하시겠습니까?",
     "deleteConfirm": "삭제",
     "deleteCancel": "취소",
-    "roleDescriptionPlaceholder": "선택적 설명...",
-    "typeBullet": "항목",
-    "typeTitle": "제목",
-    "typeSubtitle": "부제목",
-    "typeNumbered": "번호 매기기",
     "gripDragHint": "드래그하여 정렬",
-    "gripClickHint": "클릭하여 유형 변경",
     "gripLongPressHint": "길게 눌러 이동"
   },
   "education": {
@@ -147,7 +142,49 @@
     "adjust": "조정"
   },
   "editableText": {
-    "defaultPlaceholder": "클릭하여 편집..."
+    "defaultPlaceholder": "클릭하여 편집...",
+    "pasteLineBreaksCleaned": "줄바꿈이 정리되었습니다. Ctrl+Z로 실행 취소."
+  },
+  "floatingToolbar": {
+    "bold": "굵게",
+    "italic": "기울임",
+    "underline": "밑줄",
+    "strikethrough": "취소선",
+    "code": "코드",
+    "textColor": "글자 색",
+    "highlight": "형광펜",
+    "turnInto": "변환",
+    "typeText": "텍스트",
+    "typeHeading2": "제목 1",
+    "typeHeading3": "제목 2",
+    "typeHeading4": "제목 3",
+    "typeBulletList": "글머리 기호 목록",
+    "typeOrderedList": "번호 매기기 목록",
+    "typeBlockquote": "인용",
+    "clearFormatting": "서식 지우기",
+    "moveUp": "위로 이동",
+    "moveDown": "아래로 이동"
+  },
+  "admin": {
+    "title": "관리자 전용",
+    "bold": "굵게",
+    "italic": "기울임",
+    "underline": "밑줄",
+    "strikethrough": "취소선",
+    "code": "코드",
+    "clearFormatting": "서식 지우기",
+    "textColor": "글자 색상",
+    "highlight": "강조",
+    "moveBlocks": "블록 이동",
+    "blockTypes": "블록 유형",
+    "blockTypesSection": "표시할 블록 유형",
+    "typeParagraph": "텍스트",
+    "typeHeading2": "제목 1",
+    "typeHeading3": "제목 2",
+    "typeHeading4": "제목 3",
+    "typeBulletList": "글머리 기호 목록",
+    "typeOrderedList": "번호 매기기 목록",
+    "typeBlockquote": "인용"
   },
   "courses": {
     "title": "강좌 및 워크숍",
@@ -161,7 +198,8 @@
     "confirmDeleteCourse": "\"{name}\" 삭제하시겠습니까?",
     "confirmDeleteCourseEmpty": "이 과정을 삭제하시겠습니까?",
     "deleteConfirm": "삭제",
-    "deleteCancel": "취소"
+    "deleteCancel": "취소",
+    "descriptionPlaceholder": "선택 설명..."
   },
   "certifications": {
     "title": "자격증",
@@ -175,7 +213,8 @@
     "confirmDeleteCertification": "\"{name}\" 삭제하시겠습니까?",
     "confirmDeleteCertificationEmpty": "이 자격증을 삭제하시겠습니까?",
     "deleteConfirm": "삭제",
-    "deleteCancel": "취소"
+    "deleteCancel": "취소",
+    "descriptionPlaceholder": "선택 설명..."
   },
   "awards": {
     "title": "수상 및 영예",
@@ -189,7 +228,8 @@
     "confirmDeleteAward": "\"{name}\" 삭제하시겠습니까?",
     "confirmDeleteAwardEmpty": "이 수상을 삭제하시겠습니까?",
     "deleteConfirm": "삭제",
-    "deleteCancel": "취소"
+    "deleteCancel": "취소",
+    "descriptionPlaceholder": "선택 설명..."
   },
   "printable": {
     "profilePhotoAlt": "프로필 사진",
@@ -227,15 +267,6 @@
     "madeWith": "아르헨티나에서 제작",
     "generating": "PDF 생성 중..."
   },
-  "editMode": {
-    "edit": "편집",
-    "view": "보기",
-    "switchToEdit": "편집 모드로 전환",
-    "switchToView": "보기 모드로 전환",
-    "viewModeHint": "편집 모드로 전환하세요",
-    "doubleClickHint": "더블 클릭하여 편집",
-    "exitedEditMode": "보기 모드로 돌아왔습니다"
-  },
   "languages": {
     "en": "영어",
     "es": "스페인어",
@@ -250,5 +281,13 @@
     "tr": "터키어",
     "hi": "힌디어",
     "th": "태국어"
+  },
+  "common": {
+    "delete": "삭제",
+    "moveUp": "위로 이동",
+    "moveDown": "아래로 이동",
+    "addBelow": "아래에 추가",
+    "gripDragHint": "드래그하여 재정렬",
+    "gripLongPressHint": "길게 눌러 재정렬"
   }
 }

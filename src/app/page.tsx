@@ -9,7 +9,7 @@ import { ThemeProvider } from "@/lib/theme-context";
 import { ColorSchemeProvider, useColorScheme } from "@/lib/color-scheme-context";
 import { SidebarPatternProvider, useSidebarPattern } from "@/lib/sidebar-pattern-context";
 import { FontSettingsProvider, useFontSettings } from "@/lib/font-context";
-import { EditModeProvider } from "@/lib/edit-mode-context";
+import { ToolbarFeaturesProvider } from "@/lib/toolbar-features-context";
 import { downloadPDF } from "@/lib/generate-pdf";
 import { filenameDateStamp } from "@/lib/utils";
 import { getFontDefinition, FONT_SIZE_LEVELS, PDF_BASE_FONT_SCALE, CJK_LOCALES } from "@/lib/fonts";
@@ -93,9 +93,9 @@ export default function Home() {
       <ColorSchemeProvider>
         <SidebarPatternProvider>
           <FontSettingsProvider>
+          <ToolbarFeaturesProvider>
           <LocaleProvider>
             <CVProvider>
-            <EditModeProvider>
             <TooltipProvider delayDuration={300}>
               <AppContent />
               <Toaster
@@ -110,9 +110,9 @@ export default function Home() {
                 }}
               />
             </TooltipProvider>
-            </EditModeProvider>
             </CVProvider>
           </LocaleProvider>
+          </ToolbarFeaturesProvider>
           </FontSettingsProvider>
         </SidebarPatternProvider>
       </ColorSchemeProvider>

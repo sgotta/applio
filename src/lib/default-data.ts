@@ -1,4 +1,6 @@
-import { CVData, SectionVisibility } from "./types";
+import type { CVData, SectionVisibility, SidebarSectionId } from "./types";
+
+export const DEFAULT_SIDEBAR_ORDER: SidebarSectionId[] = ["contact", "summary", "skills"];
 
 export const defaultVisibility: SectionVisibility = {
   email: true,
@@ -9,6 +11,9 @@ export const defaultVisibility: SectionVisibility = {
   courses: false,
   certifications: false,
   awards: false,
+  contact: true,
+  summary: true,
+  skills: true,
 };
 
 const enData: CVData = {
@@ -30,11 +35,7 @@ const enData: CVData = {
       position: "Senior Software Engineer",
       startDate: "Mar 2021",
       endDate: "Present",
-      description: [
-        { text: "Led the development of a new digital onboarding system, reducing customer sign-up time by 40%.", type: "bullet" },
-        { text: "Migrated monolithic application to microservices using **Node.js** and **AWS Lambda**.", type: "bullet" },
-        { text: "Mentored a team of 4 junior developers through code reviews and pair programming.", type: "bullet" },
-      ],
+      description: "<ul><li><p>Led the development of a new digital onboarding system, reducing customer sign-up time by 40%.</p></li><li><p>Migrated monolithic application to microservices using <strong>Node.js</strong> and <strong>AWS Lambda</strong>.</p></li><li><p>Mentored a team of 4 junior developers through code reviews and pair programming.</p></li></ul>",
     },
     {
       id: "exp-2",
@@ -42,10 +43,7 @@ const enData: CVData = {
       position: "Frontend Developer",
       startDate: "Sep 2019",
       endDate: "Feb 2021",
-      description: [
-        { text: "Built enterprise user interfaces for clients using **React** and **TypeScript**.", type: "bullet" },
-        { text: "Implemented a shared design system adopted across 3 product teams.", type: "bullet" },
-      ],
+      description: "<ul><li><p>Built enterprise user interfaces for clients using <strong>React</strong> and <strong>TypeScript</strong>.</p></li><li><p>Implemented a shared design system adopted across 3 product teams.</p></li></ul>",
     },
   ],
   education: [
@@ -80,6 +78,7 @@ const enData: CVData = {
   certifications: [],
   awards: [],
   visibility: defaultVisibility,
+  sidebarOrder: DEFAULT_SIDEBAR_ORDER,
 };
 
 const esData: CVData = {
@@ -101,11 +100,7 @@ const esData: CVData = {
       position: "Senior Software Engineer",
       startDate: "marzo 2021",
       endDate: "Actualidad",
-      description: [
-        { text: "Lideré el desarrollo del nuevo sistema de onboarding digital, reduciendo el tiempo de alta de clientes en un 40%.", type: "bullet" },
-        { text: "Migración de aplicación monolítica a microservicios con **Node.js** y **AWS Lambda**.", type: "bullet" },
-        { text: "Mentoría a equipo de 4 desarrolladores junior.", type: "bullet" },
-      ],
+      description: "<ul><li><p>Lideré el desarrollo del nuevo sistema de onboarding digital, reduciendo el tiempo de alta de clientes en un 40%.</p></li><li><p>Migración de aplicación monolítica a microservicios con <strong>Node.js</strong> y <strong>AWS Lambda</strong>.</p></li><li><p>Mentoría a equipo de 4 desarrolladores junior.</p></li></ul>",
     },
     {
       id: "exp-2",
@@ -113,10 +108,7 @@ const esData: CVData = {
       position: "Frontend Developer",
       startDate: "septiembre 2019",
       endDate: "febrero 2021",
-      description: [
-        { text: "Desarrollo de interfaces de usuario para clientes enterprise con **React** y **TypeScript**.", type: "bullet" },
-        { text: "Implementación de design system compartido entre 3 equipos.", type: "bullet" },
-      ],
+      description: "<ul><li><p>Desarrollo de interfaces de usuario para clientes enterprise con <strong>React</strong> y <strong>TypeScript</strong>.</p></li><li><p>Implementación de design system compartido entre 3 equipos.</p></li></ul>",
     },
   ],
   education: [
@@ -151,6 +143,7 @@ const esData: CVData = {
   certifications: [],
   awards: [],
   visibility: defaultVisibility,
+  sidebarOrder: DEFAULT_SIDEBAR_ORDER,
 };
 
 const dataByLocale: Record<string, CVData> = { en: enData, es: esData };

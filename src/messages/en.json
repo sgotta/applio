@@ -14,6 +14,10 @@
     "exportTitle": "Export CV as JSON file",
     "pdfTitle": "Download PDF",
     "pdfGenerating": "Generating PDF...",
+    "sidebarSections": "Sidebar Sections",
+    "sectionContact": "Contact",
+    "sectionSummary": "Professional Profile",
+    "sectionSkills": "Skills",
     "optionalSections": "Optional Sections",
     "sectionCourses": "Courses & Workshops",
     "sectionCertifications": "Certifications",
@@ -97,21 +101,12 @@
     "endDatePlaceholder": "end",
     "positionPlaceholder": "Job title",
     "bulletPlaceholder": "Describe an achievement or responsibility...",
-    "deleteBullet": "Delete bullet",
-    "addBullet": "Add achievement",
     "addExperience": "Add experience",
-    "newBulletDefault": "New achievement or responsibility.",
     "confirmDeleteExperience": "Delete \"{name}\"?",
     "confirmDeleteExperienceEmpty": "Delete this experience?",
     "deleteConfirm": "Delete",
     "deleteCancel": "Cancel",
-    "roleDescriptionPlaceholder": "Optional description...",
-    "typeBullet": "Bullet",
-    "typeTitle": "Title",
-    "typeSubtitle": "Subtitle",
-    "typeNumbered": "Numbered",
     "gripDragHint": "Drag to reorder",
-    "gripClickHint": "Click to change type",
     "gripLongPressHint": "Hold to drag"
   },
   "education": {
@@ -147,7 +142,49 @@
     "adjust": "Adjust"
   },
   "editableText": {
-    "defaultPlaceholder": "Click to edit..."
+    "defaultPlaceholder": "Click to edit...",
+    "pasteLineBreaksCleaned": "Line breaks cleaned up. Ctrl+Z to undo."
+  },
+  "floatingToolbar": {
+    "bold": "Bold",
+    "italic": "Italic",
+    "underline": "Underline",
+    "strikethrough": "Strikethrough",
+    "code": "Code",
+    "textColor": "Text color",
+    "highlight": "Highlight",
+    "turnInto": "Turn into",
+    "typeText": "Text",
+    "typeHeading2": "Heading 1",
+    "typeHeading3": "Heading 2",
+    "typeHeading4": "Heading 3",
+    "typeBulletList": "Bullet list",
+    "typeOrderedList": "Numbered list",
+    "typeBlockquote": "Quote",
+    "clearFormatting": "Clear formatting",
+    "moveUp": "Move up",
+    "moveDown": "Move down"
+  },
+  "admin": {
+    "title": "Admin only",
+    "bold": "Bold",
+    "italic": "Italic",
+    "underline": "Underline",
+    "strikethrough": "Strikethrough",
+    "code": "Code",
+    "clearFormatting": "Clear formatting",
+    "textColor": "Text color",
+    "highlight": "Highlight",
+    "moveBlocks": "Move blocks",
+    "blockTypes": "Block types",
+    "blockTypesSection": "Visible block types",
+    "typeParagraph": "Text",
+    "typeHeading2": "Heading 1",
+    "typeHeading3": "Heading 2",
+    "typeHeading4": "Heading 3",
+    "typeBulletList": "Bullet list",
+    "typeOrderedList": "Ordered list",
+    "typeBlockquote": "Quote"
   },
   "courses": {
     "title": "Courses & Workshops",
@@ -161,7 +198,8 @@
     "confirmDeleteCourse": "Delete \"{name}\"?",
     "confirmDeleteCourseEmpty": "Delete this course?",
     "deleteConfirm": "Delete",
-    "deleteCancel": "Cancel"
+    "deleteCancel": "Cancel",
+    "descriptionPlaceholder": "Optional description..."
   },
   "certifications": {
     "title": "Certifications",
@@ -175,7 +213,8 @@
     "confirmDeleteCertification": "Delete \"{name}\"?",
     "confirmDeleteCertificationEmpty": "Delete this certification?",
     "deleteConfirm": "Delete",
-    "deleteCancel": "Cancel"
+    "deleteCancel": "Cancel",
+    "descriptionPlaceholder": "Optional description..."
   },
   "awards": {
     "title": "Awards & Honors",
@@ -189,7 +228,8 @@
     "confirmDeleteAward": "Delete \"{name}\"?",
     "confirmDeleteAwardEmpty": "Delete this award?",
     "deleteConfirm": "Delete",
-    "deleteCancel": "Cancel"
+    "deleteCancel": "Cancel",
+    "descriptionPlaceholder": "Optional description..."
   },
   "printable": {
     "profilePhotoAlt": "Profile photo",
@@ -227,15 +267,6 @@
     "madeWith": "Made in Argentina",
     "generating": "Generating PDF..."
   },
-  "editMode": {
-    "edit": "Edit",
-    "view": "View",
-    "switchToEdit": "Switch to edit mode",
-    "switchToView": "Switch to view mode",
-    "viewModeHint": "Switch to edit mode",
-    "doubleClickHint": "Double click to edit",
-    "exitedEditMode": "Back to view mode"
-  },
   "languages": {
     "en": "English",
     "es": "Spanish",
@@ -250,5 +281,13 @@
     "tr": "Turkish",
     "hi": "Hindi",
     "th": "Thai"
+  },
+  "common": {
+    "delete": "Delete",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "addBelow": "Add below",
+    "gripDragHint": "Drag to reorder",
+    "gripLongPressHint": "Long press to reorder"
   }
 }

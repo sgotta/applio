@@ -14,6 +14,10 @@
     "exportTitle": "CV को JSON फ़ाइल के रूप में निर्यात करें",
     "pdfTitle": "PDF डाउनलोड करें",
     "pdfGenerating": "PDF बन रही है...",
+    "sidebarSections": "साइडबार अनुभाग",
+    "sectionContact": "संपर्क",
+    "sectionSummary": "पेशेवर प्रोफ़ाइल",
+    "sectionSkills": "कौशल",
     "optionalSections": "वैकल्पिक अनुभाग",
     "sectionCourses": "कोर्स और कार्यशालाएँ",
     "sectionCertifications": "प्रमाणपत्र",
@@ -97,21 +101,12 @@
     "endDatePlaceholder": "अंत",
     "positionPlaceholder": "पद का नाम",
     "bulletPlaceholder": "किसी उपलब्धि या ज़िम्मेदारी का वर्णन करें...",
-    "deleteBullet": "बुलेट हटाएँ",
-    "addBullet": "उपलब्धि जोड़ें",
     "addExperience": "अनुभव जोड़ें",
-    "newBulletDefault": "नई उपलब्धि या ज़िम्मेदारी।",
     "confirmDeleteExperience": "\"{name}\" हटाएँ?",
     "confirmDeleteExperienceEmpty": "यह अनुभव हटाएँ?",
     "deleteConfirm": "हटाएँ",
     "deleteCancel": "रद्द करें",
-    "roleDescriptionPlaceholder": "वैकल्पिक विवरण...",
-    "typeBullet": "बुलेट",
-    "typeTitle": "शीर्षक",
-    "typeSubtitle": "उपशीर्षक",
-    "typeNumbered": "क्रमांकित",
     "gripDragHint": "क्रम बदलने के लिए खींचें",
-    "gripClickHint": "प्रकार बदलने के लिए क्लिक करें",
     "gripLongPressHint": "खींचने के लिए दबाए रखें"
   },
   "education": {
@@ -147,7 +142,49 @@
     "adjust": "समायोजित करें"
   },
   "editableText": {
-    "defaultPlaceholder": "संपादित करने के लिए क्लिक करें..."
+    "defaultPlaceholder": "संपादित करने के लिए क्लिक करें...",
+    "pasteLineBreaksCleaned": "लाइन ब्रेक साफ़ किए गए। Ctrl+Z से पूर्ववत करें।"
+  },
+  "floatingToolbar": {
+    "bold": "बोल्ड",
+    "italic": "इटैलिक",
+    "underline": "रेखांकित",
+    "strikethrough": "स्ट्राइकथ्रू",
+    "code": "कोड",
+    "textColor": "टेक्स्ट रंग",
+    "highlight": "हाइलाइट",
+    "turnInto": "में बदलें",
+    "typeText": "पाठ",
+    "typeHeading2": "शीर्षक 1",
+    "typeHeading3": "शीर्षक 2",
+    "typeHeading4": "शीर्षक 3",
+    "typeBulletList": "बुलेट सूची",
+    "typeOrderedList": "क्रमांकित सूची",
+    "typeBlockquote": "उद्धरण",
+    "clearFormatting": "फ़ॉर्मेटिंग हटाएं",
+    "moveUp": "ऊपर ले जाएँ",
+    "moveDown": "नीचे ले जाएँ"
+  },
+  "admin": {
+    "title": "केवल व्यवस्थापक",
+    "bold": "बोल्ड",
+    "italic": "इटैलिक",
+    "underline": "रेखांकित",
+    "strikethrough": "स्ट्राइकथ्रू",
+    "code": "कोड",
+    "clearFormatting": "फ़ॉर्मेटिंग हटाएँ",
+    "textColor": "पाठ रंग",
+    "highlight": "हाइलाइट",
+    "moveBlocks": "ब्लॉक स्थानांतरित करें",
+    "blockTypes": "ब्लॉक प्रकार",
+    "blockTypesSection": "दिखाई देने वाले ब्लॉक प्रकार",
+    "typeParagraph": "पाठ",
+    "typeHeading2": "शीर्षक 1",
+    "typeHeading3": "शीर्षक 2",
+    "typeHeading4": "शीर्षक 3",
+    "typeBulletList": "बुलेट सूची",
+    "typeOrderedList": "क्रमांकित सूची",
+    "typeBlockquote": "उद्धरण"
   },
   "courses": {
     "title": "कोर्स और कार्यशालाएँ",
@@ -161,7 +198,8 @@
     "confirmDeleteCourse": "\"{name}\" हटाएँ?",
     "confirmDeleteCourseEmpty": "यह कोर्स हटाएँ?",
     "deleteConfirm": "हटाएँ",
-    "deleteCancel": "रद्द करें"
+    "deleteCancel": "रद्द करें",
+    "descriptionPlaceholder": "वैकल्पिक विवरण..."
   },
   "certifications": {
     "title": "प्रमाणपत्र",
@@ -175,7 +213,8 @@
     "confirmDeleteCertification": "\"{name}\" हटाएँ?",
     "confirmDeleteCertificationEmpty": "यह प्रमाणपत्र हटाएँ?",
     "deleteConfirm": "हटाएँ",
-    "deleteCancel": "रद्द करें"
+    "deleteCancel": "रद्द करें",
+    "descriptionPlaceholder": "वैकल्पिक विवरण..."
   },
   "awards": {
     "title": "पुरस्कार और सम्मान",
@@ -189,7 +228,8 @@
     "confirmDeleteAward": "\"{name}\" हटाएँ?",
     "confirmDeleteAwardEmpty": "यह पुरस्कार हटाएँ?",
     "deleteConfirm": "हटाएँ",
-    "deleteCancel": "रद्द करें"
+    "deleteCancel": "रद्द करें",
+    "descriptionPlaceholder": "वैकल्पिक विवरण..."
   },
   "printable": {
     "profilePhotoAlt": "प्रोफ़ाइल फ़ोटो",
@@ -227,15 +267,6 @@
     "madeWith": "अर्जेंटीना में बनाया गया",
     "generating": "PDF बन रही है..."
   },
-  "editMode": {
-    "edit": "संपादन",
-    "view": "देखें",
-    "switchToEdit": "संपादन मोड पर जाएँ",
-    "switchToView": "व्यू मोड पर जाएँ",
-    "viewModeHint": "संपादन मोड पर जाएँ",
-    "doubleClickHint": "संपादित करने के लिए डबल क्लिक करें",
-    "exitedEditMode": "दृश्य मोड में वापस"
-  },
   "languages": {
     "en": "अंग्रेज़ी",
     "es": "स्पेनी",
@@ -250,5 +281,13 @@
     "tr": "तुर्की",
     "hi": "हिन्दी",
     "th": "थाई"
+  },
+  "common": {
+    "delete": "हटाएं",
+    "moveUp": "ऊपर ले जाएं",
+    "moveDown": "नीचे ले जाएं",
+    "addBelow": "नीचे जोड़ें",
+    "gripDragHint": "पुनर्व्यवस्थित करने के लिए खींचें",
+    "gripLongPressHint": "पुनर्व्यवस्थित करने के लिए दबाकर रखें"
   }
 }

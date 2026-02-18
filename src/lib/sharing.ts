@@ -2,8 +2,8 @@ import {
   compressToEncodedURIComponent,
   decompressFromEncodedURIComponent,
 } from "lz-string";
-import type { CVData, SharedCVData } from "./types";
-import { defaultVisibility } from "./default-data";
+import type { CVData, SharedCVData, SidebarSectionId } from "./types";
+import { defaultVisibility, DEFAULT_SIDEBAR_ORDER } from "./default-data";
 import {
   COLOR_SCHEME_NAMES,
   DEFAULT_COLOR_SCHEME,
@@ -153,6 +153,17 @@ function validateSharedData(data: unknown): SharedCVData | null {
         ...defaultVisibility,
         ...((cv.visibility as object) || {}),
       },
+      sidebarOrder: (() => {
+        if (!Array.isArray(cv.sidebarOrder)) return [...DEFAULT_SIDEBAR_ORDER];
+        const valid = (cv.sidebarOrder as unknown[]).filter(
+          (id): id is SidebarSectionId =>
+            typeof id === "string" && (DEFAULT_SIDEBAR_ORDER as readonly string[]).includes(id)
+        );
+        for (const id of DEFAULT_SIDEBAR_ORDER) {
+          if (!valid.includes(id)) valid.push(id);
+        }
+        return valid;
+      })(),
     },
     settings: { colorScheme, fontSizeLevel, marginLevel, ...(fontFamily ? { fontFamily } : {}), ...(pattern ? { pattern } : {}) },
     sharedAt:

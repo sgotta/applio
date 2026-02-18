@@ -1,24 +1,18 @@
 "use client";
 
-import { memo, useCallback, useState } from "react";
+import React, { memo, useCallback, useState } from "react";
 import { useCV } from "@/lib/cv-context";
 import { useTranslations } from "next-intl";
 import { useColorScheme } from "@/lib/color-scheme-context";
-import { useIsViewMode } from "@/hooks/useIsViewMode";
+
 import { EditableText } from "./EditableText";
+import { EntryGrip } from "./EntryGrip";
 import { SectionTitle } from "./SectionTitle";
 import { ProfilePhotoUpload } from "./ProfilePhotoUpload";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Plus, X, ChevronUp, ChevronDown, Trash2, Pencil } from "lucide-react";
+import { Plus, X, Pencil, GripVertical } from "lucide-react";
 import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
+import type { SidebarSectionId } from "@/lib/types";
 import {
   DndContext,
   closestCenter,
@@ -34,6 +28,7 @@ import {
   useSortable,
   sortableKeyboardCoordinates,
   rectSortingStrategy,
+  verticalListSortingStrategy,
   arrayMove,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -63,12 +58,6 @@ function ContactLine({
   const [editing, setEditing] = useState(false);
   const hasUrl = !!urlValue;
   const linkable = !!urlField;
-  const viewMode = useIsViewMode();
-
-  // Clickable href for view mode: external URLs, mailto:, or tel:
-  const viewHref = viewMode && value
-    ? urlValue || (field === "email" ? `mailto:${value}` : field === "phone" ? `tel:${value}` : undefined)
-    : undefined;
 
   // Reset to preview mode when popover closes
   const handleOpenChange = (open: boolean) => {
@@ -78,7 +67,7 @@ function ContactLine({
 
   return (
     <div className="flex items-center gap-1 group/contact">
-      {linkable && !viewMode ? (
+      {linkable ? (
         /* Icon is the popover trigger for linkable fields */
         <Popover open={linkOpen} onOpenChange={handleOpenChange}>
           <PopoverTrigger asChild>
@@ -147,25 +136,13 @@ function ContactLine({
         /* Non-linkable fields — plain icon */
         <Icon className="h-3 w-3 shrink-0" style={{ color: iconColor }} />
       )}
-      {viewHref ? (
-        <a
-          href={viewHref}
-          target={urlValue ? "_blank" : undefined}
-          rel={urlValue ? "noopener noreferrer" : undefined}
-          className="text-gray-600 dark:text-gray-300 inline-block rounded-sm px-1.5 py-0.5 -mx-1.5 -my-0.5 hover:opacity-80 transition-opacity"
-          style={{ fontSize: "1em", color: iconColor }}
-        >
-          {value}
-        </a>
-      ) : (
-        <EditableText
-          value={value}
-          onChange={(v) => onChange(field, v)}
-          as="small"
-          placeholder={placeholder}
-          displayStyle={{ color: iconColor }}
-        />
-      )}
+      <EditableText
+        value={value}
+        onChange={(v) => onChange(field, v)}
+        as="small"
+        placeholder={placeholder}
+        displayStyle={{ color: iconColor }}
+      />
     </div>
   );
 }
@@ -173,27 +150,23 @@ function ContactLine({
 function SkillBadge({
   value,
   onChange,
-  onRemove,
   skillPlaceholder,
-  deleteAriaLabel,
   badgeBg,
   badgeText,
   autoEdit,
+  onEditingChange,
 }: {
   value: string;
   onChange: (v: string) => void;
-  onRemove: () => void;
   skillPlaceholder: string;
-  deleteAriaLabel: string;
   badgeBg: string;
   badgeText: string;
   autoEdit?: boolean;
+  onEditingChange?: (editing: boolean) => void;
 }) {
-  const viewMode = useIsViewMode();
-
   return (
     <span
-      className={`inline-flex items-center gap-0.5 rounded pl-2 ${viewMode ? "pr-2" : "pr-0.5"} py-0.5 group/badge`}
+      className="inline-flex items-center rounded px-2 py-0.5"
       style={{ backgroundColor: badgeBg, color: badgeText }}
     >
       <EditableText
@@ -203,28 +176,33 @@ function SkillBadge({
         placeholder={skillPlaceholder}
         displayStyle={{ color: badgeText }}
         autoEdit={autoEdit}
+        editOutline={false}
+        doubleClickToEdit
+        deleteOnEmpty
+        onEditingChange={onEditingChange}
       />
-      {!viewMode && (
-        <button
-          onClick={onRemove}
-          className="inline-flex can-hover:opacity-0 can-hover:group-hover/badge:opacity-100 p-0.5 rounded hover:bg-white/20 transition-opacity duration-150"
-          aria-label={deleteAriaLabel}
-        >
-          <X className="h-2.5 w-2.5" style={{ color: badgeText }} />
-        </button>
-      )}
     </span>
   );
 }
 
 function SortableSkillBadge({
   sortableId,
-  children,
+  value,
+  onChange,
+  skillPlaceholder,
+  badgeBg,
+  badgeText,
+  autoEdit,
 }: {
   sortableId: string;
-  children: React.ReactNode;
+  value: string;
+  onChange: (v: string) => void;
+  skillPlaceholder: string;
+  badgeBg: string;
+  badgeText: string;
+  autoEdit?: boolean;
 }) {
-  const viewMode = useIsViewMode();
+  const [isEditing, setIsEditing] = useState(false);
   const {
     attributes,
     listeners,
@@ -232,14 +210,14 @@ function SortableSkillBadge({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: sortableId, disabled: viewMode });
+  } = useSortable({ id: sortableId, disabled: isEditing });
 
   const style: React.CSSProperties = {
     transform: CSS.Translate.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : undefined,
     zIndex: isDragging ? 10 : undefined,
-    cursor: viewMode ? "default" : isDragging ? "grabbing" : "grab",
+    cursor: isEditing ? undefined : isDragging ? "grabbing" : "grab",
   };
 
   return (
@@ -248,117 +226,209 @@ function SortableSkillBadge({
       style={style}
       className="inline-flex touch-manipulation"
       {...attributes}
-      {...(viewMode ? {} : listeners)}
+      {...listeners}
     >
-      {children}
+      <SkillBadge
+        value={value}
+        onChange={onChange}
+        skillPlaceholder={skillPlaceholder}
+        badgeBg={badgeBg}
+        badgeText={badgeText}
+        autoEdit={autoEdit}
+        onEditingChange={setIsEditing}
+      />
     </span>
   );
 }
 
-function CategoryHeader({
-  category,
-  onRemove,
-  onMoveUp,
-  onMoveDown,
-  isFirst,
-  isLast,
-  categoryPlaceholder,
-  deleteAriaLabel,
-  moveUpAriaLabel,
-  moveDownAriaLabel,
-  onCategoryChange,
-  categoryColor,
-  autoEdit,
+function SortableSkillCategory({
+  skillGroup,
+  index,
+  total,
+  sensors,
+  onSkillDragEnd,
+  onAddBelow,
+  autoEditTarget,
+  setAutoEditTarget,
 }: {
-  category: string;
-  onRemove: () => void;
-  onMoveUp: () => void;
-  onMoveDown: () => void;
-  isFirst: boolean;
-  isLast: boolean;
-  categoryPlaceholder: string;
-  deleteAriaLabel: string;
-  moveUpAriaLabel: string;
-  moveDownAriaLabel: string;
-  onCategoryChange: (v: string) => void;
-  categoryColor: string;
-  autoEdit?: boolean;
+  skillGroup: { id: string; category: string; items: string[] };
+  index: number;
+  total: number;
+  sensors: ReturnType<typeof useSensors>;
+  onSkillDragEnd: (skillGroupId: string, items: string[]) => (event: DragEndEvent) => void;
+  onAddBelow: () => void;
+  autoEditTarget: string | null;
+  setAutoEditTarget: (v: string | null) => void;
 }) {
-  const viewMode = useIsViewMode();
+  const { updateSkillCategory, removeSkillCategory, moveSkillCategory } = useCV();
+  const t = useTranslations("personalInfo");
+  const tc = useTranslations("common");
+  const { colorScheme } = useColorScheme();
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: skillGroup.id });
+
+  const style: React.CSSProperties = {
+    transform: CSS.Translate.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : undefined,
+    zIndex: isDragging ? 10 : undefined,
+  };
 
   return (
-    <div className="flex items-center gap-1 mb-1 relative">
-      <EditableText
-        value={category}
-        onChange={onCategoryChange}
-        as="tiny"
-        className="!font-semibold !uppercase !tracking-wide"
-        placeholder={categoryPlaceholder}
-        displayStyle={{ color: categoryColor }}
-        autoEdit={autoEdit}
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="group/entry relative"
+    >
+      <EntryGrip
+        sidebar
+        onMoveUp={index > 0 ? () => moveSkillCategory(skillGroup.id, "up") : undefined}
+        onMoveDown={index < total - 1 ? () => moveSkillCategory(skillGroup.id, "down") : undefined}
+        onDelete={() => removeSkillCategory(skillGroup.id)}
+        onAddBelow={onAddBelow}
+        sortableAttributes={attributes}
+        sortableListeners={listeners}
+        labels={{
+          delete: tc("delete"),
+          moveUp: tc("moveUp"),
+          moveDown: tc("moveDown"),
+          addBelow: t("addCategory"),
+          dragHint: tc("gripDragHint"),
+          longPressHint: tc("gripLongPressHint"),
+        }}
       />
-      {!viewMode && (
-        <div className="flex items-center gap-0.5 can-hover:opacity-0 can-hover:group-hover/skillcat:opacity-100 transition-opacity duration-150">
-          {!isFirst && (
-            <button
-              onClick={onMoveUp}
-              className="p-0.5 rounded hover:bg-white/20 transition-colors"
-              aria-label={moveUpAriaLabel}
-            >
-              <ChevronUp className="h-3 w-3" style={{ color: categoryColor }} />
-            </button>
-          )}
-          {!isLast && (
-            <button
-              onClick={onMoveDown}
-              className="p-0.5 rounded hover:bg-white/20 transition-colors"
-              aria-label={moveDownAriaLabel}
-            >
-              <ChevronDown className="h-3 w-3" style={{ color: categoryColor }} />
-            </button>
-          )}
-          <button
-            onClick={onRemove}
-            className="p-0.5 rounded hover:bg-white/20 transition-colors"
-            aria-label={deleteAriaLabel}
-          >
-            <Trash2 className="h-3 w-3" style={{ color: categoryColor }} />
-          </button>
+
+      <div>
+        {/* Category name */}
+        <div className="mb-1">
+          <EditableText
+            value={skillGroup.category}
+            onChange={(v) => updateSkillCategory(skillGroup.id, { category: v })}
+            as="tiny"
+            className="!font-semibold !uppercase !tracking-wide"
+            placeholder={t("categoryPlaceholder")}
+            displayStyle={{ color: colorScheme.sidebarText }}
+            autoEdit={!!autoEditTarget?.startsWith("newCategory:") && index === total - 1}
+          />
         </div>
-      )}
+
+        {/* Skill badges — drag to reorder within category */}
+        <DndContext
+          id={`skills-dnd-${skillGroup.id}`}
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={onSkillDragEnd(skillGroup.id, skillGroup.items)}
+        >
+          <SortableContext
+            items={skillGroup.items.map((_, i) => String(i))}
+            strategy={rectSortingStrategy}
+          >
+            <div className="flex flex-wrap gap-1">
+              {skillGroup.items.map((item, i) => (
+                  <SortableSkillBadge
+                    key={i}
+                    sortableId={String(i)}
+                    value={item}
+                    skillPlaceholder={t("skillPlaceholder")}
+                    badgeBg={colorScheme.sidebarBadgeBg}
+                    badgeText={colorScheme.sidebarBadgeText}
+                    autoEdit={!!autoEditTarget?.startsWith(skillGroup.id + ":") && i === skillGroup.items.length - 1}
+                    onChange={(v) => {
+                      if (!v) {
+                        // Empty badge → auto-delete
+                        const newItems = skillGroup.items.filter((_, idx) => idx !== i);
+                        updateSkillCategory(skillGroup.id, { items: newItems });
+                      } else {
+                        const newItems = [...skillGroup.items];
+                        newItems[i] = v;
+                        updateSkillCategory(skillGroup.id, { items: newItems });
+                      }
+                    }}
+                  />
+                ))}
+              <button
+                onClick={() => {
+                  setAutoEditTarget(skillGroup.id + ":" + Date.now());
+                  updateSkillCategory(skillGroup.id, {
+                    items: [...skillGroup.items, "Skill"],
+                  });
+                }}
+                className="inline-flex items-center justify-center rounded border border-dashed px-2 py-0.5 transition-all duration-200 hover:scale-105 active:scale-95"
+                style={{ borderColor: colorScheme.sidebarMuted, color: colorScheme.sidebarMuted, fontSize: "0.9em" }}
+              >
+                {"\u200B"}<Plus className="h-[0.75em] w-[0.75em]" strokeWidth={2} />
+              </button>
+            </div>
+          </SortableContext>
+        </DndContext>
+      </div>
+    </div>
+  );
+}
+
+function SortableSidebarSection({
+  id,
+  children,
+  gripColor,
+}: {
+  id: SidebarSectionId;
+  children: React.ReactNode;
+  gripColor: string;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style: React.CSSProperties = {
+    transform: CSS.Translate.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : undefined,
+    zIndex: isDragging ? 10 : undefined,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} className="group/sidebar-section relative">
+      <button
+        className="absolute -left-5 top-0.5 can-hover:opacity-0 can-hover:group-hover/sidebar-section:opacity-100 transition-opacity duration-150 p-0.5 rounded cursor-grab active:cursor-grabbing touch-manipulation"
+        {...attributes}
+        {...listeners}
+      >
+        <GripVertical className="h-3.5 w-3.5" style={{ color: gripColor, opacity: 0.5 }} />
+      </button>
+      {children}
     </div>
   );
 }
 
 export const PersonalInfo = memo(function PersonalInfo() {
   const {
-    data: { personalInfo, summary, skills, visibility },
+    data: { personalInfo, summary, skills, visibility, sidebarOrder },
     updatePersonalInfo,
     updateSummary,
     updateSkillCategory,
     addSkillCategory,
-    removeSkillCategory,
-    moveSkillCategory,
+    reorderSkillCategory,
+    reorderSidebarSection,
   } = useCV();
   const t = useTranslations("personalInfo");
   const { colorScheme } = useColorScheme();
-  const viewMode = useIsViewMode();
-
-  // Confirmation dialog — only used for category deletion (destructive, removes all skills)
-  const [pendingDelete, setPendingDelete] = useState<{
-    message: string;
-    onConfirm: () => void;
-  } | null>(null);
 
   // Track which newly added item should auto-enter edit mode.
-  // Uses unique value (with timestamp) so consecutive adds always trigger re-render.
-  // No cleanup needed: autoEdit only affects initial mount state of EditableText.
   const [autoEditTarget, setAutoEditTarget] = useState<string | null>(null);
 
-  // Multi-device sensors:
-  // Desktop: click = edit, drag 8px+ = reorder
-  // Mobile: tap = edit, hold 250ms + move = drag
-  // Keyboard: Space to pick up, arrows to move, Space to drop
+  // Multi-device sensors for badge reorder
   const sensors = useSensors(
     useSensor(MouseSensor, {
       activationConstraint: { distance: 8 },
@@ -369,6 +439,13 @@ export const PersonalInfo = memo(function PersonalInfo() {
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
+  );
+
+  // Category-level DnD sensors
+  const categorySensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
   const handleSkillDragEnd = useCallback(
@@ -385,6 +462,158 @@ export const PersonalInfo = memo(function PersonalInfo() {
     [updateSkillCategory]
   );
 
+  const handleCategoryDragEnd = useCallback((event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = skills.findIndex(s => s.id === active.id);
+      const newIndex = skills.findIndex(s => s.id === over.id);
+      if (oldIndex !== -1 && newIndex !== -1) {
+        reorderSkillCategory(oldIndex, newIndex);
+      }
+    }
+  }, [skills, reorderSkillCategory]);
+
+  // Section-level DnD
+  const sectionSensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const handleSectionDragEnd = useCallback((event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = sidebarOrder.indexOf(active.id as SidebarSectionId);
+      const newIndex = sidebarOrder.indexOf(over.id as SidebarSectionId);
+      if (oldIndex !== -1 && newIndex !== -1) {
+        reorderSidebarSection(oldIndex, newIndex);
+      }
+    }
+  }, [sidebarOrder, reorderSidebarSection]);
+
+  const hasAnyContactField = visibility.email || visibility.phone || visibility.location || visibility.linkedin || visibility.website;
+
+  const contactSection = hasAnyContactField ? (
+    <div className="space-y-2">
+      <SectionTitle sidebar>{t("contact")}</SectionTitle>
+      <div className="space-y-1.5">
+        {visibility.email && (
+          <ContactLine
+            icon={Mail}
+            value={personalInfo.email}
+            field="email"
+            placeholder={t("emailPlaceholder")}
+            onChange={(f, v) => updatePersonalInfo(f, v)}
+            iconColor={colorScheme.sidebarText}
+          />
+        )}
+        {visibility.phone && (
+          <ContactLine
+            icon={Phone}
+            value={personalInfo.phone}
+            field="phone"
+            placeholder={t("phonePlaceholder")}
+            onChange={(f, v) => updatePersonalInfo(f, v)}
+            iconColor={colorScheme.sidebarText}
+          />
+        )}
+        {visibility.location && (
+          <ContactLine
+            icon={MapPin}
+            value={personalInfo.location}
+            field="location"
+            placeholder={t("locationPlaceholder")}
+            onChange={(f, v) => updatePersonalInfo(f, v)}
+            iconColor={colorScheme.sidebarText}
+          />
+        )}
+        {visibility.linkedin && (
+          <ContactLine
+            icon={Linkedin}
+            value={personalInfo.linkedin}
+            field="linkedin"
+            placeholder={t("linkedinPlaceholder")}
+            onChange={(f, v) => updatePersonalInfo(f, v)}
+            iconColor={colorScheme.sidebarText}
+            urlField="linkedinUrl"
+            urlValue={personalInfo.linkedinUrl}
+            urlPlaceholder={t("urlPlaceholder")}
+          />
+        )}
+        {visibility.website && (
+          <ContactLine
+            icon={Globe}
+            value={personalInfo.website}
+            field="website"
+            placeholder={t("websitePlaceholder")}
+            onChange={(f, v) => updatePersonalInfo(f, v)}
+            iconColor={colorScheme.sidebarText}
+            urlField="websiteUrl"
+            urlValue={personalInfo.websiteUrl}
+            urlPlaceholder={t("urlPlaceholder")}
+          />
+        )}
+      </div>
+    </div>
+  ) : null;
+
+  const summarySection = (
+    <div>
+      <SectionTitle sidebar>{t("aboutMe")}</SectionTitle>
+      <EditableText
+        value={summary}
+        onChange={updateSummary}
+        placeholder={t("summaryPlaceholder")}
+        multiline
+        richText
+        as="body"
+        displayStyle={{ color: colorScheme.sidebarText }}
+      />
+    </div>
+  );
+
+  const skillsSection = skills.length > 0 ? (
+    <div>
+      <SectionTitle sidebar>{t("skills")}</SectionTitle>
+      <DndContext
+        id="skill-categories-dnd"
+        sensors={categorySensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleCategoryDragEnd}
+      >
+        <SortableContext
+          items={skills.map(s => s.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          <div className="space-y-3">
+            {skills.map((skillGroup, index) => (
+              <SortableSkillCategory
+                key={skillGroup.id}
+                skillGroup={skillGroup}
+                index={index}
+                total={skills.length}
+                sensors={sensors}
+                onSkillDragEnd={handleSkillDragEnd}
+                onAddBelow={() => {
+                  setAutoEditTarget("newCategory:" + Date.now());
+                  addSkillCategory(index);
+                }}
+                autoEditTarget={autoEditTarget}
+                setAutoEditTarget={setAutoEditTarget}
+              />
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
+    </div>
+  ) : null;
+
+  const sectionContent: Record<SidebarSectionId, React.ReactNode> = {
+    contact: visibility.contact ? contactSection : null,
+    summary: visibility.summary ? summarySection : null,
+    skills: visibility.skills ? skillsSection : null,
+  };
+
   return (
     <div className="space-y-5">
       {/* Profile photo upload — hidden on mobile (shown separately in CVPreview) */}
@@ -398,220 +627,27 @@ export const PersonalInfo = memo(function PersonalInfo() {
         />
       </div>
 
-      {/* Contact */}
-      {(visibility.email || visibility.phone || visibility.location || visibility.linkedin || visibility.website) && (
-        <div className="space-y-2">
-          <SectionTitle sidebar>{t("contact")}</SectionTitle>
-          <div className="space-y-1.5">
-            {visibility.email && (
-              <ContactLine
-                icon={Mail}
-                value={personalInfo.email}
-                field="email"
-                placeholder={t("emailPlaceholder")}
-                onChange={(f, v) => updatePersonalInfo(f, v)}
-                iconColor={colorScheme.sidebarText}
-              />
-            )}
-            {visibility.phone && (
-              <ContactLine
-                icon={Phone}
-                value={personalInfo.phone}
-                field="phone"
-                placeholder={t("phonePlaceholder")}
-                onChange={(f, v) => updatePersonalInfo(f, v)}
-                iconColor={colorScheme.sidebarText}
-              />
-            )}
-            {visibility.location && (
-              <ContactLine
-                icon={MapPin}
-                value={personalInfo.location}
-                field="location"
-                placeholder={t("locationPlaceholder")}
-                onChange={(f, v) => updatePersonalInfo(f, v)}
-                iconColor={colorScheme.sidebarText}
-              />
-            )}
-            {visibility.linkedin && (
-              <ContactLine
-                icon={Linkedin}
-                value={personalInfo.linkedin}
-                field="linkedin"
-                placeholder={t("linkedinPlaceholder")}
-                onChange={(f, v) => updatePersonalInfo(f, v)}
-                iconColor={colorScheme.sidebarText}
-                urlField="linkedinUrl"
-                urlValue={personalInfo.linkedinUrl}
-                urlPlaceholder={t("urlPlaceholder")}
-              />
-            )}
-            {visibility.website && (
-              <ContactLine
-                icon={Globe}
-                value={personalInfo.website}
-                field="website"
-                placeholder={t("websitePlaceholder")}
-                onChange={(f, v) => updatePersonalInfo(f, v)}
-                iconColor={colorScheme.sidebarText}
-                urlField="websiteUrl"
-                urlValue={personalInfo.websiteUrl}
-                urlPlaceholder={t("urlPlaceholder")}
-              />
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Summary */}
-      <div>
-        <SectionTitle sidebar>{t("aboutMe")}</SectionTitle>
-        <EditableText
-          value={summary}
-          onChange={updateSummary}
-          placeholder={t("summaryPlaceholder")}
-          multiline
-          as="body"
-          displayStyle={{ color: colorScheme.sidebarText }}
-        />
-      </div>
-
-      {/* Skills */}
-      <div>
-        <SectionTitle sidebar>{t("skills")}</SectionTitle>
-        <div className="space-y-3">
-          {skills.map((skillGroup, index) => (
-            <div key={skillGroup.id} className="group/skillcat">
-              <CategoryHeader
-                category={skillGroup.category}
-                categoryPlaceholder={t("categoryPlaceholder")}
-                deleteAriaLabel={t("deleteCategoryAriaLabel", { category: skillGroup.category })}
-                moveUpAriaLabel={t("moveUp")}
-                moveDownAriaLabel={t("moveDown")}
-                isFirst={index === 0}
-                isLast={index === skills.length - 1}
-                autoEdit={!!autoEditTarget?.startsWith("newCategory:") && index === skills.length - 1}
-                onCategoryChange={(v) =>
-                  updateSkillCategory(skillGroup.id, { category: v })
-                }
-                onRemove={() =>
-                  setPendingDelete({
-                    message: skillGroup.category.trim()
-                      ? t("confirmDeleteCategory", { category: skillGroup.category })
-                      : t("confirmDeleteCategoryEmpty"),
-                    onConfirm: () => removeSkillCategory(skillGroup.id),
-                  })
-                }
-                onMoveUp={() => moveSkillCategory(skillGroup.id, "up")}
-                onMoveDown={() => moveSkillCategory(skillGroup.id, "down")}
-                categoryColor={colorScheme.sidebarText}
-              />
-              <DndContext
-                id={`skills-dnd-${skillGroup.id}`}
-                sensors={sensors}
-                collisionDetection={closestCenter}
-                onDragEnd={handleSkillDragEnd(skillGroup.id, skillGroup.items)}
-              >
-                <SortableContext
-                  items={skillGroup.items.map((_, i) => String(i))}
-                  strategy={rectSortingStrategy}
-                >
-                  <div className="flex flex-wrap gap-1">
-                    {skillGroup.items.map((item, i) => {
-                      const removeSkill = () => {
-                        const newItems = skillGroup.items.filter(
-                          (_, idx) => idx !== i
-                        );
-                        updateSkillCategory(skillGroup.id, { items: newItems });
-                      };
-                      return (
-                        <SortableSkillBadge key={i} sortableId={String(i)}>
-                          <SkillBadge
-                            value={item}
-                            skillPlaceholder={t("skillPlaceholder")}
-                            deleteAriaLabel={t("deleteSkillAriaLabel", { skill: item })}
-                            badgeBg={colorScheme.sidebarBadgeBg}
-                            badgeText={colorScheme.sidebarBadgeText}
-                            autoEdit={!!autoEditTarget?.startsWith(skillGroup.id + ":") && i === skillGroup.items.length - 1}
-                            onChange={(v) => {
-                              const newItems = [...skillGroup.items];
-                              newItems[i] = v;
-                              updateSkillCategory(skillGroup.id, { items: newItems });
-                            }}
-                            onRemove={removeSkill}
-                          />
-                        </SortableSkillBadge>
-                      );
-                    })}
-                    {!viewMode && (
-                      <button
-                        onClick={() => {
-                          setAutoEditTarget(skillGroup.id + ":" + Date.now());
-                          updateSkillCategory(skillGroup.id, {
-                            items: [...skillGroup.items, "Skill"],
-                          });
-                        }}
-                        className="inline-flex items-center gap-0.5 rounded border border-dashed px-2 py-0.5 text-[0.833em] transition-colors duration-150 hover:opacity-80"
-                        style={{ borderColor: colorScheme.sidebarMuted, color: colorScheme.sidebarMuted }}
-                      >
-                        <Plus className="h-2.5 w-2.5" />
-                      </button>
-                    )}
-                  </div>
-                </SortableContext>
-              </DndContext>
-            </div>
-          ))}
-          {!viewMode && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                setAutoEditTarget("newCategory:" + Date.now());
-                addSkillCategory();
-              }}
-              className="h-6 px-2 text-[0.833em] hover:opacity-80"
-              style={{ color: colorScheme.sidebarMuted }}
-            >
-              <Plus className="mr-1 h-3 w-3" />
-              {t("addCategory")}
-            </Button>
-          )}
-        </div>
-      </div>
-
-      {/* Delete confirmation dialog — categories only */}
-      <Dialog
-        open={!!pendingDelete}
-        onOpenChange={(open) => !open && setPendingDelete(null)}
+      {/* Sortable sidebar sections */}
+      <DndContext
+        id="sidebar-sections-dnd"
+        sensors={sectionSensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleSectionDragEnd}
       >
-        <DialogContent showCloseButton={false} className="max-w-xs">
-          <DialogHeader>
-            <DialogTitle className="text-base font-medium">
-              {pendingDelete?.message}
-            </DialogTitle>
-          </DialogHeader>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setPendingDelete(null)}
-            >
-              {t("deleteSkillCancel")}
-            </Button>
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => {
-                pendingDelete?.onConfirm();
-                setPendingDelete(null);
-              }}
-            >
-              {t("deleteSkillConfirm")}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        <SortableContext items={sidebarOrder} strategy={verticalListSortingStrategy}>
+          <div className="space-y-5">
+            {sidebarOrder.map((sectionId) => {
+              const content = sectionContent[sectionId];
+              if (!content) return null;
+              return (
+                <SortableSidebarSection key={sectionId} id={sectionId} gripColor={colorScheme.sidebarText}>
+                  {content}
+                </SortableSidebarSection>
+              );
+            })}
+          </div>
+        </SortableContext>
+      </DndContext>
     </div>
   );
 });

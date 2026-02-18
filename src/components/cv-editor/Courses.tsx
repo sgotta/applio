@@ -1,81 +1,90 @@
 "use client";
 
-import React, { memo, useState } from "react";
+import React, { memo, useCallback } from "react";
 import { useCV } from "@/lib/cv-context";
 import { useTranslations } from "next-intl";
-import { useIsViewMode } from "@/hooks/useIsViewMode";
+import { useColorScheme } from "@/lib/color-scheme-context";
+
 import { CourseItem } from "@/lib/types";
 import { EditableText } from "./EditableText";
+import { EntryGrip } from "./EntryGrip";
 import { SectionTitle } from "./SectionTitle";
-import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Plus, Trash2, ChevronUp, ChevronDown } from "lucide-react";
+  DndContext,
+  closestCenter,
+  MouseSensor,
+  TouchSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  useSortable,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 function CourseCard({
   course,
-  isFirst,
-  isLast,
-  onRequestDelete,
+  index,
+  total,
+  sortableId,
+  onAddBelow,
 }: {
   course: CourseItem;
-  isFirst: boolean;
-  isLast: boolean;
-  onRequestDelete: (message: string, onConfirm: () => void) => void;
+  index: number;
+  total: number;
+  sortableId: string;
+  onAddBelow: () => void;
 }) {
   const { updateCourse, removeCourse, moveCourse } = useCV();
   const t = useTranslations("courses");
-  const viewMode = useIsViewMode();
+  const tc = useTranslations("common");
+  const { colorScheme } = useColorScheme();
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: sortableId });
 
-  const handleDelete = () => {
-    const label = course.name.trim();
-    onRequestDelete(
-      label
-        ? t("confirmDeleteCourse", { name: label })
-        : t("confirmDeleteCourseEmpty"),
-      () => removeCourse(course.id)
-    );
+  const style: React.CSSProperties = {
+    transform: CSS.Translate.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : undefined,
+    zIndex: isDragging ? 10 : undefined,
   };
 
   return (
-    <div className="group/course relative rounded-sm transition-colors duration-150 -mx-1.5 px-1.5 py-1 hover:bg-gray-50/50">
-      {/* Action buttons — always visible on mobile, hover-reveal on desktop */}
-      {!viewMode && (
-        <div className="absolute -right-1 top-1 flex items-center gap-0.5 can-hover:opacity-0 can-hover:group-hover/course:opacity-100 transition-opacity duration-150">
-          {!isFirst && (
-            <button
-              onClick={() => moveCourse(course.id, "up")}
-              className="p-1 rounded hover:bg-gray-200 transition-colors"
-              aria-label={t("moveUp")}
-            >
-              <ChevronUp className="h-3 w-3 text-gray-400" />
-            </button>
-          )}
-          {!isLast && (
-            <button
-              onClick={() => moveCourse(course.id, "down")}
-              className="p-1 rounded hover:bg-gray-200 transition-colors"
-              aria-label={t("moveDown")}
-            >
-              <ChevronDown className="h-3 w-3 text-gray-400" />
-            </button>
-          )}
-          <button
-            onClick={handleDelete}
-            className="p-1 rounded hover:bg-red-50 transition-colors"
-            aria-label={t("deleteCourse")}
-          >
-            <Trash2 className="h-3 w-3 text-gray-400 hover:text-red-500" />
-          </button>
-        </div>
-      )}
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="group/entry relative rounded-sm transition-colors duration-150 -mx-1.5 px-1.5 py-1.5 hover:bg-gray-50/50"
+    >
+      <EntryGrip
+        onMoveUp={index > 0 ? () => moveCourse(course.id, "up") : undefined}
+        onMoveDown={index < total - 1 ? () => moveCourse(course.id, "down") : undefined}
+        onDelete={() => removeCourse(course.id)}
+        onAddBelow={onAddBelow}
+        sortableAttributes={attributes}
+        sortableListeners={listeners}
+        labels={{
+          delete: tc("delete"),
+          moveUp: tc("moveUp"),
+          moveDown: tc("moveDown"),
+          addBelow: t("addCourse"),
+          dragHint: tc("gripDragHint"),
+          longPressHint: tc("gripLongPressHint"),
+        }}
+      />
 
-      <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0 pr-8">
+      <div>
+      <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0">
         <EditableText
           value={course.name}
           onChange={(v) => updateCourse(course.id, { name: v })}
@@ -96,9 +105,24 @@ function CourseCard({
         value={course.institution}
         onChange={(v) => updateCourse(course.id, { institution: v })}
         as="small"
-        className="!font-medium !text-gray-500"
+        className="mt-0.5 font-medium! text-gray-600!"
         placeholder={t("institutionPlaceholder")}
       />
+
+      {/* Description — block editor */}
+      <div
+        className="mt-1.5"
+        style={{ "--bullet-color": colorScheme.bullet } as React.CSSProperties}
+      >
+        <EditableText
+          value={course.description || ""}
+          onChange={(html) => updateCourse(course.id, { description: html })}
+          as="body"
+          placeholder={t("descriptionPlaceholder")}
+          blockEditing
+        />
+      </div>
+      </div>
     </div>
   );
 }
@@ -107,74 +131,53 @@ export const Courses = memo(function Courses() {
   const {
     data: { courses },
     addCourse,
+    reorderCourse,
   } = useCV();
   const t = useTranslations("courses");
-  const viewMode = useIsViewMode();
-  const [pendingDelete, setPendingDelete] = useState<{
-    message: string;
-    onConfirm: () => void;
-  } | null>(null);
+  const cardSensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const handleCardDragEnd = useCallback((event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = courses.findIndex(c => c.id === active.id);
+      const newIndex = courses.findIndex(c => c.id === over.id);
+      if (oldIndex !== -1 && newIndex !== -1) {
+        reorderCourse(oldIndex, newIndex);
+      }
+    }
+  }, [courses, reorderCourse]);
 
   return (
     <div>
       <SectionTitle>{t("title")}</SectionTitle>
-      <div className="space-y-3">
-        {courses.map((course, i) => (
-          <CourseCard
-            key={course.id}
-            course={course}
-            isFirst={i === 0}
-            isLast={i === courses.length - 1}
-            onRequestDelete={(message, onConfirm) =>
-              setPendingDelete({ message, onConfirm })
-            }
-          />
-        ))}
-      </div>
-      {!viewMode && (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={addCourse}
-          className="mt-2 h-7 px-2 text-[0.917em] text-gray-400 hover:text-gray-600"
-        >
-          <Plus className="mr-1 h-3 w-3" />
-          {t("addCourse")}
-        </Button>
-      )}
-
-      {/* Delete confirmation dialog */}
-      <Dialog
-        open={!!pendingDelete}
-        onOpenChange={(open) => !open && setPendingDelete(null)}
+      <DndContext
+        id="course-entries-dnd"
+        sensors={cardSensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleCardDragEnd}
       >
-        <DialogContent showCloseButton={false} className="max-w-xs">
-          <DialogHeader>
-            <DialogTitle className="text-base font-medium">
-              {pendingDelete?.message}
-            </DialogTitle>
-          </DialogHeader>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setPendingDelete(null)}
-            >
-              {t("deleteCancel")}
-            </Button>
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => {
-                pendingDelete?.onConfirm();
-                setPendingDelete(null);
-              }}
-            >
-              {t("deleteConfirm")}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        <SortableContext
+          items={courses.map(c => c.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          <div className="space-y-2.5">
+            {courses.map((course, i) => (
+              <CourseCard
+                key={course.id}
+                course={course}
+                index={i}
+                total={courses.length}
+                sortableId={course.id}
+                onAddBelow={() => addCourse(i)}
+              />
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
     </div>
   );
 });

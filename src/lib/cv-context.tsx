@@ -9,49 +9,57 @@ import {
   useState,
 } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import {
+import type {
   CVData,
   ExperienceItem,
-  BulletItem,
   EducationItem,
   SkillCategory,
   CourseItem,
   CertificationItem,
   AwardItem,
   SectionVisibility,
+  SidebarSectionId,
 } from "./types";
-import { getDefaultCVData, defaultVisibility } from "./default-data";
+import { getDefaultCVData, defaultVisibility, DEFAULT_SIDEBAR_ORDER } from "./default-data";
 import { loadCVData, saveCVData } from "./storage";
+import { arrayMove } from "@dnd-kit/sortable";
 
 interface CVContextValue {
   data: CVData;
   updatePersonalInfo: (field: string, value: string | undefined) => void;
   updateSummary: (value: string) => void;
   updateExperience: (id: string, updates: Partial<ExperienceItem>) => void;
-  addExperience: () => void;
+  addExperience: (afterIndex?: number) => void;
   removeExperience: (id: string) => void;
   moveExperience: (id: string, direction: "up" | "down") => void;
+  reorderExperience: (fromIndex: number, toIndex: number) => void;
   updateEducation: (id: string, updates: Partial<EducationItem>) => void;
-  addEducation: () => void;
+  addEducation: (afterIndex?: number) => void;
   removeEducation: (id: string) => void;
   moveEducation: (id: string, direction: "up" | "down") => void;
+  reorderEducation: (fromIndex: number, toIndex: number) => void;
   updateSkillCategory: (id: string, updates: Partial<SkillCategory>) => void;
-  addSkillCategory: () => void;
+  addSkillCategory: (afterIndex?: number) => void;
   removeSkillCategory: (id: string) => void;
   moveSkillCategory: (id: string, direction: "up" | "down") => void;
+  reorderSkillCategory: (fromIndex: number, toIndex: number) => void;
   updateCourse: (id: string, updates: Partial<CourseItem>) => void;
-  addCourse: () => void;
+  addCourse: (afterIndex?: number) => void;
   removeCourse: (id: string) => void;
   moveCourse: (id: string, direction: "up" | "down") => void;
+  reorderCourse: (fromIndex: number, toIndex: number) => void;
   updateCertification: (id: string, updates: Partial<CertificationItem>) => void;
-  addCertification: () => void;
+  addCertification: (afterIndex?: number) => void;
   removeCertification: (id: string) => void;
   moveCertification: (id: string, direction: "up" | "down") => void;
+  reorderCertification: (fromIndex: number, toIndex: number) => void;
   updateAward: (id: string, updates: Partial<AwardItem>) => void;
-  addAward: () => void;
+  addAward: (afterIndex?: number) => void;
   removeAward: (id: string) => void;
   moveAward: (id: string, direction: "up" | "down") => void;
+  reorderAward: (fromIndex: number, toIndex: number) => void;
   toggleSection: (key: keyof SectionVisibility) => void;
+  reorderSidebarSection: (fromIndex: number, toIndex: number) => void;
   resetData: () => void;
   importData: (data: CVData) => void;
 }
@@ -68,6 +76,20 @@ function moveItem<T>(arr: T[], index: number, direction: "up" | "down"): T[] {
   if (targetIndex < 0 || targetIndex >= newArr.length) return newArr;
   [newArr[index], newArr[targetIndex]] = [newArr[targetIndex], newArr[index]];
   return newArr;
+}
+
+/** Ensure sidebarOrder is a valid array containing all 3 section IDs */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function migrateSidebarOrder(raw: any): SidebarSectionId[] {
+  if (!Array.isArray(raw)) return [...DEFAULT_SIDEBAR_ORDER];
+  const valid = raw.filter((id: unknown): id is SidebarSectionId =>
+    typeof id === "string" && (DEFAULT_SIDEBAR_ORDER as readonly string[]).includes(id)
+  );
+  // Append any missing sections at the end
+  for (const id of DEFAULT_SIDEBAR_ORDER) {
+    if (!valid.includes(id)) valid.push(id);
+  }
+  return valid;
 }
 
 // Migración: si los datos guardados tienen el formato viejo (contacts array), convertir a campos individuales
@@ -102,18 +124,27 @@ function migrateCVData(data: any): CVData {
       certifications: data.certifications || [],
       awards: data.awards || [],
       visibility: { ...defaultVisibility, ...data.visibility },
+      sidebarOrder: migrateSidebarOrder(data.sidebarOrder),
     };
 
-    // Migrate string[] bullets to BulletItem[] + rename "subheading" → "title" + clean up roleDescription
+    // Migrate bullets to HTML string + roleDescription → paragraph prepended
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    oldResult.experience = oldResult.experience.map((exp: any) => ({
-      ...exp,
-      description: (exp.description || []).map((item: any) => {
-        if (typeof item === "string") return { text: item, type: "bullet" as const };
-        const type = item.type === "subheading" ? "title" : item.type === "comment" ? "bullet" : item.type;
-        return { ...item, type };
-      }),
-      roleDescription: exp.roleDescription?.trim() || undefined,
+    oldResult.experience = oldResult.experience.map((exp: any) => {
+      const roleDesc = exp.roleDescription?.trim();
+      const bullets = Array.isArray(exp.description) ? exp.description : [];
+      const allBullets = roleDesc ? [{ text: roleDesc, type: "paragraph" }, ...bullets] : bullets;
+      return {
+        ...exp,
+        description: migrateBulletsToHtml(allBullets),
+        roleDescription: undefined,
+      };
+    });
+
+    // Migrate **markdown bold** → <strong>HTML</strong>
+    oldResult.summary = migrateMarkdownBold(oldResult.summary);
+    oldResult.education = oldResult.education.map((edu) => ({
+      ...edu,
+      description: edu.description ? migrateMarkdownBold(edu.description) : edu.description,
     }));
 
     return oldResult;
@@ -141,21 +172,81 @@ function migrateCVData(data: any): CVData {
     certifications: data.certifications || [],
     awards: data.awards || [],
     visibility: { ...defaultVisibility, ...data.visibility },
+    sidebarOrder: migrateSidebarOrder(data.sidebarOrder),
   };
 
-  // Migrate string[] bullets to BulletItem[] + rename "subheading" → "title" + clean up roleDescription
+  // Migrate bullets (BulletItem[] or string[]) to HTML string + roleDescription → paragraph prepended
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  result.experience = result.experience.map((exp: any) => ({
-    ...exp,
-    description: (exp.description || []).map((item: any) => {
-      if (typeof item === "string") return { text: item, type: "bullet" as const };
-      const type = item.type === "subheading" ? "title" : item.type === "comment" ? "bullet" : item.type;
-      return { ...item, type };
-    }),
-    roleDescription: exp.roleDescription?.trim() || undefined,
+  result.experience = result.experience.map((exp: any) => {
+    // Already migrated to string — skip
+    if (typeof exp.description === "string") return exp;
+    const roleDesc = exp.roleDescription?.trim();
+    const bullets = Array.isArray(exp.description) ? exp.description : [];
+    const allBullets = roleDesc ? [{ text: roleDesc, type: "paragraph" }, ...bullets] : bullets;
+    return {
+      ...exp,
+      description: migrateBulletsToHtml(allBullets),
+      roleDescription: undefined,
+    };
+  });
+
+  // Migrate **markdown bold** → <strong>HTML</strong> (rich text migration)
+  result.summary = migrateMarkdownBold(result.summary);
+  result.education = result.education.map((edu) => ({
+    ...edu,
+    description: edu.description ? migrateMarkdownBold(edu.description) : edu.description,
   }));
 
   return result;
+}
+
+/** Convert **markdown** bold to <strong>HTML</strong>. Idempotent — ignores text without ** */
+function migrateMarkdownBold(text: string): string {
+  if (!text || !text.includes("**")) return text;
+  return text.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+}
+
+/** Convert a BulletItem[] array to a single Tiptap HTML string */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function migrateBulletsToHtml(bullets: any[]): string {
+  if (!Array.isArray(bullets)) return typeof bullets === "string" ? bullets : "";
+
+  // Group consecutive items of the same list type
+  const groups: { type: string; items: string[] }[] = [];
+  for (const b of bullets) {
+    const text = migrateMarkdownBold(typeof b === "string" ? b : b.text || "");
+    const type: string = typeof b === "string" ? "bullet" : (b.type || "bullet");
+    // Normalize old type names
+    const normalized = type === "subheading" ? "title" : type === "comment" ? "bullet" : type === "code" ? "paragraph" : type;
+
+    const listType = normalized === "bullet" ? "ul" : normalized === "numbered" ? "ol" : null;
+    const last = groups[groups.length - 1];
+
+    if (listType && last?.type === listType) {
+      last.items.push(text);
+    } else if (listType) {
+      groups.push({ type: listType, items: [text] });
+    } else {
+      groups.push({ type: normalized, items: [text] });
+    }
+  }
+
+  // Convert each group to HTML
+  return groups.map((g) => {
+    if (g.type === "ul" || g.type === "ol") {
+      const lis = g.items.map((t) => `<li><p>${t}</p></li>`).join("");
+      return `<${g.type}>${lis}</${g.type}>`;
+    }
+    return g.items.map((t) => {
+      switch (g.type) {
+        case "title": return `<h2>${t}</h2>`;
+        case "subtitle": return `<h3>${t}</h3>`;
+        case "heading3": return `<h4>${t}</h4>`;
+        case "quote": return `<blockquote><p>${t}</p></blockquote>`;
+        default: return `<p>${t}</p>`; // paragraph
+      }
+    }).join("");
+  }).join("");
 }
 
 export function CVProvider({ children }: { children: React.ReactNode }) {
@@ -214,19 +305,23 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     []
   );
 
-  const addExperience = useCallback(() => {
+  const addExperience = useCallback((afterIndex?: number) => {
     const newExp: ExperienceItem = {
       id: `exp-${generateId()}`,
       company: tRef.current("company"),
       position: tRef.current("position"),
       startDate: "2024",
       endDate: tRef.current("endDatePresent"),
-      description: [{ text: tRef.current("experienceDescription"), type: "bullet" as const }],
+      description: `<ul><li><p>${tRef.current("experienceDescription")}</p></li></ul>`,
     };
-    setData((prev) => ({
-      ...prev,
-      experience: [...prev.experience, newExp],
-    }));
+    setData((prev) => {
+      if (afterIndex !== undefined) {
+        const arr = [...prev.experience];
+        arr.splice(afterIndex + 1, 0, newExp);
+        return { ...prev, experience: arr };
+      }
+      return { ...prev, experience: [...prev.experience, newExp] };
+    });
   }, []);
 
   const removeExperience = useCallback((id: string) => {
@@ -250,6 +345,10 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     []
   );
 
+  const reorderExperience = useCallback((from: number, to: number) => {
+    setData((prev) => ({ ...prev, experience: arrayMove(prev.experience, from, to) }));
+  }, []);
+
   const updateEducation = useCallback(
     (id: string, updates: Partial<EducationItem>) => {
       setData((prev) => ({
@@ -262,7 +361,7 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     []
   );
 
-  const addEducation = useCallback(() => {
+  const addEducation = useCallback((afterIndex?: number) => {
     const newEdu: EducationItem = {
       id: `edu-${generateId()}`,
       institution: tRef.current("institution"),
@@ -270,10 +369,14 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
       startDate: "2020",
       endDate: "2024",
     };
-    setData((prev) => ({
-      ...prev,
-      education: [...prev.education, newEdu],
-    }));
+    setData((prev) => {
+      if (afterIndex !== undefined) {
+        const arr = [...prev.education];
+        arr.splice(afterIndex + 1, 0, newEdu);
+        return { ...prev, education: arr };
+      }
+      return { ...prev, education: [...prev.education, newEdu] };
+    });
   }, []);
 
   const removeEducation = useCallback((id: string) => {
@@ -297,6 +400,10 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     []
   );
 
+  const reorderEducation = useCallback((from: number, to: number) => {
+    setData((prev) => ({ ...prev, education: arrayMove(prev.education, from, to) }));
+  }, []);
+
   const updateSkillCategory = useCallback(
     (id: string, updates: Partial<SkillCategory>) => {
       setData((prev) => ({
@@ -309,16 +416,20 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     []
   );
 
-  const addSkillCategory = useCallback(() => {
+  const addSkillCategory = useCallback((afterIndex?: number) => {
     const newSkill: SkillCategory = {
       id: `skill-${generateId()}`,
       category: tRef.current("category"),
       items: [tRef.current("skill")],
     };
-    setData((prev) => ({
-      ...prev,
-      skills: [...prev.skills, newSkill],
-    }));
+    setData((prev) => {
+      if (afterIndex !== undefined) {
+        const arr = [...prev.skills];
+        arr.splice(afterIndex + 1, 0, newSkill);
+        return { ...prev, skills: arr };
+      }
+      return { ...prev, skills: [...prev.skills, newSkill] };
+    });
   }, []);
 
   const removeSkillCategory = useCallback((id: string) => {
@@ -342,6 +453,10 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     []
   );
 
+  const reorderSkillCategory = useCallback((from: number, to: number) => {
+    setData((prev) => ({ ...prev, skills: arrayMove(prev.skills, from, to) }));
+  }, []);
+
   const updateCourse = useCallback(
     (id: string, updates: Partial<CourseItem>) => {
       setData((prev) => ({
@@ -354,17 +469,21 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     []
   );
 
-  const addCourse = useCallback(() => {
+  const addCourse = useCallback((afterIndex?: number) => {
     const newCourse: CourseItem = {
       id: `course-${generateId()}`,
       name: tRef.current("courseName"),
       institution: tRef.current("courseInstitution"),
       date: "2024",
     };
-    setData((prev) => ({
-      ...prev,
-      courses: [...prev.courses, newCourse],
-    }));
+    setData((prev) => {
+      if (afterIndex !== undefined) {
+        const arr = [...prev.courses];
+        arr.splice(afterIndex + 1, 0, newCourse);
+        return { ...prev, courses: arr };
+      }
+      return { ...prev, courses: [...prev.courses, newCourse] };
+    });
   }, []);
 
   const removeCourse = useCallback((id: string) => {
@@ -388,6 +507,10 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     []
   );
 
+  const reorderCourse = useCallback((from: number, to: number) => {
+    setData((prev) => ({ ...prev, courses: arrayMove(prev.courses, from, to) }));
+  }, []);
+
   const updateCertification = useCallback(
     (id: string, updates: Partial<CertificationItem>) => {
       setData((prev) => ({
@@ -400,17 +523,21 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     []
   );
 
-  const addCertification = useCallback(() => {
+  const addCertification = useCallback((afterIndex?: number) => {
     const newCert: CertificationItem = {
       id: `cert-${generateId()}`,
       name: tRef.current("certificationName"),
       issuer: tRef.current("certificationIssuer"),
       date: "2024",
     };
-    setData((prev) => ({
-      ...prev,
-      certifications: [...prev.certifications, newCert],
-    }));
+    setData((prev) => {
+      if (afterIndex !== undefined) {
+        const arr = [...prev.certifications];
+        arr.splice(afterIndex + 1, 0, newCert);
+        return { ...prev, certifications: arr };
+      }
+      return { ...prev, certifications: [...prev.certifications, newCert] };
+    });
   }, []);
 
   const removeCertification = useCallback((id: string) => {
@@ -434,6 +561,10 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     []
   );
 
+  const reorderCertification = useCallback((from: number, to: number) => {
+    setData((prev) => ({ ...prev, certifications: arrayMove(prev.certifications, from, to) }));
+  }, []);
+
   const updateAward = useCallback(
     (id: string, updates: Partial<AwardItem>) => {
       setData((prev) => ({
@@ -446,17 +577,21 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     []
   );
 
-  const addAward = useCallback(() => {
+  const addAward = useCallback((afterIndex?: number) => {
     const newAward: AwardItem = {
       id: `award-${generateId()}`,
       name: tRef.current("awardName"),
       issuer: tRef.current("awardIssuer"),
       date: "2024",
     };
-    setData((prev) => ({
-      ...prev,
-      awards: [...prev.awards, newAward],
-    }));
+    setData((prev) => {
+      if (afterIndex !== undefined) {
+        const arr = [...prev.awards];
+        arr.splice(afterIndex + 1, 0, newAward);
+        return { ...prev, awards: arr };
+      }
+      return { ...prev, awards: [...prev.awards, newAward] };
+    });
   }, []);
 
   const removeAward = useCallback((id: string) => {
@@ -480,10 +615,35 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     []
   );
 
+  const reorderAward = useCallback((from: number, to: number) => {
+    setData((prev) => ({ ...prev, awards: arrayMove(prev.awards, from, to) }));
+  }, []);
+
   const toggleSection = useCallback((key: keyof SectionVisibility) => {
+    setData((prev) => {
+      const willBeVisible = !prev.visibility[key];
+      const next = {
+        ...prev,
+        visibility: { ...prev.visibility, [key]: willBeVisible },
+      };
+      // Seed first entry when enabling an empty optional section
+      if (willBeVisible) {
+        if (key === "courses" && prev.courses.length === 0) {
+          next.courses = [{ id: `course-${generateId()}`, name: tRef.current("courseName"), institution: tRef.current("courseInstitution"), date: "2024" }];
+        } else if (key === "certifications" && prev.certifications.length === 0) {
+          next.certifications = [{ id: `cert-${generateId()}`, name: tRef.current("certificationName"), issuer: tRef.current("certificationIssuer"), date: "2024" }];
+        } else if (key === "awards" && prev.awards.length === 0) {
+          next.awards = [{ id: `award-${generateId()}`, name: tRef.current("awardName"), issuer: tRef.current("awardIssuer"), date: "2024" }];
+        }
+      }
+      return next;
+    });
+  }, []);
+
+  const reorderSidebarSection = useCallback((from: number, to: number) => {
     setData((prev) => ({
       ...prev,
-      visibility: { ...prev.visibility, [key]: !prev.visibility[key] },
+      sidebarOrder: arrayMove(prev.sidebarOrder, from, to),
     }));
   }, []);
 
@@ -492,7 +652,11 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const importData = useCallback((imported: CVData) => {
-    setData(imported);
+    setData({
+      ...imported,
+      visibility: { ...defaultVisibility, ...imported.visibility },
+      sidebarOrder: migrateSidebarOrder(imported.sidebarOrder),
+    });
   }, []);
 
   return (
@@ -505,27 +669,34 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
         addExperience,
         removeExperience,
         moveExperience,
+        reorderExperience,
         updateEducation,
         addEducation,
         removeEducation,
         moveEducation,
+        reorderEducation,
         updateSkillCategory,
         addSkillCategory,
         removeSkillCategory,
         moveSkillCategory,
+        reorderSkillCategory,
         updateCourse,
         addCourse,
         removeCourse,
         moveCourse,
+        reorderCourse,
         updateCertification,
         addCertification,
         removeCertification,
         moveCertification,
+        reorderCertification,
         updateAward,
         addAward,
         removeAward,
         moveAward,
+        reorderAward,
         toggleSection,
+        reorderSidebarSection,
         resetData,
         importData,
       }}

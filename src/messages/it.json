@@ -14,6 +14,10 @@
     "exportTitle": "Esporta CV come file JSON",
     "pdfTitle": "Scarica PDF",
     "pdfGenerating": "Generazione PDF...",
+    "sidebarSections": "Sezioni della barra laterale",
+    "sectionContact": "Contatto",
+    "sectionSummary": "Profilo professionale",
+    "sectionSkills": "Competenze",
     "optionalSections": "Sezioni opzionali",
     "sectionCourses": "Corsi e Workshop",
     "sectionCertifications": "Certificazioni",
@@ -97,21 +101,12 @@
     "endDatePlaceholder": "fine",
     "positionPlaceholder": "Titolo lavorativo",
     "bulletPlaceholder": "Descrivi un risultato o una responsabilità...",
-    "deleteBullet": "Elimina punto",
-    "addBullet": "Aggiungi risultato",
     "addExperience": "Aggiungi esperienza",
-    "newBulletDefault": "Nuovo risultato o responsabilità.",
     "confirmDeleteExperience": "Eliminare \"{name}\"?",
     "confirmDeleteExperienceEmpty": "Eliminare questa esperienza?",
     "deleteConfirm": "Elimina",
     "deleteCancel": "Annulla",
-    "roleDescriptionPlaceholder": "Descrizione opzionale...",
-    "typeBullet": "Elenco",
-    "typeTitle": "Titolo",
-    "typeSubtitle": "Sottotitolo",
-    "typeNumbered": "Numerato",
     "gripDragHint": "Trascina per riordinare",
-    "gripClickHint": "Clic per cambiare tipo",
     "gripLongPressHint": "Tieni premuto per spostare"
   },
   "education": {
@@ -147,7 +142,49 @@
     "adjust": "Regola"
   },
   "editableText": {
-    "defaultPlaceholder": "Clicca per modificare..."
+    "defaultPlaceholder": "Clicca per modificare...",
+    "pasteLineBreaksCleaned": "Interruzioni di riga rimosse. Ctrl+Z per annullare."
+  },
+  "floatingToolbar": {
+    "bold": "Grassetto",
+    "italic": "Corsivo",
+    "underline": "Sottolineato",
+    "strikethrough": "Barrato",
+    "code": "Codice",
+    "textColor": "Colore del testo",
+    "highlight": "Evidenziato",
+    "turnInto": "Trasforma in",
+    "typeText": "Testo",
+    "typeHeading2": "Titolo 1",
+    "typeHeading3": "Titolo 2",
+    "typeHeading4": "Titolo 3",
+    "typeBulletList": "Elenco puntato",
+    "typeOrderedList": "Elenco numerato",
+    "typeBlockquote": "Citazione",
+    "clearFormatting": "Cancella formattazione",
+    "moveUp": "Sposta su",
+    "moveDown": "Sposta giù"
+  },
+  "admin": {
+    "title": "Solo admin",
+    "bold": "Grassetto",
+    "italic": "Corsivo",
+    "underline": "Sottolineato",
+    "strikethrough": "Barrato",
+    "code": "Codice",
+    "clearFormatting": "Cancella formattazione",
+    "textColor": "Colore del testo",
+    "highlight": "Evidenziazione",
+    "moveBlocks": "Sposta blocchi",
+    "blockTypes": "Tipi di blocco",
+    "blockTypesSection": "Tipi di blocco visibili",
+    "typeParagraph": "Testo",
+    "typeHeading2": "Titolo 1",
+    "typeHeading3": "Titolo 2",
+    "typeHeading4": "Titolo 3",
+    "typeBulletList": "Elenco puntato",
+    "typeOrderedList": "Elenco numerato",
+    "typeBlockquote": "Citazione"
   },
   "courses": {
     "title": "Corsi e Workshop",
@@ -161,7 +198,8 @@
     "confirmDeleteCourse": "Eliminare \"{name}\"?",
     "confirmDeleteCourseEmpty": "Eliminare questo corso?",
     "deleteConfirm": "Elimina",
-    "deleteCancel": "Annulla"
+    "deleteCancel": "Annulla",
+    "descriptionPlaceholder": "Descrizione opzionale..."
   },
   "certifications": {
     "title": "Certificazioni",
@@ -175,7 +213,8 @@
     "confirmDeleteCertification": "Eliminare \"{name}\"?",
     "confirmDeleteCertificationEmpty": "Eliminare questa certificazione?",
     "deleteConfirm": "Elimina",
-    "deleteCancel": "Annulla"
+    "deleteCancel": "Annulla",
+    "descriptionPlaceholder": "Descrizione opzionale..."
   },
   "awards": {
     "title": "Premi e Riconoscimenti",
@@ -189,7 +228,8 @@
     "confirmDeleteAward": "Eliminare \"{name}\"?",
     "confirmDeleteAwardEmpty": "Eliminare questo premio?",
     "deleteConfirm": "Elimina",
-    "deleteCancel": "Annulla"
+    "deleteCancel": "Annulla",
+    "descriptionPlaceholder": "Descrizione opzionale..."
   },
   "printable": {
     "profilePhotoAlt": "Foto profilo",
@@ -227,15 +267,6 @@
     "madeWith": "Fatto in Argentina",
     "generating": "Generazione PDF..."
   },
-  "editMode": {
-    "edit": "Modifica",
-    "view": "Visualizza",
-    "switchToEdit": "Passa alla modifica",
-    "switchToView": "Passa alla visualizzazione",
-    "viewModeHint": "Passa alla modalità modifica",
-    "doubleClickHint": "Doppio clic per modificare",
-    "exitedEditMode": "Tornato alla modalità di visualizzazione"
-  },
   "languages": {
     "en": "Inglese",
     "es": "Spagnolo",
@@ -250,5 +281,13 @@
     "tr": "Turco",
     "hi": "Hindi",
     "th": "Tailandese"
+  },
+  "common": {
+    "delete": "Elimina",
+    "moveUp": "Sposta su",
+    "moveDown": "Sposta giù",
+    "addBelow": "Aggiungi sotto",
+    "gripDragHint": "Trascina per riordinare",
+    "gripLongPressHint": "Tieni premuto per riordinare"
   }
 }

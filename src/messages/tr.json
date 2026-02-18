@@ -14,6 +14,10 @@
     "exportTitle": "CV'yi JSON olarak dışa aktar",
     "pdfTitle": "PDF indir",
     "pdfGenerating": "PDF oluşturuluyor...",
+    "sidebarSections": "Kenar çubuğu bölümleri",
+    "sectionContact": "İletişim",
+    "sectionSummary": "Profesyonel profil",
+    "sectionSkills": "Yetenekler",
     "optionalSections": "İsteğe Bağlı Bölümler",
     "sectionCourses": "Kurslar ve Atölyeler",
     "sectionCertifications": "Sertifikalar",
@@ -97,21 +101,12 @@
     "endDatePlaceholder": "bitiş",
     "positionPlaceholder": "Pozisyon",
     "bulletPlaceholder": "Bir başarı veya sorumluluğu tanımlayın...",
-    "deleteBullet": "Maddeyi sil",
-    "addBullet": "Başarı ekle",
     "addExperience": "Deneyim ekle",
-    "newBulletDefault": "Yeni başarı veya sorumluluk.",
     "confirmDeleteExperience": "\"{name}\" silinsin mi?",
     "confirmDeleteExperienceEmpty": "Bu deneyim silinsin mi?",
     "deleteConfirm": "Sil",
     "deleteCancel": "İptal",
-    "roleDescriptionPlaceholder": "İsteğe bağlı açıklama...",
-    "typeBullet": "Madde",
-    "typeTitle": "Başlık",
-    "typeSubtitle": "Alt başlık",
-    "typeNumbered": "Numaralı",
     "gripDragHint": "Sıralamak için sürükle",
-    "gripClickHint": "Türü değiştirmek için tıkla",
     "gripLongPressHint": "Taşımak için basılı tut"
   },
   "education": {
@@ -147,7 +142,49 @@
     "adjust": "Ayarla"
   },
   "editableText": {
-    "defaultPlaceholder": "Düzenlemek için tıklayın..."
+    "defaultPlaceholder": "Düzenlemek için tıklayın...",
+    "pasteLineBreaksCleaned": "Satır sonları temizlendi. Ctrl+Z ile geri alın."
+  },
+  "floatingToolbar": {
+    "bold": "Kalın",
+    "italic": "İtalik",
+    "underline": "Altı çizili",
+    "strikethrough": "Üstü çizili",
+    "code": "Kod",
+    "textColor": "Metin rengi",
+    "highlight": "Vurgulama",
+    "turnInto": "Dönüştür",
+    "typeText": "Metin",
+    "typeHeading2": "Başlık 1",
+    "typeHeading3": "Başlık 2",
+    "typeHeading4": "Başlık 3",
+    "typeBulletList": "Madde işaretli liste",
+    "typeOrderedList": "Numaralı liste",
+    "typeBlockquote": "Alıntı",
+    "clearFormatting": "Biçimlendirmeyi temizle",
+    "moveUp": "Yukarı taşı",
+    "moveDown": "Aşağı taşı"
+  },
+  "admin": {
+    "title": "Sadece yönetici",
+    "bold": "Kalın",
+    "italic": "İtalik",
+    "underline": "Altı çizili",
+    "strikethrough": "Üstü çizili",
+    "code": "Kod",
+    "clearFormatting": "Biçimi temizle",
+    "textColor": "Metin rengi",
+    "highlight": "Vurgu",
+    "moveBlocks": "Blokları taşı",
+    "blockTypes": "Blok türleri",
+    "blockTypesSection": "Görünür blok türleri",
+    "typeParagraph": "Metin",
+    "typeHeading2": "Başlık 1",
+    "typeHeading3": "Başlık 2",
+    "typeHeading4": "Başlık 3",
+    "typeBulletList": "Madde işaretli liste",
+    "typeOrderedList": "Numaralı liste",
+    "typeBlockquote": "Alıntı"
   },
   "courses": {
     "title": "Kurslar ve Atölyeler",
@@ -161,7 +198,8 @@
     "confirmDeleteCourse": "\"{name}\" silinsin mi?",
     "confirmDeleteCourseEmpty": "Bu kurs silinsin mi?",
     "deleteConfirm": "Sil",
-    "deleteCancel": "İptal"
+    "deleteCancel": "İptal",
+    "descriptionPlaceholder": "İsteğe bağlı açıklama..."
   },
   "certifications": {
     "title": "Sertifikalar",
@@ -175,7 +213,8 @@
     "confirmDeleteCertification": "\"{name}\" silinsin mi?",
     "confirmDeleteCertificationEmpty": "Bu sertifika silinsin mi?",
     "deleteConfirm": "Sil",
-    "deleteCancel": "İptal"
+    "deleteCancel": "İptal",
+    "descriptionPlaceholder": "İsteğe bağlı açıklama..."
   },
   "awards": {
     "title": "Ödüller ve Onurlar",
@@ -189,7 +228,8 @@
     "confirmDeleteAward": "\"{name}\" silinsin mi?",
     "confirmDeleteAwardEmpty": "Bu ödül silinsin mi?",
     "deleteConfirm": "Sil",
-    "deleteCancel": "İptal"
+    "deleteCancel": "İptal",
+    "descriptionPlaceholder": "İsteğe bağlı açıklama..."
   },
   "printable": {
     "profilePhotoAlt": "Profil fotoğrafı",
@@ -227,15 +267,6 @@
     "madeWith": "Arjantin'de yapıldı",
     "generating": "PDF oluşturuluyor..."
   },
-  "editMode": {
-    "edit": "Düzenle",
-    "view": "Görüntüle",
-    "switchToEdit": "Düzenleme moduna geç",
-    "switchToView": "Görüntüleme moduna geç",
-    "viewModeHint": "Düzenleme moduna geçin",
-    "doubleClickHint": "Düzenlemek için çift tıklayın",
-    "exitedEditMode": "Görüntüleme moduna dönüldü"
-  },
   "languages": {
     "en": "İngilizce",
     "es": "İspanyolca",
@@ -250,5 +281,13 @@
     "tr": "Türkçe",
     "hi": "Hintçe",
     "th": "Tayca"
+  },
+  "common": {
+    "delete": "Sil",
+    "moveUp": "Yukarı taşı",
+    "moveDown": "Aşağı taşı",
+    "addBelow": "Altına ekle",
+    "gripDragHint": "Sıralamak için sürükleyin",
+    "gripLongPressHint": "Sıralamak için basılı tutun"
   }
 }

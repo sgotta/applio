@@ -11,10 +11,11 @@ import { FontSettingsProvider } from "@/lib/font-context";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { PrintableCV } from "@/components/cv-editor/PrintableCV";
 import { decompressSharedData } from "@/lib/sharing";
-import type { SharedCVData, CVData, BulletItem } from "@/lib/types";
+import type { SharedCVData, CVData } from "@/lib/types";
+import { DEFAULT_SIDEBAR_ORDER } from "@/lib/default-data";
 import { getColorScheme, type ColorSchemeName, type ColorScheme } from "@/lib/color-schemes";
 import { getSidebarPattern, type PatternSettings, DEFAULT_PATTERN_SETTINGS } from "@/lib/sidebar-patterns";
-import { renderFormattedText } from "@/lib/format-text";
+import { renderRichText, renderRichDocument } from "@/lib/render-rich-text";
 import { Separator } from "@/components/ui/separator";
 import {
   FileText, AlertCircle, Heart, Download,
@@ -71,6 +72,7 @@ function MobileCVView({
 }) {
   const t = useTranslations("printable");
   const { personalInfo, summary, experience, education, skills, courses, certifications, awards, visibility } = data;
+  const sidebarOrder = data.sidebarOrder ?? DEFAULT_SIDEBAR_ORDER;
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageFailed, setImageFailed] = useState(false);
 
@@ -162,98 +164,107 @@ function MobileCVView({
           />
         )}
         <div className="relative space-y-5">
-        {/* Contact */}
-        {(visibility.email || visibility.phone || visibility.location || visibility.linkedin || visibility.website) && (
-          <div className="space-y-2">
-            <MobileSectionHeading color={colors.sidebarText} separatorColor={colors.sidebarSeparator} fontSize={fs.section}>
-              {t("contact")}
-            </MobileSectionHeading>
-            <div className="space-y-1.5">
-              {visibility.email && personalInfo.email && (
-                <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: fs.small }}>
-                  <Mail className="h-3 w-3 shrink-0" />
-                  <a href={`mailto:${personalInfo.email}`} style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.email}</a>
-                </div>
-              )}
-              {visibility.phone && personalInfo.phone && (
-                <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: fs.small }}>
-                  <Phone className="h-3 w-3 shrink-0" />
-                  <a href={`tel:${personalInfo.phone}`} style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.phone}</a>
-                </div>
-              )}
-              {visibility.location && personalInfo.location && (
-                <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: fs.small }}>
-                  <MapPin className="h-3 w-3 shrink-0" />
-                  <span>{personalInfo.location}</span>
-                </div>
-              )}
-              {visibility.linkedin && personalInfo.linkedin && (
-                <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: fs.small }}>
-                  <Linkedin className="h-3 w-3 shrink-0" />
-                  {personalInfo.linkedinUrl ? (
-                    <a href={ensureProtocol(personalInfo.linkedinUrl)} target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.linkedin}</a>
-                  ) : (
-                    <span>{personalInfo.linkedin}</span>
+        {sidebarOrder.map((sectionId) => {
+          if (sectionId === "contact") {
+            if (!visibility.contact) return null;
+            const hasFields = (visibility.email && personalInfo.email) || (visibility.phone && personalInfo.phone) || (visibility.location && personalInfo.location) || (visibility.linkedin && personalInfo.linkedin) || (visibility.website && personalInfo.website);
+            if (!hasFields) return null;
+            return (
+              <div key="contact" className="space-y-2">
+                <MobileSectionHeading color={colors.sidebarText} separatorColor={colors.sidebarSeparator} fontSize={fs.section}>
+                  {t("contact")}
+                </MobileSectionHeading>
+                <div className="space-y-1.5">
+                  {visibility.email && personalInfo.email && (
+                    <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: fs.small }}>
+                      <Mail className="h-3 w-3 shrink-0" />
+                      <a href={`mailto:${personalInfo.email}`} style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.email}</a>
+                    </div>
+                  )}
+                  {visibility.phone && personalInfo.phone && (
+                    <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: fs.small }}>
+                      <Phone className="h-3 w-3 shrink-0" />
+                      <a href={`tel:${personalInfo.phone}`} style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.phone}</a>
+                    </div>
+                  )}
+                  {visibility.location && personalInfo.location && (
+                    <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: fs.small }}>
+                      <MapPin className="h-3 w-3 shrink-0" />
+                      <span>{personalInfo.location}</span>
+                    </div>
+                  )}
+                  {visibility.linkedin && personalInfo.linkedin && (
+                    <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: fs.small }}>
+                      <Linkedin className="h-3 w-3 shrink-0" />
+                      {personalInfo.linkedinUrl ? (
+                        <a href={ensureProtocol(personalInfo.linkedinUrl)} target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.linkedin}</a>
+                      ) : (
+                        <span>{personalInfo.linkedin}</span>
+                      )}
+                    </div>
+                  )}
+                  {visibility.website && personalInfo.website && (
+                    <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: fs.small }}>
+                      <Globe className="h-3 w-3 shrink-0" />
+                      {personalInfo.websiteUrl ? (
+                        <a href={ensureProtocol(personalInfo.websiteUrl)} target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.website}</a>
+                      ) : (
+                        <span>{personalInfo.website}</span>
+                      )}
+                    </div>
                   )}
                 </div>
-              )}
-              {visibility.website && personalInfo.website && (
-                <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: fs.small }}>
-                  <Globe className="h-3 w-3 shrink-0" />
-                  {personalInfo.websiteUrl ? (
-                    <a href={ensureProtocol(personalInfo.websiteUrl)} target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.website}</a>
-                  ) : (
-                    <span>{personalInfo.website}</span>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Summary */}
-        {summary && (
-          <div>
-            <MobileSectionHeading color={colors.sidebarText} separatorColor={colors.sidebarSeparator} fontSize={fs.section}>
-              {t("aboutMe")}
-            </MobileSectionHeading>
-            <p className="leading-relaxed" style={{ color: colors.sidebarText, fontSize: fs.body }}>
-              {summary}
-            </p>
-          </div>
-        )}
-
-        {/* Skills */}
-        {skills.length > 0 && (
-          <div>
-            <MobileSectionHeading color={colors.sidebarText} separatorColor={colors.sidebarSeparator} fontSize={fs.section}>
-              {t("skills")}
-            </MobileSectionHeading>
-            <div className="space-y-3">
-              {skills.map((group) => (
-                <div key={group.id}>
-                  <p
-                    className="font-semibold uppercase tracking-wide mb-1"
-                    style={{ color: colors.sidebarText, fontSize: fs.tiny }}
-                  >
-                    {group.category}
-                  </p>
-                  <div className="flex flex-wrap gap-1">
-                    {group.items.map((item, i) => (
-                      <span
-                        key={i}
-                        className="inline-block rounded px-2 py-0.5"
-                        style={{ backgroundColor: colors.sidebarBadgeBg, color: colors.sidebarBadgeText, fontSize: fs.tiny }}
+              </div>
+            );
+          }
+          if (sectionId === "summary") {
+            if (!visibility.summary || !summary) return null;
+            return (
+              <div key="summary">
+                <MobileSectionHeading color={colors.sidebarText} separatorColor={colors.sidebarSeparator} fontSize={fs.section}>
+                  {t("aboutMe")}
+                </MobileSectionHeading>
+                <p className="leading-relaxed" style={{ color: colors.sidebarText, fontSize: fs.body }}>
+                  {renderRichText(summary)}
+                </p>
+              </div>
+            );
+          }
+          if (sectionId === "skills") {
+            if (!visibility.skills || skills.length === 0) return null;
+            return (
+              <div key="skills">
+                <MobileSectionHeading color={colors.sidebarText} separatorColor={colors.sidebarSeparator} fontSize={fs.section}>
+                  {t("skills")}
+                </MobileSectionHeading>
+                <div className="space-y-3">
+                  {skills.map((group) => (
+                    <div key={group.id}>
+                      <p
+                        className="font-semibold uppercase tracking-wide mb-1"
+                        style={{ color: colors.sidebarText, fontSize: fs.tiny }}
                       >
-                        {item}
-                      </span>
-                    ))}
-                  </div>
+                        {group.category}
+                      </p>
+                      <div className="flex flex-wrap gap-1">
+                        {group.items.map((item, i) => (
+                          <span
+                            key={i}
+                            className="inline-block rounded px-2 py-0.5"
+                            style={{ backgroundColor: colors.sidebarBadgeBg, color: colors.sidebarBadgeText, fontSize: fs.tiny }}
+                          >
+                            {item}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
+              </div>
+            );
+          }
+          return null;
+        })}
         </div>
       </div>
 
@@ -298,52 +309,10 @@ function MobileCVView({
                   >
                     {exp.position}
                   </p>
-                  {exp.roleDescription && exp.roleDescription.trim() && (
-                    <p
-                      className="mt-1 leading-relaxed text-gray-600"
-                      style={{ fontSize: fs.body }}
-                    >
-                      {renderFormattedText(exp.roleDescription)}
-                    </p>
-                  )}
-                  {exp.description.length > 0 && (
-                    <ul className="mt-1.5 space-y-1">
-                      {(() => {
-                        let numCounter = 0;
-                        return exp.description.map((bullet: string | BulletItem, i: number) => {
-                          const item: BulletItem = typeof bullet === "string" ? { text: bullet, type: "bullet" } : bullet;
-                          if (item.type === "title") {
-                            return (
-                              <li key={i} className="font-semibold text-gray-900 mt-2 first:mt-0" style={{ fontSize: fs.body, listStyle: "none" }}>
-                                {renderFormattedText(item.text)}
-                              </li>
-                            );
-                          }
-                          if (item.type === "subtitle") {
-                            return (
-                              <li key={i} className="font-semibold text-gray-800" style={{ fontSize: fs.body, listStyle: "none" }}>
-                                {renderFormattedText(item.text)}
-                              </li>
-                            );
-                          }
-                          if (item.type === "numbered") {
-                            numCounter++;
-                            return (
-                              <li key={i} className="leading-relaxed text-gray-600 pl-3 relative" style={{ fontSize: fs.body }}>
-                                <span className="absolute left-0 tabular-nums" style={{ color: colors.bullet, fontSize: fs.tiny }}>{numCounter}.</span>
-                                {renderFormattedText(item.text)}
-                              </li>
-                            );
-                          }
-                          return (
-                            <li key={i} className="leading-relaxed text-gray-600 pl-3 relative" style={{ fontSize: fs.body }}>
-                              <span className="absolute left-0" style={{ color: colors.bullet, fontSize: fs.tiny }}>&bull;</span>
-                              {renderFormattedText(item.text)}
-                            </li>
-                          );
-                        });
-                      })()}
-                    </ul>
+                  {exp.description && (
+                    <div className="mt-1.5" style={{ fontSize: fs.body, "--bullet-color": colors.bullet } as React.CSSProperties}>
+                      {renderRichDocument(exp.description)}
+                    </div>
                   )}
                 </div>
               ))}
@@ -388,7 +357,7 @@ function MobileCVView({
                       className="mt-1 leading-relaxed text-gray-600"
                       style={{ fontSize: fs.body }}
                     >
-                      {edu.description}
+                      {renderRichText(edu.description)}
                     </p>
                   )}
                 </div>

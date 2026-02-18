@@ -213,6 +213,90 @@
   }
 }
 
+/* Tiptap editor reset */
+.tiptap {
+  outline: none;
+}
+.tiptap p {
+  margin: 0;
+}
+/* Hide ProseMirror's trailing empty paragraph (always added after blocks like lists).
+   An empty <p> contains only a <br> as its sole child — target that specifically. */
+.tiptap > p:last-child:has(> br:only-child) {
+  display: none;
+}
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #9ca3af;
+  pointer-events: none;
+  height: 0;
+  font-style: italic;
+}
+.cv-sidebar-dark .tiptap p.is-editor-empty:first-child::before {
+  color: rgba(255, 255, 255, 0.4);
+}
+.tiptap code {
+  background-color: rgba(135, 131, 120, 0.15);
+  border-radius: 3px;
+  padding: 0.1em 0.3em;
+  font-size: 0.9em;
+  font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono",
+    Courier, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  .tiptap code {
+    background-color: rgba(135, 131, 120, 0.3);
+  }
+}
+/* Tiptap block editing styles */
+.tiptap ul {
+  list-style-type: disc;
+  padding-left: 1.2em;
+}
+.tiptap ol {
+  list-style-type: decimal;
+  padding-left: 1.2em;
+}
+.tiptap li {
+  margin: 0;
+}
+.tiptap li + li {
+  margin-top: 2px;
+}
+.tiptap li p {
+  margin: 0;
+}
+.tiptap ul ::marker,
+.tiptap ol ::marker {
+  color: var(--bullet-color, currentColor);
+}
+.tiptap h2 {
+  font-weight: 600;
+  font-size: 1.15em;
+  margin: 0;
+}
+.tiptap h3 {
+  font-weight: 600;
+  font-size: 1.05em;
+  margin: 0;
+}
+.tiptap h4 {
+  font-weight: 500;
+  font-size: 1em;
+  margin: 0;
+}
+.tiptap blockquote {
+  border-left: 2px solid #d1d5db;
+  padding-left: 0.5rem;
+  font-style: italic;
+}
+@media (prefers-color-scheme: dark) {
+  .tiptap blockquote {
+    border-left-color: #4b5563;
+  }
+}
+
 /* CV zoom — only on screens wide enough to fit A4 (210mm ≈ 793px) + padding + zoom */
 @media (min-width: 1024px) {
   .cv-zoom {

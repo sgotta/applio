@@ -14,6 +14,10 @@
     "exportTitle": "Экспортировать резюме в файл JSON",
     "pdfTitle": "Скачать PDF",
     "pdfGenerating": "Генерация PDF...",
+    "sidebarSections": "Разделы боковой панели",
+    "sectionContact": "Контакты",
+    "sectionSummary": "Профессиональный профиль",
+    "sectionSkills": "Навыки",
     "optionalSections": "Дополнительные разделы",
     "sectionCourses": "Курсы и тренинги",
     "sectionCertifications": "Сертификаты",
@@ -97,21 +101,12 @@
     "endDatePlaceholder": "конец",
     "positionPlaceholder": "Должность",
     "bulletPlaceholder": "Опишите достижение или обязанность...",
-    "deleteBullet": "Удалить пункт",
-    "addBullet": "Добавить достижение",
     "addExperience": "Добавить опыт",
-    "newBulletDefault": "Новое достижение или обязанность.",
     "confirmDeleteExperience": "Удалить «{name}»?",
     "confirmDeleteExperienceEmpty": "Удалить этот опыт?",
     "deleteConfirm": "Удалить",
     "deleteCancel": "Отмена",
-    "roleDescriptionPlaceholder": "Необязательное описание...",
-    "typeBullet": "Пункт",
-    "typeTitle": "Заголовок",
-    "typeSubtitle": "Подзаголовок",
-    "typeNumbered": "Нумерованный",
     "gripDragHint": "Перетащите для сортировки",
-    "gripClickHint": "Нажмите для смены типа",
     "gripLongPressHint": "Удерживайте для перемещения"
   },
   "education": {
@@ -147,7 +142,49 @@
     "adjust": "Настроить"
   },
   "editableText": {
-    "defaultPlaceholder": "Нажмите для редактирования..."
+    "defaultPlaceholder": "Нажмите для редактирования...",
+    "pasteLineBreaksCleaned": "Переносы строк очищены. Ctrl+Z для отмены."
+  },
+  "floatingToolbar": {
+    "bold": "Жирный",
+    "italic": "Курсив",
+    "underline": "Подчёркнутый",
+    "strikethrough": "Зачёркнутый",
+    "code": "Код",
+    "textColor": "Цвет текста",
+    "highlight": "Выделение",
+    "turnInto": "Превратить в",
+    "typeText": "Текст",
+    "typeHeading2": "Заголовок 1",
+    "typeHeading3": "Заголовок 2",
+    "typeHeading4": "Заголовок 3",
+    "typeBulletList": "Маркированный список",
+    "typeOrderedList": "Нумерованный список",
+    "typeBlockquote": "Цитата",
+    "clearFormatting": "Очистить форматирование",
+    "moveUp": "Переместить вверх",
+    "moveDown": "Переместить вниз"
+  },
+  "admin": {
+    "title": "Только для админа",
+    "bold": "Жирный",
+    "italic": "Курсив",
+    "underline": "Подчёркнутый",
+    "strikethrough": "Зачёркнутый",
+    "code": "Код",
+    "clearFormatting": "Очистить формат",
+    "textColor": "Цвет текста",
+    "highlight": "Выделение",
+    "moveBlocks": "Перемещение блоков",
+    "blockTypes": "Типы блоков",
+    "blockTypesSection": "Видимые типы блоков",
+    "typeParagraph": "Текст",
+    "typeHeading2": "Заголовок 1",
+    "typeHeading3": "Заголовок 2",
+    "typeHeading4": "Заголовок 3",
+    "typeBulletList": "Маркированный список",
+    "typeOrderedList": "Нумерованный список",
+    "typeBlockquote": "Цитата"
   },
   "courses": {
     "title": "Курсы и тренинги",
@@ -161,7 +198,8 @@
     "confirmDeleteCourse": "Удалить «{name}»?",
     "confirmDeleteCourseEmpty": "Удалить этот курс?",
     "deleteConfirm": "Удалить",
-    "deleteCancel": "Отмена"
+    "deleteCancel": "Отмена",
+    "descriptionPlaceholder": "Необязательное описание..."
   },
   "certifications": {
     "title": "Сертификаты",
@@ -175,7 +213,8 @@
     "confirmDeleteCertification": "Удалить «{name}»?",
     "confirmDeleteCertificationEmpty": "Удалить этот сертификат?",
     "deleteConfirm": "Удалить",
-    "deleteCancel": "Отмена"
+    "deleteCancel": "Отмена",
+    "descriptionPlaceholder": "Необязательное описание..."
   },
   "awards": {
     "title": "Награды и отличия",
@@ -189,7 +228,8 @@
     "confirmDeleteAward": "Удалить «{name}»?",
     "confirmDeleteAwardEmpty": "Удалить эту награду?",
     "deleteConfirm": "Удалить",
-    "deleteCancel": "Отмена"
+    "deleteCancel": "Отмена",
+    "descriptionPlaceholder": "Необязательное описание..."
   },
   "printable": {
     "profilePhotoAlt": "Фото профиля",
@@ -227,15 +267,6 @@
     "madeWith": "Сделано в Аргентине",
     "generating": "Генерация PDF..."
   },
-  "editMode": {
-    "edit": "Редактировать",
-    "view": "Просмотр",
-    "switchToEdit": "Перейти в режим редактирования",
-    "switchToView": "Перейти в режим просмотра",
-    "viewModeHint": "Переключитесь в режим редактирования",
-    "doubleClickHint": "Дважды щёлкните для редактирования",
-    "exitedEditMode": "Вы вернулись в режим просмотра"
-  },
   "languages": {
     "en": "Английский",
     "es": "Испанский",
@@ -250,5 +281,13 @@
     "tr": "Турецкий",
     "hi": "Хинди",
     "th": "Тайский"
+  },
+  "common": {
+    "delete": "Удалить",
+    "moveUp": "Вверх",
+    "moveDown": "Вниз",
+    "addBelow": "Добавить ниже",
+    "gripDragHint": "Перетащите для сортировки",
+    "gripLongPressHint": "Удерживайте для сортировки"
   }
 }

@@ -1,81 +1,90 @@
 "use client";
 
-import React, { memo, useState } from "react";
+import React, { memo, useCallback } from "react";
 import { useCV } from "@/lib/cv-context";
 import { useTranslations } from "next-intl";
-import { useIsViewMode } from "@/hooks/useIsViewMode";
+import { useColorScheme } from "@/lib/color-scheme-context";
+
 import { AwardItem } from "@/lib/types";
 import { EditableText } from "./EditableText";
+import { EntryGrip } from "./EntryGrip";
 import { SectionTitle } from "./SectionTitle";
-import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Plus, Trash2, ChevronUp, ChevronDown } from "lucide-react";
+  DndContext,
+  closestCenter,
+  MouseSensor,
+  TouchSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  useSortable,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 function AwardCard({
   award,
-  isFirst,
-  isLast,
-  onRequestDelete,
+  index,
+  total,
+  sortableId,
+  onAddBelow,
 }: {
   award: AwardItem;
-  isFirst: boolean;
-  isLast: boolean;
-  onRequestDelete: (message: string, onConfirm: () => void) => void;
+  index: number;
+  total: number;
+  sortableId: string;
+  onAddBelow: () => void;
 }) {
   const { updateAward, removeAward, moveAward } = useCV();
   const t = useTranslations("awards");
-  const viewMode = useIsViewMode();
+  const tc = useTranslations("common");
+  const { colorScheme } = useColorScheme();
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: sortableId });
 
-  const handleDelete = () => {
-    const label = award.name.trim();
-    onRequestDelete(
-      label
-        ? t("confirmDeleteAward", { name: label })
-        : t("confirmDeleteAwardEmpty"),
-      () => removeAward(award.id)
-    );
+  const style: React.CSSProperties = {
+    transform: CSS.Translate.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : undefined,
+    zIndex: isDragging ? 10 : undefined,
   };
 
   return (
-    <div className="group/award relative rounded-sm transition-colors duration-150 -mx-1.5 px-1.5 py-1 hover:bg-gray-50/50">
-      {/* Action buttons — always visible on mobile, hover-reveal on desktop */}
-      {!viewMode && (
-        <div className="absolute -right-1 top-1 flex items-center gap-0.5 can-hover:opacity-0 can-hover:group-hover/award:opacity-100 transition-opacity duration-150">
-          {!isFirst && (
-            <button
-              onClick={() => moveAward(award.id, "up")}
-              className="p-1 rounded hover:bg-gray-200 transition-colors"
-              aria-label={t("moveUp")}
-            >
-              <ChevronUp className="h-3 w-3 text-gray-400" />
-            </button>
-          )}
-          {!isLast && (
-            <button
-              onClick={() => moveAward(award.id, "down")}
-              className="p-1 rounded hover:bg-gray-200 transition-colors"
-              aria-label={t("moveDown")}
-            >
-              <ChevronDown className="h-3 w-3 text-gray-400" />
-            </button>
-          )}
-          <button
-            onClick={handleDelete}
-            className="p-1 rounded hover:bg-red-50 transition-colors"
-            aria-label={t("deleteAward")}
-          >
-            <Trash2 className="h-3 w-3 text-gray-400 hover:text-red-500" />
-          </button>
-        </div>
-      )}
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="group/entry relative rounded-sm transition-colors duration-150 -mx-1.5 px-1.5 py-1.5 hover:bg-gray-50/50"
+    >
+      <EntryGrip
+        onMoveUp={index > 0 ? () => moveAward(award.id, "up") : undefined}
+        onMoveDown={index < total - 1 ? () => moveAward(award.id, "down") : undefined}
+        onDelete={() => removeAward(award.id)}
+        onAddBelow={onAddBelow}
+        sortableAttributes={attributes}
+        sortableListeners={listeners}
+        labels={{
+          delete: tc("delete"),
+          moveUp: tc("moveUp"),
+          moveDown: tc("moveDown"),
+          addBelow: t("addAward"),
+          dragHint: tc("gripDragHint"),
+          longPressHint: tc("gripLongPressHint"),
+        }}
+      />
 
-      <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0 pr-8">
+      <div>
+      <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0">
         <EditableText
           value={award.name}
           onChange={(v) => updateAward(award.id, { name: v })}
@@ -96,9 +105,24 @@ function AwardCard({
         value={award.issuer}
         onChange={(v) => updateAward(award.id, { issuer: v })}
         as="small"
-        className="!font-medium !text-gray-500"
+        className="mt-0.5 font-medium! text-gray-600!"
         placeholder={t("issuerPlaceholder")}
       />
+
+      {/* Description — block editor */}
+      <div
+        className="mt-1.5"
+        style={{ "--bullet-color": colorScheme.bullet } as React.CSSProperties}
+      >
+        <EditableText
+          value={award.description || ""}
+          onChange={(html) => updateAward(award.id, { description: html })}
+          as="body"
+          placeholder={t("descriptionPlaceholder")}
+          blockEditing
+        />
+      </div>
+      </div>
     </div>
   );
 }
@@ -107,74 +131,53 @@ export const Awards = memo(function Awards() {
   const {
     data: { awards },
     addAward,
+    reorderAward,
   } = useCV();
   const t = useTranslations("awards");
-  const viewMode = useIsViewMode();
-  const [pendingDelete, setPendingDelete] = useState<{
-    message: string;
-    onConfirm: () => void;
-  } | null>(null);
+  const cardSensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const handleCardDragEnd = useCallback((event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = awards.findIndex(a => a.id === active.id);
+      const newIndex = awards.findIndex(a => a.id === over.id);
+      if (oldIndex !== -1 && newIndex !== -1) {
+        reorderAward(oldIndex, newIndex);
+      }
+    }
+  }, [awards, reorderAward]);
 
   return (
     <div>
       <SectionTitle>{t("title")}</SectionTitle>
-      <div className="space-y-3">
-        {awards.map((award, i) => (
-          <AwardCard
-            key={award.id}
-            award={award}
-            isFirst={i === 0}
-            isLast={i === awards.length - 1}
-            onRequestDelete={(message, onConfirm) =>
-              setPendingDelete({ message, onConfirm })
-            }
-          />
-        ))}
-      </div>
-      {!viewMode && (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={addAward}
-          className="mt-2 h-7 px-2 text-[0.917em] text-gray-400 hover:text-gray-600"
-        >
-          <Plus className="mr-1 h-3 w-3" />
-          {t("addAward")}
-        </Button>
-      )}
-
-      {/* Delete confirmation dialog */}
-      <Dialog
-        open={!!pendingDelete}
-        onOpenChange={(open) => !open && setPendingDelete(null)}
+      <DndContext
+        id="award-entries-dnd"
+        sensors={cardSensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleCardDragEnd}
       >
-        <DialogContent showCloseButton={false} className="max-w-xs">
-          <DialogHeader>
-            <DialogTitle className="text-base font-medium">
-              {pendingDelete?.message}
-            </DialogTitle>
-          </DialogHeader>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setPendingDelete(null)}
-            >
-              {t("deleteCancel")}
-            </Button>
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => {
-                pendingDelete?.onConfirm();
-                setPendingDelete(null);
-              }}
-            >
-              {t("deleteConfirm")}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        <SortableContext
+          items={awards.map(a => a.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          <div className="space-y-2.5">
+            {awards.map((award, i) => (
+              <AwardCard
+                key={award.id}
+                award={award}
+                index={i}
+                total={awards.length}
+                sortableId={award.id}
+                onAddBelow={() => addAward(i)}
+              />
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
     </div>
   );
 });

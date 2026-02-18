@@ -14,6 +14,10 @@
     "exportTitle": "ส่งออก CV เป็นไฟล์ JSON",
     "pdfTitle": "ดาวน์โหลด PDF",
     "pdfGenerating": "กำลังสร้าง PDF...",
+    "sidebarSections": "ส่วนแถบด้านข้าง",
+    "sectionContact": "ติดต่อ",
+    "sectionSummary": "โปรไฟล์อาชีพ",
+    "sectionSkills": "ทักษะ",
     "optionalSections": "ส่วนเพิ่มเติม",
     "sectionCourses": "หลักสูตรและเวิร์กช็อป",
     "sectionCertifications": "ใบรับรอง",
@@ -97,21 +101,12 @@
     "endDatePlaceholder": "สิ้นสุด",
     "positionPlaceholder": "ตำแหน่งงาน",
     "bulletPlaceholder": "อธิบายผลงานหรือหน้าที่ความรับผิดชอบ...",
-    "deleteBullet": "ลบรายการ",
-    "addBullet": "เพิ่มผลงาน",
     "addExperience": "เพิ่มประสบการณ์",
-    "newBulletDefault": "ผลงานหรือหน้าที่ความรับผิดชอบใหม่",
     "confirmDeleteExperience": "ลบ \"{name}\" หรือไม่?",
     "confirmDeleteExperienceEmpty": "ลบประสบการณ์นี้หรือไม่?",
     "deleteConfirm": "ลบ",
     "deleteCancel": "ยกเลิก",
-    "roleDescriptionPlaceholder": "คำอธิบายเพิ่มเติม (ไม่บังคับ)...",
-    "typeBullet": "จุดนำ",
-    "typeTitle": "หัวข้อ",
-    "typeSubtitle": "หัวข้อย่อย",
-    "typeNumbered": "ลำดับเลข",
     "gripDragHint": "ลากเพื่อเรียงลำดับ",
-    "gripClickHint": "คลิกเพื่อเปลี่ยนประเภท",
     "gripLongPressHint": "กดค้างเพื่อลาก"
   },
   "education": {
@@ -147,7 +142,49 @@
     "adjust": "ปรับแต่ง"
   },
   "editableText": {
-    "defaultPlaceholder": "คลิกเพื่อแก้ไข..."
+    "defaultPlaceholder": "คลิกเพื่อแก้ไข...",
+    "pasteLineBreaksCleaned": "ล้างการขึ้นบรรทัดใหม่แล้ว กด Ctrl+Z เพื่อเลิกทำ"
+  },
+  "floatingToolbar": {
+    "bold": "ตัวหนา",
+    "italic": "ตัวเอียง",
+    "underline": "ขีดเส้นใต้",
+    "strikethrough": "ขีดทับ",
+    "code": "โค้ด",
+    "textColor": "สีข้อความ",
+    "highlight": "ไฮไลต์",
+    "turnInto": "เปลี่ยนเป็น",
+    "typeText": "ข้อความ",
+    "typeHeading2": "หัวข้อ 1",
+    "typeHeading3": "หัวข้อ 2",
+    "typeHeading4": "หัวข้อ 3",
+    "typeBulletList": "รายการแบบจุด",
+    "typeOrderedList": "รายการแบบตัวเลข",
+    "typeBlockquote": "ข้อความอ้างอิง",
+    "clearFormatting": "ล้างการจัดรูปแบบ",
+    "moveUp": "เลื่อนขึ้น",
+    "moveDown": "เลื่อนลง"
+  },
+  "admin": {
+    "title": "ผู้ดูแลเท่านั้น",
+    "bold": "ตัวหนา",
+    "italic": "ตัวเอียง",
+    "underline": "ขีดเส้นใต้",
+    "strikethrough": "ขีดฆ่า",
+    "code": "โค้ด",
+    "clearFormatting": "ล้างการจัดรูปแบบ",
+    "textColor": "สีข้อความ",
+    "highlight": "ไฮไลท์",
+    "moveBlocks": "ย้ายบล็อก",
+    "blockTypes": "ประเภทบล็อก",
+    "blockTypesSection": "ประเภทบล็อกที่มองเห็นได้",
+    "typeParagraph": "ข้อความ",
+    "typeHeading2": "หัวข้อ 1",
+    "typeHeading3": "หัวข้อ 2",
+    "typeHeading4": "หัวข้อ 3",
+    "typeBulletList": "รายการแบบจุด",
+    "typeOrderedList": "รายการแบบลำดับ",
+    "typeBlockquote": "คำพูดอ้างอิง"
   },
   "courses": {
     "title": "หลักสูตรและเวิร์กช็อป",
@@ -161,7 +198,8 @@
     "confirmDeleteCourse": "ลบ \"{name}\" หรือไม่?",
     "confirmDeleteCourseEmpty": "ลบหลักสูตรนี้หรือไม่?",
     "deleteConfirm": "ลบ",
-    "deleteCancel": "ยกเลิก"
+    "deleteCancel": "ยกเลิก",
+    "descriptionPlaceholder": "คำอธิบายเพิ่มเติม..."
   },
   "certifications": {
     "title": "ใบรับรอง",
@@ -175,7 +213,8 @@
     "confirmDeleteCertification": "ลบ \"{name}\" หรือไม่?",
     "confirmDeleteCertificationEmpty": "ลบใบรับรองนี้หรือไม่?",
     "deleteConfirm": "ลบ",
-    "deleteCancel": "ยกเลิก"
+    "deleteCancel": "ยกเลิก",
+    "descriptionPlaceholder": "คำอธิบายเพิ่มเติม..."
   },
   "awards": {
     "title": "รางวัลและเกียรติยศ",
@@ -189,7 +228,8 @@
     "confirmDeleteAward": "ลบ \"{name}\" หรือไม่?",
     "confirmDeleteAwardEmpty": "ลบรางวัลนี้หรือไม่?",
     "deleteConfirm": "ลบ",
-    "deleteCancel": "ยกเลิก"
+    "deleteCancel": "ยกเลิก",
+    "descriptionPlaceholder": "คำอธิบายเพิ่มเติม..."
   },
   "printable": {
     "profilePhotoAlt": "รูปโปรไฟล์",
@@ -227,15 +267,6 @@
     "madeWith": "Made in Argentina",
     "generating": "กำลังสร้าง PDF..."
   },
-  "editMode": {
-    "edit": "แก้ไข",
-    "view": "ดู",
-    "switchToEdit": "สลับเป็นโหมดแก้ไข",
-    "switchToView": "สลับเป็นโหมดดู",
-    "viewModeHint": "สลับเป็นโหมดแก้ไข",
-    "doubleClickHint": "ดับเบิลคลิกเพื่อแก้ไข",
-    "exitedEditMode": "กลับสู่โหมดดู"
-  },
   "languages": {
     "en": "อังกฤษ",
     "es": "สเปน",
@@ -250,5 +281,13 @@
     "tr": "ตุรกี",
     "hi": "ฮินดี",
     "th": "ไทย"
+  },
+  "common": {
+    "delete": "ลบ",
+    "moveUp": "เลื่อนขึ้น",
+    "moveDown": "เลื่อนลง",
+    "addBelow": "เพิ่มด้านล่าง",
+    "gripDragHint": "ลากเพื่อจัดเรียงใหม่",
+    "gripLongPressHint": "กดค้างเพื่อจัดเรียงใหม่"
   }
 }
