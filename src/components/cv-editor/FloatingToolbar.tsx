@@ -465,22 +465,36 @@ export function FloatingToolbar({
 
   // Once the keyboard opens we enter "sticky dock" mode: the toolbar stays
   // docked at the bottom even after the keyboard is dismissed, as long as
-  // text is still selected.  This prevents the toolbar from jumping to a
-  // floating position and colliding with Android's native copy/paste menu.
+  // the editor stays focused.  This prevents colliding with Android's native
+  // copy/paste menu and avoids position flash during keyboard dismiss.
   const [stayDocked, setStayDocked] = useState(false);
 
   useEffect(() => {
     if (keyboard.isOpen) setStayDocked(true);
   }, [keyboard.isOpen]);
 
+  // Clear stayDocked only after the editor has been unfocused for a sustained
+  // period.  Keyboard dismiss on Android can cause transient blur/re-focus
+  // cycles — a 600ms window lets those settle without clearing the dock.
   useEffect(() => {
-    // Delay clearing stayDocked so transient focus loss during keyboard
-    // dismiss (editor blur → re-focus) doesn't accidentally reset it.
-    if (!visible) {
-      const timer = setTimeout(() => setStayDocked(false), 300);
-      return () => clearTimeout(timer);
-    }
-  }, [visible]);
+    if (!stayDocked) return;
+    let timer: ReturnType<typeof setTimeout>;
+
+    const onBlur = () => {
+      timer = setTimeout(() => {
+        if (!editor.isFocused) setStayDocked(false);
+      }, 600);
+    };
+    const onFocus = () => clearTimeout(timer);
+
+    editor.on("blur", onBlur);
+    editor.on("focus", onFocus);
+    return () => {
+      clearTimeout(timer);
+      editor.off("blur", onBlur);
+      editor.off("focus", onFocus);
+    };
+  }, [stayDocked, editor]);
 
   const docked = keyboard.isOpen || stayDocked;
 
@@ -488,7 +502,9 @@ export function FloatingToolbar({
   // The floating toolbar would overlap with the OS native selection menu.
   const isCoarsePointer = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches;
 
-  if (!visible || (!docked && isCoarsePointer)) return null;
+  // When docked, always render regardless of `visible` — the `visible` state
+  // is unreliable during keyboard transitions (transient blur/re-focus).
+  if (!docked && (!visible || isCoarsePointer)) return null;
 
   return createPortal(
     <TooltipProvider delayDuration={400}>
