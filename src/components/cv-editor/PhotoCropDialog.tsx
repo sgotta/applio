@@ -166,7 +166,7 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="max-w-[calc(100vw-2rem)] sm:max-w-md">
         <input
           ref={fileInputRef}
           type="file"
@@ -228,7 +228,7 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
 
             {currentPhoto ? (
               <div className="flex flex-col items-center gap-4">
-                <div className="w-40 h-40 rounded-full overflow-hidden">
+                <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden shrink-0">
                   <img
                     src={currentPhoto}
                     alt={t("altText")}
@@ -236,13 +236,13 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
                   />
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex flex-wrap justify-center gap-2">
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => setImageToCrop(currentPhoto!)}
                   >
-                    <Crop className="w-4 h-4 mr-2" />
+                    <Crop className="w-4 h-4 mr-1.5" />
                     {t("adjust")}
                   </Button>
                   <Button
@@ -250,7 +250,7 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
                     size="sm"
                     onClick={triggerFileInput}
                   >
-                    <Upload className="w-4 h-4 mr-2" />
+                    <Upload className="w-4 h-4 mr-1.5" />
                     {t("change")}
                   </Button>
                   <Button
@@ -259,7 +259,7 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
                     onClick={handleDelete}
                     className="text-destructive hover:text-destructive"
                   >
-                    <Trash2 className="w-4 h-4 mr-2" />
+                    <Trash2 className="w-4 h-4 mr-1.5" />
                     {t("delete")}
                   </Button>
                 </div>
