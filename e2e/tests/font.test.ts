@@ -9,7 +9,7 @@ test.describe("Font Settings", () => {
     const initialFont = await cvContent.evaluate((el) => el.style.fontFamily);
 
     // Open font popover and select a different font (e.g., Merriweather — a serif font)
-    await openToolbarPopover(page, "btn-font");
+    await openToolbarPopover(page, "btn-design");
     const panel = popoverContent(page);
     await panel.getByText("Merriweather").click();
     await page.waitForTimeout(300);
@@ -24,7 +24,7 @@ test.describe("Font Settings", () => {
     await seedCVData(page, minimalCV);
 
     // Change font
-    await openToolbarPopover(page, "btn-font");
+    await openToolbarPopover(page, "btn-design");
     const panel = popoverContent(page);
     await panel.getByText("Lora").click();
     await page.waitForTimeout(300);
@@ -46,7 +46,7 @@ test.describe("Font Settings", () => {
     await seedCVData(page, minimalCV);
 
     // Open font popover
-    await openToolbarPopover(page, "btn-font");
+    await openToolbarPopover(page, "btn-design");
     const panel = popoverContent(page);
 
     // Font size buttons: S, M, L — M is default (level 2)

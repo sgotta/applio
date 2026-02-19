@@ -68,6 +68,7 @@ export async function downloadPDF(
   patternSettings?: PatternSettings,
   fontFamily?: string,
   fontScale?: number,
+  isPremium?: boolean,
 ): Promise<void> {
   // Resolve remote photo URLs to base64 before passing to react-pdf
   const resolvedPhoto = await resolvePhoto(data.personalInfo.photo);
@@ -76,7 +77,7 @@ export async function downloadPDF(
     : data;
 
   const { generatePDFBlob } = await import("./pdf-document");
-  const blob = await generatePDFBlob({ data: pdfData, colors, labels, locale, patternSettings, fontFamily, fontScale });
+  const blob = await generatePDFBlob({ data: pdfData, colors, labels, locale, patternSettings, fontFamily, fontScale, isPremium });
 
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");

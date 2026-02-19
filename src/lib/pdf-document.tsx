@@ -272,6 +272,7 @@ export interface PDFDocumentProps {
   marginScale?: number;
   patternSettings?: PatternSettings;
   fontFamily?: string;
+  isPremium?: boolean;
 }
 
 /* ── Base styles ────────────────────────────────────────── */
@@ -394,7 +395,7 @@ function PdfDotsPattern({
 
 /* ── Document component ─────────────────────────────────── */
 
-function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, patternSettings, fontFamily: userFontFamily }: PDFDocumentProps) {
+function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, patternSettings, fontFamily: userFontFamily, isPremium }: PDFDocumentProps) {
   const {
     personalInfo,
     summary,
@@ -964,26 +965,28 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
           const footerColor = blendOver(colors.sidebarMuted, colors.sidebarBg);
           return (
             <>
-              {/* Left: branding on the sidebar */}
-              <View
-                style={{
-                  position: "absolute",
-                  bottom: 10,
-                  left: 0,
-                  width: SIDEBAR_WIDTH,
-                  alignItems: "center",
-                }}
-                fixed
-              >
-                <Link src="https://www.applio.dev/" style={{ textDecoration: "none" }}>
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: 2 }}>
-                    <Text style={{ fontSize: 8, color: footerColor, fontFamily }}>
-                      Applio
-                    </Text>
-                    <HeartIcon size={7} color={footerColor} />
-                  </View>
-                </Link>
-              </View>
+              {/* Left: branding on the sidebar (free users only) */}
+              {!isPremium && (
+                <View
+                  style={{
+                    position: "absolute",
+                    bottom: 10,
+                    left: 0,
+                    width: SIDEBAR_WIDTH,
+                    alignItems: "center",
+                  }}
+                  fixed
+                >
+                  <Link src="https://www.applio.dev/" style={{ textDecoration: "none" }}>
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: 2 }}>
+                      <Text style={{ fontSize: 8, color: footerColor, fontFamily }}>
+                        Applio
+                      </Text>
+                      <HeartIcon size={7} color={footerColor} />
+                    </View>
+                  </Link>
+                </View>
+              )}
 
               {/* Right: name · date · page on the main area */}
               <View

@@ -59,7 +59,16 @@
     "shareOverlayMessage": "Preparing your CV for sharing...",
     "shareNameRequired": "Enter your name to share your CV.",
     "free": "Free",
-    "copyright": "All rights reserved."
+    "copyright": "All rights reserved.",
+    "pdfNoBranding": "Remove Applio branding",
+    "design": "Design",
+    "fileMenu": "File",
+    "syncLocal": "Local storage",
+    "syncLocalExplain": "Only on this browser, no sync.",
+    "syncCloud": "Synced to the cloud",
+    "syncCloudExplain": "Your data is automatically synced and backed up. Access your CV from any device.",
+    "syncProHint": "With Pro, syncs to the cloud.",
+    "syncLoginHint": "Sign in to sync your data and access it from any device."
   },
   "cvPreview": {
     "fullNamePlaceholder": "Your Full Name",
@@ -74,6 +83,10 @@
     "linkedinPlaceholder": "linkedin.com/in/username",
     "websitePlaceholder": "yoursite.com",
     "urlPlaceholder": "https://...",
+    "linkTextLabel": "Text",
+    "linkUrlLabel": "Link",
+    "linkOpen": "Open",
+    "linkRemove": "Remove",
     "aboutMe": "Professional profile",
     "summaryPlaceholder": "Write a professional summary...",
     "skills": "Skills",
@@ -338,8 +351,8 @@
       "title": "And much more.",
       "pdfTitle": "Export to PDF",
       "pdfDesc": "Download your CV as a professional PDF, ready to send. Layout optimized for printing.",
-      "langTitle": "13 languages",
-      "langDesc": "Interface available in Spanish, English, French, Portuguese, German, and 8 more languages.",
+      "langTitle": "6 languages",
+      "langDesc": "Interface available in English, Spanish, French, Portuguese, German, and Italian.",
       "darkTitle": "Dark mode",
       "darkDesc": "Edit at night without straining your eyes. Dark mode adapts to your system.",
       "saveTitle": "Auto-save",
@@ -372,5 +385,22 @@
     "benefit3": "Share your CV with a custom link",
     "upgrade": "Upgrade to Pro",
     "comingSoon": "Coming soon"
+  },
+  "premium": {
+    "pro": "PRO",
+    "upgradeTitle": "Unlock Premium",
+    "upgradeDescription": "Get the most out of your CV with all premium features.",
+    "feature_pdfNoBranding": "Download PDF without Applio watermark",
+    "feature_cloudSync": "Cloud sync — your data always backed up",
+    "feature_multiDevice": "Access your CV from any device",
+    "feature_allColors": "All color schemes",
+    "feature_allFonts": "All fonts",
+    "feature_allPatterns": "Decorative patterns",
+    "feature_allSections": "All optional sections",
+    "feature_richText": "Advanced text formatting",
+    "upgradeButton": "Upgrade now",
+    "comingSoon": "Coming soon",
+    "loginFirst": "Sign in to upgrade",
+    "watermark": "Made with Applio"
   }
 }

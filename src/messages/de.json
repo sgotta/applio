@@ -59,7 +59,16 @@
     "shareOverlayMessage": "Ihr Lebenslauf wird zum Teilen vorbereitet...",
     "shareNameRequired": "Geben Sie Ihren Namen ein, um den Lebenslauf zu teilen.",
     "free": "Kostenlos",
-    "copyright": "Alle Rechte vorbehalten."
+    "copyright": "Alle Rechte vorbehalten.",
+    "pdfNoBranding": "Applio-Logo entfernen",
+    "design": "Design",
+    "fileMenu": "Datei",
+    "syncLocal": "Lokaler Speicher",
+    "syncLocalExplain": "Nur in diesem Browser, keine Synchronisierung.",
+    "syncCloud": "In der Cloud synchronisiert",
+    "syncCloudExplain": "Ihre Daten werden automatisch synchronisiert und gesichert. Greifen Sie von jedem Gerät auf Ihren Lebenslauf zu.",
+    "syncProHint": "Mit Pro, Sync in der Cloud.",
+    "syncLoginHint": "Melden Sie sich an, um Ihre Daten zu synchronisieren und von jedem Gerät darauf zuzugreifen."
   },
   "cvPreview": {
     "fullNamePlaceholder": "Dein vollständiger Name",
@@ -74,6 +83,10 @@
     "linkedinPlaceholder": "linkedin.com/in/benutzername",
     "websitePlaceholder": "deineseite.com",
     "urlPlaceholder": "https://...",
+    "linkTextLabel": "Text",
+    "linkUrlLabel": "Link",
+    "linkOpen": "Öffnen",
+    "linkRemove": "Entfernen",
     "aboutMe": "Berufsprofil",
     "summaryPlaceholder": "Schreibe eine professionelle Zusammenfassung...",
     "skills": "Fähigkeiten",
@@ -338,8 +351,8 @@
       "title": "Und noch viel mehr.",
       "pdfTitle": "PDF-Export",
       "pdfDesc": "Lade deinen Lebenslauf als professionelles PDF herunter, versandfertig. Layout optimiert für den Druck.",
-      "langTitle": "13 Sprachen",
-      "langDesc": "Oberfläche verfügbar auf Deutsch, Englisch, Spanisch, Französisch, Portugiesisch und 8 weiteren Sprachen.",
+      "langTitle": "6 Sprachen",
+      "langDesc": "Oberfläche verfügbar auf Deutsch, Englisch, Spanisch, Französisch, Portugiesisch und Italienisch.",
       "darkTitle": "Dunkelmodus",
       "darkDesc": "Bearbeite nachts ohne die Augen zu belasten. Der Dunkelmodus passt sich deinem System an.",
       "saveTitle": "Automatisches Speichern",
@@ -372,5 +385,22 @@
     "benefit3": "Teilen Sie Ihren Lebenslauf mit einem personalisierten Link",
     "upgrade": "Auf Pro upgraden",
     "comingSoon": "Demnächst verfügbar"
+  },
+  "premium": {
+    "pro": "PRO",
+    "upgradeTitle": "Premium freischalten",
+    "upgradeDescription": "Holen Sie das Beste aus Ihrem Lebenslauf mit allen Premium-Funktionen.",
+    "feature_pdfNoBranding": "PDF ohne Applio-Wasserzeichen herunterladen",
+    "feature_cloudSync": "Cloud-Synchronisierung — Ihre Daten immer gesichert",
+    "feature_multiDevice": "Greifen Sie von jedem Gerät auf Ihren Lebenslauf zu",
+    "feature_allColors": "Alle Farbschemata",
+    "feature_allFonts": "Alle Schriftarten",
+    "feature_allPatterns": "Dekorative Muster",
+    "feature_allSections": "Alle optionalen Abschnitte",
+    "feature_richText": "Erweiterte Textformatierung",
+    "upgradeButton": "Jetzt upgraden",
+    "comingSoon": "Demnächst verfügbar",
+    "loginFirst": "Anmelden um zu upgraden",
+    "watermark": "Erstellt mit Applio"
   }
 }

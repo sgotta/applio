@@ -2,7 +2,7 @@ import { test, expect, seedCVData, minimalCV, openToolbarPopover, popoverContent
 
 test.describe("Color Schemes", () => {
   test("all color scheme swatches are visible in picker", async ({ appPage: page }) => {
-    await openToolbarPopover(page, "btn-color-scheme");
+    await openToolbarPopover(page, "btn-design");
     const panel = popoverContent(page);
 
     // There should be 5 color scheme swatches (circular buttons)
@@ -18,7 +18,7 @@ test.describe("Color Schemes", () => {
     const initialBg = await sidebar.evaluate((el) => el.style.backgroundColor);
 
     // Open color scheme picker and click a different swatch (second one)
-    await openToolbarPopover(page, "btn-color-scheme");
+    await openToolbarPopover(page, "btn-design");
     const panel = popoverContent(page);
     const swatches = panel.locator("button.rounded-full");
     await swatches.nth(1).click();
@@ -33,7 +33,7 @@ test.describe("Color Schemes", () => {
     await seedCVData(page, minimalCV);
 
     // Change color scheme
-    await openToolbarPopover(page, "btn-color-scheme");
+    await openToolbarPopover(page, "btn-design");
     const panel = popoverContent(page);
     const swatches = panel.locator("button.rounded-full");
     await swatches.nth(1).click();

@@ -11,7 +11,7 @@ import { EntryGrip } from "./EntryGrip";
 import { SectionTitle } from "./SectionTitle";
 import { ProfilePhotoUpload } from "./ProfilePhotoUpload";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Plus, X, Pencil, GripVertical } from "lucide-react";
+import { Plus, GripVertical, ExternalLink, Trash2, Link2 } from "lucide-react";
 import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
 import type { SidebarSectionId } from "@/lib/types";
 import {
@@ -56,95 +56,116 @@ function ContactLine({
   urlPlaceholder?: string;
 }) {
   const [linkOpen, setLinkOpen] = useState(false);
-  const [editing, setEditing] = useState(false);
   const hasUrl = !!urlValue;
   const linkable = !!urlField;
+  const t = useTranslations("personalInfo");
 
-  // Reset to preview mode when popover closes
-  const handleOpenChange = (open: boolean) => {
-    setLinkOpen(open);
-    if (!open) setEditing(false);
-  };
+  /* Non-linkable fields (email, phone, location): plain icon + inline editable text */
+  if (!linkable) {
+    return (
+      <div className="flex items-center gap-1 group/contact">
+        <Icon className="h-3 w-3 shrink-0" style={{ color: iconColor }} />
+        <EditableText
+          value={value}
+          onChange={(v) => onChange(field, v)}
+          as="small"
+          placeholder={placeholder}
+          displayStyle={{ color: iconColor }}
+        />
+      </div>
+    );
+  }
 
+  /* Linkable fields (linkedin, website): entire row opens popover */
   return (
-    <div className="flex items-center gap-1 group/contact">
-      {linkable ? (
-        /* Icon is the popover trigger for linkable fields */
-        <Popover open={linkOpen} onOpenChange={handleOpenChange}>
-          <PopoverTrigger asChild>
-            <button className="p-0.5 rounded transition-colors hover:bg-white/20 shrink-0">
-              <Icon className="h-3 w-3" style={{ color: iconColor }} />
-            </button>
-          </PopoverTrigger>
-          <PopoverContent className="w-56 p-1.5" align="start" side="bottom" sideOffset={4}>
-            {hasUrl && !editing ? (
-              /* Preview mode — show URL with actions */
+    <Popover open={linkOpen} onOpenChange={setLinkOpen}>
+      <PopoverTrigger asChild>
+        <button
+          className={`flex items-center gap-1 -mx-1.5 px-1.5 py-0.5 rounded-md transition-colors text-left w-full ${
+            linkOpen ? "bg-white/10" : "hover:bg-white/5"
+          }`}
+        >
+          <span className="relative shrink-0">
+            <Icon className="h-3 w-3" style={{ color: iconColor }} />
+            {hasUrl && (
+              <span className="absolute -top-px -right-px h-1.5 w-1.5 rounded-full bg-white/80" />
+            )}
+          </span>
+          <span
+            className={value ? "" : "italic opacity-50"}
+            style={{ color: iconColor, fontSize: "1em" }}
+          >
+            {value || placeholder}
+          </span>
+        </button>
+      </PopoverTrigger>
+      <PopoverContent
+        className="w-64 border-0 bg-gray-900 p-3 rounded-lg shadow-xl"
+        align="start"
+        side="bottom"
+        sideOffset={6}
+      >
+        <div className="space-y-3">
+          {/* Display text field */}
+          <div className="space-y-1">
+            <label className="block text-[10px] font-medium uppercase tracking-wider text-white/40">
+              {t("linkTextLabel")}
+            </label>
+            <input
+              type="text"
+              value={value}
+              onChange={(e) => onChange(field, e.target.value)}
+              placeholder={placeholder}
+              className="w-full rounded-md bg-white/10 px-2.5 py-1.5 text-xs text-white placeholder:text-white/30 outline-none focus:bg-white/15 transition-colors"
+              autoFocus
+            />
+          </div>
+          {/* URL field */}
+          <div className="space-y-1">
+            <label className="block text-[10px] font-medium uppercase tracking-wider text-white/40">
+              {t("linkUrlLabel")}
+            </label>
+            <div className="flex items-center rounded-md bg-white/10 focus-within:bg-white/15 transition-colors">
+              <Link2 className="h-3 w-3 text-white/30 ml-2.5 shrink-0" />
+              <input
+                type="url"
+                value={urlValue || ""}
+                onChange={(e) => onChange(urlField!, e.target.value || undefined)}
+                placeholder={urlPlaceholder}
+                className="flex-1 min-w-0 bg-transparent px-2 py-1.5 text-xs text-white/80 placeholder:text-white/30 outline-none"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === "Escape") setLinkOpen(false);
+                }}
+              />
+            </div>
+          </div>
+          {/* Actions */}
+          {hasUrl && (
+            <>
+              <div className="w-full h-px bg-white/10" />
               <div className="flex items-center gap-1">
                 <a
                   href={urlValue}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 min-w-0 truncate rounded-md px-2 py-1.5 text-xs text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-accent transition-colors"
+                  className="flex items-center gap-1.5 rounded-md px-2 py-1.5 text-[11px] text-white/60 hover:text-white hover:bg-white/10 transition-colors"
                 >
-                  {urlValue!.replace(/^https?:\/\//, "")}
+                  <ExternalLink className="h-3 w-3 shrink-0" />
+                  {t("linkOpen")}
                 </a>
                 <button
-                  onClick={() => setEditing(true)}
-                  className="p-1 rounded-md text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-accent transition-colors shrink-0"
+                  onClick={() => { onChange(urlField!, undefined); setLinkOpen(false); }}
+                  className="flex items-center gap-1.5 rounded-md px-2 py-1.5 text-[11px] text-white/60 hover:text-red-300 hover:bg-white/10 transition-colors"
                 >
-                  <Pencil className="h-3 w-3" />
-                </button>
-                <button
-                  onClick={() => {
-                    onChange(urlField, undefined);
-                    setLinkOpen(false);
-                  }}
-                  className="p-1 rounded-md text-gray-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400 hover:bg-gray-100 dark:hover:bg-accent transition-colors shrink-0"
-                >
-                  <X className="h-3 w-3" />
+                  <Trash2 className="h-3 w-3 shrink-0" />
+                  {t("linkRemove")}
                 </button>
               </div>
-            ) : (
-              /* Edit mode — input field */
-              <div className="flex items-center gap-1.5">
-                <input
-                  type="url"
-                  value={urlValue || ""}
-                  onChange={(e) => onChange(urlField, e.target.value || undefined)}
-                  placeholder={urlPlaceholder}
-                  className="flex-1 min-w-0 rounded-md bg-gray-50 dark:bg-accent px-2 py-1.5 text-xs text-gray-800 dark:text-gray-200 placeholder:text-gray-400 dark:placeholder:text-gray-500 outline-none"
-                  autoFocus
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") setLinkOpen(false);
-                  }}
-                />
-                {hasUrl && (
-                  <button
-                    onClick={() => {
-                      onChange(urlField, undefined);
-                      setLinkOpen(false);
-                    }}
-                    className="p-1 rounded-md text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-accent transition-colors shrink-0"
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                )}
-              </div>
-            )}
-          </PopoverContent>
-        </Popover>
-      ) : (
-        /* Non-linkable fields — plain icon */
-        <Icon className="h-3 w-3 shrink-0" style={{ color: iconColor }} />
-      )}
-      <EditableText
-        value={value}
-        onChange={(v) => onChange(field, v)}
-        as="small"
-        placeholder={placeholder}
-        displayStyle={{ color: iconColor }}
-      />
-    </div>
+            </>
+          )}
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 }
 

@@ -59,7 +59,16 @@
     "shareOverlayMessage": "Préparation de votre CV pour le partage...",
     "shareNameRequired": "Entrez votre nom pour partager votre CV.",
     "free": "Gratuit",
-    "copyright": "Tous droits réservés."
+    "copyright": "Tous droits réservés.",
+    "pdfNoBranding": "Retirer le logo Applio",
+    "design": "Design",
+    "fileMenu": "Fichier",
+    "syncLocal": "Stockage local",
+    "syncLocalExplain": "Uniquement sur ce navigateur, pas de sync.",
+    "syncCloud": "Synchronisé dans le cloud",
+    "syncCloudExplain": "Vos données sont synchronisées et sauvegardées automatiquement. Accédez à votre CV depuis n'importe quel appareil.",
+    "syncProHint": "Avec Pro, sync dans le cloud.",
+    "syncLoginHint": "Connectez-vous pour synchroniser vos données et y accéder depuis n'importe quel appareil."
   },
   "cvPreview": {
     "fullNamePlaceholder": "Votre Nom Complet",
@@ -74,6 +83,10 @@
     "linkedinPlaceholder": "linkedin.com/in/utilisateur",
     "websitePlaceholder": "votresite.com",
     "urlPlaceholder": "https://...",
+    "linkTextLabel": "Texte",
+    "linkUrlLabel": "Lien",
+    "linkOpen": "Ouvrir",
+    "linkRemove": "Supprimer",
     "aboutMe": "Profil professionnel",
     "summaryPlaceholder": "Rédigez un résumé professionnel...",
     "skills": "Compétences",
@@ -338,8 +351,8 @@
       "title": "Et bien plus encore.",
       "pdfTitle": "Export en PDF",
       "pdfDesc": "Téléchargez votre CV en PDF professionnel, prêt à envoyer. Mise en page optimisée pour l'impression.",
-      "langTitle": "13 langues",
-      "langDesc": "Interface disponible en français, anglais, espagnol, portugais, allemand et 8 autres langues.",
+      "langTitle": "6 langues",
+      "langDesc": "Interface disponible en français, anglais, espagnol, portugais, allemand et italien.",
       "darkTitle": "Mode sombre",
       "darkDesc": "Éditez la nuit sans vous fatiguer les yeux. Le mode sombre s'adapte à votre système.",
       "saveTitle": "Sauvegarde automatique",
@@ -372,5 +385,22 @@
     "benefit3": "Partagez votre CV avec un lien personnalisé",
     "upgrade": "Passer à Pro",
     "comingSoon": "Bientôt disponible"
+  },
+  "premium": {
+    "pro": "PRO",
+    "upgradeTitle": "Débloquer Premium",
+    "upgradeDescription": "Profitez au maximum de votre CV avec toutes les fonctionnalités premium.",
+    "feature_pdfNoBranding": "Télécharger le PDF sans filigrane Applio",
+    "feature_cloudSync": "Synchronisation cloud — vos données toujours sauvegardées",
+    "feature_multiDevice": "Accédez à votre CV depuis n'importe quel appareil",
+    "feature_allColors": "Tous les thèmes de couleur",
+    "feature_allFonts": "Toutes les polices",
+    "feature_allPatterns": "Motifs décoratifs",
+    "feature_allSections": "Toutes les sections optionnelles",
+    "feature_richText": "Mise en forme avancée du texte",
+    "upgradeButton": "Passer à Premium",
+    "comingSoon": "Bientôt disponible",
+    "loginFirst": "Se connecter pour passer à Premium",
+    "watermark": "Créé avec Applio"
   }
 }
