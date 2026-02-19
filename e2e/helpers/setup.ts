@@ -46,17 +46,13 @@ export const minimalCV: CVData = {
   certifications: [],
   awards: [],
   visibility: {
-    email: true,
-    phone: true,
     location: true,
     linkedin: true,
     website: true,
+    summary: true,
     courses: false,
     certifications: false,
     awards: false,
-    contact: true,
-    summary: true,
-    skills: true,
   },
   sidebarOrder: ["contact", "summary", "skills"],
 };

@@ -2,6 +2,10 @@
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { ThemeProvider } from "@/lib/theme-context";
+import { LocaleProvider } from "@/lib/locale-context";
+import { LandingNav } from "@/components/landing/LandingNav";
 import {
   MousePointerClick,
   Type,
@@ -17,7 +21,6 @@ import {
   Italic,
   List,
   ListOrdered,
-  Underline,
   Mail,
   Phone,
   MapPin,
@@ -88,6 +91,7 @@ function Reveal({
 
 /* ── Hero CV mockup (browser-framed) ───────────────────────── */
 function HeroCVMockup() {
+  const t = useTranslations("landing");
   return (
     <div className="rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-2xl shadow-gray-300/50 dark:shadow-black/40 transition-transform duration-500 group-hover:-translate-y-1">
       {/* Browser chrome */}
@@ -103,9 +107,9 @@ function HeroCVMockup() {
       </div>
 
       {/* App content — stone bg like the real app, clipped by the "browser" */}
-      <div className="bg-stone-100 p-4 md:p-6 relative max-h-[360px] overflow-hidden">
-        {/* Fade-out at the bottom of the browser viewport */}
-        <div className="absolute bottom-0 inset-x-0 h-10 bg-gradient-to-t from-stone-100 to-transparent z-10 pointer-events-none" />
+      <div className="bg-stone-100 text-gray-900 p-4 md:p-6 relative max-h-[360px] overflow-hidden">
+        {/* Fade-out at the bottom — tall enough to clearly suggest more content */}
+        <div className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-t from-stone-100 to-transparent z-10 pointer-events-none" />
 
         {/* Mini toolbar hint */}
         <div className="flex items-center gap-2 mb-4 px-1">
@@ -124,35 +128,35 @@ function HeroCVMockup() {
         {/* CV sheet — full height, the browser clips it */}
         <div className="bg-white rounded-md shadow-lg mx-auto max-w-[80%]">
           <div className="flex">
-            {/* Sidebar — ~30% to match the real app's 250px/800px ratio */}
-            <div className="w-[30%] bg-[#dfe4ec] p-3 md:p-5 space-y-3 text-[10px] leading-snug rounded-l-md">
+            {/* Sidebar */}
+            <div className="w-[30%] bg-[#dfe4ec] p-4 md:p-6 space-y-5 text-[10px] leading-snug rounded-l-md">
               <div className="w-16 h-16 rounded-full bg-[#94a3b8]/20 mx-auto grid place-items-center">
-                <span className="text-lg font-medium text-[#94a3b8]">JG</span>
+                <span className="text-lg font-medium text-[#94a3b8]">JD</span>
               </div>
               <div>
-                <div className="text-[9px] font-semibold uppercase tracking-[0.15em] text-[#1e293b] mb-1.5">
-                  Contacto
+                <div className="text-[9px] font-semibold uppercase tracking-[0.15em] text-[#1e293b] mb-2">
+                  {t("mockup.contact")}
                 </div>
-                <div className="h-px bg-[#c4cad5] mb-2" />
-                <div className="space-y-1.5 text-[#1e293b]">
+                <div className="h-px bg-[#c4cad5] mb-3" />
+                <div className="space-y-2.5 text-[#1e293b]">
                   <div className="flex items-center gap-1.5">
-                    <Mail className="w-2.5 h-2.5 shrink-0" /> juan@email.com
+                    <Mail className="w-2.5 h-2.5 shrink-0" /> john.doe@email.com
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <Phone className="w-2.5 h-2.5 shrink-0" /> +54 11 2345-6789
+                    <Phone className="w-2.5 h-2.5 shrink-0" /> +1 (555) 123-4567
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <MapPin className="w-2.5 h-2.5 shrink-0" /> Buenos Aires, AR
+                    <MapPin className="w-2.5 h-2.5 shrink-0" /> New York, NY
                   </div>
                 </div>
               </div>
               <div>
-                <div className="text-[9px] font-semibold uppercase tracking-[0.15em] text-[#1e293b] mb-1.5">
-                  Habilidades
+                <div className="text-[9px] font-semibold uppercase tracking-[0.15em] text-[#1e293b] mb-2">
+                  {t("mockup.skills")}
                 </div>
-                <div className="h-px bg-[#c4cad5] mb-2" />
-                <div className="flex flex-wrap gap-1">
-                  {["React", "TypeScript", "Figma", "CSS", "Node"].map((s) => (
+                <div className="h-px bg-[#c4cad5] mb-3" />
+                <div className="flex flex-wrap gap-1.5">
+                  {["React", "TypeScript", "Next.js", "Node.js", "Python"].map((s) => (
                     <span
                       key={s}
                       className="bg-[#384152] text-white text-[9px] rounded px-2 py-0.5"
@@ -165,55 +169,75 @@ function HeroCVMockup() {
             </div>
 
             {/* Main content */}
-            <div className="flex-1 p-4 md:p-5 space-y-3 text-[10px] leading-snug">
+            <div className="flex-1 p-5 md:p-7 space-y-5 text-[10px] leading-snug">
               <div>
                 <div className="text-[18px] md:text-[20px] font-semibold text-gray-900 leading-tight">
-                  Juan García
+                  John Doe
                 </div>
-                <div className="w-8 h-0.5 bg-[#94a3b8] rounded-full mt-1" />
-                <div className="text-[10px] md:text-[11px] font-medium uppercase tracking-wide text-gray-500 mt-0.5">
-                  Diseñador UX Senior
+                <div className="w-8 h-0.5 bg-[#94a3b8] rounded-full mt-1.5" />
+                <div className="text-[10px] md:text-[11px] font-medium uppercase tracking-wide text-gray-500 mt-1">
+                  Sr. Software Engineer
                 </div>
               </div>
               <div>
-                <div className="text-[9px] font-semibold uppercase tracking-[0.15em] text-[#1e293b] mb-1.5">
-                  Experiencia
+                <div className="text-[9px] font-semibold uppercase tracking-[0.15em] text-[#1e293b] mb-2">
+                  {t("mockup.experience")}
                 </div>
-                <div className="h-px bg-[#cbd5e1] mb-2.5" />
-                <div className="space-y-3">
+                <div className="h-px bg-[#cbd5e1] mb-3" />
+                <div className="space-y-4">
                   <div>
                     <div className="flex justify-between">
                       <span className="font-semibold text-gray-900">
-                        Empresa ABC
+                        Acme Corp
                       </span>
                       <span className="text-gray-400 text-[10px]">
-                        2022 — Presente
+                        Mar 2021 — {t("mockup.present")}
                       </span>
                     </div>
-                    <div className="font-medium uppercase tracking-wide text-gray-500 text-[10px]">
-                      Diseñador UX Senior
+                    <div className="font-medium uppercase tracking-wide text-gray-500 text-[10px] mt-0.5">
+                      Senior Software Engineer
                     </div>
-                    <ul className="mt-1 space-y-0.5 pl-3.5 list-disc marker:text-[#334155]">
-                      <li>Lideré el equipo de diseño de producto</li>
-                      <li>Implementé design system corporativo</li>
+                    <ul className="mt-1.5 space-y-1 pl-3.5 list-disc marker:text-[#334155]">
+                      <li>Led digital onboarding system development</li>
+                      <li>Migrated monolith to microservices</li>
                     </ul>
                   </div>
                   <div>
                     <div className="flex justify-between">
                       <span className="font-semibold text-gray-900">
-                        Startup XYZ
+                        Tech Solutions Inc.
                       </span>
                       <span className="text-gray-400 text-[10px]">
-                        2020 — 2022
+                        Sep 2019 — Feb 2021
                       </span>
                     </div>
-                    <div className="font-medium uppercase tracking-wide text-gray-500 text-[10px]">
-                      Diseñador UI
+                    <div className="font-medium uppercase tracking-wide text-gray-500 text-[10px] mt-0.5">
+                      Frontend Developer
                     </div>
-                    <ul className="mt-1 space-y-0.5 pl-3.5 list-disc marker:text-[#334155]">
-                      <li>Diseñé la interfaz de la app principal</li>
-                      <li>Creé biblioteca de componentes</li>
+                    <ul className="mt-1.5 space-y-1 pl-3.5 list-disc marker:text-[#334155]">
+                      <li>Built enterprise UIs with React & TypeScript</li>
+                      <li>Implemented shared design system</li>
                     </ul>
+                  </div>
+                </div>
+              </div>
+              {/* Education — partially visible, cut by fade to suggest more content */}
+              <div>
+                <div className="text-[9px] font-semibold uppercase tracking-[0.15em] text-[#1e293b] mb-2">
+                  {t("mockup.education")}
+                </div>
+                <div className="h-px bg-[#cbd5e1] mb-3" />
+                <div>
+                  <div className="flex justify-between">
+                    <span className="font-semibold text-gray-900">
+                      UC Berkeley
+                    </span>
+                    <span className="text-gray-400 text-[10px]">
+                      2015 — 2019
+                    </span>
+                  </div>
+                  <div className="font-medium uppercase tracking-wide text-gray-500 text-[10px] mt-0.5">
+                    B.S. Computer Science
                   </div>
                 </div>
               </div>
@@ -227,9 +251,9 @@ function HeroCVMockup() {
 
 /* ── Interactive rich text demo ─────────────────────────────── */
 function InteractiveRichTextMockup() {
+  const t = useTranslations("landing");
   const [bold, setBold] = useState(false);
   const [italic, setItalic] = useState(false);
-  const [underlined, setUnderlined] = useState(false);
   const [listType, setListType] = useState<"bullet" | "numbered">("bullet");
   const [interacted, setInteracted] = useState(false);
 
@@ -253,7 +277,6 @@ function InteractiveRichTextMockup() {
             [
               { icon: Bold, active: bold, onClick: () => act(() => setBold((b) => !b)) },
               { icon: Italic, active: italic, onClick: () => act(() => setItalic((b) => !b)) },
-              { icon: Underline, active: underlined, onClick: () => act(() => setUnderlined((b) => !b)) },
             ] as const
           ).map(({ icon: Icon, active, onClick }, i) => (
             <button
@@ -294,24 +317,22 @@ function InteractiveRichTextMockup() {
       <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 p-5 shadow-sm text-sm leading-relaxed select-none">
         <ListTag className={`space-y-1.5 pl-4 ${listClass} transition-all`}>
           <li className="text-gray-700 dark:text-gray-300">
-            Lideré un equipo de{" "}
+            {t("demo.richTextBullet1")}{" "}
             <strong className="text-gray-900 dark:text-white">
-              5 diseñadores
+              {t("demo.richTextBullet1Bold")}
             </strong>
           </li>
           <li className="text-gray-700 dark:text-gray-300">
             <span
               className={`bg-blue-100 dark:bg-blue-500/20 rounded px-0.5 transition-all duration-200 ${
                 bold ? "font-bold" : ""
-              } ${italic ? "italic" : ""} ${
-                underlined ? "underline decoration-blue-400 underline-offset-2" : ""
-              }`}
+              } ${italic ? "italic" : ""}`}
             >
-              Implementé el design system
+              {t("demo.richTextBullet2")}
             </span>
           </li>
           <li className="text-gray-700 dark:text-gray-300">
-            Reduje el tiempo de onboarding un 40%
+            {t("demo.richTextBullet3")}
           </li>
         </ListTag>
       </div>
@@ -325,8 +346,8 @@ function InteractiveRichTextMockup() {
         }`}
       >
         {interacted
-          ? "¡Tu CV, con el formato que quieras!"
-          : "Probá los botones de la barra"}
+          ? t("demo.richTextHintAfter")
+          : t("demo.richTextHintBefore")}
       </div>
     </div>
   );
@@ -391,10 +412,11 @@ function SortableDragItem({
 
 /* ── Interactive drag & drop demo ──────────────────────────── */
 function InteractiveDragMockup() {
+  const t = useTranslations("landing");
   const [items, setItems] = useState([
-    { id: "a", title: "Empresa ABC", subtitle: "Diseñador UX Senior" },
-    { id: "b", title: "Startup XYZ", subtitle: "Diseñador UI" },
-    { id: "c", title: "Agencia Design", subtitle: "Junior Designer" },
+    { id: "a", title: "Acme Corp", subtitle: "Senior Software Engineer" },
+    { id: "b", title: "Tech Solutions Inc.", subtitle: "Frontend Developer" },
+    { id: "c", title: "Digital Agency", subtitle: "Junior Developer" },
   ]);
   const [moveCount, setMoveCount] = useState(0);
   const [draggingId, setDraggingId] = useState<string | null>(null);
@@ -448,8 +470,8 @@ function InteractiveDragMockup() {
         }`}
       >
         {moveCount > 0
-          ? "¡Las entradas se reordenan al instante!"
-          : "Arrastrá desde el ícono para reordenar"}
+          ? t("demo.dragHintAfter")
+          : t("demo.dragHintBefore")}
       </div>
     </div>
   );
@@ -519,10 +541,11 @@ function InlineField({
 
 /* ── Interactive edit demo ─────────────────────────────────── */
 function InteractiveEditMockup() {
+  const t = useTranslations("landing");
   const [fields, setFields] = useState({
-    title: "Diseñador UX Senior",
-    company: "Empresa ABC",
-    dates: "2022 — Presente",
+    title: "Senior Software Engineer",
+    company: "Acme Corp",
+    dates: "Mar 2021 — Present",
   });
   const [editCount, setEditCount] = useState(0);
 
@@ -561,8 +584,8 @@ function InteractiveEditMockup() {
           }`}
         >
           {editCount > 0
-            ? "¡Así de fácil! Así funciona Applio."
-            : "Probá haciendo click en cualquier texto"}
+            ? t("demo.editHintAfter")
+            : t("demo.editHintBefore")}
         </div>
       </div>
     </div>
@@ -689,6 +712,7 @@ function FeatureStep({
 
 /* ── Phone mockup — pixel-accurate to real Applio mobile ───── */
 function PhoneMockup() {
+  const t = useTranslations("landing");
   /* Base font = 15px on mobile in real app; we scale to ~11px for mockup */
   return (
     <div className="relative">
@@ -697,91 +721,86 @@ function PhoneMockup() {
         <div className="absolute top-2 left-1/2 -translate-x-1/2 w-[90px] h-[28px] bg-gray-900 dark:bg-gray-700 rounded-full z-10" />
 
         {/* Screen — fixed height, content clips naturally like a real phone */}
-        <div className="pt-12 pb-8 text-[11px] leading-[1.45] font-sans h-full overflow-hidden">
+        <div className="pt-12 pb-8 text-[11px] leading-[1.45] font-sans h-full overflow-hidden text-gray-900">
 
           {/* ── Mobile header: photo + name centered ── */}
-          <div className="flex flex-col items-center px-7 pt-1">
-            {/* Photo — 144px in real app, scaled to ~90px here */}
-            <div className="w-[90px] h-[90px] rounded-full grid place-items-center mb-3" style={{ backgroundColor: "#94a3b818" }}>
-              <span className="text-[26px] font-medium tracking-wide" style={{ color: "#94a3b890" }}>JG</span>
+          <div className="flex flex-col items-center px-8 pt-2 pb-1">
+            <div className="w-[100px] h-[100px] rounded-full grid place-items-center mb-4" style={{ backgroundColor: "#94a3b818" }}>
+              <span className="text-[28px] font-medium tracking-wide" style={{ color: "#94a3b890" }}>JD</span>
             </div>
-            {/* Name — 2.16em in real app */}
-            <div className="text-[24px] font-semibold tracking-tight text-gray-900 leading-tight">
-              Juan García
+            <div className="text-[26px] font-semibold tracking-tight text-gray-900 leading-tight">
+              John Doe
             </div>
-            {/* Accent line — w-12 h-0.5 in real app */}
-            <div className="w-12 h-0.5 bg-[#94a3b8] rounded-full mt-1.5" />
-            {/* Title — 1.26em uppercase in real app */}
-            <div className="text-[14px] font-medium uppercase tracking-wide text-gray-500 mt-1">
-              Diseñador UX Senior
+            <div className="w-14 h-0.5 bg-[#94a3b8] rounded-full mt-2" />
+            <div className="text-[14px] font-medium uppercase tracking-wide text-gray-500 mt-1.5">
+              Sr. Software Engineer
             </div>
           </div>
 
-          {/* ── Sidebar block — full-width, 38px padding in real app ── */}
-          <div className="mt-4" style={{ backgroundColor: "#dfe4ec", padding: "20px 28px" }}>
-            <div className="space-y-4">
+          {/* ── Sidebar block — full-width ── */}
+          <div className="mt-5" style={{ backgroundColor: "#dfe4ec", padding: "28px 32px" }}>
+            <div className="space-y-6">
               {/* Contact */}
               <div>
-                <div className="mb-1.5 mt-0.5">
+                <div className="mb-2">
                   <div className="font-semibold uppercase tracking-[0.15em] text-[#1e293b]" style={{ fontSize: "0.9em" }}>
-                    Contacto
+                    {t("mockup.contact")}
                   </div>
-                  <div className="h-px bg-[#c4cad5] mt-1.5" />
+                  <div className="h-px bg-[#c4cad5] mt-2" />
                 </div>
-                <div className="space-y-1.5 text-[#1e293b]">
-                  <div className="flex items-center gap-1.5">
+                <div className="space-y-2 text-[#1e293b]">
+                  <div className="flex items-center gap-2">
                     <Mail className="w-3 h-3 shrink-0" />
-                    <span>juan@email.com</span>
+                    <span>john.doe@email.com</span>
                   </div>
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-2">
                     <Phone className="w-3 h-3 shrink-0" />
-                    <span>+54 11 2345-6789</span>
+                    <span>+1 (555) 123-4567</span>
                   </div>
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-2">
                     <MapPin className="w-3 h-3 shrink-0" />
-                    <span>Buenos Aires, AR</span>
+                    <span>New York, NY</span>
                   </div>
                 </div>
               </div>
 
               {/* About */}
               <div>
-                <div className="mb-1.5 mt-0.5">
+                <div className="mb-2">
                   <div className="font-semibold uppercase tracking-[0.15em] text-[#1e293b]" style={{ fontSize: "0.9em" }}>
-                    Sobre mí
+                    {t("mockup.aboutMe")}
                   </div>
-                  <div className="h-px bg-[#c4cad5] mt-1.5" />
+                  <div className="h-px bg-[#c4cad5] mt-2" />
                 </div>
                 <p className="text-[#1e293b] leading-relaxed">
-                  Diseñador UX con 5+ años de experiencia creando interfaces
-                  centradas en el usuario.
+                  Software engineer with 5+ years of experience building scalable web applications.
                 </p>
               </div>
 
               {/* Skills */}
               <div>
-                <div className="mb-1.5 mt-0.5">
+                <div className="mb-2">
                   <div className="font-semibold uppercase tracking-[0.15em] text-[#1e293b]" style={{ fontSize: "0.9em" }}>
-                    Habilidades
+                    {t("mockup.skills")}
                   </div>
-                  <div className="h-px bg-[#c4cad5] mt-1.5" />
+                  <div className="h-px bg-[#c4cad5] mt-2" />
                 </div>
-                <div className="font-semibold uppercase tracking-wide text-[#1e293b] mb-1" style={{ fontSize: "0.9em" }}>
-                  Diseño
+                <div className="font-semibold uppercase tracking-wide text-[#1e293b] mb-1.5" style={{ fontSize: "0.9em" }}>
+                  Frontend
                 </div>
-                <div className="flex flex-wrap gap-1">
-                  {["Figma", "Sketch", "Adobe XD"].map((s) => (
-                    <span key={s} className="bg-[#384152] text-white rounded px-2 py-0.5" style={{ fontSize: "0.9em" }}>
+                <div className="flex flex-wrap gap-1.5">
+                  {["React", "TypeScript", "Next.js"].map((s) => (
+                    <span key={s} className="bg-[#384152] text-white rounded px-2.5 py-0.5" style={{ fontSize: "0.9em" }}>
                       {s}
                     </span>
                   ))}
                 </div>
-                <div className="font-semibold uppercase tracking-wide text-[#1e293b] mt-2 mb-1" style={{ fontSize: "0.9em" }}>
-                  Desarrollo
+                <div className="font-semibold uppercase tracking-wide text-[#1e293b] mt-3 mb-1.5" style={{ fontSize: "0.9em" }}>
+                  Backend
                 </div>
-                <div className="flex flex-wrap gap-1">
-                  {["React", "TypeScript", "CSS"].map((s) => (
-                    <span key={s} className="bg-[#384152] text-white rounded px-2 py-0.5" style={{ fontSize: "0.9em" }}>
+                <div className="flex flex-wrap gap-1.5">
+                  {["Node.js", "Python", "PostgreSQL"].map((s) => (
+                    <span key={s} className="bg-[#384152] text-white rounded px-2.5 py-0.5" style={{ fontSize: "0.9em" }}>
                       {s}
                     </span>
                   ))}
@@ -791,38 +810,38 @@ function PhoneMockup() {
           </div>
 
           {/* ── Main content — experience ── */}
-          <div style={{ padding: "16px 28px 0" }}>
-            <div className="mb-1.5 mt-0.5">
+          <div style={{ padding: "24px 32px 0" }}>
+            <div className="mb-2">
               <div className="font-semibold uppercase tracking-[0.15em] text-[#1e293b]" style={{ fontSize: "0.9em" }}>
-                Experiencia
+                {t("mockup.experience")}
               </div>
-              <div className="h-px bg-[#cbd5e1] mt-1.5" />
+              <div className="h-px bg-[#cbd5e1] mt-2" />
             </div>
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div>
                 <div className="flex justify-between items-baseline">
-                  <span className="font-semibold text-gray-900" style={{ fontSize: "1.17em" }}>Empresa ABC</span>
-                  <span className="text-gray-400 shrink-0 ml-2" style={{ fontSize: "0.9em" }}>2022 — Pres.</span>
+                  <span className="font-semibold text-gray-900" style={{ fontSize: "1.17em" }}>Acme Corp</span>
+                  <span className="text-gray-400 shrink-0 ml-2" style={{ fontSize: "0.9em" }}>2021 — {t("mockup.present")}</span>
                 </div>
                 <div className="font-medium uppercase tracking-wide text-gray-500" style={{ fontSize: "0.9em" }}>
-                  Diseñador UX Senior
+                  Senior Software Engineer
                 </div>
-                <ul className="mt-1 space-y-0.5 pl-3 list-disc marker:text-[#334155]">
-                  <li>Lideré el equipo de diseño</li>
-                  <li>Implementé design system</li>
+                <ul className="mt-1.5 space-y-1 pl-3.5 list-disc marker:text-[#334155]">
+                  <li>Led digital onboarding system</li>
+                  <li>Migrated to microservices</li>
                 </ul>
               </div>
               <div>
                 <div className="flex justify-between items-baseline">
-                  <span className="font-semibold text-gray-900" style={{ fontSize: "1.17em" }}>Startup XYZ</span>
-                  <span className="text-gray-400 shrink-0 ml-2" style={{ fontSize: "0.9em" }}>2020 — 2022</span>
+                  <span className="font-semibold text-gray-900" style={{ fontSize: "1.17em" }}>Tech Solutions</span>
+                  <span className="text-gray-400 shrink-0 ml-2" style={{ fontSize: "0.9em" }}>2019 — 2021</span>
                 </div>
                 <div className="font-medium uppercase tracking-wide text-gray-500" style={{ fontSize: "0.9em" }}>
-                  Diseñador UI
+                  Frontend Developer
                 </div>
-                <ul className="mt-1 space-y-0.5 pl-3 list-disc marker:text-[#334155]">
-                  <li>Diseñé la interfaz principal</li>
-                  <li>Creé biblioteca de componentes</li>
+                <ul className="mt-1.5 space-y-1 pl-3.5 list-disc marker:text-[#334155]">
+                  <li>Built enterprise UIs</li>
+                  <li>Implemented design system</li>
                 </ul>
               </div>
             </div>
@@ -840,17 +859,11 @@ function PhoneMockup() {
 /* ═══════════════════════════════════════════════════════════════
    Main landing page
    ═══════════════════════════════════════════════════════════════ */
-export default function LandingPage() {
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+function LandingPageContent() {
+  const t = useTranslations("landing");
 
   return (
-    <div className="bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-white font-sans overflow-x-hidden">
+    <div className="bg-white dark:bg-background text-gray-900 dark:text-white font-sans overflow-x-hidden">
       {/* Keyframe animations */}
       <style>{`
         @keyframes landing-blink {
@@ -868,32 +881,10 @@ export default function LandingPage() {
       `}</style>
 
       {/* ── Navigation ─────────────────────────────────────── */}
-      <nav
-        className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
-          scrolled
-            ? "bg-white/90 dark:bg-[#0a0a0a]/90 backdrop-blur-md shadow-sm dark:shadow-white/[0.03]"
-            : "bg-transparent"
-        }`}
-      >
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <FileText className="w-6 h-6 text-gray-900 dark:text-gray-100" />
-            <span className="font-display text-lg font-bold tracking-tight text-gray-900 dark:text-gray-100">
-              Applio
-            </span>
-          </div>
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-medium rounded-full px-5 py-2.5 hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors"
-          >
-            Creá tu CV
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
-      </nav>
+      <LandingNav />
 
       {/* ── Hero ───────────────────────────────────────────── */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-16 pb-12">
+      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-24 sm:pt-28 md:pt-32 pb-16">
         {/* Subtle dot grid background */}
         <div
           className="absolute inset-0 opacity-[0.035] dark:opacity-[0.06]"
@@ -909,44 +900,54 @@ export default function LandingPage() {
 
         <div className="relative z-10 flex flex-col items-center">
           <Reveal>
-            <h1 className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-center leading-[1.08] tracking-tight font-bold">
-              Creá tu CV
+            <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-center leading-[1.08] tracking-tight font-bold">
+              {t("hero.titleLine1")}
               <br />
               <span className="text-gray-400 dark:text-gray-500">
-                sin complicaciones.
+                {t("hero.titleLine2")}
               </span>
             </h1>
           </Reveal>
 
           <Reveal delay={0.12}>
-            <p className="text-lg md:text-xl text-gray-500 dark:text-gray-400 text-center max-w-2xl mt-8 leading-relaxed">
-              Hacé click en cualquier texto y editalo directo. Sin formularios,
-              sin pasos, sin fricción. Cuando esté listo, descargá un PDF
-              profesional.
+            <p className="text-base md:text-lg text-gray-500 dark:text-gray-400 text-center max-w-2xl mt-6 leading-relaxed">
+              {t("hero.subtitle")}
             </p>
           </Reveal>
 
-          <Reveal delay={0.24} className="mt-10 flex flex-col sm:flex-row gap-4">
+          <Reveal delay={0.24} className="mt-8 flex flex-col sm:flex-row gap-4">
             <Link
               href="/"
               className="inline-flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-medium rounded-full px-8 py-3.5 text-base hover:bg-gray-800 dark:hover:bg-gray-100 hover:shadow-lg transition-all"
             >
-              Empezar gratis
+              {t("hero.ctaPrimary")}
               <ArrowRight className="w-4 h-4" />
             </Link>
             <a
               href="#features"
               className="inline-flex items-center justify-center gap-2 bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 font-medium rounded-full px-8 py-3.5 text-base hover:bg-gray-200 dark:hover:bg-white/15 transition-colors"
             >
-              Ver cómo funciona
+              {t("hero.ctaSecondary")}
             </a>
           </Reveal>
 
-          <Reveal delay={0.4} className="mt-16 md:mt-20 w-full max-w-[850px]">
+          <Reveal delay={0.4} className="mt-12 md:mt-16 w-full max-w-[850px]">
             <Link href="/" className="block group">
-              <HeroCVMockup />
+              {/* Desktop: browser mockup */}
+              <div className="hidden md:block">
+                <HeroCVMockup />
+              </div>
+              {/* Mobile: phone mockup, scaled down */}
+              <div className="md:hidden flex justify-center">
+                <div
+                  className="origin-top scale-[0.8] sm:scale-[0.9]"
+                  style={{ marginBottom: -93 }}
+                >
+                  <PhoneMockup />
+                </div>
+              </div>
               <p className="text-center text-sm text-gray-400 mt-4 group-hover:text-gray-500 transition-colors">
-                Click para empezar a editar →
+                {t("hero.mockupHint")}
               </p>
             </Link>
           </Reveal>
@@ -962,11 +963,10 @@ export default function LandingPage() {
           <Reveal>
             <div className="text-center mb-20">
               <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight mb-4">
-                Aprendé a editar en&nbsp;segundos
+                {t("features.sectionTitle")}
               </h2>
               <p className="text-lg text-gray-500 dark:text-gray-400 max-w-xl mx-auto">
-                Sin tutoriales largos ni curvas de aprendizaje. Cuatro cosas
-                que tenés que saber.
+                {t("features.sectionSubtitle")}
               </p>
             </div>
           </Reveal>
@@ -976,8 +976,8 @@ export default function LandingPage() {
             <FeatureStep
               number="1"
               icon={MousePointerClick}
-              title="Hacé click y editá"
-              description="Cada texto de tu CV es editable. Hacé click en el nombre, el puesto, las fechas, las descripciones — cualquier cosa. Se convierte en un campo de texto al instante. Sin formularios, sin pop-ups."
+              title={t("features.step1Title")}
+              description={t("features.step1Desc")}
             >
               <InteractiveEditMockup />
             </FeatureStep>
@@ -986,8 +986,8 @@ export default function LandingPage() {
             <FeatureStep
               number="2"
               icon={Type}
-              title="Texto enriquecido"
-              description="Seleccioná texto y aparece una barra flotante. Aplicá negrita, cursiva, subrayado, listas con viñetas o numeradas. Tu CV puede tener formato profesional sin esfuerzo."
+              title={t("features.step2Title")}
+              description={t("features.step2Desc")}
               reverse
             >
               <InteractiveRichTextMockup />
@@ -997,8 +997,8 @@ export default function LandingPage() {
             <FeatureStep
               number="3"
               icon={GripVertical}
-              title="Agregá y reordená"
-              description="Cada sección tiene un botón + para agregar nuevas entradas. Después, arrastrá para reordenarlas. Cada experiencia, estudio y bullet point se puede mover hasta que tu CV quede exactamente como querés."
+              title={t("features.step3Title")}
+              description={t("features.step3Desc")}
             >
               <InteractiveDragMockup />
             </FeatureStep>
@@ -1007,8 +1007,8 @@ export default function LandingPage() {
             <FeatureStep
               number="4"
               icon={Palette}
-              title="Personalizá el diseño"
-              description="Elegí entre 5 esquemas de color con un click. Cada uno cambia el sidebar, los acentos y los separadores de tu CV. También podés elegir entre varias tipografías y agregar patrones decorativos."
+              title={t("features.step4Title")}
+              description={t("features.step4Desc")}
               reverse
             >
               <InteractiveColorMockup />
@@ -1026,24 +1026,21 @@ export default function LandingPage() {
                 <div className="inline-flex items-center gap-2 mb-5">
                   <Smartphone className="w-5 h-5 text-gray-400" />
                   <span className="text-sm font-medium text-gray-400 uppercase tracking-wider">
-                    Mobile-first
+                    {t("mobile.badge")}
                   </span>
                 </div>
                 <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight mb-6">
-                  Editá desde cualquier dispositivo.
+                  {t("mobile.title")}
                 </h2>
                 <p className="text-lg text-gray-500 dark:text-gray-400 leading-relaxed mb-5">
-                  La mayoría de los CV builders son inutilizables en el celular.
-                  Con Applio podés editar, reordenar secciones y exportar tu CV
-                  desde el teléfono con la misma calidad que en desktop.
+                  {t("mobile.desc1")}
                 </p>
                 <p className="text-lg text-gray-500 dark:text-gray-400 leading-relaxed">
-                  Pensado desde el primer día para funcionar en cualquier
-                  pantalla. Tu CV siempre está a un click de distancia.
+                  {t("mobile.desc2")}
                 </p>
               </div>
             </Reveal>
-            <Reveal delay={0.15} className="shrink-0">
+            <Reveal delay={0.15} className="shrink-0 hidden lg:block">
               <PhoneMockup />
             </Reveal>
           </div>
@@ -1055,42 +1052,26 @@ export default function LandingPage() {
         <div className="max-w-4xl mx-auto">
           <Reveal>
             <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight text-center mb-16">
-              Y mucho más.
+              {t("grid.title")}
             </h2>
           </Reveal>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {(
               [
-                {
-                  icon: FileDown,
-                  title: "Exportá a PDF",
-                  desc: "Descargá tu CV como PDF profesional, listo para enviar. Diseño optimizado para impresión.",
-                },
-                {
-                  icon: Globe2,
-                  title: "13 idiomas",
-                  desc: "Interfaz disponible en español, inglés, francés, portugués, alemán, y 8 idiomas más.",
-                },
-                {
-                  icon: Moon,
-                  title: "Modo oscuro",
-                  desc: "Editá de noche sin lastimarte los ojos. El modo oscuro se adapta a tu sistema.",
-                },
-                {
-                  icon: Zap,
-                  title: "Guardado automático",
-                  desc: "Cada cambio se guarda al instante. Cerrá el navegador y volvé cuando quieras.",
-                },
-              ] as const
-            ).map(({ icon: Icon, title, desc }) => (
-              <Reveal key={title}>
+                { icon: FileDown, titleKey: "grid.pdfTitle" as const, descKey: "grid.pdfDesc" as const },
+                { icon: Globe2, titleKey: "grid.langTitle" as const, descKey: "grid.langDesc" as const },
+                { icon: Moon, titleKey: "grid.darkTitle" as const, descKey: "grid.darkDesc" as const },
+                { icon: Zap, titleKey: "grid.saveTitle" as const, descKey: "grid.saveDesc" as const },
+              ]
+            ).map(({ icon: Icon, titleKey, descKey }) => (
+              <Reveal key={titleKey}>
                 <div className="rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 p-6 hover:shadow-md dark:hover:shadow-white/[0.02] transition-shadow h-full">
                   <Icon className="w-6 h-6 text-gray-400 mb-4" />
                   <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
-                    {title}
+                    {t(titleKey)}
                   </h3>
                   <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                    {desc}
+                    {t(descKey)}
                   </p>
                 </div>
               </Reveal>
@@ -1104,15 +1085,14 @@ export default function LandingPage() {
         <div className="max-w-3xl mx-auto text-center">
           <Reveal>
             <h2 className="font-display text-4xl md:text-6xl font-bold tracking-tight mb-6">
-              Tu próximo CV
+              {t("cta.titleLine1")}
               <br />
-              está a un click.
+              {t("cta.titleLine2")}
             </h2>
           </Reveal>
           <Reveal delay={0.12}>
             <p className="text-lg text-gray-400 mb-10 max-w-xl mx-auto">
-              Empezá a editar ahora y descargá tu CV como PDF profesional. Sin
-              complicaciones.
+              {t("cta.subtitle")}
             </p>
           </Reveal>
           <Reveal delay={0.24}>
@@ -1120,7 +1100,7 @@ export default function LandingPage() {
               href="/"
               className="inline-flex items-center gap-2 bg-white text-gray-900 font-medium rounded-full px-10 py-4 text-lg hover:bg-gray-100 transition-colors"
             >
-              Empezar ahora
+              {t("cta.button")}
               <ArrowRight className="w-5 h-5" />
             </Link>
           </Reveal>
@@ -1137,11 +1117,21 @@ export default function LandingPage() {
             </span>
           </div>
           <p className="text-sm text-gray-400">
-            &copy; {new Date().getFullYear()} Applio. Hecho con cariño en Buenos
-            Aires.
+            &copy; {new Date().getFullYear()} Applio.
           </p>
         </div>
       </footer>
     </div>
+  );
+}
+
+/* ── Provider wrapper (export default) ─────────────────────── */
+export default function LandingPage() {
+  return (
+    <ThemeProvider>
+      <LocaleProvider>
+        <LandingPageContent />
+      </LocaleProvider>
+    </ThemeProvider>
   );
 }

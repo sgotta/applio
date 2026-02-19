@@ -508,32 +508,26 @@ export const PersonalInfo = memo(function PersonalInfo() {
     }
   }, [sidebarOrder, reorderSidebarSection]);
 
-  const hasAnyContactField = visibility.email || visibility.phone || visibility.location || visibility.linkedin || visibility.website;
-
-  const contactSection = hasAnyContactField ? (
+  const contactSection = (
     <div className="space-y-2">
       <SectionTitle sidebar>{t("contact")}</SectionTitle>
       <div className="space-y-1.5">
-        {visibility.email && (
-          <ContactLine
-            icon={Mail}
-            value={personalInfo.email}
-            field="email"
-            placeholder={t("emailPlaceholder")}
-            onChange={(f, v) => updatePersonalInfo(f, v)}
-            iconColor={colorScheme.sidebarText}
-          />
-        )}
-        {visibility.phone && (
-          <ContactLine
-            icon={Phone}
-            value={personalInfo.phone}
-            field="phone"
-            placeholder={t("phonePlaceholder")}
-            onChange={(f, v) => updatePersonalInfo(f, v)}
-            iconColor={colorScheme.sidebarText}
-          />
-        )}
+        <ContactLine
+          icon={Mail}
+          value={personalInfo.email}
+          field="email"
+          placeholder={t("emailPlaceholder")}
+          onChange={(f, v) => updatePersonalInfo(f, v)}
+          iconColor={colorScheme.sidebarText}
+        />
+        <ContactLine
+          icon={Phone}
+          value={personalInfo.phone}
+          field="phone"
+          placeholder={t("phonePlaceholder")}
+          onChange={(f, v) => updatePersonalInfo(f, v)}
+          iconColor={colorScheme.sidebarText}
+        />
         {visibility.location && (
           <ContactLine
             icon={MapPin}
@@ -572,7 +566,7 @@ export const PersonalInfo = memo(function PersonalInfo() {
         )}
       </div>
     </div>
-  ) : null;
+  );
 
   const summarySection = (
     <div>
@@ -626,9 +620,9 @@ export const PersonalInfo = memo(function PersonalInfo() {
   ) : null;
 
   const sectionContent: Record<SidebarSectionId, React.ReactNode> = {
-    contact: visibility.contact ? contactSection : null,
+    contact: contactSection,
     summary: visibility.summary ? summarySection : null,
-    skills: visibility.skills ? skillsSection : null,
+    skills: skillsSection,
   };
 
   return (

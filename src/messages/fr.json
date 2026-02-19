@@ -274,14 +274,7 @@
     "fr": "Français",
     "pt": "Portugais",
     "de": "Allemand",
-    "it": "Italien",
-    "zh": "Chinois",
-    "ja": "Japonais",
-    "ko": "Coréen",
-    "ru": "Russe",
-    "tr": "Turc",
-    "hi": "Hindi",
-    "th": "Thaï"
+    "it": "Italien"
   },
   "common": {
     "delete": "Supprimer",

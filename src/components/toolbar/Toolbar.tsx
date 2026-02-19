@@ -14,7 +14,7 @@ import { useTheme } from "@/lib/theme-context";
 import { useColorScheme } from "@/lib/color-scheme-context";
 import { useSidebarPattern } from "@/lib/sidebar-pattern-context";
 import { useFontSettings } from "@/lib/font-context";
-import { FONT_FAMILIES, FONT_SIZE_LEVEL_IDS, CJK_LOCALES, getFontDefinition, type FontFamilyId, type FontSizeLevel } from "@/lib/fonts";
+import { FONT_FAMILIES, FONT_SIZE_LEVEL_IDS, getFontDefinition, type FontFamilyId, type FontSizeLevel } from "@/lib/fonts";
 import { SIDEBAR_PATTERN_NAMES, SIDEBAR_PATTERNS, PATTERN_SCOPES, type PatternScope, type PatternIntensity } from "@/lib/sidebar-patterns";
 import { Slider } from "@/components/ui/slider";
 import { COLOR_SCHEME_NAMES, COLOR_SCHEMES, type ColorSchemeName } from "@/lib/color-schemes";
@@ -122,7 +122,6 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   const { patternName, setPattern, sidebarIntensity, mainIntensity, scope, setSidebarIntensity, setMainIntensity, setScope, patternSettings, setPatternSettings } = useSidebarPattern();
   const { fontFamilyId, fontSizeLevel, setFontFamily, setFontSizeLevel } = useFontSettings();
   const tsync = useTranslations("sync");
-  const isCJKLocale = CJK_LOCALES.has(locale);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileMenuPage, setMobileMenuPage] = useState<MobileMenuPage>("main");
@@ -498,29 +497,27 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                 <TooltipContent>{t("fontSettings")}</TooltipContent>
               </Tooltip>
               <PopoverContent className="w-56 p-3 space-y-4" align="end">
-                {/* Font Family list (hidden for CJK locales) */}
-                {!isCJKLocale && (
-                  <div>
-                    <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-2">
-                      {t("fontFamily")}
-                    </p>
-                    <div className="space-y-0.5 max-h-64 overflow-y-auto scrollbar-thin">
-                      {FONT_FAMILIES.map((font) => (
-                        <button
-                          key={font.id}
-                          onClick={() => setFontFamily(font.id)}
-                          className="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-accent transition-colors"
-                          style={{ fontFamily: font.cssStack }}
-                        >
-                          <span>{font.displayName}</span>
-                          {fontFamilyId === font.id && (
-                            <Check className="h-4 w-4 text-gray-900 dark:text-gray-100" />
-                          )}
-                        </button>
-                      ))}
-                    </div>
+                {/* Font Family list */}
+                <div>
+                  <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-2">
+                    {t("fontFamily")}
+                  </p>
+                  <div className="space-y-0.5 max-h-64 overflow-y-auto scrollbar-thin">
+                    {FONT_FAMILIES.map((font) => (
+                      <button
+                        key={font.id}
+                        onClick={() => setFontFamily(font.id)}
+                        className="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-accent transition-colors"
+                        style={{ fontFamily: font.cssStack }}
+                      >
+                        <span>{font.displayName}</span>
+                        {fontFamilyId === font.id && (
+                          <Check className="h-4 w-4 text-gray-900 dark:text-gray-100" />
+                        )}
+                      </button>
+                    ))}
                   </div>
-                )}
+                </div>
 
                 {/* Font Size */}
                 <div>
@@ -569,16 +566,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
               <PopoverContent className="w-64" align="end">
                 <div className="space-y-3">
                   <div className="space-y-1">
-                    <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-1">{t("sidebarSections")}</p>
-                    <SectionToggle label={t("sectionContact")} checked={data.visibility.contact} onToggle={() => toggleSection("contact")} />
-                    <SectionToggle label={t("sectionSummary")} checked={data.visibility.summary} onToggle={() => toggleSection("summary")} />
-                    <SectionToggle label={t("sectionSkills")} checked={data.visibility.skills} onToggle={() => toggleSection("skills")} />
-                  </div>
-
-                  <div className={`space-y-1${!data.visibility.contact ? " opacity-40 pointer-events-none" : ""}`}>
                     <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-1">{t("sectionsTitle")}</p>
-                    <SectionToggle label={t("sectionEmail")} checked={data.visibility.email} onToggle={() => toggleSection("email")} />
-                    <SectionToggle label={t("sectionPhone")} checked={data.visibility.phone} onToggle={() => toggleSection("phone")} />
                     <SectionToggle label={t("sectionLocation")} checked={data.visibility.location} onToggle={() => toggleSection("location")} />
                     <SectionToggle label={t("sectionLinkedin")} checked={data.visibility.linkedin} onToggle={() => toggleSection("linkedin")} />
                     <SectionToggle label={t("sectionWebsite")} checked={data.visibility.website} onToggle={() => toggleSection("website")} />
@@ -586,6 +574,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
                   <div className="space-y-1">
                     <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-1">{t("optionalSections")}</p>
+                    <SectionToggle label={t("sectionSummary")} checked={data.visibility.summary} onToggle={() => toggleSection("summary")} />
                     <SectionToggle label={t("sectionCourses")} checked={data.visibility.courses} onToggle={() => toggleSection("courses")} />
                     <SectionToggle label={t("sectionCertifications")} checked={data.visibility.certifications} onToggle={() => toggleSection("certifications")} />
                     <SectionToggle label={t("sectionAwards")} checked={data.visibility.awards} onToggle={() => toggleSection("awards")} />
@@ -1176,22 +1165,20 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     {t("fontSettings")}
                   </button>
                   <div className="px-3.5 pt-2.5 pb-1.5 space-y-4">
-                    {/* Font Family (hidden for CJK locales) */}
-                    {!isCJKLocale && (
-                      <div className="space-y-0.5 max-h-[50vh] overflow-y-auto overscroll-contain scrollbar-thin">
-                        {FONT_FAMILIES.map((font) => (
-                          <button
-                            key={font.id}
-                            onClick={() => setFontFamily(font.id)}
-                            className={menuItemClass}
-                            style={{ fontFamily: font.cssStack }}
-                          >
-                            <span>{font.displayName}</span>
-                            {fontFamilyId === font.id && <Check className="h-4 w-4 text-gray-900 dark:text-gray-100" />}
-                          </button>
-                        ))}
-                      </div>
-                    )}
+                    {/* Font Family */}
+                    <div className="space-y-0.5 max-h-[50vh] overflow-y-auto overscroll-contain scrollbar-thin">
+                      {FONT_FAMILIES.map((font) => (
+                        <button
+                          key={font.id}
+                          onClick={() => setFontFamily(font.id)}
+                          className={menuItemClass}
+                          style={{ fontFamily: font.cssStack }}
+                        >
+                          <span>{font.displayName}</span>
+                          {fontFamilyId === font.id && <Check className="h-4 w-4 text-gray-900 dark:text-gray-100" />}
+                        </button>
+                      ))}
+                    </div>
 
                     {/* Font Size — always visible below the scrollable list */}
                     <div>
@@ -1229,21 +1216,14 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                   </button>
                   <div className="px-3.5 pt-2.5 pb-1.5 space-y-3">
                     <div className="space-y-1">
-                      <p className="text-[13px] font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-1">{t("sidebarSections")}</p>
-                      <SectionToggle label={t("sectionContact")} checked={data.visibility.contact} onToggle={() => toggleSection("contact")} />
-                      <SectionToggle label={t("sectionSummary")} checked={data.visibility.summary} onToggle={() => toggleSection("summary")} />
-                      <SectionToggle label={t("sectionSkills")} checked={data.visibility.skills} onToggle={() => toggleSection("skills")} />
-                    </div>
-                    <div className={`space-y-1${!data.visibility.contact ? " opacity-40 pointer-events-none" : ""}`}>
                       <p className="text-[13px] font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-1">{t("sectionsTitle")}</p>
-                      <SectionToggle label={t("sectionEmail")} checked={data.visibility.email} onToggle={() => toggleSection("email")} />
-                      <SectionToggle label={t("sectionPhone")} checked={data.visibility.phone} onToggle={() => toggleSection("phone")} />
                       <SectionToggle label={t("sectionLocation")} checked={data.visibility.location} onToggle={() => toggleSection("location")} />
                       <SectionToggle label={t("sectionLinkedin")} checked={data.visibility.linkedin} onToggle={() => toggleSection("linkedin")} />
                       <SectionToggle label={t("sectionWebsite")} checked={data.visibility.website} onToggle={() => toggleSection("website")} />
                     </div>
                     <div className="space-y-1">
                       <p className="text-[13px] font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-1">{t("optionalSections")}</p>
+                      <SectionToggle label={t("sectionSummary")} checked={data.visibility.summary} onToggle={() => toggleSection("summary")} />
                       <SectionToggle label={t("sectionCourses")} checked={data.visibility.courses} onToggle={() => toggleSection("courses")} />
                       <SectionToggle label={t("sectionCertifications")} checked={data.visibility.certifications} onToggle={() => toggleSection("certifications")} />
                       <SectionToggle label={t("sectionAwards")} checked={data.visibility.awards} onToggle={() => toggleSection("awards")} />

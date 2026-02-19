@@ -3,17 +3,13 @@ import type { CVData, SectionVisibility, SidebarSectionId } from "./types";
 export const DEFAULT_SIDEBAR_ORDER: SidebarSectionId[] = ["contact", "summary", "skills"];
 
 export const defaultVisibility: SectionVisibility = {
-  email: true,
-  phone: true,
   location: true,
   linkedin: true,
   website: true,
+  summary: true,
   courses: false,
   certifications: false,
   awards: false,
-  contact: true,
-  summary: true,
-  skills: true,
 };
 
 const enData: CVData = {

@@ -10,15 +10,15 @@ import { AuthProvider } from "@/lib/auth-context";
 import { ColorSchemeProvider, useColorScheme } from "@/lib/color-scheme-context";
 import { SidebarPatternProvider, useSidebarPattern } from "@/lib/sidebar-pattern-context";
 import { FontSettingsProvider, useFontSettings } from "@/lib/font-context";
-import { ToolbarFeaturesProvider } from "@/lib/toolbar-features-context";
 import { downloadPDF } from "@/lib/generate-pdf";
 import { filenameDateStamp } from "@/lib/utils";
-import { getFontDefinition, FONT_SIZE_LEVELS, PDF_BASE_FONT_SCALE, CJK_LOCALES } from "@/lib/fonts";
+import { getFontDefinition, FONT_SIZE_LEVELS, PDF_BASE_FONT_SCALE } from "@/lib/fonts";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 import { Toolbar } from "@/components/toolbar/Toolbar";
 import { CVEditor } from "@/components/cv-editor/CVEditor";
+import { CloudSync } from "@/components/cloud-sync/CloudSync";
 
 function AppContent() {
   const { data } = useCV();
@@ -46,8 +46,7 @@ function AppContent() {
         certifications: tp("certifications"),
         awards: tp("awards"),
       };
-      const isCJK = CJK_LOCALES.has(locale);
-      const pdfFontFamily = isCJK ? undefined : getFontDefinition(fontFamilyId).pdfFamilyName;
+      const pdfFontFamily = getFontDefinition(fontFamilyId).pdfFamilyName;
       const pdfFontScale = FONT_SIZE_LEVELS[fontSizeLevel] * PDF_BASE_FONT_SCALE;
       await downloadPDF(data, filename, colorScheme, labels, locale, patternSettings, pdfFontFamily, pdfFontScale);
     } catch (err) {
@@ -94,11 +93,11 @@ export default function Home() {
       <ColorSchemeProvider>
         <SidebarPatternProvider>
           <FontSettingsProvider>
-          <ToolbarFeaturesProvider>
           <LocaleProvider>
             <AuthProvider>
             <CVProvider>
             <TooltipProvider delayDuration={300}>
+              <CloudSync />
               <AppContent />
               <Toaster
                 position="top-center"
@@ -115,7 +114,6 @@ export default function Home() {
             </CVProvider>
             </AuthProvider>
           </LocaleProvider>
-          </ToolbarFeaturesProvider>
           </FontSettingsProvider>
         </SidebarPatternProvider>
       </ColorSchemeProvider>

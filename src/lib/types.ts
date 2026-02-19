@@ -62,17 +62,13 @@ export interface AwardItem {
 export type SidebarSectionId = "contact" | "summary" | "skills";
 
 export interface SectionVisibility {
-  email: boolean;
-  phone: boolean;
   location: boolean;
   linkedin: boolean;
   website: boolean;
+  summary: boolean;
   courses: boolean;
   certifications: boolean;
   awards: boolean;
-  contact: boolean;
-  summary: boolean;
-  skills: boolean;
 }
 
 export interface CVData {

@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { useColorScheme } from "@/lib/color-scheme-context";
 import { useSidebarPattern } from "@/lib/sidebar-pattern-context";
 import { useFontSettings } from "@/lib/font-context";
-import { getFontDefinition, FONT_SIZE_LEVELS, CJK_LOCALES } from "@/lib/fonts";
+import { getFontDefinition, FONT_SIZE_LEVELS } from "@/lib/fonts";
 import { useAppLocale } from "@/lib/locale-context";
 
 import { Heart } from "lucide-react";
@@ -81,14 +81,13 @@ export function CVPreview() {
   const { pattern, sidebarIntensity, mainIntensity, scope } = useSidebarPattern();
   const { fontFamilyId, fontSizeLevel } = useFontSettings();
   const { locale } = useAppLocale();
-  const isCJK = CJK_LOCALES.has(locale);
-  const fontDef = isCJK ? null : getFontDefinition(fontFamilyId);
+  const fontDef = getFontDefinition(fontFamilyId);
   const mg = (px: number) => Math.round(px * 1.6);
 
   return (
     <div
       className="cv-preview-content mx-auto w-full lg:w-[210mm] max-w-[210mm] bg-white md:shadow-[0_2px_20px_-6px_rgba(0,0,0,0.12)] dark:md:shadow-[0_2px_20px_-6px_rgba(0,0,0,0.45)] print:shadow-none"
-      style={fontDef ? { fontFamily: fontDef.cssStack } : undefined}
+      style={{ fontFamily: fontDef.cssStack }}
     >
       {/* Font-size scale wrapper — flex column to push footer to bottom */}
       <div

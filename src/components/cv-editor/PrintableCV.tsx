@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { useColorScheme } from "@/lib/color-scheme-context";
 import { useSidebarPattern } from "@/lib/sidebar-pattern-context";
 import { useFontSettings } from "@/lib/font-context";
-import { getFontDefinition, FONT_SIZE_LEVELS, CJK_LOCALES } from "@/lib/fonts";
+import { getFontDefinition, FONT_SIZE_LEVELS } from "@/lib/fonts";
 import { useAppLocale } from "@/lib/locale-context";
 import { type ColorScheme } from "@/lib/color-schemes";
 import { type PatternSettings, getSidebarPattern } from "@/lib/sidebar-patterns";
@@ -100,9 +100,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
     const scope = patternOverride?.scope ?? ctxScope;
 
     // Determine font family: override (shared view) > context > default
-    const isCJK = CJK_LOCALES.has(locale);
-    const effectiveFontFamily = fontFamilyOverride
-      ?? (isCJK ? "var(--font-inter), Inter, sans-serif" : getFontDefinition(fontFamilyId).cssStack);
+    const effectiveFontFamily = fontFamilyOverride ?? getFontDefinition(fontFamilyId).cssStack;
 
     /** Font-size level multiplier — matches CVPreview wrapper */
     const fontSizeLevelEm = fontScaleOverride ?? FONT_SIZE_LEVELS[fontSizeLevel];
@@ -193,20 +191,19 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
 
             {sidebarOrder.map((sectionId) => {
               if (sectionId === "contact") {
-                if (!visibility.contact) return null;
-                const hasFields = (visibility.email && personalInfo.email) || (visibility.phone && personalInfo.phone) || (visibility.location && personalInfo.location) || (visibility.linkedin && personalInfo.linkedin) || (visibility.website && personalInfo.website);
+                const hasFields = personalInfo.email || personalInfo.phone || (visibility.location && personalInfo.location) || (visibility.linkedin && personalInfo.linkedin) || (visibility.website && personalInfo.website);
                 if (!hasFields) return null;
                 return (
                   <div key="contact" className="space-y-2">
                     <SectionHeading color={colors.sidebarText} separatorColor={colors.sidebarSeparator}>{t("contact")}</SectionHeading>
                     <div className="space-y-1.5">
-                      {visibility.email && personalInfo.email && (
+                      {personalInfo.email && (
                         <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: FS.small }}>
                           <Mail className="h-3 w-3 shrink-0" style={{ color: colors.sidebarMuted }} />
                           <a href={`mailto:${personalInfo.email}`} className="truncate" style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.email}</a>
                         </div>
                       )}
-                      {visibility.phone && personalInfo.phone && (
+                      {personalInfo.phone && (
                         <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: FS.small }}>
                           <Phone className="h-3 w-3 shrink-0" style={{ color: colors.sidebarMuted }} />
                           <a href={`tel:${personalInfo.phone}`} className="truncate" style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.phone}</a>
@@ -256,7 +253,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
                 );
               }
               if (sectionId === "skills") {
-                if (!visibility.skills || skills.length === 0) return null;
+                if (skills.length === 0) return null;
                 return (
                   <div key="skills">
                     <SectionHeading color={colors.sidebarText} separatorColor={colors.sidebarSeparator}>

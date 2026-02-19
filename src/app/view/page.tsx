@@ -26,7 +26,7 @@ function ensureProtocol(url: string): string {
   return /^https?:\/\//i.test(url) ? url : `https://${url}`;
 }
 import { downloadPDF } from "@/lib/generate-pdf";
-import { FONT_SIZE_LEVELS, FONT_FAMILY_IDS, CJK_LOCALES, getFontDefinition, PDF_BASE_FONT_SCALE, type FontFamilyId } from "@/lib/fonts";
+import { FONT_SIZE_LEVELS, FONT_FAMILY_IDS, getFontDefinition, PDF_BASE_FONT_SCALE, type FontFamilyId } from "@/lib/fonts";
 
 const FONT_SIZE_SCALES: Record<number, number> = { 1: 0.85, 2: 1.0, 3: 1.18 };
 const MARGIN_SCALES: Record<number, number> = { 1: 1.3, 2: 1.6 };
@@ -166,8 +166,7 @@ function MobileCVView({
         <div className="relative space-y-5">
         {sidebarOrder.map((sectionId) => {
           if (sectionId === "contact") {
-            if (!visibility.contact) return null;
-            const hasFields = (visibility.email && personalInfo.email) || (visibility.phone && personalInfo.phone) || (visibility.location && personalInfo.location) || (visibility.linkedin && personalInfo.linkedin) || (visibility.website && personalInfo.website);
+            const hasFields = personalInfo.email || personalInfo.phone || (visibility.location && personalInfo.location) || (visibility.linkedin && personalInfo.linkedin) || (visibility.website && personalInfo.website);
             if (!hasFields) return null;
             return (
               <div key="contact" className="space-y-2">
@@ -175,13 +174,13 @@ function MobileCVView({
                   {t("contact")}
                 </MobileSectionHeading>
                 <div className="space-y-1.5">
-                  {visibility.email && personalInfo.email && (
+                  {personalInfo.email && (
                     <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: fs.small }}>
                       <Mail className="h-3 w-3 shrink-0" />
                       <a href={`mailto:${personalInfo.email}`} style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.email}</a>
                     </div>
                   )}
-                  {visibility.phone && personalInfo.phone && (
+                  {personalInfo.phone && (
                     <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: fs.small }}>
                       <Phone className="h-3 w-3 shrink-0" />
                       <a href={`tel:${personalInfo.phone}`} style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.phone}</a>
@@ -231,7 +230,7 @@ function MobileCVView({
             );
           }
           if (sectionId === "skills") {
-            if (!visibility.skills || skills.length === 0) return null;
+            if (skills.length === 0) return null;
             return (
               <div key="skills">
                 <MobileSectionHeading color={colors.sidebarText} separatorColor={colors.sidebarSeparator} fontSize={fs.section}>
@@ -517,8 +516,7 @@ function ViewContent() {
         : undefined;
       // Resolve font for PDF
       const sFontId = sharedData.settings.fontFamily as FontFamilyId | undefined;
-      const sIsCJK = CJK_LOCALES.has(locale);
-      const pdfFontFamily = sFontId && FONT_FAMILY_IDS.includes(sFontId) && !sIsCJK
+      const pdfFontFamily = sFontId && FONT_FAMILY_IDS.includes(sFontId)
         ? getFontDefinition(sFontId).pdfFamilyName
         : undefined;
       const pdfFontScale = (FONT_SIZE_LEVELS[(sharedData.settings.fontSizeLevel ?? 2) as import("@/lib/fonts").FontSizeLevel] ?? 1) * PDF_BASE_FONT_SCALE;
@@ -551,7 +549,7 @@ function ViewContent() {
   useEffect(() => {
     if (!sharedData) return;
     const sFontId = sharedData.settings.fontFamily as FontFamilyId | undefined;
-    if (!sFontId || !FONT_FAMILY_IDS.includes(sFontId) || CJK_LOCALES.has(locale)) return;
+    if (!sFontId || !FONT_FAMILY_IDS.includes(sFontId)) return;
     const def = getFontDefinition(sFontId);
     if (!def.googleFontsCss2Url) return;
     const id = `google-font-${def.id}`;
@@ -614,8 +612,7 @@ function ViewContent() {
 
   // Resolve font family from shared settings
   const sharedFontFamilyId = sharedData.settings.fontFamily as FontFamilyId | undefined;
-  const isCJK = CJK_LOCALES.has(locale);
-  const fontDef = sharedFontFamilyId && FONT_FAMILY_IDS.includes(sharedFontFamilyId) && !isCJK
+  const fontDef = sharedFontFamilyId && FONT_FAMILY_IDS.includes(sharedFontFamilyId)
     ? getFontDefinition(sharedFontFamilyId)
     : null;
   const sharedPattern: PatternSettings | undefined = sharedData.settings.pattern
