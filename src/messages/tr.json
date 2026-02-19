@@ -290,5 +290,85 @@
     "addBelow": "Altına ekle",
     "gripDragHint": "Sıralamak için sürükleyin",
     "gripLongPressHint": "Sıralamak için basılı tutun"
+  },
+  "landing": {
+    "nav": {
+      "cta": "CV'nizi oluşturun"
+    },
+    "hero": {
+      "titleLine1": "CV'nizi oluşturun,",
+      "titleLine2": "zahmetsizce.",
+      "subtitle": "Herhangi bir metne tıklayın ve doğrudan düzenleyin. Form yok, adım yok, sürtünme yok. Hazır olduğunda profesyonel bir PDF indirin.",
+      "ctaPrimary": "Ücretsiz başlayın",
+      "ctaSecondary": "Nasıl çalışır",
+      "mockupHint": "Düzenlemeye başlamak için tıklayın →"
+    },
+    "mockup": {
+      "contact": "İletişim",
+      "skills": "Beceriler",
+      "experience": "Deneyim",
+      "education": "Eğitim",
+      "aboutMe": "Hakkımda",
+      "present": "Devam ediyor"
+    },
+    "demo": {
+      "editHintBefore": "Herhangi bir metne tıklamayı deneyin",
+      "editHintAfter": "Bu kadar kolay! Applio böyle çalışır.",
+      "richTextHintBefore": "Araç çubuğu düğmelerini deneyin",
+      "richTextHintAfter": "CV'niz istediğiniz biçimde!",
+      "richTextBullet1": "Bir ekibi yönetti:",
+      "richTextBullet1Bold": "5 tasarımcı",
+      "richTextBullet2": "Tasarım sistemini uyguladı",
+      "richTextBullet3": "Oryantasyon süresini %40 azalttı",
+      "dragHintBefore": "Sıralamak için simgeden sürükleyin",
+      "dragHintAfter": "Kayıtlar anında yeniden sıralanır!"
+    },
+    "features": {
+      "sectionTitle": "Saniyeler içinde düzenlemeyi\u00a0öğrenin",
+      "sectionSubtitle": "Uzun eğitimler veya öğrenme eğrileri yok. Bilmeniz gereken dört şey.",
+      "step1Title": "Tıklayın ve düzenleyin",
+      "step1Desc": "CV'nizdeki her metin düzenlenebilir. İsme, pozisyona, tarihlere, açıklamalara — herhangi bir yere tıklayın. Anında metin alanına dönüşür. Form yok, açılır pencere yok.",
+      "step2Title": "Zengin metin",
+      "step2Desc": "Metin seçin, kayan araç çubuğu görünür. Kalın, italik, altı çizili, madde işaretli veya numaralı listeler uygulayın. CV'niz zahmetsizce profesyonel biçimlendirmeye kavuşur.",
+      "step3Title": "Ekleyin ve sıralayın",
+      "step3Desc": "Her bölümde yeni giriş eklemek için + düğmesi bulunur. Ardından sürükleyerek sıralayın. Her deneyim, eğitim ve madde tam istediğiniz gibi olana kadar taşınabilir.",
+      "step4Title": "Tasarımı özelleştirin",
+      "step4Desc": "Tek tıklamayla 5 renk şemasından birini seçin. Her biri kenar çubuğunu, vurguları ve ayırıcıları değiştirir. Ayrıca birkaç font arasından seçim yapabilir ve dekoratif desenler ekleyebilirsiniz."
+    },
+    "mobile": {
+      "badge": "Mobile-first",
+      "title": "Her cihazdan düzenleyin.",
+      "desc1": "Çoğu CV oluşturucu mobilde kullanılamaz. Applio ile CV'nizi telefonunuzdan düzenleyebilir, bölümleri sıralayabilir ve masaüstüyle aynı kalitede dışa aktarabilirsiniz.",
+      "desc2": "İlk günden her ekranda çalışmak üzere tasarlandı. CV'niz her zaman bir tık uzağınızda."
+    },
+    "grid": {
+      "title": "Ve çok daha fazlası.",
+      "pdfTitle": "PDF olarak dışa aktar",
+      "pdfDesc": "CV'nizi göndermeye hazır profesyonel bir PDF olarak indirin. Yazdırma için optimize edilmiş düzen.",
+      "langTitle": "13 dil",
+      "langDesc": "Arayüz İspanyolca, İngilizce, Fransızca, Portekizce, Almanca ve 8 dil daha destekler.",
+      "darkTitle": "Koyu mod",
+      "darkDesc": "Gece gözlerinizi yormadan düzenleyin. Koyu mod sisteminize uyum sağlar.",
+      "saveTitle": "Otomatik kayıt",
+      "saveDesc": "Her değişiklik anında kaydedilir. Tarayıcıyı kapatın, istediğiniz zaman geri dönün."
+    },
+    "cta": {
+      "titleLine1": "Bir sonraki CV'niz",
+      "titleLine2": "tek tık uzağınızda.",
+      "subtitle": "Şimdi düzenlemeye başlayın ve CV'nizi profesyonel bir PDF olarak indirin. Zahmetsiz.",
+      "button": "Şimdi başlayın"
+    },
+    "footer": {
+      "madeIn": "Buenos Aires'te sevgiyle yapıldı."
+    }
+  },
+  "auth": {
+    "loginTitle": "Applio'ya giriş yap",
+    "loginDescription": "CV'ni kaydetmek ve daha fazla özelliğe erişmek için giriş yap.",
+    "continueWithGoogle": "Google ile devam et",
+    "continueWithGitHub": "GitHub ile devam et",
+    "loginDisclaimer": "Yalnızca adınıza, e-postanıza ve profil fotoğrafınıza erişiyoruz.",
+    "signOut": "Çıkış yap",
+    "login": "Giriş yap"
   }
 }

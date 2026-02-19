@@ -290,5 +290,85 @@
     "addBelow": "Aggiungi sotto",
     "gripDragHint": "Trascina per riordinare",
     "gripLongPressHint": "Tieni premuto per riordinare"
+  },
+  "landing": {
+    "nav": {
+      "cta": "Crea il tuo CV"
+    },
+    "hero": {
+      "titleLine1": "Crea il tuo CV",
+      "titleLine2": "senza stress.",
+      "subtitle": "Clicca su qualsiasi testo e modificalo direttamente. Niente moduli, niente passaggi, nessuna complicazione. Quando è pronto, scarica un PDF professionale.",
+      "ctaPrimary": "Inizia gratis",
+      "ctaSecondary": "Scopri come funziona",
+      "mockupHint": "Clicca per iniziare a modificare →"
+    },
+    "mockup": {
+      "contact": "Contatti",
+      "skills": "Competenze",
+      "experience": "Esperienza",
+      "education": "Istruzione",
+      "aboutMe": "Chi sono",
+      "present": "Attuale"
+    },
+    "demo": {
+      "editHintBefore": "Prova a cliccare su un testo qualsiasi",
+      "editHintAfter": "Facile così! Ecco come funziona Applio.",
+      "richTextHintBefore": "Prova i pulsanti della barra degli strumenti",
+      "richTextHintAfter": "Il tuo CV, formattato come vuoi tu!",
+      "richTextBullet1": "Guidato un team di",
+      "richTextBullet1Bold": "5 designer",
+      "richTextBullet2": "Implementato il design system",
+      "richTextBullet3": "Ridotto il tempo di onboarding del 40%",
+      "dragHintBefore": "Trascina dall'icona per riordinare",
+      "dragHintAfter": "Le voci si riordinano all'istante!"
+    },
+    "features": {
+      "sectionTitle": "Impara a modificare in\u00a0pochi secondi",
+      "sectionSubtitle": "Nessun tutorial lungo o curva di apprendimento. Quattro cose da sapere.",
+      "step1Title": "Clicca e modifica",
+      "step1Desc": "Ogni testo nel tuo CV è modificabile. Clicca sul nome, sulla posizione, sulle date, sulle descrizioni — qualsiasi cosa. Diventa subito un campo di testo. Niente moduli, niente pop-up.",
+      "step2Title": "Testo formattato",
+      "step2Desc": "Seleziona del testo e compare una barra degli strumenti mobile. Applica grassetto, corsivo, sottolineato, elenchi puntati o numerati. Il tuo CV può avere una formattazione professionale senza fatica.",
+      "step3Title": "Aggiungi e riordina",
+      "step3Desc": "Ogni sezione ha un pulsante + per aggiungere nuove voci. Poi, trascina per riordinarle. Ogni esperienza, istruzione e punto elenco può essere spostato finché il tuo CV non è esattamente come lo vuoi.",
+      "step4Title": "Personalizza il design",
+      "step4Desc": "Scegli tra 5 schemi di colore con un clic. Ognuno cambia la barra laterale, gli accenti e i separatori del tuo CV. Puoi anche scegliere tra diversi font e aggiungere motivi decorativi."
+    },
+    "mobile": {
+      "badge": "Mobile-first",
+      "title": "Modifica da qualsiasi dispositivo.",
+      "desc1": "La maggior parte dei generatori di CV è inutilizzabile su mobile. Con Applio puoi modificare, riordinare le sezioni ed esportare il tuo CV dal telefono con la stessa qualità del desktop.",
+      "desc2": "Progettato fin dall'inizio per funzionare su qualsiasi schermo. Il tuo CV è sempre a un clic di distanza."
+    },
+    "grid": {
+      "title": "E molto altro.",
+      "pdfTitle": "Esporta in PDF",
+      "pdfDesc": "Scarica il tuo CV come PDF professionale, pronto da inviare. Layout ottimizzato per la stampa.",
+      "langTitle": "13 lingue",
+      "langDesc": "Interfaccia disponibile in italiano, inglese, spagnolo, francese, portoghese, tedesco e altre 7 lingue.",
+      "darkTitle": "Modalità scura",
+      "darkDesc": "Modifica di notte senza affaticare gli occhi. La modalità scura si adatta al tuo sistema.",
+      "saveTitle": "Salvataggio automatico",
+      "saveDesc": "Ogni modifica viene salvata all'istante. Chiudi il browser e torna quando vuoi."
+    },
+    "cta": {
+      "titleLine1": "Il tuo prossimo CV",
+      "titleLine2": "è a un clic di distanza.",
+      "subtitle": "Inizia a modificare adesso e scarica il tuo CV come PDF professionale. Senza complicazioni.",
+      "button": "Inizia ora"
+    },
+    "footer": {
+      "madeIn": "Fatto con amore a Buenos Aires."
+    }
+  },
+  "auth": {
+    "loginTitle": "Accedi a Applio",
+    "loginDescription": "Accedi per salvare il tuo CV e accedere a più funzionalità.",
+    "continueWithGoogle": "Continua con Google",
+    "continueWithGitHub": "Continua con GitHub",
+    "loginDisclaimer": "Accediamo solo al tuo nome, email e foto profilo.",
+    "signOut": "Esci",
+    "login": "Accedi"
   }
 }

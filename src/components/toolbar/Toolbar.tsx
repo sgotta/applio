@@ -20,11 +20,13 @@ import { Slider } from "@/components/ui/slider";
 import { COLOR_SCHEME_NAMES, COLOR_SCHEMES, type ColorSchemeName } from "@/lib/color-schemes";
 import { buildSharedData, compressSharedData, generateShareURL } from "@/lib/sharing";
 import { toast } from "sonner";
+import { useAuth } from "@/lib/auth-context";
+import { LoginDialog } from "@/components/auth/LoginDialog";
 import {
   Download, FileUp, FileDown, FileText, Globe, Type,
   SlidersHorizontal, Check, Sun, Moon,
   Menu, X, ChevronRight, ChevronLeft, Palette, Layers,
-  Loader2, MoreHorizontal, Link,
+  Loader2, MoreHorizontal, Link, LogIn, LogOut, User,
   PanelLeft, PanelRight, Square, Shield,
 } from "lucide-react";
 import { useToolbarFeatures, TOOLBAR_INLINE_KEYS, TOOLBAR_BLOCK_TYPE_KEYS } from "@/lib/toolbar-features-context";
@@ -82,11 +84,37 @@ function SectionToggle({
   );
 }
 
+function UserAvatar({ url, size }: { url?: string; size: number }) {
+  const [failed, setFailed] = useState(false);
+  const sizeClass = size === 8 ? "h-8 w-8" : "h-7 w-7";
+  const iconSize = size === 8 ? "h-4 w-4" : "h-3.5 w-3.5";
+
+  if (url && !failed) {
+    return (
+      <img
+        src={url}
+        alt=""
+        referrerPolicy="no-referrer"
+        className={`${sizeClass} object-cover`}
+        onError={() => setFailed(true)}
+      />
+    );
+  }
+
+  return (
+    <div className={`${sizeClass} flex items-center justify-center bg-gray-100 dark:bg-accent`}>
+      <User className={`${iconSize} text-gray-500`} />
+    </div>
+  );
+}
+
 type MobileMenuPage = "main" | "language" | "color" | "pattern" | "font" | "sections" | "admin";
 
 export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   const { data, importData, toggleSection } = useCV();
+  const { user, signOut } = useAuth();
   const t = useTranslations("toolbar");
+  const tauth = useTranslations("auth");
   const tl = useTranslations("languages");
   const { locale, setLocale } = useAppLocale();
   const { theme, setTheme } = useTheme();
@@ -99,6 +127,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileMenuPage, setMobileMenuPage] = useState<MobileMenuPage>("main");
+  const [loginDialogOpen, setLoginDialogOpen] = useState(false);
 
   const toggleTheme = useCallback(() => {
     setTheme(theme === "dark" ? "light" : "dark");
@@ -679,6 +708,48 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
             {/* Divider — system | actions */}
             <div className="h-5 w-px bg-gray-200 dark:bg-gray-700 mx-1" />
 
+            {/* Auth: Login button or User avatar — desktop */}
+            {user ? (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className="h-8 w-8 items-center justify-center rounded-full overflow-hidden ring-1 ring-gray-200 dark:ring-gray-700 hover:ring-gray-300 dark:hover:ring-gray-600 transition-all hidden md:flex">
+                    <UserAvatar url={user.user_metadata?.avatar_url} size={8} />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-1" align="end">
+                  <div className="px-3 py-2 border-b border-gray-100 dark:border-border">
+                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate max-w-48">
+                      {user.user_metadata?.full_name || user.email}
+                    </p>
+                    {user.email && user.user_metadata?.full_name && (
+                      <p className="text-xs text-gray-400 truncate max-w-48">{user.email}</p>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => signOut()}
+                    className="flex w-full items-center gap-2.5 rounded-sm px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-accent transition-colors mt-0.5"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    {tauth("signOut")}
+                  </button>
+                </PopoverContent>
+              </Popover>
+            ) : (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setLoginDialogOpen(true)}
+                    className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
+                  >
+                    <LogIn className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>{tauth("login")}</TooltipContent>
+              </Tooltip>
+            )}
+
             {/* File actions menu */}
             <Popover open={fileMenuOpen} onOpenChange={setFileMenuOpen}>
               <PopoverTrigger asChild>
@@ -845,6 +916,36 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       <ChevronRight className="h-3.5 w-3.5" />
                     </span>
                   </button>
+
+                  {/* Divider */}
+                  <div className="my-1.5 border-t border-gray-100 dark:border-border" />
+
+                  {/* Auth: Login or User info — mobile */}
+                  {user ? (
+                    <div>
+                      <div className="flex items-center gap-2.5 px-3.5 py-2">
+                        <div className="h-7 w-7 rounded-full overflow-hidden ring-1 ring-gray-200 dark:ring-gray-700 shrink-0">
+                          <UserAvatar url={user.user_metadata?.avatar_url} size={7} />
+                        </div>
+                        <span className="text-sm text-gray-700 dark:text-gray-200 truncate">
+                          {user.user_metadata?.full_name || user.email}
+                        </span>
+                      </div>
+                      <button onClick={() => { signOut(); setMobileMenuOpen(false); }} className={menuItemClass}>
+                        <span className="flex items-center gap-2.5">
+                          <LogOut className="h-4 w-4" />
+                          {tauth("signOut")}
+                        </span>
+                      </button>
+                    </div>
+                  ) : (
+                    <button onClick={() => { setMobileMenuOpen(false); setLoginDialogOpen(true); }} className={menuItemClass}>
+                      <span className="flex items-center gap-2.5">
+                        <LogIn className="h-4 w-4" />
+                        {tauth("login")}
+                      </span>
+                    </button>
+                  )}
 
                   {/* Divider */}
                   <div className="my-1.5 border-t border-gray-100 dark:border-border" />
@@ -1184,6 +1285,9 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
         </div>
       </div>
     </header>
+
+    {/* Login dialog */}
+    <LoginDialog open={loginDialogOpen} onOpenChange={setLoginDialogOpen} />
 
     {/* Full-screen overlay during photo upload */}
     {showUploadOverlay && (

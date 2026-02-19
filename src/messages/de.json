@@ -290,5 +290,85 @@
     "addBelow": "Darunter hinzufügen",
     "gripDragHint": "Ziehen zum Neuordnen",
     "gripLongPressHint": "Gedrückt halten zum Neuordnen"
+  },
+  "landing": {
+    "nav": {
+      "cta": "Lebenslauf erstellen"
+    },
+    "hero": {
+      "titleLine1": "Erstelle deinen Lebenslauf",
+      "titleLine2": "ganz ohne Aufwand.",
+      "subtitle": "Klicke auf einen beliebigen Text und bearbeite ihn direkt. Keine Formulare, keine Schritte, keine Umstände. Wenn er fertig ist, lade ein professionelles PDF herunter.",
+      "ctaPrimary": "Kostenlos starten",
+      "ctaSecondary": "So funktioniert's",
+      "mockupHint": "Klicken, um mit dem Bearbeiten zu beginnen →"
+    },
+    "mockup": {
+      "contact": "Kontakt",
+      "skills": "Fähigkeiten",
+      "experience": "Berufserfahrung",
+      "education": "Bildung",
+      "aboutMe": "Über mich",
+      "present": "Aktuell"
+    },
+    "demo": {
+      "editHintBefore": "Klicke auf einen beliebigen Text",
+      "editHintAfter": "So einfach! Genau so funktioniert Applio.",
+      "richTextHintBefore": "Probiere die Toolbar-Buttons aus",
+      "richTextHintAfter": "Dein Lebenslauf, formatiert wie du willst!",
+      "richTextBullet1": "Ein Team von",
+      "richTextBullet1Bold": "5 Designern geleitet",
+      "richTextBullet2": "Das Design System implementiert",
+      "richTextBullet3": "Einarbeitungszeit um 40 % reduziert",
+      "dragHintBefore": "Vom Symbol aus ziehen, um neu zu ordnen",
+      "dragHintAfter": "Die Einträge ordnen sich sofort um!"
+    },
+    "features": {
+      "sectionTitle": "Bearbeitung lernen in\u00a0Sekunden",
+      "sectionSubtitle": "Keine langen Anleitungen oder Lernkurven. Vier Dinge, die du wissen musst.",
+      "step1Title": "Klicken und bearbeiten",
+      "step1Desc": "Jeder Text in deinem Lebenslauf ist bearbeitbar. Klicke auf den Namen, die Position, die Daten, die Beschreibungen — alles. Es wird sofort zum Textfeld. Keine Formulare, keine Pop-ups.",
+      "step2Title": "Textformatierung",
+      "step2Desc": "Wähle Text aus und eine schwebende Toolbar erscheint. Wende Fettschrift, Kursiv, Unterstreichung, Aufzählungs- oder nummerierte Listen an. Dein Lebenslauf erhält mühelos eine professionelle Formatierung.",
+      "step3Title": "Hinzufügen und sortieren",
+      "step3Desc": "Jeder Bereich hat einen +-Button zum Hinzufügen neuer Einträge. Dann ziehen, um sie neu zu ordnen. Jede Erfahrung, Ausbildung und jeder Aufzählungspunkt kann verschoben werden, bis dein Lebenslauf genau so ist, wie du ihn willst.",
+      "step4Title": "Design anpassen",
+      "step4Desc": "Wähle mit einem Klick aus 5 Farbschemata. Jedes verändert die Seitenleiste, Akzente und Trennlinien in deinem Lebenslauf. Du kannst auch aus verschiedenen Schriftarten wählen und dekorative Muster hinzufügen."
+    },
+    "mobile": {
+      "badge": "Mobile-first",
+      "title": "Bearbeite von jedem Gerät aus.",
+      "desc1": "Die meisten Lebenslauf-Generatoren sind auf dem Handy unbrauchbar. Mit Applio kannst du deinen Lebenslauf vom Smartphone aus bearbeiten, Bereiche neu ordnen und exportieren — in derselben Qualität wie am Desktop.",
+      "desc2": "Von Anfang an für jede Bildschirmgröße konzipiert. Dein Lebenslauf ist immer nur einen Klick entfernt."
+    },
+    "grid": {
+      "title": "Und noch viel mehr.",
+      "pdfTitle": "PDF-Export",
+      "pdfDesc": "Lade deinen Lebenslauf als professionelles PDF herunter, versandfertig. Layout optimiert für den Druck.",
+      "langTitle": "13 Sprachen",
+      "langDesc": "Oberfläche verfügbar auf Deutsch, Englisch, Spanisch, Französisch, Portugiesisch und 8 weiteren Sprachen.",
+      "darkTitle": "Dunkelmodus",
+      "darkDesc": "Bearbeite nachts ohne die Augen zu belasten. Der Dunkelmodus passt sich deinem System an.",
+      "saveTitle": "Automatisches Speichern",
+      "saveDesc": "Jede Änderung wird sofort gespeichert. Schließe den Browser und komm zurück, wann du willst."
+    },
+    "cta": {
+      "titleLine1": "Dein nächster Lebenslauf",
+      "titleLine2": "ist nur einen Klick entfernt.",
+      "subtitle": "Fang jetzt an zu bearbeiten und lade deinen Lebenslauf als professionelles PDF herunter. Ganz ohne Aufwand.",
+      "button": "Jetzt starten"
+    },
+    "footer": {
+      "madeIn": "Mit Liebe in Buenos Aires gemacht."
+    }
+  },
+  "auth": {
+    "loginTitle": "Bei Applio anmelden",
+    "loginDescription": "Melden Sie sich an, um Ihren Lebenslauf zu speichern und auf weitere Funktionen zuzugreifen.",
+    "continueWithGoogle": "Weiter mit Google",
+    "continueWithGitHub": "Weiter mit GitHub",
+    "loginDisclaimer": "Wir greifen nur auf Ihren Namen, E-Mail und Profilbild zu.",
+    "signOut": "Abmelden",
+    "login": "Anmelden"
   }
 }

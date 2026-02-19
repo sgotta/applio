@@ -290,5 +290,85 @@
     "addBelow": "Add below",
     "gripDragHint": "Drag to reorder",
     "gripLongPressHint": "Long press to reorder"
+  },
+  "landing": {
+    "nav": {
+      "cta": "Create your CV"
+    },
+    "hero": {
+      "titleLine1": "Create your CV",
+      "titleLine2": "hassle-free.",
+      "subtitle": "Click on any text and edit it directly. No forms, no steps, no friction. When it's ready, download a professional PDF.",
+      "ctaPrimary": "Start for free",
+      "ctaSecondary": "See how it works",
+      "mockupHint": "Click to start editing →"
+    },
+    "mockup": {
+      "contact": "Contact",
+      "skills": "Skills",
+      "experience": "Experience",
+      "education": "Education",
+      "aboutMe": "About me",
+      "present": "Present"
+    },
+    "demo": {
+      "editHintBefore": "Try clicking on any text",
+      "editHintAfter": "That easy! That's how Applio works.",
+      "richTextHintBefore": "Try the toolbar buttons",
+      "richTextHintAfter": "Your CV, formatted the way you want!",
+      "richTextBullet1": "Led a team of",
+      "richTextBullet1Bold": "5 designers",
+      "richTextBullet2": "Implemented the design system",
+      "richTextBullet3": "Reduced onboarding time by 40%",
+      "dragHintBefore": "Drag from the icon to reorder",
+      "dragHintAfter": "Entries reorder instantly!"
+    },
+    "features": {
+      "sectionTitle": "Learn to edit in\u00a0seconds",
+      "sectionSubtitle": "No long tutorials or learning curves. Four things you need to know.",
+      "step1Title": "Click and edit",
+      "step1Desc": "Every text in your CV is editable. Click on the name, the position, the dates, the descriptions — anything. It becomes a text field instantly. No forms, no pop-ups.",
+      "step2Title": "Rich text",
+      "step2Desc": "Select text and a floating toolbar appears. Apply bold, italic, underline, bullet or numbered lists. Your CV can have professional formatting effortlessly.",
+      "step3Title": "Add and reorder",
+      "step3Desc": "Each section has a + button to add new entries. Then, drag to reorder them. Every experience, education and bullet point can be moved until your CV is exactly how you want it.",
+      "step4Title": "Customize the design",
+      "step4Desc": "Choose from 5 color schemes with one click. Each one changes the sidebar, accents and separators in your CV. You can also pick from several fonts and add decorative patterns."
+    },
+    "mobile": {
+      "badge": "Mobile-first",
+      "title": "Edit from any device.",
+      "desc1": "Most CV builders are unusable on mobile. With Applio you can edit, reorder sections and export your CV from your phone with the same quality as on desktop.",
+      "desc2": "Designed from day one to work on any screen. Your CV is always one click away."
+    },
+    "grid": {
+      "title": "And much more.",
+      "pdfTitle": "Export to PDF",
+      "pdfDesc": "Download your CV as a professional PDF, ready to send. Layout optimized for printing.",
+      "langTitle": "13 languages",
+      "langDesc": "Interface available in Spanish, English, French, Portuguese, German, and 8 more languages.",
+      "darkTitle": "Dark mode",
+      "darkDesc": "Edit at night without straining your eyes. Dark mode adapts to your system.",
+      "saveTitle": "Auto-save",
+      "saveDesc": "Every change is saved instantly. Close the browser and come back whenever you want."
+    },
+    "cta": {
+      "titleLine1": "Your next CV",
+      "titleLine2": "is one click away.",
+      "subtitle": "Start editing now and download your CV as a professional PDF. No hassle.",
+      "button": "Start now"
+    },
+    "footer": {
+      "madeIn": "Made with love in Buenos Aires."
+    }
+  },
+  "auth": {
+    "loginTitle": "Sign in to Applio",
+    "loginDescription": "Sign in to save your CV and access more features.",
+    "continueWithGoogle": "Continue with Google",
+    "continueWithGitHub": "Continue with GitHub",
+    "loginDisclaimer": "We only access your name, email, and profile picture.",
+    "signOut": "Sign out",
+    "login": "Sign in"
   }
 }

@@ -290,5 +290,85 @@
     "addBelow": "아래에 추가",
     "gripDragHint": "드래그하여 재정렬",
     "gripLongPressHint": "길게 눌러 재정렬"
+  },
+  "landing": {
+    "nav": {
+      "cta": "이력서 만들기"
+    },
+    "hero": {
+      "titleLine1": "이력서를 만드세요,",
+      "titleLine2": "번거로움 없이.",
+      "subtitle": "아무 텍스트나 클릭하면 바로 편집됩니다. 양식도, 단계도, 번거로움도 없습니다. 준비되면 전문적인 PDF로 다운로드하세요.",
+      "ctaPrimary": "무료로 시작하기",
+      "ctaSecondary": "사용법 보기",
+      "mockupHint": "클릭해서 편집 시작 →"
+    },
+    "mockup": {
+      "contact": "연락처",
+      "skills": "기술",
+      "experience": "경력",
+      "education": "학력",
+      "aboutMe": "자기소개",
+      "present": "현재"
+    },
+    "demo": {
+      "editHintBefore": "아무 텍스트나 클릭해 보세요",
+      "editHintAfter": "이렇게 쉽습니다! Applio는 이렇게 작동합니다.",
+      "richTextHintBefore": "툴바 버튼을 사용해 보세요",
+      "richTextHintAfter": "원하는 대로 서식이 적용된 이력서!",
+      "richTextBullet1": "팀을 이끌었습니다 —",
+      "richTextBullet1Bold": "디자이너 5명",
+      "richTextBullet2": "디자인 시스템을 도입했습니다",
+      "richTextBullet3": "온보딩 시간을 40% 단축했습니다",
+      "dragHintBefore": "아이콘을 드래그하여 순서를 변경하세요",
+      "dragHintAfter": "항목이 바로 재정렬됩니다!"
+    },
+    "features": {
+      "sectionTitle": "몇\u00a0초 만에 편집법을 익히세요",
+      "sectionSubtitle": "긴 튜토리얼이나 학습 과정이 필요 없습니다. 알아야 할 네 가지만 기억하세요.",
+      "step1Title": "클릭하고 편집하기",
+      "step1Desc": "이력서의 모든 텍스트를 편집할 수 있습니다. 이름, 직함, 날짜, 설명 — 무엇이든 클릭하면 바로 텍스트 필드가 됩니다. 양식도, 팝업도 없습니다.",
+      "step2Title": "리치 텍스트",
+      "step2Desc": "텍스트를 선택하면 플로팅 툴바가 나타납니다. 굵게, 기울임, 밑줄, 글머리 기호 또는 번호 목록을 적용할 수 있습니다. 전문적인 서식의 이력서를 손쉽게 만들 수 있습니다.",
+      "step3Title": "추가와 재정렬",
+      "step3Desc": "각 섹션에는 새 항목을 추가하는 + 버튼이 있습니다. 그런 다음 드래그하여 순서를 변경하세요. 경력, 학력, 모든 항목을 원하는 대로 배치할 수 있습니다.",
+      "step4Title": "디자인 커스터마이징",
+      "step4Desc": "한 번의 클릭으로 5가지 색상 테마 중에서 선택하세요. 사이드바, 강조색, 구분선이 함께 변경됩니다. 다양한 글꼴을 선택하고 장식 패턴도 추가할 수 있습니다."
+    },
+    "mobile": {
+      "badge": "모바일 퍼스트",
+      "title": "어떤 기기에서든 편집하세요.",
+      "desc1": "대부분의 이력서 빌더는 모바일에서 사용하기 어렵습니다. Applio에서는 휴대폰으로도 데스크톱과 동일한 품질로 이력서를 편집하고, 섹션을 재정렬하고, PDF로 내보낼 수 있습니다.",
+      "desc2": "처음부터 모든 화면에서 작동하도록 설계되었습니다. 이력서는 언제나 한 번의 클릭 거리에 있습니다."
+    },
+    "grid": {
+      "title": "그 외에도 다양한 기능.",
+      "pdfTitle": "PDF 내보내기",
+      "pdfDesc": "전문적인 PDF로 이력서를 다운로드하세요. 인쇄에 최적화된 레이아웃입니다.",
+      "langTitle": "13개 언어",
+      "langDesc": "스페인어, 영어, 프랑스어, 포르투갈어, 독일어 외 8개 언어를 지원합니다.",
+      "darkTitle": "다크 모드",
+      "darkDesc": "밤에도 눈이 편안하게 편집하세요. 시스템 설정에 맞춰 다크 모드가 자동 적용됩니다.",
+      "saveTitle": "자동 저장",
+      "saveDesc": "모든 변경 사항이 즉시 저장됩니다. 브라우저를 닫고 언제든 돌아오세요."
+    },
+    "cta": {
+      "titleLine1": "다음 이력서는",
+      "titleLine2": "클릭 한 번이면 됩니다.",
+      "subtitle": "지금 바로 편집을 시작하고 전문적인 PDF로 이력서를 다운로드하세요. 번거로움 없이.",
+      "button": "지금 시작하기"
+    },
+    "footer": {
+      "madeIn": "부에노스아이레스에서 정성을 담아 만들었습니다."
+    }
+  },
+  "auth": {
+    "loginTitle": "Applio 로그인",
+    "loginDescription": "로그인하여 이력서를 저장하고 더 많은 기능에 접근하세요.",
+    "continueWithGoogle": "Google로 계속",
+    "continueWithGitHub": "GitHub로 계속",
+    "loginDisclaimer": "이름, 이메일, 프로필 사진에만 접근합니다.",
+    "signOut": "로그아웃",
+    "login": "로그인"
   }
 }

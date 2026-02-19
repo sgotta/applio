@@ -6,6 +6,7 @@ import { Loader2 } from "lucide-react";
 import { CVProvider, useCV } from "@/lib/cv-context";
 import { LocaleProvider, useAppLocale } from "@/lib/locale-context";
 import { ThemeProvider } from "@/lib/theme-context";
+import { AuthProvider } from "@/lib/auth-context";
 import { ColorSchemeProvider, useColorScheme } from "@/lib/color-scheme-context";
 import { SidebarPatternProvider, useSidebarPattern } from "@/lib/sidebar-pattern-context";
 import { FontSettingsProvider, useFontSettings } from "@/lib/font-context";
@@ -95,6 +96,7 @@ export default function Home() {
           <FontSettingsProvider>
           <ToolbarFeaturesProvider>
           <LocaleProvider>
+            <AuthProvider>
             <CVProvider>
             <TooltipProvider delayDuration={300}>
               <AppContent />
@@ -111,6 +113,7 @@ export default function Home() {
               />
             </TooltipProvider>
             </CVProvider>
+            </AuthProvider>
           </LocaleProvider>
           </ToolbarFeaturesProvider>
           </FontSettingsProvider>

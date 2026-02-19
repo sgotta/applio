@@ -290,5 +290,85 @@
     "addBelow": "在下方添加",
     "gripDragHint": "拖动以重新排序",
     "gripLongPressHint": "长按以重新排序"
+  },
+  "landing": {
+    "nav": {
+      "cta": "创建简历"
+    },
+    "hero": {
+      "titleLine1": "轻松创建",
+      "titleLine2": "你的简历。",
+      "subtitle": "点击任意文字即可直接编辑。没有表单，没有步骤，没有繁琐流程。准备好后，下载专业的 PDF。",
+      "ctaPrimary": "免费开始",
+      "ctaSecondary": "了解使用方式",
+      "mockupHint": "点击开始编辑 →"
+    },
+    "mockup": {
+      "contact": "联系方式",
+      "skills": "技能",
+      "experience": "工作经历",
+      "education": "教育背景",
+      "aboutMe": "关于我",
+      "present": "至今"
+    },
+    "demo": {
+      "editHintBefore": "试试点击任意文字",
+      "editHintAfter": "就这么简单！这就是 Applio 的工作方式。",
+      "richTextHintBefore": "试试工具栏按钮",
+      "richTextHintAfter": "按你想要的方式排版简历！",
+      "richTextBullet1": "带领了一个由",
+      "richTextBullet1Bold": "5 名设计师",
+      "richTextBullet2": "实施了设计系统",
+      "richTextBullet3": "将入职培训时间缩短了 40%",
+      "dragHintBefore": "拖动图标重新排序",
+      "dragHintAfter": "条目立即重新排列！"
+    },
+    "features": {
+      "sectionTitle": "几秒钟学会\u00a0编辑",
+      "sectionSubtitle": "无需漫长教程，没有学习曲线。只需了解四件事。",
+      "step1Title": "点击即编辑",
+      "step1Desc": "简历中的每段文字都可编辑。点击姓名、职位、日期、描述——任何内容。立即变为文本框。没有表单，没有弹窗。",
+      "step2Title": "富文本格式",
+      "step2Desc": "选中文字后会出现浮动工具栏。轻松应用粗体、斜体、下划线、项目符号或编号列表。专业排版毫不费力。",
+      "step3Title": "添加与排序",
+      "step3Desc": "每个板块都有 + 按钮来添加新条目。然后拖动排序。每段经历、教育和要点都可以随意移动，直到简历完全符合你的要求。",
+      "step4Title": "自定义设计",
+      "step4Desc": "一键选择 5 种配色方案。每种都会改变侧栏、强调色和分隔线。还可以选择多种字体并添加装饰图案。"
+    },
+    "mobile": {
+      "badge": "移动优先",
+      "title": "在任何设备上编辑。",
+      "desc1": "大多数简历工具在手机上几乎无法使用。使用 Applio，你可以在手机上编辑、重排板块和导出简历，效果与桌面端完全一致。",
+      "desc2": "从第一天起就为任意屏幕设计。你的简历始终触手可及。"
+    },
+    "grid": {
+      "title": "还有更多功能。",
+      "pdfTitle": "导出 PDF",
+      "pdfDesc": "将简历下载为专业 PDF，随时可以发送。版面已针对打印优化。",
+      "langTitle": "13 种语言",
+      "langDesc": "界面支持西班牙语、英语、法语、葡萄牙语、德语及其他 8 种语言。",
+      "darkTitle": "深色模式",
+      "darkDesc": "夜间编辑不伤眼。深色模式自动适配你的系统设置。",
+      "saveTitle": "自动保存",
+      "saveDesc": "每次修改都会即时保存。关闭浏览器，随时回来继续。"
+    },
+    "cta": {
+      "titleLine1": "你的下一份简历",
+      "titleLine2": "只需一次点击。",
+      "subtitle": "立即开始编辑，将简历下载为专业 PDF。轻松搞定。",
+      "button": "立即开始"
+    },
+    "footer": {
+      "madeIn": "用爱制作于布宜诺斯艾利斯。"
+    }
+  },
+  "auth": {
+    "loginTitle": "登录 Applio",
+    "loginDescription": "登录以保存您的简历并访问更多功能。",
+    "continueWithGoogle": "使用 Google 继续",
+    "continueWithGitHub": "使用 GitHub 继续",
+    "loginDisclaimer": "我们仅访问您的姓名、邮箱和头像。",
+    "signOut": "退出登录",
+    "login": "登录"
   }
 }

@@ -290,5 +290,85 @@
     "addBelow": "Adicionar abaixo",
     "gripDragHint": "Arraste para reordenar",
     "gripLongPressHint": "Pressione e segure para reordenar"
+  },
+  "landing": {
+    "nav": {
+      "cta": "Crie seu CV"
+    },
+    "hero": {
+      "titleLine1": "Crie seu CV",
+      "titleLine2": "sem complicação.",
+      "subtitle": "Clique em qualquer texto e edite diretamente. Sem formulários, sem etapas, sem atrito. Quando estiver pronto, baixe um PDF profissional.",
+      "ctaPrimary": "Começar grátis",
+      "ctaSecondary": "Veja como funciona",
+      "mockupHint": "Clique para começar a editar →"
+    },
+    "mockup": {
+      "contact": "Contato",
+      "skills": "Habilidades",
+      "experience": "Experiência",
+      "education": "Educação",
+      "aboutMe": "Sobre mim",
+      "present": "Atual"
+    },
+    "demo": {
+      "editHintBefore": "Tente clicar em qualquer texto",
+      "editHintAfter": "Simples assim! É assim que o Applio funciona.",
+      "richTextHintBefore": "Experimente os botões da barra de ferramentas",
+      "richTextHintAfter": "Seu CV, formatado do jeito que você quer!",
+      "richTextBullet1": "Liderou uma equipe de",
+      "richTextBullet1Bold": "5 designers",
+      "richTextBullet2": "Implementou o design system",
+      "richTextBullet3": "Reduziu o tempo de onboarding em 40%",
+      "dragHintBefore": "Arraste pelo ícone para reordenar",
+      "dragHintAfter": "As entradas se reordenam instantaneamente!"
+    },
+    "features": {
+      "sectionTitle": "Aprenda a editar em\u00a0segundos",
+      "sectionSubtitle": "Sem tutoriais longos ou curvas de aprendizado. Quatro coisas que você precisa saber.",
+      "step1Title": "Clique e edite",
+      "step1Desc": "Todo texto do seu CV é editável. Clique no nome, no cargo, nas datas, nas descrições — qualquer coisa. Vira um campo de texto na hora. Sem formulários, sem pop-ups.",
+      "step2Title": "Texto formatado",
+      "step2Desc": "Selecione um texto e uma barra de ferramentas flutuante aparece. Aplique negrito, itálico, sublinhado, listas com marcadores ou numeradas. Seu CV pode ter formatação profissional sem esforço.",
+      "step3Title": "Adicione e reordene",
+      "step3Desc": "Cada seção tem um botão + para adicionar novas entradas. Depois, arraste para reordená-las. Cada experiência, formação e item pode ser movido até que seu CV fique exatamente como você quer.",
+      "step4Title": "Personalize o design",
+      "step4Desc": "Escolha entre 5 paletas de cores com um clique. Cada uma muda a barra lateral, os acentos e os separadores do seu CV. Você também pode escolher entre várias fontes e adicionar padrões decorativos."
+    },
+    "mobile": {
+      "badge": "Mobile-first",
+      "title": "Edite de qualquer dispositivo.",
+      "desc1": "A maioria dos criadores de CV é inutilizável no celular. Com o Applio você pode editar, reordenar seções e exportar seu CV pelo celular com a mesma qualidade do desktop.",
+      "desc2": "Projetado desde o início para funcionar em qualquer tela. Seu CV está sempre a um clique de distância."
+    },
+    "grid": {
+      "title": "E muito mais.",
+      "pdfTitle": "Exportar para PDF",
+      "pdfDesc": "Baixe seu CV como PDF profissional, pronto para enviar. Layout otimizado para impressão.",
+      "langTitle": "13 idiomas",
+      "langDesc": "Interface disponível em português, espanhol, inglês, francês, alemão e mais 8 idiomas.",
+      "darkTitle": "Modo escuro",
+      "darkDesc": "Edite à noite sem cansar os olhos. O modo escuro se adapta ao seu sistema.",
+      "saveTitle": "Salvamento automático",
+      "saveDesc": "Cada alteração é salva instantaneamente. Feche o navegador e volte quando quiser."
+    },
+    "cta": {
+      "titleLine1": "Seu próximo CV",
+      "titleLine2": "está a um clique.",
+      "subtitle": "Comece a editar agora e baixe seu CV como PDF profissional. Sem complicação.",
+      "button": "Começar agora"
+    },
+    "footer": {
+      "madeIn": "Feito com amor em Buenos Aires."
+    }
+  },
+  "auth": {
+    "loginTitle": "Entrar no Applio",
+    "loginDescription": "Faça login para salvar seu currículo e acessar mais recursos.",
+    "continueWithGoogle": "Continuar com Google",
+    "continueWithGitHub": "Continuar com GitHub",
+    "loginDisclaimer": "Acessamos apenas seu nome, email e foto de perfil.",
+    "signOut": "Sair",
+    "login": "Entrar"
   }
 }

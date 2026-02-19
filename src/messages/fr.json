@@ -290,5 +290,85 @@
     "addBelow": "Ajouter en dessous",
     "gripDragHint": "Glissez pour réorganiser",
     "gripLongPressHint": "Appuyez longuement pour réorganiser"
+  },
+  "landing": {
+    "nav": {
+      "cta": "Créez votre CV"
+    },
+    "hero": {
+      "titleLine1": "Créez votre CV",
+      "titleLine2": "sans prise de tête.",
+      "subtitle": "Cliquez sur n'importe quel texte et modifiez-le directement. Pas de formulaires, pas d'étapes, aucune friction. Quand c'est prêt, téléchargez un PDF professionnel.",
+      "ctaPrimary": "Commencer gratuitement",
+      "ctaSecondary": "Voir comment ça marche",
+      "mockupHint": "Cliquez pour commencer à éditer →"
+    },
+    "mockup": {
+      "contact": "Contact",
+      "skills": "Compétences",
+      "experience": "Expérience",
+      "education": "Formation",
+      "aboutMe": "Profil",
+      "present": "Présent"
+    },
+    "demo": {
+      "editHintBefore": "Essayez de cliquer sur n'importe quel texte",
+      "editHintAfter": "Aussi simple que ça ! C'est comme ça que fonctionne Applio.",
+      "richTextHintBefore": "Essayez les boutons de la barre d'outils",
+      "richTextHintAfter": "Votre CV, mis en forme comme vous le souhaitez !",
+      "richTextBullet1": "Dirigé une équipe de",
+      "richTextBullet1Bold": "5 designers",
+      "richTextBullet2": "Mis en place le design system",
+      "richTextBullet3": "Réduit le temps d'intégration de 40 %",
+      "dragHintBefore": "Glissez depuis l'icône pour réordonner",
+      "dragHintAfter": "Les entrées se réordonnent instantanément !"
+    },
+    "features": {
+      "sectionTitle": "Apprenez à éditer en\u00a0quelques secondes",
+      "sectionSubtitle": "Pas de longs tutoriels ni de courbe d'apprentissage. Quatre choses à savoir.",
+      "step1Title": "Cliquez et modifiez",
+      "step1Desc": "Chaque texte de votre CV est modifiable. Cliquez sur le nom, le poste, les dates, les descriptions — tout. Le champ de texte apparaît instantanément. Pas de formulaires, pas de pop-ups.",
+      "step2Title": "Texte enrichi",
+      "step2Desc": "Sélectionnez du texte et une barre d'outils flottante apparaît. Appliquez le gras, l'italique, le souligné, des listes à puces ou numérotées. Votre CV peut avoir une mise en forme professionnelle sans effort.",
+      "step3Title": "Ajoutez et réordonnez",
+      "step3Desc": "Chaque section a un bouton + pour ajouter de nouvelles entrées. Ensuite, glissez pour les réordonner. Chaque expérience, formation et point peut être déplacé jusqu'à ce que votre CV soit exactement comme vous le voulez.",
+      "step4Title": "Personnalisez le design",
+      "step4Desc": "Choisissez parmi 5 palettes de couleurs en un clic. Chacune modifie la barre latérale, les accents et les séparateurs de votre CV. Vous pouvez aussi choisir parmi plusieurs polices et ajouter des motifs décoratifs."
+    },
+    "mobile": {
+      "badge": "Mobile-first",
+      "title": "Éditez depuis n'importe quel appareil.",
+      "desc1": "La plupart des générateurs de CV sont inutilisables sur mobile. Avec Applio, vous pouvez éditer, réorganiser les sections et exporter votre CV depuis votre téléphone avec la même qualité que sur ordinateur.",
+      "desc2": "Conçu dès le départ pour fonctionner sur tout écran. Votre CV est toujours à un clic."
+    },
+    "grid": {
+      "title": "Et bien plus encore.",
+      "pdfTitle": "Export en PDF",
+      "pdfDesc": "Téléchargez votre CV en PDF professionnel, prêt à envoyer. Mise en page optimisée pour l'impression.",
+      "langTitle": "13 langues",
+      "langDesc": "Interface disponible en français, anglais, espagnol, portugais, allemand et 8 autres langues.",
+      "darkTitle": "Mode sombre",
+      "darkDesc": "Éditez la nuit sans vous fatiguer les yeux. Le mode sombre s'adapte à votre système.",
+      "saveTitle": "Sauvegarde automatique",
+      "saveDesc": "Chaque modification est sauvegardée instantanément. Fermez le navigateur et revenez quand vous voulez."
+    },
+    "cta": {
+      "titleLine1": "Votre prochain CV",
+      "titleLine2": "est à un clic.",
+      "subtitle": "Commencez à éditer maintenant et téléchargez votre CV en PDF professionnel. Sans prise de tête.",
+      "button": "Commencer maintenant"
+    },
+    "footer": {
+      "madeIn": "Fait avec amour à Buenos Aires."
+    }
+  },
+  "auth": {
+    "loginTitle": "Connexion à Applio",
+    "loginDescription": "Connectez-vous pour sauvegarder votre CV et accéder à plus de fonctionnalités.",
+    "continueWithGoogle": "Continuer avec Google",
+    "continueWithGitHub": "Continuer avec GitHub",
+    "loginDisclaimer": "Nous accédons uniquement à votre nom, email et photo de profil.",
+    "signOut": "Déconnexion",
+    "login": "Connexion"
   }
 }
