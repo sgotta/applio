@@ -3,7 +3,8 @@
 import { memo, useState, useCallback, useRef } from "react";
 import Cropper, { type Area } from "react-easy-crop";
 import { useTranslations } from "next-intl";
-import { Upload, Trash2, ImagePlus, Crop } from "lucide-react";
+import { Upload, Trash2, ImagePlus, Crop, Loader2 } from "lucide-react";
+import { useAuth } from "@/lib/auth-context";
 import {
   Dialog,
   DialogContent,
@@ -60,11 +61,13 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
   onPhotoChange,
 }: PhotoCropDialogProps) {
   const t = useTranslations("photo");
+  const { user } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [imageToCrop, setImageToCrop] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   const resetCropState = useCallback(() => {
     setImageToCrop(null);
@@ -115,10 +118,35 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
   const handleApply = useCallback(async () => {
     if (!imageToCrop || !croppedAreaPixels) return;
     const croppedImage = await getCroppedImg(imageToCrop, croppedAreaPixels);
-    onPhotoChange(croppedImage);
+
+    // Logged in → upload to R2 and store URL; otherwise store base64
+    if (user) {
+      setUploading(true);
+      try {
+        const res = await fetch(croppedImage);
+        const blob = await res.blob();
+        const formData = new FormData();
+        formData.append("photo", blob, "photo.jpg");
+        const uploadRes = await fetch("/api/upload-photo", { method: "POST", body: formData });
+        const result = await uploadRes.json();
+        if (result.success && result.url) {
+          onPhotoChange(result.url);
+        } else {
+          // R2 failed — fall back to base64
+          onPhotoChange(croppedImage);
+        }
+      } catch {
+        onPhotoChange(croppedImage);
+      } finally {
+        setUploading(false);
+      }
+    } else {
+      onPhotoChange(croppedImage);
+    }
+
     resetCropState();
     onOpenChange(false);
-  }, [imageToCrop, croppedAreaPixels, onPhotoChange, resetCropState, onOpenChange]);
+  }, [imageToCrop, croppedAreaPixels, onPhotoChange, resetCropState, onOpenChange, user]);
 
   const handleDelete = useCallback(() => {
     onPhotoChange(undefined);
@@ -186,7 +214,10 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
               <Button variant="outline" onClick={handleCancelCrop}>
                 {t("cancel")}
               </Button>
-              <Button onClick={handleApply}>{t("apply")}</Button>
+              <Button onClick={handleApply} disabled={uploading}>
+                {uploading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                {t("apply")}
+              </Button>
             </DialogFooter>
           </>
         ) : (
