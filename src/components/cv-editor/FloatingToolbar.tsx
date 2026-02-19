@@ -146,7 +146,7 @@ export function FloatingToolbar({
       data-testid="floating-toolbar"
       className={
         docked
-          ? "flex items-center justify-center gap-0.5 bg-gray-900 px-3 py-2 shadow-[0_-4px_12px_rgba(0,0,0,0.2)] [&_button]:h-9 [&_button]:min-w-9"
+          ? "flex items-center justify-center gap-1 rounded-t-2xl bg-gray-900 px-4 py-2.5 shadow-[0_-8px_24px_rgba(0,0,0,0.3)] border-t border-white/10 [&_button]:h-9 [&_button]:min-w-9"
           : "inline-flex items-center gap-0.5 bg-gray-900 rounded-lg px-2 py-1.5 shadow-xl"
       }
     >
