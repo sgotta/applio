@@ -1314,11 +1314,11 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     </div>
 
                     {/* Actions */}
-                    <div className="border-t border-gray-100 dark:border-gray-800">
+                    <div className="border-t border-gray-100 dark:border-gray-800 p-2 flex flex-col gap-1">
                       {!isPremium && (
                         <button
                           onClick={() => { setAccountDesktopOpen(false); setUpgradeDialogOpen(true); }}
-                          className="w-full flex items-center gap-2.5 px-4 py-2 text-xs text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                          className="w-full flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
                         >
                           <FlaskConical className="h-3.5 w-3.5 text-gray-400" />
                           {tsync("upgrade")}
@@ -1326,9 +1326,9 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       )}
                       <button
                         onClick={() => { setAccountDesktopOpen(false); signOut(); }}
-                        className="w-full flex items-center gap-2.5 px-4 py-2 text-xs text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                        className="w-full flex items-center justify-center gap-2 px-3 py-1.5 text-xs text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                       >
-                        <LogOut className="h-3.5 w-3.5 text-gray-400" />
+                        <LogOut className="h-3 w-3" />
                         {tauth("signOut")}
                       </button>
                     </div>
@@ -1336,11 +1336,15 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                 ) : (
                   <div className="p-4">
                     {/* Sync status inline */}
-                    <div className="flex items-center gap-2 mb-4">
+                    <div className="flex items-center gap-2 mb-3">
                       <HardDrive className="h-3.5 w-3.5 text-amber-500 shrink-0" />
                       <span className="text-xs text-gray-500 dark:text-gray-400">{t("syncLocal")}</span>
                       <span className="ml-auto h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" />
                     </div>
+
+                    <p className="text-[11px] text-gray-400 leading-relaxed mb-3 text-center">
+                      {t("syncLoginHint")}
+                    </p>
 
                     {/* CTA */}
                     <button
@@ -1350,10 +1354,6 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       <LogIn className="h-4 w-4" />
                       {tauth("login")}
                     </button>
-
-                    <p className="text-[11px] text-gray-400 leading-relaxed mt-3 text-center">
-                      {t("syncLoginHint")}
-                    </p>
                   </div>
                 )}
               </PopoverContent>
@@ -1402,11 +1402,11 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     </span>
                     <span className="ml-auto h-1.5 w-1.5 rounded-full shrink-0 bg-emerald-500" />
                   </div>
-                  <div className="border-t border-gray-100 dark:border-gray-800">
+                  <div className="border-t border-gray-100 dark:border-gray-800 p-2 flex flex-col gap-1">
                     {!isPremium && (
                       <button
                         onClick={() => { setAccountMobileOpen(false); setUpgradeDialogOpen(true); }}
-                        className="w-full flex items-center gap-2.5 px-4 py-2 text-xs text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                        className="w-full flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
                       >
                         <FlaskConical className="h-3.5 w-3.5 text-gray-400" />
                         {tsync("upgrade")}
@@ -1414,9 +1414,9 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     )}
                     <button
                       onClick={() => { setAccountMobileOpen(false); signOut(); }}
-                      className="w-full flex items-center gap-2.5 px-4 py-2 text-xs text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                      className="w-full flex items-center justify-center gap-2 px-3 py-1.5 text-xs text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                     >
-                      <LogOut className="h-3.5 w-3.5 text-gray-400" />
+                      <LogOut className="h-3 w-3" />
                       {tauth("signOut")}
                     </button>
                   </div>
@@ -1428,6 +1428,9 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <span className="text-xs text-gray-500 dark:text-gray-400">{t("syncLocal")}</span>
                     <span className="ml-auto h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" />
                   </div>
+                  <p className="text-[11px] text-gray-400 leading-relaxed mb-3 text-center">
+                    {t("syncLoginHint")}
+                  </p>
                   <button
                     onClick={() => { setAccountMobileOpen(false); setLoginDialogOpen(true); }}
                     className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-gray-800 to-gray-900 px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:from-gray-700 hover:to-gray-800 transition-colors dark:from-gray-100 dark:to-gray-200 dark:text-gray-900 dark:hover:from-gray-200 dark:hover:to-gray-300"
@@ -1435,9 +1438,6 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <LogIn className="h-4 w-4" />
                     {tauth("login")}
                   </button>
-                  <p className="text-[11px] text-gray-400 leading-relaxed mt-3 text-center">
-                    {t("syncLoginHint")}
-                  </p>
                 </div>
               )}
             </PopoverContent>

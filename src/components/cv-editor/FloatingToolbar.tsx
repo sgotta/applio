@@ -121,6 +121,21 @@ export function FloatingToolbar({
   const isBulletList = editor.isActive("bulletList");
   const isOrderedList = editor.isActive("orderedList");
 
+  const iconSize = docked ? "w-[18px] h-[18px]" : "w-3.5 h-3.5";
+
+  const btnClass = (active: boolean) =>
+    docked
+      ? `h-10 min-w-10 rounded-xl grid place-items-center transition-all ${
+          active
+            ? "bg-white/25 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]"
+            : "text-white/50 active:bg-white/15 active:text-white"
+        }`
+      : `w-7 h-7 rounded-md grid place-items-center transition-colors ${
+          active
+            ? "bg-white/20 text-white"
+            : "text-white/60 hover:text-white hover:bg-white/10"
+        }`;
+
   return createPortal(
     <div
       ref={toolbarRef}
@@ -146,7 +161,7 @@ export function FloatingToolbar({
       data-testid="floating-toolbar"
       className={
         docked
-          ? "flex items-center justify-center gap-1 rounded-t-2xl bg-gray-900 px-4 py-2.5 shadow-[0_-8px_24px_rgba(0,0,0,0.3)] border-t border-white/10 [&_button]:h-9 [&_button]:min-w-9"
+          ? "flex items-center justify-center gap-2 bg-gray-950/95 backdrop-blur-sm px-5 py-2 shadow-[0_-4px_20px_rgba(0,0,0,0.25)] border-t border-white/6"
           : "inline-flex items-center gap-0.5 bg-gray-900 rounded-lg px-2 py-1.5 shadow-xl"
       }
     >
@@ -158,13 +173,9 @@ export function FloatingToolbar({
           editor.chain().focus().toggleBold().run();
         }}
         title={t("bold")}
-        className={`w-7 h-7 rounded-md grid place-items-center transition-colors ${
-          isBold
-            ? "bg-white/20 text-white"
-            : "text-white/60 hover:text-white hover:bg-white/10"
-        }`}
+        className={btnClass(isBold)}
       >
-        <Bold className="w-3.5 h-3.5" strokeWidth={2.5} />
+        <Bold className={iconSize} strokeWidth={2.5} />
       </button>
 
       {/* Italic */}
@@ -175,19 +186,21 @@ export function FloatingToolbar({
           editor.chain().focus().toggleItalic().run();
         }}
         title={t("italic")}
-        className={`w-7 h-7 rounded-md grid place-items-center transition-colors ${
-          isItalic
-            ? "bg-white/20 text-white"
-            : "text-white/60 hover:text-white hover:bg-white/10"
-        }`}
+        className={btnClass(isItalic)}
       >
-        <Italic className="w-3.5 h-3.5" />
+        <Italic className={iconSize} />
       </button>
 
       {/* Separator */}
       {blockEditing && (
         <>
-          <div className="w-px h-4 bg-white/20 mx-1" />
+          <div
+            className={
+              docked
+                ? "w-px h-5 bg-white/10 mx-1"
+                : "w-px h-4 bg-white/20 mx-1"
+            }
+          />
 
           {/* Bullet list */}
           <button
@@ -197,13 +210,9 @@ export function FloatingToolbar({
               editor.chain().focus().toggleBulletList().run();
             }}
             title={t("typeBulletList")}
-            className={`w-7 h-7 rounded-md grid place-items-center transition-colors ${
-              isBulletList
-                ? "bg-white/20 text-white"
-                : "text-white/60 hover:text-white hover:bg-white/10"
-            }`}
+            className={btnClass(isBulletList)}
           >
-            <List className="w-3.5 h-3.5" />
+            <List className={iconSize} />
           </button>
 
           {/* Ordered list */}
@@ -214,13 +223,9 @@ export function FloatingToolbar({
               editor.chain().focus().toggleOrderedList().run();
             }}
             title={t("typeOrderedList")}
-            className={`w-7 h-7 rounded-md grid place-items-center transition-colors ${
-              isOrderedList
-                ? "bg-white/20 text-white"
-                : "text-white/60 hover:text-white hover:bg-white/10"
-            }`}
+            className={btnClass(isOrderedList)}
           >
-            <ListOrdered className="w-3.5 h-3.5" />
+            <ListOrdered className={iconSize} />
           </button>
         </>
       )}
