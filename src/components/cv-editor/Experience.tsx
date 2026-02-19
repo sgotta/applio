@@ -117,7 +117,7 @@ function ExperienceCard({
         value={exp.position}
         onChange={(v) => updateExperience(exp.id, { position: v })}
         as="small"
-        className="mt-0.5 font-medium! text-gray-600!"
+        className="mt-1 font-medium! text-gray-600!"
         placeholder={t("positionPlaceholder")}
       />
 

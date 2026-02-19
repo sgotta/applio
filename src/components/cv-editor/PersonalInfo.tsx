@@ -155,6 +155,7 @@ function SkillBadge({
   badgeBg,
   badgeText,
   autoEdit,
+  isEditing,
   onEditingChange,
 }: {
   value: string;
@@ -163,11 +164,12 @@ function SkillBadge({
   badgeBg: string;
   badgeText: string;
   autoEdit?: boolean;
+  isEditing?: boolean;
   onEditingChange?: (editing: boolean) => void;
 }) {
   return (
     <span
-      className="inline-flex items-center rounded px-2 py-0.5"
+      className={`inline-flex items-center rounded px-2 py-0.5 transition-all duration-150 [&_.tiptap]:text-inherit ${isEditing ? "brightness-125 shadow-md shadow-black/15 scale-105 ring-[1.5px] ring-white" : ""}`}
       style={{ backgroundColor: badgeBg, color: badgeText }}
     >
       <EditableText
@@ -240,6 +242,7 @@ function SortableSkillBadge({
         badgeBg={badgeBg}
         badgeText={badgeText}
         autoEdit={autoEdit}
+        isEditing={isEditing}
         onEditingChange={setIsEditing}
       />
     </span>
@@ -393,11 +396,9 @@ function SortableSkillCategory({
 function SortableSidebarSection({
   id,
   children,
-  gripColor,
 }: {
   id: SidebarSectionId;
   children: React.ReactNode;
-  gripColor: string;
 }) {
   const {
     attributes,
@@ -422,7 +423,7 @@ function SortableSidebarSection({
         {...attributes}
         {...listeners}
       >
-        <GripVertical className="h-3.5 w-3.5" style={{ color: gripColor, opacity: 0.5 }} />
+        <GripVertical className="h-3.5 w-3.5 opacity-50" />
       </button>
       {children}
     </div>
@@ -651,7 +652,7 @@ export const PersonalInfo = memo(function PersonalInfo() {
               const content = sectionContent[sectionId];
               if (!content) return null;
               return (
-                <SortableSidebarSection key={sectionId} id={sectionId} gripColor={colorScheme.sidebarText}>
+                <SortableSidebarSection key={sectionId} id={sectionId}>
                   {content}
                 </SortableSidebarSection>
               );

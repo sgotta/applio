@@ -390,10 +390,10 @@ function TiptapEditor({
   const editor = useEditor({
     extensions,
     content: blockEditing ? (value || "<p></p>") : richText ? wrapContent(value) : value || undefined,
-    immediatelyRender: false,
+    immediatelyRender: true,
     editorProps: {
       attributes: {
-        class: `${baseStyle} ${className} outline-none cursor-text`,
+        class: `${baseStyle} outline-none cursor-text`,
       },
       handleKeyDown: (_view, event) => {
         if (event.key === "Escape") {
@@ -479,6 +479,9 @@ function TiptapEditor({
   if (!editor) return null;
 
   const onSidebar = !!displayStyle;
+  const isDarkSidebar =
+    onSidebar &&
+    (displayStyle as Record<string, string>).color === "#ffffff";
 
   // Wrapper div inherits font styles so the editor text matches display
   const wrapperStyle: React.CSSProperties = {
@@ -487,10 +490,14 @@ function TiptapEditor({
     ...(multiline ? { whiteSpace: "pre-wrap" as const } : undefined),
   };
 
+  const ringClass = editOutline
+    ? `ring-2 ${isDarkSidebar ? "ring-white bg-white/20 [&_.tiptap]:text-inherit" : "ring-blue-300 dark:ring-blue-500/40 bg-blue-50 dark:bg-blue-500/10"}`
+    : "";
+
   return (
     <div
       style={wrapperStyle}
-      className={`${multiline ? "block" : "inline-block"} rounded-sm px-1.5 py-0.5 -mx-1.5 -my-0.5 ${editOutline ? "outline-[1.5px] outline-dashed outline-offset-1 outline-gray-300/80 dark:outline-gray-500/60" : ""}`}
+      className={`${className} ${multiline ? "block" : "inline-block"} rounded px-1.5 py-0.5 -mx-1.5 -my-0.5 ${ringClass}`}
     >
       <EditorContent editor={editor} />
       {richText && (
