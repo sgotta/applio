@@ -26,17 +26,27 @@ export const PremiumBadge = memo(function PremiumBadge({
 
   return (
     <>
-      <button
+      <span
+        role="button"
+        tabIndex={0}
         onClick={(e) => {
           e.stopPropagation();
+          e.preventDefault();
           setDialogOpen(true);
         }}
-        className="inline-flex items-center gap-1 rounded-full bg-amber-100 dark:bg-amber-900/40 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 dark:text-amber-400 hover:bg-amber-200 dark:hover:bg-amber-800/50 transition-colors"
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.stopPropagation();
+            e.preventDefault();
+            setDialogOpen(true);
+          }
+        }}
+        className="inline-flex items-center gap-0.5 rounded-full bg-amber-100 dark:bg-amber-900/50 px-1.5 py-0.5 text-[10px] font-semibold text-amber-700 dark:text-amber-400 hover:bg-amber-200 dark:hover:bg-amber-800/50 transition-colors cursor-pointer"
         title={t("pro")}
       >
         <Lock className="h-2.5 w-2.5" />
         PRO
-      </button>
+      </span>
 
       <UpgradeDialog open={dialogOpen} onOpenChange={setDialogOpen} />
     </>

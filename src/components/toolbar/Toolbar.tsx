@@ -25,11 +25,12 @@ import { useAuth } from "@/lib/auth-context";
 import { usePlan } from "@/lib/plan-context";
 import { LoginDialog } from "@/components/auth/LoginDialog";
 import { UpgradeDialog } from "@/components/premium/UpgradeDialog";
+import { PremiumBadge } from "@/components/premium/PremiumBadge";
 import {
   Download, FileUp, FileDown, FileText, FolderDown, Globe, Type,
   SlidersHorizontal, Check, Sun, Moon,
   Menu, X, ChevronRight, ChevronLeft, Palette,
-  Loader2, Link, LogIn, LogOut, User, Copy, ExternalLink,
+  Loader2, Share2, LogIn, LogOut, User, Copy, ExternalLink,
   PanelLeft, PanelRight, Square, Lock, HardDrive, Cloud, Layers, FlaskConical,
 } from "lucide-react";
 
@@ -88,12 +89,7 @@ function SectionToggle({
     <label className="flex items-center justify-between gap-3 py-1.5 cursor-pointer">
       <span className="flex items-center gap-2 text-[15px] text-gray-700 dark:text-gray-200">
         {label}
-        {locked && (
-          <span className="inline-flex items-center gap-0.5 rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-700 dark:bg-amber-900/50 dark:text-amber-400">
-            <Lock className="h-2.5 w-2.5" />
-            PRO
-          </span>
-        )}
+        {locked && <PremiumBadge />}
       </span>
       <Switch checked={checked} onCheckedChange={onToggle} />
     </label>
@@ -102,8 +98,8 @@ function SectionToggle({
 
 function UserAvatar({ url, size }: { url?: string; size: number }) {
   const [failed, setFailed] = useState(false);
-  const sizeClass = size === 8 ? "h-8 w-8" : "h-7 w-7";
-  const iconSize = size === 8 ? "h-4 w-4" : "h-3.5 w-3.5";
+  const sizeClass = size >= 10 ? "h-10 w-10" : size === 8 ? "h-8 w-8" : "h-7 w-7";
+  const iconSize = size >= 10 ? "h-5 w-5" : size === 8 ? "h-4 w-4" : "h-3.5 w-3.5";
 
   if (url && !failed) {
     return (
@@ -121,58 +117,6 @@ function UserAvatar({ url, size }: { url?: string; size: number }) {
     <div className={`${sizeClass} flex items-center justify-center bg-gray-100 dark:bg-accent`}>
       <User className={`${iconSize} text-gray-500`} />
     </div>
-  );
-}
-
-function SyncStatusRow({
-  expanded,
-  onToggle,
-  isPremium,
-  t,
-}: {
-  expanded: boolean;
-  onToggle: () => void;
-  isPremium: boolean;
-  t: (key: string) => string;
-}) {
-  const StatusIcon = isPremium ? Cloud : HardDrive;
-  return (
-    <button
-      className="w-full px-4 py-2.5 border-b border-gray-100 dark:border-border text-left hover:bg-gray-50 dark:hover:bg-accent/50 transition-colors"
-      onClick={onToggle}
-    >
-      <div className="flex items-center gap-2">
-        <StatusIcon className="h-3.5 w-3.5 text-gray-400" />
-        {isPremium ? (
-          <span className="relative flex h-2 w-2 shrink-0">
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_6px_1px_rgba(16,185,129,0.4)]" />
-          </span>
-        ) : (
-          <span className="relative flex h-2 w-2 shrink-0">
-            <span className="absolute inline-flex h-full w-full rounded-full bg-amber-400/40 animate-pulse" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-amber-500 shadow-[0_0_8px_2px_rgba(245,158,11,0.4)]" />
-          </span>
-        )}
-        <span className="text-xs text-gray-400">
-          {isPremium ? t("syncCloud") : t("syncLocal")}
-        </span>
-      </div>
-      <div
-        className="grid transition-[grid-template-rows,opacity] duration-200 ease-out"
-        style={{ gridTemplateRows: expanded ? "1fr" : "0fr", opacity: expanded ? 1 : 0 }}
-      >
-        <div className="overflow-hidden">
-          <p className="text-[11px] text-gray-400/80 mt-1.5 leading-relaxed">
-            {isPremium ? t("syncCloudExplain") : t("syncLocalExplain")}
-          </p>
-          {!isPremium && (
-            <p className="text-[11px] text-amber-600/80 dark:text-amber-400/80 mt-1 leading-relaxed">
-              {t("syncProHint")}
-            </p>
-          )}
-        </div>
-      </div>
-    </button>
   );
 }
 
@@ -404,7 +348,7 @@ function FontSection({
               >
                 <span className="flex items-center gap-2">
                   {font.displayName}
-                  {isLocked && <Lock className="h-3 w-3 text-gray-400" />}
+                  {isLocked && <PremiumBadge />}
                 </span>
                 {fontFamilyId === font.id && (
                   <Check className="h-4 w-4 text-gray-900 dark:text-gray-100" />
@@ -500,7 +444,6 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
   const [shareCopied, setShareCopied] = useState(false);
-  const [syncExpanded, setSyncExpanded] = useState(false);
 
   const toggleTheme = useCallback(() => {
     setTheme(theme === "dark" ? "light" : "dark");
@@ -584,6 +527,8 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   const [isSharing, setIsSharing] = useState(false);
   const [showUploadOverlay, setShowUploadOverlay] = useState(false);
   const [fileMenuOpen, setFileMenuOpen] = useState(false);
+  const [accountDesktopOpen, setAccountDesktopOpen] = useState(false);
+  const [accountMobileOpen, setAccountMobileOpen] = useState(false);
 
   const imageCache = useRef<ImageUploadCache | null>(null);
   const prevPhotoRef = useRef(data.personalInfo.photo);
@@ -786,15 +731,6 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       {t("pdfTitle")}
                     </span>
                   </button>
-                  {!isPremium && (
-                    <button
-                      onClick={() => { setMobileMenuOpen(false); setUpgradeDialogOpen(true); }}
-                      className="flex w-full items-center gap-2 rounded-sm px-3.5 py-1 text-[11px] text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
-                    >
-                      <Lock className="h-3 w-3 shrink-0" />
-                      {t("pdfNoBranding")}
-                    </button>
-                  )}
 
                   {/* Export JSON */}
                   <button onClick={exportToJSON} className={menuItemClass}>
@@ -818,7 +754,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                   {/* Copy link */}
                   <button onClick={() => { setMobileMenuOpen(false); handleShare(); }} disabled={isSharing || !canShare} className={`${menuItemClass} ${!canShare ? "opacity-50" : ""}`}>
                     <span className="flex items-center gap-2.5">
-                      <Link className="h-4 w-4" />
+                      <Share2 className="h-4 w-4" />
                       {t("share")}
                     </span>
                   </button>
@@ -834,9 +770,6 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                   </button>
                   <div className="px-3.5 pt-2.5 pb-1.5 max-h-[60vh] overflow-y-auto overscroll-contain scrollbar-thin">
                     <div>
-                      <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-2">
-                        {t("colorScheme")}
-                      </p>
                       <div className="flex flex-wrap gap-3">
                         {COLOR_SCHEME_NAMES.map((name) => {
                           const scheme = COLOR_SCHEMES[name];
@@ -883,9 +816,6 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                   </button>
                   <div className="px-3.5 pt-2.5 pb-1.5 space-y-4 max-h-[60vh] overflow-y-auto overscroll-contain scrollbar-thin">
                     <div>
-                      <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-2">
-                        {t("sidebarPattern")}
-                      </p>
                       <div className="flex flex-wrap gap-3">
                         {SIDEBAR_PATTERN_NAMES.map((name) => {
                           const isActive = patternName === name;
@@ -992,9 +922,6 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                   </button>
                   <div className="px-3.5 pt-2.5 pb-1.5 space-y-4 max-h-[60vh] overflow-y-auto overscroll-contain scrollbar-thin">
                     <div>
-                      <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-2">
-                        {t("fontFamily")}
-                      </p>
                       <div className="space-y-0.5">
                         {FONT_FAMILIES.map((font) => {
                           const isLocked = !isPremium && !FREE_FONTS.includes(font.id);
@@ -1010,7 +937,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                             >
                               <span className="flex items-center gap-2">
                                 {font.displayName}
-                                {isLocked && <Lock className="h-3 w-3 text-gray-400" />}
+                                {isLocked && <PremiumBadge />}
                               </span>
                               {fontFamilyId === font.id && <Check className="h-4 w-4 text-gray-900 dark:text-gray-100" />}
                             </button>
@@ -1160,7 +1087,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                 </TooltipTrigger>
                 <TooltipContent>{t("sidebarPattern")}</TooltipContent>
               </Tooltip>
-              <PopoverContent className="w-56 p-3 space-y-4 scrollbar-thin" align="end">
+              <PopoverContent className="w-72 p-3 space-y-4 scrollbar-thin" align="end">
                 <PatternSection {...patternProps} />
               </PopoverContent>
             </Popover>
@@ -1236,15 +1163,6 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     {isGeneratingPDF ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
                     {t("pdfTitle")}
                   </button>
-                  {!isPremium && (
-                    <button
-                      onClick={() => { setFileMenuOpen(false); setUpgradeDialogOpen(true); }}
-                      className="flex w-full items-center gap-2 rounded-sm px-2 py-1 text-[11px] text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
-                    >
-                      <Lock className="h-3 w-3 shrink-0" />
-                      {t("pdfNoBranding")}
-                    </button>
-                  )}
                   <div className="my-1 border-t border-gray-100 dark:border-border" />
                   <button
                     onClick={exportToJSON}
@@ -1274,7 +1192,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                   disabled={isSharing || !canShare}
                   className={`h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100 ${!canShare ? "opacity-50" : ""}`}
                 >
-                  <Link className="h-4 w-4" />
+                  <Share2 className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>{t("share")}</TooltipContent>
@@ -1347,76 +1265,95 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
             <div className="h-5 w-px bg-gray-200 dark:bg-gray-700 mx-1" />
 
             {/* ── Account popover (sync status + auth + upgrade) ── */}
-            <Popover>
+            <Popover open={accountDesktopOpen} onOpenChange={setAccountDesktopOpen}>
               <PopoverTrigger asChild>
-                {user ? (
-                  <button
-                    data-testid="btn-account"
-                    className="h-8 w-8 items-center justify-center rounded-full overflow-hidden ring-1 ring-gray-200 dark:ring-gray-700 hover:ring-gray-300 dark:hover:ring-gray-600 transition-all hidden md:flex"
-                  >
-                    <UserAvatar url={user.user_metadata?.avatar_url} size={8} />
-                  </button>
-                ) : (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    data-testid="btn-account"
-                    className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
-                  >
-                    <User className="h-4 w-4" />
-                  </Button>
-                )}
+                <button
+                  data-testid="btn-account"
+                  className="relative h-8 w-8 items-center justify-center rounded-full overflow-visible transition-all hidden md:flex group"
+                >
+                  {user ? (
+                    <span className="h-8 w-8 rounded-full overflow-hidden ring-1 ring-gray-200 dark:ring-gray-700 group-hover:ring-gray-400 dark:group-hover:ring-gray-500 transition-all block">
+                      <UserAvatar url={user.user_metadata?.avatar_url} size={8} />
+                    </span>
+                  ) : (
+                    <span className="h-8 w-8 rounded-full border-[1.5px] border-dashed border-gray-300 dark:border-gray-600 group-hover:border-gray-400 dark:group-hover:border-gray-500 flex items-center justify-center transition-colors bg-gray-50 dark:bg-gray-800/50">
+                      <User className="h-3.5 w-3.5 text-gray-400 dark:text-gray-500" />
+                    </span>
+                  )}
+                  {/* Sync status badge */}
+                  <span className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-white dark:border-gray-950 ${user ? "bg-emerald-500" : "bg-amber-500"}`} />
+                </button>
               </PopoverTrigger>
-              <PopoverContent className="w-56 p-0 overflow-hidden" align="end">
+              <PopoverContent className="w-60 p-0 overflow-hidden" align="end">
                 {user ? (
                   <div>
-                    {/* User info + sign out */}
-                    <div className="px-4 py-4 border-b border-gray-100 dark:border-border">
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="min-w-0">
-                          <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                    {/* Hero: avatar + name + email */}
+                    <div className="px-4 pt-4 pb-3">
+                      <div className="flex items-center gap-3">
+                        <span className="h-10 w-10 rounded-full overflow-hidden ring-1 ring-gray-200 dark:ring-gray-700 shrink-0">
+                          <UserAvatar url={user.user_metadata?.avatar_url} size={10} />
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-semibold text-gray-900 dark:text-gray-50 truncate">
                             {user.user_metadata?.full_name || user.email}
                           </p>
                           {user.email && user.user_metadata?.full_name && (
-                            <p className="text-xs text-gray-400 truncate mt-0.5">{user.email}</p>
+                            <p className="text-xs text-gray-400 truncate">{user.email}</p>
                           )}
                         </div>
-                        <button
-                          onClick={() => signOut()}
-                          className="shrink-0 h-7 w-7 flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 text-gray-400 hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 dark:hover:border-gray-600 transition-colors"
-                          title={tauth("signOut")}
-                        >
-                          <LogOut className="h-3.5 w-3.5" />
-                        </button>
                       </div>
                     </div>
-                    <SyncStatusRow expanded={syncExpanded} onToggle={() => setSyncExpanded(v => !v)} isPremium={isPremium} t={t as (key: string) => string} />
-                    {!isPremium && (
-                      <div className="px-4 py-3">
+
+                    {/* Sync status pill */}
+                    <div className="mx-4 mb-3 flex items-center gap-2 rounded-lg bg-gray-50 dark:bg-gray-800/60 px-2.5 py-1.5">
+                      <Cloud className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        {t("syncCloud")}
+                      </span>
+                      <span className="ml-auto h-1.5 w-1.5 rounded-full shrink-0 bg-emerald-500" />
+                    </div>
+
+                    {/* Actions */}
+                    <div className="border-t border-gray-100 dark:border-gray-800">
+                      {!isPremium && (
                         <button
-                          onClick={() => setUpgradeDialogOpen(true)}
-                          className="w-full flex items-center justify-center gap-2 rounded-lg bg-gradient-to-b from-gray-800 to-gray-900 px-3 py-2 text-xs font-medium text-white shadow-sm hover:from-gray-700 hover:to-gray-800 transition-colors dark:from-gray-100 dark:to-gray-200 dark:text-gray-900 dark:hover:from-gray-200 dark:hover:to-gray-300"
+                          onClick={() => { setAccountDesktopOpen(false); setUpgradeDialogOpen(true); }}
+                          className="w-full flex items-center gap-2.5 px-4 py-2 text-xs text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
                         >
+                          <FlaskConical className="h-3.5 w-3.5 text-gray-400" />
                           {tsync("upgrade")}
                         </button>
-                      </div>
-                    )}
+                      )}
+                      <button
+                        onClick={() => { setAccountDesktopOpen(false); signOut(); }}
+                        className="w-full flex items-center gap-2.5 px-4 py-2 text-xs text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                      >
+                        <LogOut className="h-3.5 w-3.5 text-gray-400" />
+                        {tauth("signOut")}
+                      </button>
+                    </div>
                   </div>
                 ) : (
-                  <div>
-                    <SyncStatusRow expanded={syncExpanded} onToggle={() => setSyncExpanded(v => !v)} isPremium={isPremium} t={t as (key: string) => string} />
-                    <div className="px-4 py-3 space-y-2.5">
-                      <button
-                        onClick={() => setLoginDialogOpen(true)}
-                        className="w-full flex items-center justify-center gap-2 rounded-lg bg-gradient-to-b from-gray-800 to-gray-900 px-3 py-2 text-xs font-medium text-white shadow-sm hover:from-gray-700 hover:to-gray-800 transition-colors dark:from-gray-100 dark:to-gray-200 dark:text-gray-900 dark:hover:from-gray-200 dark:hover:to-gray-300"
-                      >
-                        <LogIn className="h-3.5 w-3.5" />
-                        {tauth("login")}
-                      </button>
-                      <p className="text-[11px] text-gray-400 leading-relaxed">
-                        {t("syncLoginHint")}
-                      </p>
+                  <div className="p-4">
+                    {/* Sync status inline */}
+                    <div className="flex items-center gap-2 mb-4">
+                      <HardDrive className="h-3.5 w-3.5 text-amber-500 shrink-0" />
+                      <span className="text-xs text-gray-500 dark:text-gray-400">{t("syncLocal")}</span>
+                      <span className="ml-auto h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" />
                     </div>
+
+                    {/* CTA */}
+                    <button
+                      onClick={() => { setAccountDesktopOpen(false); setLoginDialogOpen(true); }}
+                      className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-gray-800 to-gray-900 px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:from-gray-700 hover:to-gray-800 transition-colors dark:from-gray-100 dark:to-gray-200 dark:text-gray-900 dark:hover:from-gray-200 dark:hover:to-gray-300"
+                    >
+                      <LogIn className="h-4 w-4" />
+                      {tauth("login")}
+                    </button>
+
+                    <p className="text-[11px] text-gray-400 leading-relaxed mt-3 text-center">
+                      {t("syncLoginHint")}
+                    </p>
                   </div>
                 )}
               </PopoverContent>
@@ -1425,73 +1362,82 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
           </div>
 
           {/* ===== MOBILE: Account button (always visible) ===== */}
-          <Popover>
+          <Popover open={accountMobileOpen} onOpenChange={setAccountMobileOpen}>
             <PopoverTrigger asChild>
-              {user ? (
-                <button
-                  className="md:hidden h-8 w-8 mr-1 items-center justify-center rounded-full overflow-hidden ring-1 ring-gray-200 dark:ring-gray-700 hover:ring-gray-300 dark:hover:ring-gray-600 transition-all flex"
-                >
-                  <UserAvatar url={user.user_metadata?.avatar_url} size={8} />
-                </button>
-              ) : (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="md:hidden h-9 w-9 mr-1 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
-                >
-                  <User className="h-5 w-5" />
-                </Button>
-              )}
+              <button className="relative md:hidden h-8 w-8 mr-1 items-center justify-center rounded-full overflow-visible transition-all flex group">
+                {user ? (
+                  <span className="h-8 w-8 rounded-full overflow-hidden ring-1 ring-gray-200 dark:ring-gray-700 group-hover:ring-gray-400 dark:group-hover:ring-gray-500 transition-all block">
+                    <UserAvatar url={user.user_metadata?.avatar_url} size={8} />
+                  </span>
+                ) : (
+                  <span className="h-8 w-8 rounded-full border-[1.5px] border-dashed border-gray-300 dark:border-gray-600 group-hover:border-gray-400 dark:group-hover:border-gray-500 flex items-center justify-center transition-colors bg-gray-50 dark:bg-gray-800/50">
+                    <User className="h-3.5 w-3.5 text-gray-400 dark:text-gray-500" />
+                  </span>
+                )}
+                <span className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-white dark:border-gray-950 ${user ? "bg-emerald-500" : "bg-amber-500"}`} />
+              </button>
             </PopoverTrigger>
-            <PopoverContent className="w-56 p-0 overflow-hidden" align="end">
+            <PopoverContent className="w-60 p-0 overflow-hidden" align="end">
               {user ? (
                 <div>
-                  <div className="px-4 py-4 border-b border-gray-100 dark:border-border">
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="min-w-0">
-                        <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                  <div className="px-4 pt-4 pb-3">
+                    <div className="flex items-center gap-3">
+                      <span className="h-10 w-10 rounded-full overflow-hidden ring-1 ring-gray-200 dark:ring-gray-700 shrink-0">
+                        <UserAvatar url={user.user_metadata?.avatar_url} size={10} />
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-semibold text-gray-900 dark:text-gray-50 truncate">
                           {user.user_metadata?.full_name || user.email}
                         </p>
                         {user.email && user.user_metadata?.full_name && (
-                          <p className="text-xs text-gray-400 truncate mt-0.5">{user.email}</p>
+                          <p className="text-xs text-gray-400 truncate">{user.email}</p>
                         )}
                       </div>
-                      <button
-                        onClick={() => signOut()}
-                        className="shrink-0 h-7 w-7 flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 text-gray-400 hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 dark:hover:border-gray-600 transition-colors"
-                        title={tauth("signOut")}
-                      >
-                        <LogOut className="h-3.5 w-3.5" />
-                      </button>
                     </div>
                   </div>
-                  <SyncStatusRow expanded={syncExpanded} onToggle={() => setSyncExpanded(v => !v)} isPremium={isPremium} t={t as (key: string) => string} />
-                  {!isPremium && (
-                    <div className="px-4 py-3">
+                  <div className="mx-4 mb-3 flex items-center gap-2 rounded-lg bg-gray-50 dark:bg-gray-800/60 px-2.5 py-1.5">
+                    <Cloud className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                      {t("syncCloud")}
+                    </span>
+                    <span className="ml-auto h-1.5 w-1.5 rounded-full shrink-0 bg-emerald-500" />
+                  </div>
+                  <div className="border-t border-gray-100 dark:border-gray-800">
+                    {!isPremium && (
                       <button
-                        onClick={() => setUpgradeDialogOpen(true)}
-                        className="w-full flex items-center justify-center gap-2 rounded-lg bg-gradient-to-b from-gray-800 to-gray-900 px-3 py-2 text-xs font-medium text-white shadow-sm hover:from-gray-700 hover:to-gray-800 transition-colors dark:from-gray-100 dark:to-gray-200 dark:text-gray-900 dark:hover:from-gray-200 dark:hover:to-gray-300"
+                        onClick={() => { setAccountMobileOpen(false); setUpgradeDialogOpen(true); }}
+                        className="w-full flex items-center gap-2.5 px-4 py-2 text-xs text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
                       >
+                        <FlaskConical className="h-3.5 w-3.5 text-gray-400" />
                         {tsync("upgrade")}
                       </button>
-                    </div>
-                  )}
+                    )}
+                    <button
+                      onClick={() => { setAccountMobileOpen(false); signOut(); }}
+                      className="w-full flex items-center gap-2.5 px-4 py-2 text-xs text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                    >
+                      <LogOut className="h-3.5 w-3.5 text-gray-400" />
+                      {tauth("signOut")}
+                    </button>
+                  </div>
                 </div>
               ) : (
-                <div>
-                  <SyncStatusRow expanded={syncExpanded} onToggle={() => setSyncExpanded(v => !v)} isPremium={isPremium} t={t as (key: string) => string} />
-                  <div className="px-4 py-3 space-y-2.5">
-                    <button
-                      onClick={() => setLoginDialogOpen(true)}
-                      className="w-full flex items-center justify-center gap-2 rounded-lg bg-gradient-to-b from-gray-800 to-gray-900 px-3 py-2 text-xs font-medium text-white shadow-sm hover:from-gray-700 hover:to-gray-800 transition-colors dark:from-gray-100 dark:to-gray-200 dark:text-gray-900 dark:hover:from-gray-200 dark:hover:to-gray-300"
-                    >
-                      <LogIn className="h-3.5 w-3.5" />
-                      {tauth("login")}
-                    </button>
-                    <p className="text-[11px] text-gray-400 leading-relaxed">
-                      {t("syncLoginHint")}
-                    </p>
+                <div className="p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <HardDrive className="h-3.5 w-3.5 text-amber-500 shrink-0" />
+                    <span className="text-xs text-gray-500 dark:text-gray-400">{t("syncLocal")}</span>
+                    <span className="ml-auto h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" />
                   </div>
+                  <button
+                    onClick={() => { setAccountMobileOpen(false); setLoginDialogOpen(true); }}
+                    className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-gray-800 to-gray-900 px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:from-gray-700 hover:to-gray-800 transition-colors dark:from-gray-100 dark:to-gray-200 dark:text-gray-900 dark:hover:from-gray-200 dark:hover:to-gray-300"
+                  >
+                    <LogIn className="h-4 w-4" />
+                    {tauth("login")}
+                  </button>
+                  <p className="text-[11px] text-gray-400 leading-relaxed mt-3 text-center">
+                    {t("syncLoginHint")}
+                  </p>
                 </div>
               )}
             </PopoverContent>
@@ -1524,12 +1470,11 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
           />
           <Button
             variant="outline"
-            size="sm"
-            className="shrink-0 gap-1.5"
+            size="icon"
+            className="shrink-0"
             onClick={handleCopyShareUrl}
           >
-            {shareCopied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
-            {shareCopied ? t("shareCopied") : t("shareCopyLink")}
+            {shareCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
           </Button>
         </div>
         <a
