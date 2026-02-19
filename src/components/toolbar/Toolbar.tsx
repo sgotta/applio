@@ -27,9 +27,9 @@ import {
   SlidersHorizontal, Check, Sun, Moon,
   Menu, X, ChevronRight, ChevronLeft, Palette, Layers,
   Loader2, MoreHorizontal, Link, LogIn, LogOut, User,
-  PanelLeft, PanelRight, Square, Shield,
+  PanelLeft, PanelRight, Square,
+  Smartphone, ShieldCheck, Share2,
 } from "lucide-react";
-import { useToolbarFeatures, TOOLBAR_INLINE_KEYS, TOOLBAR_BLOCK_TYPE_KEYS } from "@/lib/toolbar-features-context";
 
 const CACHE_EXPIRY_MS = 15 * 24 * 60 * 60 * 1000; // 15 days
 
@@ -108,7 +108,7 @@ function UserAvatar({ url, size }: { url?: string; size: number }) {
   );
 }
 
-type MobileMenuPage = "main" | "language" | "color" | "pattern" | "font" | "sections" | "admin";
+type MobileMenuPage = "main" | "language" | "color" | "pattern" | "font" | "sections" | "sync";
 
 export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   const { data, importData, toggleSection } = useCV();
@@ -121,8 +121,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   const { colorSchemeName, setColorScheme } = useColorScheme();
   const { patternName, setPattern, sidebarIntensity, mainIntensity, scope, setSidebarIntensity, setMainIntensity, setScope, patternSettings, setPatternSettings } = useSidebarPattern();
   const { fontFamilyId, fontSizeLevel, setFontFamily, setFontSizeLevel } = useFontSettings();
-  const { features: toolbarFeatures, toggleFeature } = useToolbarFeatures();
-  const ta = useTranslations("admin");
+  const tsync = useTranslations("sync");
   const isCJKLocale = CJK_LOCALES.has(locale);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -300,14 +299,9 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
         {/* Logo */}
         <div className="flex items-center gap-1.5">
           <FileText className="h-6 w-6 md:h-5 md:w-5 text-gray-900 dark:text-gray-100" />
-          <div className="flex items-baseline gap-2">
-            <span className="font-display text-lg md:text-base font-bold tracking-tight text-gray-900 dark:text-gray-100">
-              Applio
-            </span>
-            <span className="hidden text-[11px] font-light tracking-wide text-gray-500 dark:text-gray-400 sm:inline">
-              {t("tagline")}
-            </span>
-          </div>
+          <span className="font-display text-lg md:text-base font-bold tracking-tight text-gray-900 dark:text-gray-100">
+            Applio
+          </span>
         </div>
 
         {/* Actions */}
@@ -600,50 +594,6 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
               </PopoverContent>
             </Popover>
 
-            {/* Admin — toolbar feature flags */}
-            <Popover>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
-                    >
-                      <Shield className="h-4 w-4" />
-                    </Button>
-                  </PopoverTrigger>
-                </TooltipTrigger>
-                <TooltipContent>{ta("title")}</TooltipContent>
-              </Tooltip>
-              <PopoverContent className="w-64 max-h-[70vh] overflow-y-auto overscroll-contain scrollbar-thin" align="end">
-                <div className="space-y-3">
-                  <div className="space-y-1">
-                    <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-1">{ta("title")}</p>
-                    {TOOLBAR_INLINE_KEYS.map((key) => (
-                      <SectionToggle
-                        key={key}
-                        label={ta(key)}
-                        checked={toolbarFeatures[key]}
-                        onToggle={() => toggleFeature(key)}
-                      />
-                    ))}
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-1">{ta("blockTypesSection")}</p>
-                    {TOOLBAR_BLOCK_TYPE_KEYS.map((key) => (
-                      <SectionToggle
-                        key={key}
-                        label={ta(key)}
-                        checked={toolbarFeatures[key]}
-                        onToggle={() => toggleFeature(key)}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </PopoverContent>
-            </Popover>
-
             {/* Divider — CV design | system */}
             <div className="h-5 w-px bg-gray-200 dark:bg-gray-700 mx-1" />
 
@@ -707,6 +657,57 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
             {/* Divider — system | actions */}
             <div className="h-5 w-px bg-gray-200 dark:bg-gray-700 mx-1" />
+
+            {/* Sync status indicator — desktop */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <button className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 text-amber-600 text-xs font-medium ring-1 ring-amber-200/60 hover:bg-amber-100 transition-colors dark:bg-amber-950/50 dark:text-amber-400 dark:ring-amber-800/40 dark:hover:bg-amber-900/50">
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-50" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-amber-500" />
+                  </span>
+                  {tsync("local")}
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[280px] p-0 overflow-hidden" align="end">
+                <div className="h-1 bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500" />
+                <div className="p-4 space-y-3.5">
+                  <div>
+                    <p className="text-[13px] font-semibold text-gray-900 dark:text-gray-100">{tsync("title")}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">{tsync("description")}</p>
+                  </div>
+                  <div className="space-y-2.5">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gray-100 dark:bg-accent">
+                        <Smartphone className="h-3.5 w-3.5 text-gray-500 dark:text-gray-400" />
+                      </div>
+                      <span className="text-xs text-gray-700 dark:text-gray-200">{tsync("benefit1")}</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gray-100 dark:bg-accent">
+                        <ShieldCheck className="h-3.5 w-3.5 text-gray-500 dark:text-gray-400" />
+                      </div>
+                      <span className="text-xs text-gray-700 dark:text-gray-200">{tsync("benefit2")}</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gray-100 dark:bg-accent">
+                        <Share2 className="h-3.5 w-3.5 text-gray-500 dark:text-gray-400" />
+                      </div>
+                      <span className="text-xs text-gray-700 dark:text-gray-200">{tsync("benefit3")}</span>
+                    </div>
+                  </div>
+                  <div className="border-t border-gray-100 dark:border-border pt-3.5">
+                    <button
+                      disabled
+                      className="w-full flex items-center justify-center gap-2 rounded-lg bg-gradient-to-b from-gray-800 to-gray-900 px-3 py-2 text-xs font-medium text-white/80 cursor-not-allowed shadow-sm dark:from-gray-100 dark:to-gray-200 dark:text-gray-500"
+                    >
+                      {tsync("upgrade")}
+                      <span className="rounded-full bg-white/15 px-1.5 py-0.5 text-[10px] text-white/60 dark:bg-black/10 dark:text-gray-400">{tsync("comingSoon")}</span>
+                    </button>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
 
             {/* Auth: Login button or User avatar — desktop */}
             {user ? (
@@ -885,15 +886,6 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <ChevronRight className="h-3.5 w-3.5 text-gray-400 dark:text-gray-400" />
                   </button>
 
-                  {/* Admin */}
-                  <button onClick={() => setMobileMenuPage("admin")} className={menuItemClass}>
-                    <span className="flex items-center gap-2.5">
-                      <Shield className="h-4 w-4" />
-                      {ta("title")}
-                    </span>
-                    <ChevronRight className="h-3.5 w-3.5 text-gray-400 dark:text-gray-400" />
-                  </button>
-
                   {/* Divider */}
                   <div className="my-1.5 border-t border-gray-100 dark:border-border" />
 
@@ -915,6 +907,18 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       {LOCALE_NAMES[locale]}
                       <ChevronRight className="h-3.5 w-3.5" />
                     </span>
+                  </button>
+
+                  {/* Sync status — mobile */}
+                  <button onClick={() => setMobileMenuPage("sync")} className={menuItemClass}>
+                    <span className="flex items-center gap-2.5">
+                      <span className="relative flex h-2 w-2">
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-50" />
+                        <span className="relative inline-flex h-2 w-2 rounded-full bg-amber-500" />
+                      </span>
+                      <span className="text-amber-600 dark:text-amber-400">{tsync("local")}</span>
+                    </span>
+                    <ChevronRight className="h-3.5 w-3.5 text-gray-400 dark:text-gray-400" />
                   </button>
 
                   {/* Divider */}
@@ -1248,33 +1252,48 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                 </div>
               )}
 
-              {mobileMenuPage === "admin" && (
+              {mobileMenuPage === "sync" && (
                 <div>
                   <button onClick={() => setMobileMenuPage("main")} className={backButtonClass}>
                     <ChevronLeft className="h-3.5 w-3.5" />
-                    {ta("title")}
+                    {tsync("local")}
                   </button>
-                  <div className="px-3.5 pt-2.5 pb-1.5 space-y-3">
-                    <div className="space-y-1">
-                      {TOOLBAR_INLINE_KEYS.map((key) => (
-                        <SectionToggle
-                          key={key}
-                          label={ta(key)}
-                          checked={toolbarFeatures[key]}
-                          onToggle={() => toggleFeature(key)}
-                        />
-                      ))}
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-[13px] font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-1">{ta("blockTypesSection")}</p>
-                      {TOOLBAR_BLOCK_TYPE_KEYS.map((key) => (
-                        <SectionToggle
-                          key={key}
-                          label={ta(key)}
-                          checked={toolbarFeatures[key]}
-                          onToggle={() => toggleFeature(key)}
-                        />
-                      ))}
+                  <div className="px-3.5 pt-1 pb-1.5">
+                    <div className="h-1 rounded-full bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500 mb-3.5" />
+                    <div className="space-y-3.5">
+                      <div>
+                        <p className="text-[15px] font-semibold text-gray-900 dark:text-gray-100">{tsync("title")}</p>
+                        <p className="text-[13px] text-gray-500 dark:text-gray-400 mt-1.5 leading-relaxed">{tsync("description")}</p>
+                      </div>
+                      <div className="space-y-2.5">
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-100 dark:bg-accent">
+                            <Smartphone className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                          </div>
+                          <span className="text-[13px] text-gray-700 dark:text-gray-200">{tsync("benefit1")}</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-100 dark:bg-accent">
+                            <ShieldCheck className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                          </div>
+                          <span className="text-[13px] text-gray-700 dark:text-gray-200">{tsync("benefit2")}</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-100 dark:bg-accent">
+                            <Share2 className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                          </div>
+                          <span className="text-[13px] text-gray-700 dark:text-gray-200">{tsync("benefit3")}</span>
+                        </div>
+                      </div>
+                      <div className="border-t border-gray-100 dark:border-border pt-3.5">
+                        <button
+                          disabled
+                          className="w-full flex items-center justify-center gap-2 rounded-lg bg-gradient-to-b from-gray-800 to-gray-900 px-3 py-2.5 text-sm font-medium text-white/80 cursor-not-allowed shadow-sm dark:from-gray-100 dark:to-gray-200 dark:text-gray-500"
+                        >
+                          {tsync("upgrade")}
+                          <span className="rounded-full bg-white/15 px-2 py-0.5 text-[10px] text-white/60 dark:bg-black/10 dark:text-gray-400">{tsync("comingSoon")}</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>

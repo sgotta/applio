@@ -297,8 +297,8 @@
     },
     "hero": {
       "titleLine1": "CV'nizi oluşturun,",
-      "titleLine2": "zahmetsizce.",
-      "subtitle": "Herhangi bir metne tıklayın ve doğrudan düzenleyin. Form yok, adım yok, sürtünme yok. Hazır olduğunda profesyonel bir PDF indirin.",
+      "titleLine2": "dakikalar içinde.",
+      "subtitle": "Tıklayın, doğrudan düzenleyin ve profesyonel bir PDF indirin. Form yok, ek adım yok.",
       "ctaPrimary": "Ücretsiz başlayın",
       "ctaSecondary": "Nasıl çalışır",
       "mockupHint": "Düzenlemeye başlamak için tıklayın →"
@@ -359,7 +359,6 @@
       "button": "Şimdi başlayın"
     },
     "footer": {
-      "madeIn": "Buenos Aires'te sevgiyle yapıldı."
     }
   },
   "auth": {
@@ -370,5 +369,15 @@
     "loginDisclaimer": "Yalnızca adınıza, e-postanıza ve profil fotoğrafınıza erişiyoruz.",
     "signOut": "Çıkış yap",
     "login": "Giriş yap"
+  },
+  "sync": {
+    "local": "Yerel",
+    "title": "CV'niz yerel olarak kaydedildi",
+    "description": "Verileriniz yalnızca bu tarayıcıda mevcut. Tarama verilerinizi silerseniz veya cihaz değiştirirseniz CV'niz kaybolacaktır.",
+    "benefit1": "CV'nize herhangi bir cihazdan erişin",
+    "benefit2": "Otomatik bulut yedekleme",
+    "benefit3": "CV'nizi kişiselleştirilmiş bir bağlantıyla paylaşın",
+    "upgrade": "Pro'ya yükselt",
+    "comingSoon": "Yakında"
   }
 }

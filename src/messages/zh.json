@@ -297,8 +297,8 @@
     },
     "hero": {
       "titleLine1": "轻松创建",
-      "titleLine2": "你的简历。",
-      "subtitle": "点击任意文字即可直接编辑。没有表单，没有步骤，没有繁琐流程。准备好后，下载专业的 PDF。",
+      "titleLine2": "你的简历（几分钟内）。",
+      "subtitle": "点击、直接编辑、下载专业 PDF。无表单、无繁琐步骤。",
       "ctaPrimary": "免费开始",
       "ctaSecondary": "了解使用方式",
       "mockupHint": "点击开始编辑 →"
@@ -359,7 +359,6 @@
       "button": "立即开始"
     },
     "footer": {
-      "madeIn": "用爱制作于布宜诺斯艾利斯。"
     }
   },
   "auth": {
@@ -370,5 +369,15 @@
     "loginDisclaimer": "我们仅访问您的姓名、邮箱和头像。",
     "signOut": "退出登录",
     "login": "登录"
+  },
+  "sync": {
+    "local": "本地",
+    "title": "您的简历存储在本地",
+    "description": "您的数据仅存在于此浏览器中。如果您清除浏览数据或更换设备，您的简历将会丢失。",
+    "benefit1": "从任何设备访问您的简历",
+    "benefit2": "自动云端备份",
+    "benefit3": "通过自定义链接分享您的简历",
+    "upgrade": "升级到 Pro",
+    "comingSoon": "即将推出"
   }
 }

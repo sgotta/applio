@@ -297,8 +297,8 @@
     },
     "hero": {
       "titleLine1": "Erstelle deinen Lebenslauf",
-      "titleLine2": "ganz ohne Aufwand.",
-      "subtitle": "Klicke auf einen beliebigen Text und bearbeite ihn direkt. Keine Formulare, keine Schritte, keine Umstände. Wenn er fertig ist, lade ein professionelles PDF herunter.",
+      "titleLine2": "in wenigen Minuten.",
+      "subtitle": "Klicke, bearbeite direkt und lade ein professionelles PDF herunter. Keine Formulare, keine zusätzlichen Schritte.",
       "ctaPrimary": "Kostenlos starten",
       "ctaSecondary": "So funktioniert's",
       "mockupHint": "Klicken, um mit dem Bearbeiten zu beginnen →"
@@ -359,7 +359,6 @@
       "button": "Jetzt starten"
     },
     "footer": {
-      "madeIn": "Mit Liebe in Buenos Aires gemacht."
     }
   },
   "auth": {
@@ -370,5 +369,15 @@
     "loginDisclaimer": "Wir greifen nur auf Ihren Namen, E-Mail und Profilbild zu.",
     "signOut": "Abmelden",
     "login": "Anmelden"
+  },
+  "sync": {
+    "local": "Lokal",
+    "title": "Ihr Lebenslauf ist lokal gespeichert",
+    "description": "Ihre Daten existieren nur in diesem Browser. Wenn Sie Ihre Browserdaten löschen oder das Gerät wechseln, geht Ihr Lebenslauf verloren.",
+    "benefit1": "Greifen Sie von jedem Gerät auf Ihren Lebenslauf zu",
+    "benefit2": "Automatisches Cloud-Backup",
+    "benefit3": "Teilen Sie Ihren Lebenslauf mit einem personalisierten Link",
+    "upgrade": "Auf Pro upgraden",
+    "comingSoon": "Demnächst verfügbar"
   }
 }

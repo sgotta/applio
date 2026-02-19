@@ -297,8 +297,8 @@
     },
     "hero": {
       "titleLine1": "Creá tu CV",
-      "titleLine2": "sin complicaciones.",
-      "subtitle": "Hacé click en cualquier texto y editalo directo. Sin formularios, sin pasos, sin fricción. Cuando esté listo, descargá un PDF profesional.",
+      "titleLine2": "en minutos.",
+      "subtitle": "Hacé click, editá directo y descargá un PDF profesional. Sin formularios ni pasos de más.",
       "ctaPrimary": "Empezar gratis",
       "ctaSecondary": "Ver cómo funciona",
       "mockupHint": "Click para empezar a editar →"
@@ -359,7 +359,6 @@
       "button": "Empezar ahora"
     },
     "footer": {
-      "madeIn": "Hecho con cariño en Buenos Aires."
     }
   },
   "auth": {
@@ -370,5 +369,15 @@
     "loginDisclaimer": "Solo accedemos a tu nombre, email y foto de perfil.",
     "signOut": "Cerrar sesión",
     "login": "Iniciar sesión"
+  },
+  "sync": {
+    "local": "Local",
+    "title": "Tu CV está guardado localmente",
+    "description": "Tus datos solo existen en este navegador. Si borrás los datos de navegación o cambiás de dispositivo, tu CV se va a perder.",
+    "benefit1": "Accedé a tu CV desde cualquier dispositivo",
+    "benefit2": "Backup automático en la nube",
+    "benefit3": "Compartí tu CV con un link personalizado",
+    "upgrade": "Upgrade a Pro",
+    "comingSoon": "Próximamente"
   }
 }

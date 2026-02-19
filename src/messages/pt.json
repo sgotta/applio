@@ -297,8 +297,8 @@
     },
     "hero": {
       "titleLine1": "Crie seu CV",
-      "titleLine2": "sem complicação.",
-      "subtitle": "Clique em qualquer texto e edite diretamente. Sem formulários, sem etapas, sem atrito. Quando estiver pronto, baixe um PDF profissional.",
+      "titleLine2": "em minutos.",
+      "subtitle": "Clique, edite diretamente e baixe um PDF profissional. Sem formulários ou passos extras.",
       "ctaPrimary": "Começar grátis",
       "ctaSecondary": "Veja como funciona",
       "mockupHint": "Clique para começar a editar →"
@@ -359,7 +359,6 @@
       "button": "Começar agora"
     },
     "footer": {
-      "madeIn": "Feito com amor em Buenos Aires."
     }
   },
   "auth": {
@@ -370,5 +369,15 @@
     "loginDisclaimer": "Acessamos apenas seu nome, email e foto de perfil.",
     "signOut": "Sair",
     "login": "Entrar"
+  },
+  "sync": {
+    "local": "Local",
+    "title": "Seu CV está salvo localmente",
+    "description": "Seus dados existem apenas neste navegador. Se você limpar os dados de navegação ou trocar de dispositivo, seu CV será perdido.",
+    "benefit1": "Acesse seu CV de qualquer dispositivo",
+    "benefit2": "Backup automático na nuvem",
+    "benefit3": "Compartilhe seu CV com um link personalizado",
+    "upgrade": "Upgrade para Pro",
+    "comingSoon": "Em breve"
   }
 }
