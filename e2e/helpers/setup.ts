@@ -222,7 +222,7 @@ export async function openGripMenu(page: Page, entry: Locator) {
 export const test = base.extend<{ appPage: Page }>({
   appPage: async ({ page }, use) => {
     await page.setViewportSize({ width: 1280, height: 720 });
-    await page.goto("/");
+    await page.goto("/editor");
     await page.waitForLoadState("networkidle");
     await page.locator(".cv-preview-content").waitFor({ state: "visible" });
     await use(page);

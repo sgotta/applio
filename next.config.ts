@@ -8,6 +8,15 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_APP_VERSION: pkg.version,
   },
+  async redirects() {
+    return [
+      {
+        source: "/landing",
+        destination: "/",
+        permanent: true,
+      },
+    ];
+  },
   webpack: (config) => {
     // @react-pdf/renderer depends on "canvas" for Node.js rendering;
     // in the browser it uses the native Canvas API, so we alias it away.
