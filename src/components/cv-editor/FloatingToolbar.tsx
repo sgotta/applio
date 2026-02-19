@@ -529,6 +529,7 @@ export function FloatingToolbar({
               }
         }
         onMouseDown={(e) => e.preventDefault()}
+        data-testid="floating-toolbar"
         className={
           docked
             ? "flex items-center gap-1.5 border-t border-border bg-popover shadow-[0_-4px_12px_rgba(0,0,0,0.1)] px-3 py-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [&_button]:h-9 [&_button]:min-w-9 [&_button]:text-foreground [&_svg]:h-5 [&_svg]:w-5"

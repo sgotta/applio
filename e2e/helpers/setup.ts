@@ -61,6 +61,46 @@ export const minimalCV: CVData = {
   sidebarOrder: ["contact", "summary", "skills"],
 };
 
+/**
+ * CV data with optional sections (courses, certifications, awards) enabled and populated.
+ */
+export const cvWithOptionalSections: CVData = {
+  ...minimalCV,
+  courses: [
+    {
+      id: "course-test-1",
+      name: "Advanced Testing",
+      institution: "Test Academy",
+      date: "2023",
+      description: "",
+    },
+  ],
+  certifications: [
+    {
+      id: "cert-test-1",
+      name: "ISTQB Foundation",
+      issuer: "ISTQB",
+      date: "2022",
+      description: "",
+    },
+  ],
+  awards: [
+    {
+      id: "award-test-1",
+      name: "Best Tester Award",
+      issuer: "QA Association",
+      date: "2023",
+      description: "",
+    },
+  ],
+  visibility: {
+    ...minimalCV.visibility,
+    courses: true,
+    certifications: true,
+    awards: true,
+  },
+};
+
 // ─── Data helpers ──────────────────────────────────────────
 
 /**
