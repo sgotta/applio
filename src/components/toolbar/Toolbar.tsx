@@ -7,6 +7,7 @@ import { useAppLocale, LOCALES, LOCALE_NAMES } from "@/lib/locale-context";
 import { filenameDateStamp } from "@/lib/utils";
 import { CVData } from "@/lib/types";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -28,7 +29,7 @@ import {
   Download, FileUp, FileDown, FileText, FolderDown, Globe, Type,
   SlidersHorizontal, Check, Sun, Moon,
   Menu, X, ChevronRight, ChevronLeft, Palette,
-  Loader2, Link, LogIn, LogOut, User,
+  Loader2, Link, LogIn, LogOut, User, Copy, ExternalLink,
   PanelLeft, PanelRight, Square, Lock, HardDrive, Cloud, Layers, FlaskConical,
 } from "lucide-react";
 
@@ -496,6 +497,9 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   const [mobileMenuPage, setMobileMenuPage] = useState<MobileMenuPage>("main");
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
   const [upgradeDialogOpen, setUpgradeDialogOpen] = useState(false);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [shareUrl, setShareUrl] = useState("");
+  const [shareCopied, setShareCopied] = useState(false);
   const [syncExpanded, setSyncExpanded] = useState(false);
 
   const toggleTheme = useCallback(() => {
@@ -642,15 +646,21 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
     const compressed = compressSharedData(shared);
     const url = generateShareURL(compressed);
 
-    try {
-      await navigator.clipboard.writeText(url);
-      toast.success(t("shareLinkCopied"));
-    } catch {
-      window.open(url, "_blank");
-    }
-
+    setShareUrl(url);
+    setShareCopied(false);
+    setShareDialogOpen(true);
     setIsSharing(false);
-  }, [data, colorSchemeName, isSharing, canShare, patternSettings, fontFamilyId, fontSizeLevel, t]);
+  }, [data, colorSchemeName, isSharing, canShare, patternSettings, fontFamilyId, fontSizeLevel]);
+
+  const handleCopyShareUrl = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2000);
+    } catch {
+      // Fallback: select input text
+    }
+  }, [shareUrl]);
 
   const menuItemClass =
     "flex w-full items-center justify-between rounded-sm px-3.5 py-3 text-[15px] text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-accent transition-colors";
@@ -1496,6 +1506,43 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
     {/* Upgrade dialog */}
     <UpgradeDialog open={upgradeDialogOpen} onOpenChange={setUpgradeDialogOpen} />
+
+    {/* Share dialog */}
+    <Dialog open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
+      <DialogContent className="sm:max-w-sm">
+        <DialogHeader>
+          <DialogTitle>{t("shareTitle")}</DialogTitle>
+          <DialogDescription>{t("shareDescription")}</DialogDescription>
+        </DialogHeader>
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            readOnly
+            value={shareUrl}
+            className="flex-1 min-w-0 rounded-md border border-input bg-muted px-3 py-2 text-xs text-muted-foreground truncate outline-none"
+            onFocus={(e) => e.target.select()}
+          />
+          <Button
+            variant="outline"
+            size="sm"
+            className="shrink-0 gap-1.5"
+            onClick={handleCopyShareUrl}
+          >
+            {shareCopied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+            {shareCopied ? t("shareCopied") : t("shareCopyLink")}
+          </Button>
+        </div>
+        <a
+          href={shareUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center gap-1.5 rounded-md px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+        >
+          <ExternalLink className="h-3.5 w-3.5" />
+          {t("shareOpen")}
+        </a>
+      </DialogContent>
+    </Dialog>
 
     {/* Full-screen overlay during photo upload */}
     {showUploadOverlay && (
