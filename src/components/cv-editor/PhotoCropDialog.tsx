@@ -68,12 +68,14 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [previewError, setPreviewError] = useState(false);
 
   const resetCropState = useCallback(() => {
     setImageToCrop(null);
     setCrop({ x: 0, y: 0 });
     setZoom(1);
     setCroppedAreaPixels(null);
+    setPreviewError(false);
   }, []);
 
   const handleOpenChange = useCallback(
@@ -224,27 +226,37 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
           <>
             <DialogHeader>
               <DialogTitle>{t("altText")}</DialogTitle>
+              <DialogDescription className="sr-only">
+                {t("upload")} {t("photoLabel")}
+              </DialogDescription>
             </DialogHeader>
 
             {currentPhoto ? (
               <div className="flex flex-col items-center gap-4">
-                <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden shrink-0">
-                  <img
-                    src={currentPhoto}
-                    alt={t("altText")}
-                    className="w-full h-full object-cover"
-                  />
+                <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden shrink-0 bg-gray-100 dark:bg-gray-800 grid place-items-center">
+                  {previewError ? (
+                    <ImagePlus className="w-8 h-8 text-gray-400" />
+                  ) : (
+                    <img
+                      src={currentPhoto}
+                      alt={t("altText")}
+                      className="w-full h-full object-cover"
+                      onError={() => setPreviewError(true)}
+                    />
+                  )}
                 </div>
 
                 <div className="flex flex-wrap justify-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setImageToCrop(currentPhoto!)}
-                  >
-                    <Crop className="w-4 h-4 mr-1.5" />
-                    {t("adjust")}
-                  </Button>
+                  {!previewError && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setImageToCrop(currentPhoto!)}
+                    >
+                      <Crop className="w-4 h-4 mr-1.5" />
+                      {t("adjust")}
+                    </Button>
+                  )}
                   <Button
                     variant="outline"
                     size="sm"

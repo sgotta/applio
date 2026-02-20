@@ -11,6 +11,7 @@ import { PlanProvider, usePlan } from "@/lib/plan-context";
 import { ColorSchemeProvider, useColorScheme } from "@/lib/color-scheme-context";
 import { SidebarPatternProvider, useSidebarPattern } from "@/lib/sidebar-pattern-context";
 import { FontSettingsProvider, useFontSettings } from "@/lib/font-context";
+import { SyncStatusProvider } from "@/lib/sync-status-context";
 import { downloadPDF } from "@/lib/generate-pdf";
 import { filenameDateStamp } from "@/lib/utils";
 import { getFontDefinition, FONT_SIZE_LEVELS, PDF_BASE_FONT_SCALE } from "@/lib/fonts";
@@ -22,7 +23,7 @@ import { CVEditor } from "@/components/cv-editor/CVEditor";
 import { CloudSync } from "@/components/cloud-sync/CloudSync";
 
 function AppContent() {
-  const { data } = useCV();
+  const { data, loading } = useCV();
   const t = useTranslations("toolbar");
   const tp = useTranslations("printable");
   const { colorScheme } = useColorScheme();
@@ -57,6 +58,16 @@ function AppContent() {
       setIsGeneratingPDF(false);
     }
   }, [isGeneratingPDF, data, colorScheme, tp, patternSettings, locale, fontFamilyId, fontSizeLevel, isPremium]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-stone-100 dark:bg-background flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-stone-100 dark:bg-background animate-editor-enter">
@@ -106,6 +117,7 @@ export default function Home() {
           <LocaleProvider>
             <AuthProvider>
             <PlanProvider>
+            <SyncStatusProvider>
             <CVProvider>
             <TooltipProvider delayDuration={300}>
               <CloudSync />
@@ -123,6 +135,7 @@ export default function Home() {
               />
             </TooltipProvider>
             </CVProvider>
+            </SyncStatusProvider>
             </PlanProvider>
             </AuthProvider>
           </LocaleProvider>

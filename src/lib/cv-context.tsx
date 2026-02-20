@@ -26,6 +26,9 @@ import { arrayMove } from "@dnd-kit/sortable";
 
 interface CVContextValue {
   data: CVData;
+  loading: boolean;
+  /** Whether localStorage had saved CV data when the app loaded */
+  hadSavedData: boolean;
   updatePersonalInfo: (field: string, value: string | undefined) => void;
   updateSummary: (value: string) => void;
   updateExperience: (id: string, updates: Partial<ExperienceItem>) => void;
@@ -261,6 +264,8 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
   }, [t, locale]);
 
   const [data, setData] = useState<CVData>(() => getDefaultCVData(locale));
+  const [loading, setLoading] = useState(true);
+  const [hadSavedData, setHadSavedData] = useState(false);
   const initialized = useRef(false);
 
   // Load from localStorage on mount (useEffect is correct here to avoid SSR hydration mismatch)
@@ -272,7 +277,9 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
       const migrated = migrateCVData(saved);
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setData(migrated);
+      setHadSavedData(true);
     }
+    setLoading(false);
   }, []);
 
   // Auto-save on changes (debounced)
@@ -663,6 +670,8 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     <CVContext.Provider
       value={{
         data,
+        loading,
+        hadSavedData,
         updatePersonalInfo,
         updateSummary,
         updateExperience,

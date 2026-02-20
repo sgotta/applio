@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Camera } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { PhotoCropDialog } from "./PhotoCropDialog";
@@ -24,6 +24,11 @@ export function ProfilePhotoUpload({
 }: ProfilePhotoUploadProps) {
   const t = useTranslations("photo");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [photoError, setPhotoError] = useState(false);
+
+  useEffect(() => {
+    setPhotoError(false);
+  }, [currentPhoto]);
 
   const handlePhotoChange = useCallback(
     (photo: string | undefined) => {
@@ -40,19 +45,22 @@ export function ProfilePhotoUpload({
     return name.substring(0, 2).toUpperCase();
   };
 
-  const photoContent = currentPhoto ? (
-    <img
-      src={currentPhoto}
-      alt={t("altText")}
-      className="w-full h-full object-cover"
-    />
-  ) : (
+  const showInitials = !currentPhoto || photoError;
+
+  const photoContent = showInitials ? (
     <span
       className="text-3xl font-medium leading-none tracking-wide select-none"
       style={{ color: placeholderText ?? "#9ca3af" }}
     >
       {getInitials(fullName)}
     </span>
+  ) : (
+    <img
+      src={currentPhoto}
+      alt={t("altText")}
+      className="w-full h-full object-cover"
+      onError={() => setPhotoError(true)}
+    />
   );
 
   return (

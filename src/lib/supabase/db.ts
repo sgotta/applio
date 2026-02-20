@@ -130,6 +130,8 @@ export async function updateCV(
     cv_data?: CVData;
     settings?: CloudSettings;
     title?: string;
+    is_published?: boolean;
+    slug?: string;
   },
 ): Promise<boolean> {
   try {
@@ -147,5 +149,90 @@ export async function updateCV(
   } catch (err) {
     console.warn("[CloudSync] updateCV exception:", err);
     return false;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Sharing (publish / fetch public CV)
+// ---------------------------------------------------------------------------
+
+function generateSlug(): string {
+  return crypto.randomUUID().replace(/-/g, "").slice(0, 8);
+}
+
+/**
+ * Publish (or re-publish) the user's CV.
+ * Uploads the latest cv_data + settings, sets is_published = true,
+ * and generates a slug if the row doesn't have one yet.
+ * Returns the slug on success, null on error.
+ */
+export async function publishCV(
+  userId: string,
+  cvData: CVData,
+  settings: CloudSettings,
+): Promise<string | null> {
+  try {
+    const supabase = createClient();
+
+    // Fetch current row to check for existing slug
+    const { data: row, error: fetchErr } = await supabase
+      .from("cvs")
+      .select("id, slug")
+      .eq("user_id", userId)
+      .order("updated_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (fetchErr || !row) {
+      console.warn("[Share] Failed to fetch CV for publish:", fetchErr?.message);
+      return null;
+    }
+
+    const slug = row.slug || generateSlug();
+
+    const { error: updateErr } = await supabase
+      .from("cvs")
+      .update({
+        cv_data: cvData,
+        settings,
+        is_published: true,
+        slug,
+      })
+      .eq("id", row.id);
+
+    if (updateErr) {
+      console.warn("[Share] Failed to publish CV:", updateErr.message);
+      return null;
+    }
+
+    return slug;
+  } catch (err) {
+    console.warn("[Share] publishCV exception:", err);
+    return null;
+  }
+}
+
+/**
+ * Fetch a published CV by slug. Intended for the public /cv/[slug] page.
+ * Uses the browser client — for SSR use fetchPublishedCVServer().
+ */
+export async function fetchPublishedCV(slug: string): Promise<CVRow | null> {
+  try {
+    const supabase = createClient();
+    const { data, error } = await supabase
+      .from("cvs")
+      .select("*")
+      .eq("slug", slug)
+      .eq("is_published", true)
+      .maybeSingle();
+
+    if (error) {
+      console.warn("[Share] Failed to fetch published CV:", error.message);
+      return null;
+    }
+    return data as CVRow | null;
+  } catch (err) {
+    console.warn("[Share] fetchPublishedCV exception:", err);
+    return null;
   }
 }

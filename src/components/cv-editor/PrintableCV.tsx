@@ -12,7 +12,7 @@ import { getFontDefinition, FONT_SIZE_LEVELS } from "@/lib/fonts";
 import { useAppLocale } from "@/lib/locale-context";
 import { type ColorScheme } from "@/lib/color-schemes";
 import { type PatternSettings, getSidebarPattern } from "@/lib/sidebar-patterns";
-import { renderRichText, renderRichDocument } from "@/lib/render-rich-text";
+import { renderRichDocument } from "@/lib/render-rich-text";
 import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
 
 function ensureProtocol(url: string): string {
@@ -109,7 +109,9 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
 
     const [photoUrlError, setPhotoUrlError] = useState(false);
     const [photoUrlLoaded, setPhotoUrlLoaded] = useState(false);
-    const hasLocalPhoto = !forceInitials && !!personalInfo.photo;
+    const [localPhotoError, setLocalPhotoError] = useState(false);
+    const [localPhotoLoaded, setLocalPhotoLoaded] = useState(false);
+    const hasLocalPhoto = !forceInitials && !!personalInfo.photo && !localPhotoError;
     const initials = personalInfo.fullName
       .split(" ")
       .map((n) => n[0])
@@ -119,7 +121,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
     return (
       <div
         ref={ref}
-        className="printable-cv font-sans"
+        className="printable-cv cv-preview-content font-sans"
         style={{
           fontFamily: effectiveFontFamily,
           display: "flex",
@@ -155,37 +157,37 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
             {/* Photo / Initials */}
             <div
               className="mx-auto h-36 w-36 rounded-full grid place-items-center overflow-hidden relative"
-              style={{ backgroundColor: colors.sidebarText + "33" }}
+              style={{ backgroundColor: colors.sidebarText + "28" }}
             >
-              {hasLocalPhoto ? (
+              {/* Initials always visible as base layer */}
+              <span
+                className={`font-medium select-none leading-none tracking-wide ${photoUrlLoaded ? "opacity-0 transition-opacity duration-300" : ""}`}
+                style={{
+                  fontSize: FS.initials,
+                  color: colors.sidebarMuted,
+                }}
+              >
+                {initials}
+              </span>
+              {/* Local photo overlay — starts invisible, shown only on successful load */}
+              {hasLocalPhoto && (
                 <img
                   src={personalInfo.photo}
                   alt={t("profilePhotoAlt")}
-                  className="w-full h-full object-cover"
+                  className={`absolute inset-0 w-full h-full object-cover ${localPhotoLoaded ? "" : "invisible"}`}
+                  onLoad={() => setLocalPhotoLoaded(true)}
+                  onError={() => setLocalPhotoError(true)}
                 />
-              ) : (
-                <>
-                  {/* Initials always visible as base layer */}
-                  <span
-                    className={`font-medium select-none leading-none tracking-wide transition-opacity duration-300 ${photoUrlLoaded ? "opacity-0" : "opacity-100"}`}
-                    style={{
-                      fontSize: FS.initials,
-                      color: colors.sidebarMuted,
-                    }}
-                  >
-                    {initials}
-                  </span>
-                  {/* Remote photo overlays on top, fades in when loaded */}
-                  {photoUrl && !photoUrlError && (
-                    <img
-                      src={photoUrl}
-                      alt={t("profilePhotoAlt")}
-                      className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${photoUrlLoaded ? "opacity-100" : "opacity-0"}`}
-                      onLoad={() => setPhotoUrlLoaded(true)}
-                      onError={() => setPhotoUrlError(true)}
-                    />
-                  )}
-                </>
+              )}
+              {/* Remote photo overlay (shared view) */}
+              {!hasLocalPhoto && photoUrl && !photoUrlError && (
+                <img
+                  src={photoUrl}
+                  alt={t("profilePhotoAlt")}
+                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${photoUrlLoaded ? "opacity-100" : "opacity-0"}`}
+                  onLoad={() => setPhotoUrlLoaded(true)}
+                  onError={() => setPhotoUrlError(true)}
+                />
               )}
             </div>
 
@@ -199,25 +201,25 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
                     <div className="space-y-1.5">
                       {personalInfo.email && (
                         <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: FS.small }}>
-                          <Mail className="h-3 w-3 shrink-0" style={{ color: colors.sidebarMuted }} />
+                          <Mail className="h-3 w-3 shrink-0" />
                           <a href={`mailto:${personalInfo.email}`} className="truncate" style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.email}</a>
                         </div>
                       )}
                       {personalInfo.phone && (
                         <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: FS.small }}>
-                          <Phone className="h-3 w-3 shrink-0" style={{ color: colors.sidebarMuted }} />
+                          <Phone className="h-3 w-3 shrink-0" />
                           <a href={`tel:${personalInfo.phone}`} className="truncate" style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.phone}</a>
                         </div>
                       )}
                       {visibility.location && personalInfo.location && (
                         <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: FS.small }}>
-                          <MapPin className="h-3 w-3 shrink-0" style={{ color: colors.sidebarMuted }} />
+                          <MapPin className="h-3 w-3 shrink-0" />
                           <span className="truncate">{personalInfo.location}</span>
                         </div>
                       )}
                       {visibility.linkedin && personalInfo.linkedin && (
                         <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: FS.small }}>
-                          <Linkedin className="h-3 w-3 shrink-0" style={{ color: colors.sidebarMuted }} />
+                          <Linkedin className="h-3 w-3 shrink-0" />
                           {personalInfo.linkedinUrl ? (
                             <a href={ensureProtocol(personalInfo.linkedinUrl)} target="_blank" rel="noopener noreferrer" className="truncate" style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.linkedin}</a>
                           ) : (
@@ -227,7 +229,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
                       )}
                       {visibility.website && personalInfo.website && (
                         <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: FS.small }}>
-                          <Globe className="h-3 w-3 shrink-0" style={{ color: colors.sidebarMuted }} />
+                          <Globe className="h-3 w-3 shrink-0" />
                           {personalInfo.websiteUrl ? (
                             <a href={ensureProtocol(personalInfo.websiteUrl)} target="_blank" rel="noopener noreferrer" className="truncate" style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.website}</a>
                           ) : (
@@ -246,9 +248,9 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
                     <SectionHeading color={colors.sidebarText} separatorColor={colors.sidebarSeparator}>
                       {t("aboutMe")}
                     </SectionHeading>
-                    <p className="leading-relaxed" style={{ color: colors.sidebarText, fontSize: FS.body }}>
-                      {renderRichText(summary)}
-                    </p>
+                    <div className="leading-relaxed" style={{ color: colors.sidebarText, fontSize: FS.body }}>
+                      {renderRichDocument(summary)}
+                    </div>
                   </div>
                 );
               }
@@ -351,7 +353,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
                     <div className="space-y-2.5">
                       {experience.map((exp) => (
                         <div key={exp.id} style={{ pageBreakInside: "avoid" }}>
-                          <div className="flex items-baseline justify-between gap-2">
+                          <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0">
                             <h4
                               className="font-semibold text-gray-900"
                               style={{ fontSize: FS.itemTitle }}
@@ -391,7 +393,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
                     <div className="space-y-2.5">
                       {education.map((edu) => (
                         <div key={edu.id} style={{ pageBreakInside: "avoid" }}>
-                          <div className="flex items-baseline justify-between gap-2">
+                          <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0">
                             <h4
                               className="font-semibold text-gray-900"
                               style={{ fontSize: FS.itemTitle }}
@@ -431,7 +433,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
                     <div className="space-y-2.5">
                       {courses.map((course) => (
                         <div key={course.id} style={{ pageBreakInside: "avoid" }}>
-                          <div className="flex items-baseline justify-between gap-2">
+                          <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0">
                             <h4
                               className="font-semibold text-gray-900"
                               style={{ fontSize: FS.itemTitle }}
@@ -471,7 +473,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
                     <div className="space-y-2.5">
                       {certifications.map((cert) => (
                         <div key={cert.id} style={{ pageBreakInside: "avoid" }}>
-                          <div className="flex items-baseline justify-between gap-2">
+                          <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0">
                             <h4
                               className="font-semibold text-gray-900"
                               style={{ fontSize: FS.itemTitle }}
@@ -511,7 +513,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
                     <div className="space-y-2.5">
                       {awards.map((award) => (
                         <div key={award.id} style={{ pageBreakInside: "avoid" }}>
-                          <div className="flex items-baseline justify-between gap-2">
+                          <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0">
                             <h4
                               className="font-semibold text-gray-900"
                               style={{ fontSize: FS.itemTitle }}

@@ -83,17 +83,3 @@ export interface CVData {
   visibility: SectionVisibility;
   sidebarOrder: SidebarSectionId[];
 }
-
-export interface SharedCVData {
-  cv: Omit<CVData, "personalInfo"> & {
-    personalInfo: Omit<PersonalInfo, "photo"> & { photoUrl?: string };
-  };
-  settings: {
-    colorScheme: string;
-    fontSizeLevel: number;
-    marginLevel: number;
-    fontFamily?: string;
-    pattern?: { name: string; sidebarIntensity?: number; mainIntensity?: number; intensity?: number; scope: string };
-  };
-  sharedAt: string;
-}

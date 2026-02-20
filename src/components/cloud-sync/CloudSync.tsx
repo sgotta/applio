@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
+import { Cloud } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useCV } from "@/lib/cv-context";
 import { useColorScheme } from "@/lib/color-scheme-context";
@@ -8,12 +10,14 @@ import { useFontSettings } from "@/lib/font-context";
 import { useSidebarPattern } from "@/lib/sidebar-pattern-context";
 import { useTheme } from "@/lib/theme-context";
 import { useAppLocale } from "@/lib/locale-context";
+import { useSyncStatus } from "@/lib/sync-status-context";
 import {
   ensureProfile,
   fetchUserCV,
   createCV,
   updateCV,
   type CloudSettings,
+  type CVRow,
 } from "@/lib/supabase/db";
 import type { CVData } from "@/lib/types";
 import type { ColorSchemeName } from "@/lib/color-schemes";
@@ -21,6 +25,14 @@ import type { FontFamilyId, FontSizeLevel } from "@/lib/fonts";
 import type { PatternSettings } from "@/lib/sidebar-patterns";
 import type { Theme } from "@/lib/theme-context";
 import type { Locale } from "@/lib/locale-context";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -81,22 +93,66 @@ function hydrateSettings(
 }
 
 // ---------------------------------------------------------------------------
+// Conflict detection helpers
+// ---------------------------------------------------------------------------
+
+/**
+ * Create a fingerprint of the "content" fields of a CVData object.
+ * Excludes photo, visibility, and sidebarOrder to avoid false positives.
+ */
+function cvContentFingerprint(data: CVData): string {
+  const { photo: _photo, ...personalInfoWithoutPhoto } = data.personalInfo;
+  return JSON.stringify({
+    personalInfo: personalInfoWithoutPhoto,
+    summary: data.summary,
+    experience: data.experience,
+    education: data.education,
+    skills: data.skills,
+    courses: data.courses,
+    certifications: data.certifications,
+    awards: data.awards,
+  });
+}
+
+function areMeaningfullyDifferent(local: CVData, cloud: CVData): boolean {
+  return cvContentFingerprint(local) !== cvContentFingerprint(cloud);
+}
+
+// ---------------------------------------------------------------------------
+// Conflict state type
+// ---------------------------------------------------------------------------
+
+interface ConflictState {
+  localData: CVData;
+  cloudData: CVData;
+  cloudRow: CVRow;
+  cloudSettings: CloudSettings | null;
+  cloudUpdatedAt: string;
+}
+
+// ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
 /**
  * Render-null component that synchronises CV data and settings with Supabase.
  * Must be placed inside all context providers (CVProvider, AuthProvider, etc.).
+ *
+ * When local and cloud data differ at login, renders a friendly dialog
+ * so the user can choose which version to keep.
  */
 export function CloudSync() {
+  const t = useTranslations("syncConflict");
+
   // ---- Contexts ----
   const { user, loading: authLoading } = useAuth();
-  const { data, importData } = useCV();
+  const { data, importData, hadSavedData } = useCV();
   const { colorSchemeName, setColorScheme } = useColorScheme();
   const { fontFamilyId, fontSizeLevel, setFontFamily, setFontSizeLevel } = useFontSettings();
   const { patternSettings, setPatternSettings } = useSidebarPattern();
   const { theme, setTheme } = useTheme();
   const { locale, setLocale } = useAppLocale();
+  const { setStatus } = useSyncStatus();
 
   // ---- Refs for sync control ----
   const cvIdRef = useRef<string | null>(null);
@@ -117,6 +173,102 @@ export function CloudSync() {
   const settingsRef = useRef({ colorSchemeName, fontFamilyId, fontSizeLevel, theme, locale, patternSettings });
   settingsRef.current = { colorSchemeName, fontFamilyId, fontSizeLevel, theme, locale, patternSettings };
 
+  // ---- Conflict state ----
+  const [conflictState, setConflictState] = useState<ConflictState | null>(null);
+
+  // ------------------------------------------------------------------
+  // Activate sync (shared by both resolution paths)
+  // ------------------------------------------------------------------
+  const activateSync = useCallback(() => {
+    justLoadedRef.current = true;
+    clearTimeout(justLoadedTimerRef.current);
+    justLoadedTimerRef.current = setTimeout(() => {
+      justLoadedRef.current = false;
+    }, 4000);
+
+    initialLoadDoneRef.current = true;
+    setConflictState(null);
+    setStatus("synced");
+  }, [setStatus]);
+
+  // ------------------------------------------------------------------
+  // Conflict resolution handler
+  // ------------------------------------------------------------------
+  const handleConflictResolution = useCallback((choice: "local" | "cloud") => {
+    if (!conflictState) return;
+
+    const { localData, cloudData, cloudSettings } = conflictState;
+
+    // Save the discarded version as safety-net backup in localStorage
+    const discardedData = choice === "local" ? cloudData : localData;
+    try {
+      localStorage.setItem("cv-builder-backup", JSON.stringify({
+        data: discardedData,
+        backupReason: "sync-conflict",
+        discardedSource: choice === "local" ? "cloud" : "local",
+        timestamp: new Date().toISOString(),
+      }));
+    } catch {
+      console.warn("[CloudSync] Failed to save backup to localStorage");
+    }
+
+    if (choice === "cloud") {
+      // User chose cloud data — hydrate it
+      const finalCloudData = { ...cloudData };
+      const localPhoto = localData.personalInfo.photo;
+      if (localPhoto?.startsWith("data:") && !finalCloudData.personalInfo.photo) {
+        finalCloudData.personalInfo.photo = localPhoto;
+      }
+      importData(finalCloudData);
+
+      if (cloudSettings) {
+        hydrateSettings(
+          cloudSettings,
+          setColorScheme,
+          setFontFamily,
+          setFontSizeLevel,
+          setTheme,
+          setLocale,
+          setPatternSettings,
+        );
+      }
+    }
+    // If choice === "local": keep current state, next sync cycle will push to Supabase
+
+    activateSync();
+  }, [conflictState, importData, setColorScheme, setFontFamily, setFontSizeLevel, setTheme, setLocale, setPatternSettings, activateSync]);
+
+  // ------------------------------------------------------------------
+  // Helper: hydrate cloud data silently (no conflict)
+  // ------------------------------------------------------------------
+  const hydrateCloudSilently = useCallback((row: CVRow, cloudData: CVData) => {
+    justLoadedRef.current = true;
+    clearTimeout(justLoadedTimerRef.current);
+    justLoadedTimerRef.current = setTimeout(() => {
+      justLoadedRef.current = false;
+    }, 4000);
+
+    // Merge local photo back in if cloud has none
+    const localPhoto = dataRef.current.personalInfo.photo;
+    if (localPhoto?.startsWith("data:") && !cloudData.personalInfo.photo) {
+      cloudData.personalInfo.photo = localPhoto;
+    }
+    importData(cloudData);
+
+    // Hydrate settings
+    if (row.settings && typeof row.settings === "object" && Object.keys(row.settings).length > 0) {
+      hydrateSettings(
+        row.settings,
+        setColorScheme,
+        setFontFamily,
+        setFontSizeLevel,
+        setTheme,
+        setLocale,
+        setPatternSettings,
+      );
+    }
+  }, [importData, setColorScheme, setFontFamily, setFontSizeLevel, setTheme, setLocale, setPatternSettings]);
+
   // ------------------------------------------------------------------
   // Effect 1: Load from Supabase on auth change (login / logout)
   // ------------------------------------------------------------------
@@ -133,6 +285,8 @@ export function CloudSync() {
       initialLoadDoneRef.current = false;
       clearTimeout(saveCVTimerRef.current);
       clearTimeout(saveSettingsTimerRef.current);
+      setConflictState(null);
+      setStatus("idle");
       return;
     }
 
@@ -143,35 +297,32 @@ export function CloudSync() {
       if (cancelled) return;
 
       if (row) {
-        // Supabase has data — hydrate state
+        // Supabase has data
         cvIdRef.current = row.id;
-
-        // Set cooldown flag BEFORE triggering state changes
-        justLoadedRef.current = true;
-        clearTimeout(justLoadedTimerRef.current);
-        justLoadedTimerRef.current = setTimeout(() => {
-          justLoadedRef.current = false;
-        }, 4000);
-
-        // Hydrate CV data (merge local photo back in)
         const cloudData = row.cv_data as CVData;
-        const localPhoto = dataRef.current.personalInfo.photo;
-        if (localPhoto?.startsWith("data:") && !cloudData.personalInfo.photo) {
-          cloudData.personalInfo.photo = localPhoto;
-        }
-        importData(cloudData);
+        const localData = dataRef.current;
 
-        // Hydrate settings
-        if (row.settings && typeof row.settings === "object" && Object.keys(row.settings).length > 0) {
-          hydrateSettings(
-            row.settings,
-            setColorScheme,
-            setFontFamily,
-            setFontSizeLevel,
-            setTheme,
-            setLocale,
-            setPatternSettings,
-          );
+        // If local data is default/unedited, or same as cloud → hydrate silently
+        if (!hadSavedData || !areMeaningfullyDifferent(localData, cloudData)) {
+          hydrateCloudSilently(row, cloudData);
+
+          if (!cancelled) {
+            initialLoadDoneRef.current = true;
+            setStatus("synced");
+          }
+        } else {
+          // Data differs — show friendly dialog
+          // initialLoadDoneRef stays false → Effects 2 & 3 won't save
+          if (!cancelled) {
+            const hasSettings = row.settings && typeof row.settings === "object" && Object.keys(row.settings).length > 0;
+            setConflictState({
+              localData: { ...localData },
+              cloudData,
+              cloudRow: row,
+              cloudSettings: hasSettings ? row.settings : null,
+              cloudUpdatedAt: row.updated_at,
+            });
+          }
         }
       } else {
         // First-ever login — ensure profile exists, then upload localStorage data
@@ -195,10 +346,11 @@ export function CloudSync() {
         if (created && !cancelled) {
           cvIdRef.current = created.id;
         }
-      }
 
-      if (!cancelled) {
-        initialLoadDoneRef.current = true;
+        if (!cancelled) {
+          initialLoadDoneRef.current = true;
+          setStatus("synced");
+        }
       }
     })();
 
@@ -264,5 +416,51 @@ export function CloudSync() {
     };
   }, []);
 
-  return null;
+  // ------------------------------------------------------------------
+  // Render: version choice dialog or nothing
+  // ------------------------------------------------------------------
+  if (!conflictState) return null;
+
+  const formattedDate = new Date(conflictState.cloudUpdatedAt).toLocaleString(locale, {
+    dateStyle: "long",
+  });
+
+  return (
+    <Dialog open={true} onOpenChange={(open) => { if (!open) handleConflictResolution("local"); }}>
+      <DialogContent
+        showCloseButton
+        className="max-w-[calc(100vw-3rem)] sm:max-w-xs py-8 px-6 sm:p-6"
+      >
+        <div className="flex flex-col items-center text-center gap-4 sm:gap-3">
+          <div className="w-16 h-16 sm:w-12 sm:h-12 rounded-2xl bg-sky-50 dark:bg-sky-950/30 flex items-center justify-center">
+            <Cloud className="w-8 h-8 sm:w-6 sm:h-6 text-sky-500" />
+          </div>
+          <DialogHeader className="items-center">
+            <DialogTitle className="text-base">
+              {t("title")}
+            </DialogTitle>
+            <DialogDescription className="text-xs leading-relaxed">
+              {t("description", { date: formattedDate })}
+            </DialogDescription>
+          </DialogHeader>
+        </div>
+
+        <div className="flex flex-col gap-2 mt-2 sm:mt-1">
+          <Button
+            onClick={() => handleConflictResolution("cloud")}
+            className="w-full"
+          >
+            {t("useCloud")}
+          </Button>
+          <Button
+            variant="ghost"
+            onClick={() => handleConflictResolution("local")}
+            className="w-full text-muted-foreground"
+          >
+            {t("useLocal")}
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
 }

@@ -19,10 +19,11 @@ import { FONT_FAMILIES, FONT_SIZE_LEVEL_IDS, type FontFamilyId, type FontSizeLev
 import { SIDEBAR_PATTERN_NAMES, SIDEBAR_PATTERNS, PATTERN_SCOPES, type PatternScope, type PatternIntensity, type SidebarPatternName } from "@/lib/sidebar-patterns";
 import { Slider } from "@/components/ui/slider";
 import { COLOR_SCHEME_NAMES, COLOR_SCHEMES, type ColorSchemeName } from "@/lib/color-schemes";
-import { buildSharedData, compressSharedData, generateShareURL } from "@/lib/sharing";
+import { publishCV } from "@/lib/supabase/db";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth-context";
 import { usePlan } from "@/lib/plan-context";
+import { useSyncStatus } from "@/lib/sync-status-context";
 import { LoginDialog } from "@/components/auth/LoginDialog";
 import { UpgradeDialog } from "@/components/premium/UpgradeDialog";
 import { PremiumBadge } from "@/components/premium/PremiumBadge";
@@ -34,26 +35,9 @@ import {
   PanelLeft, PanelRight, Square, Lock, HardDrive, Cloud, Layers, FlaskConical,
 } from "lucide-react";
 
-const CACHE_EXPIRY_MS = 15 * 24 * 60 * 60 * 1000; // 15 days
-
 /* ── Free-tier feature limits ──────────────────────────── */
 const FREE_COLORS: ColorSchemeName[] = ["default"];
 const FREE_FONTS: FontFamilyId[] = ["inter", "lato"];
-
-function hashString(str: string): string {
-  let hash = 0x811c9dc5;
-  for (let i = 0; i < str.length; i++) {
-    hash ^= str.charCodeAt(i);
-    hash = Math.imul(hash, 0x01000193);
-  }
-  return (hash >>> 0).toString(36);
-}
-
-interface ImageUploadCache {
-  hash: string;
-  url: string;
-  uploadedAt: number;
-}
 
 interface ToolbarProps {
   onPrintPDF: () => void | Promise<void>;
@@ -424,13 +408,14 @@ function SectionsContent({
 type MobileMenuPage = "main" | "color" | "pattern" | "font" | "sections" | "language";
 
 export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
-  const { data, importData, toggleSection } = useCV();
+  const { data, importData, toggleSection, updatePersonalInfo } = useCV();
   const { user, signOut } = useAuth();
   const { isPremium, devOverride, setDevOverride } = usePlan();
   const t = useTranslations("toolbar");
   const tauth = useTranslations("auth");
   const tl = useTranslations("languages");
   const tsync = useTranslations("sync");
+  const { status: syncStatus } = useSyncStatus();
   const { locale, setLocale } = useAppLocale();
   const { theme, setTheme } = useTheme();
   const { colorSchemeName, setColorScheme } = useColorScheme();
@@ -458,7 +443,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
         colorScheme: colorSchemeName,
         fontFamily: fontFamilyId,
         fontSizeLevel,
-        marginLevel: 1,
+        marginLevel: 2,
         pattern: patternSettings,
       },
     };
@@ -525,7 +510,6 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   }, []);
 
   const [isSharing, setIsSharing] = useState(false);
-  const [showUploadOverlay, setShowUploadOverlay] = useState(false);
   const [fileMenuOpen, setFileMenuOpen] = useState(false);
   const [accountDesktopOpen, setAccountDesktopOpen] = useState(false);
   const [accountMobileOpen, setAccountMobileOpen] = useState(false);
@@ -597,42 +581,22 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
     };
   }, []);
 
-  const imageCache = useRef<ImageUploadCache | null>(null);
-  const prevPhotoRef = useRef(data.personalInfo.photo);
-  useEffect(() => {
-    if (data.personalInfo.photo !== prevPhotoRef.current) {
-      imageCache.current = null;
-      prevPhotoRef.current = data.personalInfo.photo;
-    }
-  }, [data.personalInfo.photo]);
-
-  useEffect(() => {
-    if (!showUploadOverlay) return;
-    const handler = (e: BeforeUnloadEvent) => { e.preventDefault(); };
-    window.addEventListener("beforeunload", handler);
-    return () => window.removeEventListener("beforeunload", handler);
-  }, [showUploadOverlay]);
 
   const canShare = data.personalInfo.fullName.trim().length > 0;
 
   const handleShare = useCallback(async () => {
-    if (!canShare || isSharing) return;
+    if (!user || !canShare || isSharing) return;
     setIsSharing(true);
     setFileMenuOpen(false);
+    setMobileMenuOpen(false);
 
-    const settings = { colorScheme: colorSchemeName, fontSizeLevel, marginLevel: 1, fontFamily: fontFamilyId, pattern: patternSettings };
-    let photoUrl: string | undefined;
+    try {
+      let photoForPublish = data.personalInfo.photo;
 
-    if (data.personalInfo.photo) {
-      const currentHash = hashString(data.personalInfo.photo);
-      const cached = imageCache.current;
-
-      if (cached && cached.hash === currentHash && (Date.now() - cached.uploadedAt) < CACHE_EXPIRY_MS) {
-        photoUrl = cached.url;
-      } else {
-        setShowUploadOverlay(true);
+      // Upload base64 photo to R2 if needed
+      if (photoForPublish && photoForPublish.startsWith("data:")) {
         try {
-          const res = await fetch(data.personalInfo.photo);
+          const res = await fetch(photoForPublish);
           const blob = await res.blob();
           const formData = new FormData();
           formData.append("photo", blob, "photo.jpg");
@@ -643,26 +607,44 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
           });
           const result = await uploadRes.json();
           if (result.success && result.url) {
-            photoUrl = result.url;
-            imageCache.current = { hash: currentHash, url: result.url, uploadedAt: Date.now() };
+            photoForPublish = result.url;
+            // Also update local state so future shares skip the upload
+            updatePersonalInfo("photo", result.url);
           }
         } catch {
           // Upload failed — continue without photo
-        } finally {
-          setShowUploadOverlay(false);
         }
       }
+
+      const cvData: CVData = {
+        ...data,
+        personalInfo: { ...data.personalInfo, photo: photoForPublish },
+      };
+
+      const settings = {
+        colorScheme: colorSchemeName,
+        fontFamily: fontFamilyId,
+        fontSizeLevel,
+        theme,
+        locale,
+        pattern: patternSettings,
+      };
+
+      const slug = await publishCV(user.id, cvData, settings);
+
+      if (slug) {
+        setShareUrl(`${window.location.origin}/cv/${slug}`);
+        setShareCopied(false);
+        setShareDialogOpen(true);
+      } else {
+        toast.error(t("shareError"));
+      }
+    } catch {
+      toast.error(t("shareError"));
+    } finally {
+      setIsSharing(false);
     }
-
-    const shared = buildSharedData(data, settings, photoUrl);
-    const compressed = compressSharedData(shared);
-    const url = generateShareURL(compressed);
-
-    setShareUrl(url);
-    setShareCopied(false);
-    setShareDialogOpen(true);
-    setIsSharing(false);
-  }, [data, colorSchemeName, isSharing, canShare, patternSettings, fontFamilyId, fontSizeLevel]);
+  }, [user, data, colorSchemeName, isSharing, canShare, patternSettings, fontFamilyId, fontSizeLevel, updatePersonalInfo, t]);
 
   const handleCopyShareUrl = useCallback(async () => {
     try {
@@ -818,13 +800,15 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                   {/* Divider */}
                   <div className="my-1.5 border-t border-gray-100 dark:border-border" />
 
-                  {/* Copy link */}
-                  <button onClick={() => { setMobileMenuOpen(false); handleShare(); }} disabled={isSharing || !canShare} className={`${menuItemClass} ${!canShare ? "opacity-50" : ""}`}>
-                    <span className="flex items-center gap-2.5">
-                      <Share2 className="h-4 w-4" />
-                      {t("share")}
-                    </span>
-                  </button>
+                  {/* Copy link (only for logged-in users) */}
+                  {user && (
+                    <button onClick={handleShare} disabled={isSharing || !canShare} className={`${menuItemClass} ${!canShare ? "opacity-50" : ""}`}>
+                      <span className="flex items-center gap-2.5">
+                        {isSharing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Share2 className="h-4 w-4" />}
+                        {t("share")}
+                      </span>
+                    </button>
+                  )}
                 </div>
               )}
 
@@ -1249,21 +1233,23 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
               </PopoverContent>
             </Popover>
 
-            {/* Share button */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={handleShare}
-                  disabled={isSharing || !canShare}
-                  className={`h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100 ${!canShare ? "opacity-50" : ""}`}
-                >
-                  <Share2 className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>{t("share")}</TooltipContent>
-            </Tooltip>
+            {/* Share button (only for logged-in users) */}
+            {user && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={handleShare}
+                    disabled={isSharing || !canShare}
+                    className={`h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100 ${!canShare ? "opacity-50" : ""}`}
+                  >
+                    {isSharing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Share2 className="h-4 w-4" />}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>{t("share")}</TooltipContent>
+              </Tooltip>
+            )}
 
             {/* Divider: CV tools | App settings */}
             <div className="h-5 w-px bg-gray-200 dark:bg-gray-700 mx-1" />
@@ -1348,7 +1334,10 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     </span>
                   )}
                   {/* Sync status badge */}
-                  <span className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-white dark:border-gray-950 ${user ? "bg-emerald-500" : "bg-amber-500"}`} />
+                  <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3">
+                    <span className={`absolute inset-0 rounded-full animate-pulse ${syncStatus === "synced" ? "bg-emerald-400/40" : "bg-amber-400/40"}`} />
+                    <span className={`absolute inset-0 rounded-full ${syncStatus === "synced" ? "bg-emerald-500 shadow-[0_0_8px_2px_rgba(16,185,129,0.4)]" : "bg-amber-500 shadow-[0_0_8px_2px_rgba(245,158,11,0.4)]"}`} />
+                  </span>
                 </button>
               </PopoverTrigger>
               <PopoverContent className="w-60 p-0 overflow-hidden" align="end">
@@ -1377,7 +1366,10 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       <span className="text-xs text-gray-500 dark:text-gray-400">
                         {t("syncCloud")}
                       </span>
-                      <span className="ml-auto h-1.5 w-1.5 rounded-full shrink-0 bg-emerald-500" />
+                      <span className="ml-auto h-2 w-2 shrink-0 relative">
+                        <span className="absolute inset-0 rounded-full bg-emerald-400/40 animate-pulse" />
+                        <span className="absolute inset-0 rounded-full bg-emerald-500 shadow-[0_0_6px_1px_rgba(16,185,129,0.4)]" />
+                      </span>
                     </div>
 
                     {/* Actions */}
@@ -1406,7 +1398,10 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <div className="flex items-center gap-2 mb-3">
                       <HardDrive className="h-3.5 w-3.5 text-amber-500 shrink-0" />
                       <span className="text-xs text-gray-500 dark:text-gray-400">{t("syncLocal")}</span>
-                      <span className="ml-auto h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" />
+                      <span className="ml-auto h-2 w-2 shrink-0 relative">
+                        <span className="absolute inset-0 rounded-full bg-amber-400/40 animate-pulse" />
+                        <span className="absolute inset-0 rounded-full bg-amber-500 shadow-[0_0_6px_1px_rgba(245,158,11,0.4)]" />
+                      </span>
                     </div>
 
                     <p className="text-[11px] text-gray-400 leading-relaxed mb-3 text-center">
@@ -1441,7 +1436,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <User className="h-3.5 w-3.5 text-gray-400 dark:text-gray-500" />
                   </span>
                 )}
-                <span className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-white dark:border-gray-950 ${user ? "bg-emerald-500" : "bg-amber-500"}`} />
+                <span className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-white dark:border-gray-950 ${syncStatus === "synced" ? "bg-emerald-500" : "bg-amber-500"}`} />
               </button>
             </PopoverTrigger>
             <PopoverContent className="w-60 p-0 overflow-hidden" align="end">
@@ -1467,7 +1462,10 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <span className="text-xs text-gray-500 dark:text-gray-400">
                       {t("syncCloud")}
                     </span>
-                    <span className="ml-auto h-1.5 w-1.5 rounded-full shrink-0 bg-emerald-500" />
+                    <span className="ml-auto h-2 w-2 shrink-0 relative">
+                      <span className="absolute inset-0 rounded-full bg-emerald-400/40 animate-pulse" />
+                      <span className="absolute inset-0 rounded-full bg-emerald-500 shadow-[0_0_6px_1px_rgba(16,185,129,0.4)]" />
+                    </span>
                   </div>
                   <div className="border-t border-gray-100 dark:border-gray-800 p-2 flex flex-col gap-1">
                     {!isPremium && (
@@ -1493,7 +1491,10 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                   <div className="flex items-center gap-2 mb-3">
                     <HardDrive className="h-3.5 w-3.5 text-amber-500 shrink-0" />
                     <span className="text-xs text-gray-500 dark:text-gray-400">{t("syncLocal")}</span>
-                    <span className="ml-auto h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" />
+                    <span className="ml-auto h-2 w-2 shrink-0 relative">
+                        <span className="absolute inset-0 rounded-full bg-amber-400/40 animate-pulse" />
+                        <span className="absolute inset-0 rounded-full bg-amber-500 shadow-[0_0_6px_1px_rgba(245,158,11,0.4)]" />
+                      </span>
                   </div>
                   <p className="text-[11px] text-gray-400 leading-relaxed mb-3 text-center">
                     {t("syncLoginHint")}
@@ -1556,21 +1557,6 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
       </DialogContent>
     </Dialog>
 
-    {/* Full-screen overlay during photo upload */}
-    {showUploadOverlay && (
-      <div
-        className="fixed inset-0 z-100 flex items-center justify-center bg-black/50 backdrop-blur-sm"
-        role="alert"
-        aria-busy="true"
-      >
-        <div className="flex flex-col items-center gap-3">
-          <Loader2 className="h-7 w-7 animate-spin text-white" />
-          <p className="text-sm font-medium text-white">
-            {t("shareOverlayMessage")}
-          </p>
-        </div>
-      </div>
-    )}
 
     {/* Floating plan toggle (visible while Stripe is not integrated) */}
     {(

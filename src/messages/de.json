@@ -61,6 +61,7 @@
     "sharePhotoUploaded": "Ihr Profilfoto wird im geteilten Lebenslauf angezeigt.",
     "sharePhotoFailed": "Ihr Lebenslauf wird mit Ihren Initialen anstelle Ihres Profilfotos geteilt.",
     "shareUploading": "Wird kopiert...",
+    "shareError": "Lebenslauf konnte nicht geteilt werden. Bitte versuchen Sie es erneut.",
     "shareOverlayMessage": "Ihr Lebenslauf wird zum Teilen vorbereitet...",
     "shareNameRequired": "Geben Sie Ihren Namen ein, um den Lebenslauf zu teilen.",
     "free": "Kostenlos",
@@ -407,5 +408,11 @@
     "comingSoon": "Demnächst verfügbar",
     "loginFirst": "Anmelden um zu upgraden",
     "watermark": "Erstellt mit Applio"
+  },
+  "syncConflict": {
+    "title": "Wir haben Ihren Lebenslauf gefunden",
+    "description": "Sie haben eine in Ihrem Konto gespeicherte Version vom {date}. Möchten Sie sie wiederherstellen?",
+    "useCloud": "Wiederherstellen",
+    "useLocal": "Nein, hier fortfahren"
   }
 }

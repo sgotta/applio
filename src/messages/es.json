@@ -61,6 +61,7 @@
     "sharePhotoUploaded": "Tu foto de perfil se incluirá en el CV compartido.",
     "sharePhotoFailed": "Tu CV se compartirá con tus iniciales en lugar de tu foto de perfil.",
     "shareUploading": "Copiando...",
+    "shareError": "No se pudo compartir tu CV. Intentá de nuevo.",
     "shareOverlayMessage": "Preparando tu CV para compartir...",
     "shareNameRequired": "Completá tu nombre para poder compartir el CV.",
     "free": "Gratis",
@@ -407,5 +408,11 @@
     "comingSoon": "Próximamente",
     "loginFirst": "Iniciá sesión para mejorar",
     "watermark": "Hecho con Applio"
+  },
+  "syncConflict": {
+    "title": "Encontramos tu CV",
+    "description": "Tenés una versión guardada en tu cuenta del {date}. ¿Querés recuperarla?",
+    "useCloud": "Recuperar",
+    "useLocal": "No, seguir acá"
   }
 }
