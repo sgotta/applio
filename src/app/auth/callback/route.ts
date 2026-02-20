@@ -14,6 +14,6 @@ export async function GET(request: Request) {
     }
   }
 
-  // If there's no code or exchange failed, redirect to home
-  return NextResponse.redirect(`${origin}/`);
+  // If there's no code or exchange failed, redirect to editor
+  return NextResponse.redirect(`${origin}${next}`);
 }
