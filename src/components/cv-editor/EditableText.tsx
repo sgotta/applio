@@ -444,9 +444,22 @@ function TiptapEditor({
       requestAnimationFrame(() => {
         if (ed.isDestroyed) return;
         try {
-          ed.commands.focus("end");
           const coords = clickCoordsRef.current;
           const clicks = clickCountRef.current;
+
+          // Save scroll position before focus. On mobile, focus("end")
+          // makes the browser scroll to show the cursor at the END of
+          // the text, pushing the beginning out of view. We prevent that
+          // by restoring scroll right after focus, then placing the
+          // cursor at the actual click/tap coordinates.
+          const scrollY = window.scrollY;
+          const scrollX = window.scrollX;
+
+          ed.commands.focus("end", { scrollIntoView: false });
+
+          // Restore scroll — browser may have auto-scrolled on native focus()
+          window.scrollTo(scrollX, scrollY);
+
           if (coords) {
             const pos = ed.view.posAtCoords({
               left: coords.x,

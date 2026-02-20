@@ -530,6 +530,73 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   const [accountDesktopOpen, setAccountDesktopOpen] = useState(false);
   const [accountMobileOpen, setAccountMobileOpen] = useState(false);
 
+  // ── Auto-hide toolbar on mobile ──────────────────────────
+  const [toolbarHidden, setToolbarHidden] = useState(false);
+  const menuOpenRef = useRef(false);
+
+  useEffect(() => {
+    menuOpenRef.current = mobileMenuOpen || accountMobileOpen;
+  }, [mobileMenuOpen, accountMobileOpen]);
+
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+    let cumulativeDelta = 0;
+    const THRESHOLD = 25;
+
+    const onScroll = () => {
+      if (window.innerWidth >= 768) return;
+
+      const currentScrollY = window.scrollY;
+      const delta = currentScrollY - lastScrollY;
+      lastScrollY = currentScrollY;
+
+      // Always show at top of page
+      if (currentScrollY < 10) {
+        setToolbarHidden(false);
+        cumulativeDelta = 0;
+        return;
+      }
+
+      // Don't hide while a menu popover is open
+      if (menuOpenRef.current) {
+        cumulativeDelta = 0;
+        return;
+      }
+
+      // Accumulate in same direction, reset on direction change
+      if ((delta > 0 && cumulativeDelta >= 0) || (delta < 0 && cumulativeDelta <= 0)) {
+        cumulativeDelta += delta;
+      } else {
+        cumulativeDelta = delta;
+      }
+
+      if (cumulativeDelta > THRESHOLD) {
+        setToolbarHidden(true);
+      } else if (cumulativeDelta < -THRESHOLD) {
+        setToolbarHidden(false);
+      }
+    };
+
+    // Hide when a contenteditable element gets focus (editing started)
+    const onFocusIn = (e: FocusEvent) => {
+      if (window.innerWidth >= 768) return;
+      const target = e.target as HTMLElement;
+      if (
+        target.getAttribute("contenteditable") === "true" ||
+        target.closest("[contenteditable]")
+      ) {
+        setToolbarHidden(true);
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    document.addEventListener("focusin", onFocusIn);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      document.removeEventListener("focusin", onFocusIn);
+    };
+  }, []);
+
   const imageCache = useRef<ImageUploadCache | null>(null);
   const prevPhotoRef = useRef(data.personalInfo.photo);
   useEffect(() => {
@@ -624,7 +691,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
   return (
     <>
-    <header className="sticky top-0 z-50 border-b border-border bg-white/80 dark:bg-card/80 backdrop-blur-sm">
+    <header className={`sticky top-0 z-50 border-b border-border bg-white/80 dark:bg-card/80 backdrop-blur-sm transition-transform duration-300 ease-out ${toolbarHidden ? "-translate-y-full md:translate-y-0" : "translate-y-0"}`}>
       <div className="mx-auto flex h-16 md:h-14 max-w-7xl items-center justify-between px-4 sm:px-6">
         {/* Left: hamburger (mobile) + logo */}
         <div className="flex items-center gap-1.5">
@@ -1509,13 +1576,13 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
     {(
       <button
         onClick={() => setDevOverride(devOverride === "premium" ? "free" : "premium")}
-        className="fixed bottom-4 right-4 z-50 flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-2 shadow-lg transition-all hover:shadow-xl hover:scale-105 active:scale-95 dark:border-gray-700 dark:bg-card"
+        className="fixed bottom-6 right-5 md:bottom-6 md:right-6 z-50 flex items-center gap-1.5 md:gap-2 rounded-full border border-gray-200 bg-white/90 backdrop-blur-sm px-2.5 py-2 md:px-3 md:py-2 shadow-md md:shadow-lg transition-all hover:shadow-xl hover:scale-105 active:scale-95 dark:border-gray-700 dark:bg-card/90"
       >
-        <FlaskConical className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-        <span className={`text-xs font-semibold tracking-wide ${isPremium ? "text-emerald-600 dark:text-emerald-400" : "text-gray-500 dark:text-gray-400"}`}>
+        <FlaskConical className="h-3.5 w-3.5 md:h-4 md:w-4 text-gray-500 dark:text-gray-400" />
+        <span className={`hidden md:inline text-xs font-semibold tracking-wide ${isPremium ? "text-emerald-600 dark:text-emerald-400" : "text-gray-500 dark:text-gray-400"}`}>
           {isPremium ? "PRO" : "FREE"}
         </span>
-        <span className={`h-2 w-2 rounded-full ${isPremium ? "bg-emerald-500 shadow-[0_0_6px_1px_rgba(16,185,129,0.4)]" : "bg-gray-300 dark:bg-gray-600"}`} />
+        <span className={`h-1.5 w-1.5 md:h-2 md:w-2 rounded-full shrink-0 ${isPremium ? "bg-emerald-500 shadow-[0_0_6px_1px_rgba(16,185,129,0.4)]" : "bg-gray-300 dark:bg-gray-600"}`} />
       </button>
     )}
     </>

@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { Loader2 } from "lucide-react";
+import { Loader2, FileText } from "lucide-react";
 import { CVProvider, useCV } from "@/lib/cv-context";
 import { LocaleProvider, useAppLocale } from "@/lib/locale-context";
 import { ThemeProvider } from "@/lib/theme-context";
@@ -59,15 +59,23 @@ function AppContent() {
   }, [isGeneratingPDF, data, colorScheme, tp, patternSettings, locale, fontFamilyId, fontSizeLevel, isPremium]);
 
   return (
-    <div className="min-h-screen bg-stone-100 dark:bg-background">
+    <div className="min-h-screen bg-stone-100 dark:bg-background animate-editor-enter">
       <Toolbar
         onPrintPDF={handlePrint}
         isGeneratingPDF={isGeneratingPDF}
       />
       <CVEditor />
 
-      <footer className="text-center pt-3 pb-6">
-        <p className="text-xs text-gray-400 dark:text-gray-400">&copy; {new Date().getFullYear()} Applio v{process.env.NEXT_PUBLIC_APP_VERSION}. {t("copyright")}</p>
+      <footer className="mt-4 border-t border-gray-200 dark:border-white/6 bg-white/60 dark:bg-card/60 backdrop-blur-sm py-6 px-6">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <FileText className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+            <span className="text-sm font-semibold tracking-tight text-gray-500 dark:text-gray-400">Applio</span>
+          </div>
+          <p className="text-xs text-gray-400 dark:text-gray-500">
+            &copy; {new Date().getFullYear()} Applio v{process.env.NEXT_PUBLIC_APP_VERSION}. {t("copyright")}
+          </p>
+        </div>
       </footer>
 
       {/* Full-screen loading overlay while generating PDF */}
