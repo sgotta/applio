@@ -147,7 +147,6 @@ export function FloatingToolbar({
               left: 0,
               right: 0,
               zIndex: 9999,
-              paddingBottom: "env(safe-area-inset-bottom, 0px)",
             }
           : {
               position: "absolute",
@@ -161,7 +160,7 @@ export function FloatingToolbar({
       data-testid="floating-toolbar"
       className={
         docked
-          ? "flex items-center justify-center gap-2 bg-gray-950/95 backdrop-blur-sm px-5 py-2 shadow-[0_-4px_20px_rgba(0,0,0,0.25)] border-t border-white/6"
+          ? "flex items-center justify-center gap-2 bg-gray-950/95 backdrop-blur-sm px-5 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom,0px))] shadow-[0_-4px_20px_rgba(0,0,0,0.25)] border-t border-white/6"
           : "inline-flex items-center gap-0.5 bg-gray-900 rounded-lg px-2 py-1.5 shadow-xl"
       }
     >
