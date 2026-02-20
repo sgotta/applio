@@ -1505,8 +1505,8 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
       </div>
     )}
 
-    {/* Dev-only floating plan toggle */}
-    {process.env.NODE_ENV === "development" && (
+    {/* Floating plan toggle (visible while Stripe is not integrated) */}
+    {(
       <button
         onClick={() => setDevOverride(devOverride === "premium" ? "free" : "premium")}
         className="fixed bottom-4 right-4 z-50 flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-2 shadow-lg transition-all hover:shadow-xl hover:scale-105 active:scale-95 dark:border-gray-700 dark:bg-card"
