@@ -97,12 +97,32 @@ function hydrateSettings(
 // ---------------------------------------------------------------------------
 
 /**
+ * JSON.stringify with recursively sorted object keys so that key insertion
+ * order (which can differ after a JSONB round-trip through Supabase) does
+ * not affect the output.
+ */
+function stableStringify(value: unknown): string {
+  if (value === null || value === undefined) return "null";
+  if (typeof value === "number" || typeof value === "boolean") return String(value);
+  if (typeof value === "string") return JSON.stringify(value);
+  if (Array.isArray(value)) return "[" + value.map(stableStringify).join(",") + "]";
+  // Object — sort keys, skip undefined values (like JSON.stringify)
+  const obj = value as Record<string, unknown>;
+  const parts = Object.keys(obj)
+    .sort()
+    .filter((k) => obj[k] !== undefined)
+    .map((k) => JSON.stringify(k) + ":" + stableStringify(obj[k]));
+  return "{" + parts.join(",") + "}";
+}
+
+/**
  * Create a fingerprint of the "content" fields of a CVData object.
  * Excludes photo, visibility, and sidebarOrder to avoid false positives.
+ * Uses stableStringify so key ordering differences from JSONB don't matter.
  */
 function cvContentFingerprint(data: CVData): string {
   const { photo: _photo, ...personalInfoWithoutPhoto } = data.personalInfo;
-  return JSON.stringify({
+  return stableStringify({
     personalInfo: personalInfoWithoutPhoto,
     summary: data.summary,
     experience: data.experience,
@@ -232,8 +252,24 @@ export function CloudSync() {
           setPatternSettings,
         );
       }
+    } else {
+      // User chose local data — push it to Supabase now so the conflict
+      // doesn't reappear on the next page load. Effect 2 won't fire because
+      // `data` didn't change, so we must explicitly save here.
+      if (cvIdRef.current) {
+        const cleanData = stripBase64Photo(localData);
+        const cur = settingsRef.current;
+        const settings = collectSettings(
+          cur.colorSchemeName,
+          cur.fontFamilyId,
+          cur.fontSizeLevel,
+          cur.theme,
+          cur.locale,
+          cur.patternSettings,
+        );
+        updateCV(cvIdRef.current, { cv_data: cleanData, settings });
+      }
     }
-    // If choice === "local": keep current state, next sync cycle will push to Supabase
 
     activateSync();
   }, [conflictState, importData, setColorScheme, setFontFamily, setFontSizeLevel, setTheme, setLocale, setPatternSettings, activateSync]);
