@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useCallback, useEffect } from "react";
+import React, { useRef, useState, useCallback, useEffect } from "react";
 import { useCV } from "@/lib/cv-context";
 import { useTranslations } from "next-intl";
 import { useAppLocale, LOCALES, LOCALE_NAMES } from "@/lib/locale-context";
@@ -73,8 +73,8 @@ function SectionToggle({
   mobile?: boolean;
 }) {
   return (
-    <label className={`flex items-center justify-between gap-3 cursor-pointer ${mobile ? "py-3.5 min-h-[52px]" : "py-1.5"}`}>
-      <span className={`flex items-center gap-2 ${mobile ? "text-[17px]" : "text-[15px]"} text-gray-700 dark:text-gray-200`}>
+    <label className={`flex items-center justify-between gap-3 cursor-pointer ${mobile ? "py-3.5 min-h-[52px]" : "py-2.5 px-4"}`}>
+      <span className={`flex items-center gap-2 ${mobile ? "text-[17px]" : "text-[13px]"} text-gray-700 dark:text-gray-200`}>
         {label}
         {locked && <PremiumBadge />}
       </span>
@@ -133,18 +133,30 @@ function AccountContent({
   mobile?: boolean;
 }) {
   // Mobile: texto notablemente más grande para lectura cómoda sin zoom
-  const nameSize   = mobile ? "text-xl"   : "text-[15px]";
-  const emailSize  = mobile ? "text-base" : "text-[13px]";
-  const bodyText   = mobile ? "text-base" : "text-[13px]";
-  const hintText   = mobile ? "text-sm"   : "text-xs";
-  const iconSize   = mobile ? "h-5 w-5"   : "h-4 w-4";
-  const iconBoxSize = mobile ? "h-9 w-9"  : "h-7 w-7";
+  const nameSize    = mobile ? "text-xl"   : "text-[15px]";
+  const emailSize   = mobile ? "text-base" : "text-[13px]";
+  const bodyText    = mobile ? "text-base" : "text-[13px]";
+  const hintText    = "text-sm";
+  const iconSize    = mobile ? "h-5 w-5"   : "h-4 w-4";
+  const iconBoxSize = mobile ? "h-9 w-9"   : "h-7 w-7";
+  const hintLeading = mobile ? "leading-relaxed" : "leading-snug";
+  // Spacing — más compacto en desktop
+  const pad         = mobile ? "p-5"       : "p-4";
+  const headerPx    = mobile ? "px-5"      : "px-4";
+  const headerPt    = mobile ? "pt-5"      : "pt-4";
+  const headerPb    = mobile ? "pb-4"      : "pb-3";
+  const pillMx      = mobile ? "mx-4 mb-4" : "mx-3 mb-3";
+  const rowPy       = mobile ? "py-2.5"    : "py-1.5";
+  const rowMinH     = mobile ? "min-h-[44px]" : "min-h-[36px]";
+  const btnPy       = mobile ? "py-3"      : "py-2.5";
+  const statusMb    = mobile ? "mb-3"      : "mb-2.5";
+  const hintMb      = mobile ? "mb-4"      : "mb-3";
 
   if (user) {
     return (
       <div>
         {/* Name + email */}
-        <div className="px-5 pt-5 pb-4">
+        <div className={`${headerPx} ${headerPt} ${headerPb}`}>
           <p className={`${nameSize} font-semibold text-gray-900 dark:text-gray-50 truncate leading-tight`}>
             {user.user_metadata?.full_name || user.email}
           </p>
@@ -156,7 +168,7 @@ function AccountContent({
         </div>
 
         {/* Sync status pill */}
-        <div className="mx-4 mb-4 flex items-center gap-2.5 rounded-lg bg-gray-50 dark:bg-gray-800/60 px-3 py-2.5">
+        <div className={`${pillMx} flex items-center gap-2.5 rounded-lg bg-gray-50 dark:bg-gray-800/60 px-3 py-2.5`}>
           <Cloud className={`${iconSize} text-emerald-500 shrink-0`} />
           <span className={`${bodyText} text-gray-500 dark:text-gray-400`}>{t("syncCloud")}</span>
           <span className="ml-auto h-2 w-2 shrink-0 relative">
@@ -170,7 +182,7 @@ function AccountContent({
           {!isPremium && (
             <button
               onClick={() => { onClose(); onUpgrade(); }}
-              className={`w-full cursor-pointer flex items-center gap-3 rounded-lg px-3 py-2.5 min-h-[44px] ${bodyText} font-medium text-gray-600 dark:text-gray-300 hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:text-amber-700 dark:hover:text-amber-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300 dark:focus-visible:ring-gray-600`}
+              className={`w-full cursor-pointer flex items-center gap-3 rounded-lg px-3 ${rowPy} ${rowMinH} ${bodyText} font-medium text-gray-600 dark:text-gray-300 hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:text-amber-700 dark:hover:text-amber-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300 dark:focus-visible:ring-gray-600`}
             >
               <span className={`${iconBoxSize} flex items-center justify-center rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-500 shrink-0`}>
                 <Sparkles className={iconSize} />
@@ -180,7 +192,7 @@ function AccountContent({
           )}
           <button
             onClick={() => { onClose(); onSignOut(); }}
-            className={`w-full cursor-pointer flex items-center gap-3 rounded-lg px-3 py-2.5 min-h-[44px] ${bodyText} font-medium text-gray-500 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-200 dark:focus-visible:ring-red-800`}
+            className={`w-full cursor-pointer flex items-center gap-3 rounded-lg px-3 ${rowPy} ${rowMinH} ${bodyText} font-medium text-gray-500 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-200 dark:focus-visible:ring-red-800`}
           >
             <span className={`${iconBoxSize} flex items-center justify-center rounded-lg bg-red-50 dark:bg-red-900/20 text-red-500 shrink-0`}>
               <LogOut className={iconSize} />
@@ -193,9 +205,9 @@ function AccountContent({
   }
 
   return (
-    <div className="p-5">
+    <div className={pad}>
       {/* Status */}
-      <div className="flex items-center gap-3 mb-3">
+      <div className={`flex items-center gap-3 ${statusMb}`}>
         <span className={`${iconBoxSize} flex items-center justify-center rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-500 shrink-0`}>
           <HardDrive className={iconSize} />
         </span>
@@ -206,14 +218,14 @@ function AccountContent({
         </span>
       </div>
 
-      <p className={`${hintText} text-gray-400 dark:text-gray-500 leading-relaxed mb-4`}>
+      <p className={`${hintText} text-gray-400 dark:text-gray-500 ${hintLeading} ${hintMb}`}>
         {t("syncLoginHint")}
       </p>
 
       {/* CTA */}
       <button
         onClick={() => { onClose(); onLogin(); }}
-        className="cursor-pointer w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-gray-800 to-gray-900 px-4 py-3 min-h-[44px] text-sm font-medium text-white shadow-sm hover:from-gray-700 hover:to-gray-800 transition-colors dark:from-gray-100 dark:to-gray-200 dark:text-gray-900 dark:hover:from-gray-200 dark:hover:to-gray-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2"
+        className={`cursor-pointer w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-gray-800 to-gray-900 px-4 ${btnPy} ${rowMinH} text-sm font-medium text-white shadow-sm hover:from-gray-700 hover:to-gray-800 transition-colors dark:from-gray-100 dark:to-gray-200 dark:text-gray-900 dark:hover:from-gray-200 dark:hover:to-gray-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2`}
       >
         <LogIn className={iconSize} />
         {tauth("login")}
@@ -239,37 +251,37 @@ function ColorSection({
 }) {
   return (
     <div>
-      <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-2">
+      <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-3">
         {t("colorScheme")}
       </p>
-      <div className="flex gap-2">
+      <div className="flex gap-2.5">
         {COLOR_SCHEME_NAMES.map((name) => {
           const scheme = COLOR_SCHEMES[name];
           const isLight = scheme.sidebarText !== "#ffffff";
           const isLocked = !isPremium && !FREE_COLORS.includes(name);
+          const label = t(`colorScheme${name.charAt(0).toUpperCase() + name.slice(1)}`);
           return (
-            <Tooltip key={name}>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={() => {
-                    if (isLocked) { onUpgrade(); return; }
-                    setColorScheme(name);
-                  }}
-                  className={`relative h-7 w-7 rounded-full transition-transform hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-400 ${isLight ? "ring-1 ring-inset ring-black/10" : ""}`}
-                  style={{ backgroundColor: scheme.sidebarBg }}
-                >
-                  {colorSchemeName === name && (
-                    <Check className={`absolute inset-0 m-auto h-3.5 w-3.5 drop-shadow-sm ${isLight ? "text-gray-800" : "text-white"}`} />
-                  )}
-                  {isLocked && (
-                    <Lock className={`absolute inset-0 m-auto h-3 w-3 drop-shadow-sm ${isLight ? "text-gray-800/60" : "text-white/70"}`} />
-                  )}
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                {t(`colorScheme${name.charAt(0).toUpperCase() + name.slice(1)}`)}
-              </TooltipContent>
-            </Tooltip>
+            <div key={name} className="flex flex-col items-center gap-1.5">
+              <button
+                onClick={() => {
+                  if (isLocked) { onUpgrade(); return; }
+                  setColorScheme(name);
+                }}
+                aria-label={label}
+                className={`relative h-10 w-10 rounded-full transition-all hover:scale-105 focus:outline-none ${
+                  colorSchemeName === name ? "ring-2 ring-offset-2 ring-gray-900 dark:ring-gray-100" : ""
+                } ${isLight ? "ring-1 ring-inset ring-black/10" : ""}`}
+                style={{ backgroundColor: scheme.sidebarBg }}
+              >
+                {colorSchemeName === name && !isLocked && (
+                  <Check className={`absolute inset-0 m-auto h-4 w-4 drop-shadow-sm ${isLight ? "text-gray-800" : "text-white"}`} />
+                )}
+                {isLocked && (
+                  <Lock className={`absolute inset-0 m-auto h-3.5 w-3.5 drop-shadow-sm ${isLight ? "text-gray-800/60" : "text-white/70"}`} />
+                )}
+              </button>
+              <span className="text-[10px] text-gray-400 dark:text-gray-500 leading-tight text-center truncate max-w-[40px]">{label}</span>
+            </div>
           );
         })}
       </div>
@@ -308,7 +320,7 @@ function PatternSection({
     <>
       {/* Pattern selection */}
       <div>
-        <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-2">
+        <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-3">
           {t("sidebarPattern")}
         </p>
         <div className="flex gap-3">
@@ -317,15 +329,15 @@ function PatternSection({
             const isNone = name === "none";
             const isLocked = !isPremium && !isNone;
             return (
-              <div key={name} className="flex flex-col items-center gap-1">
+              <div key={name} className="flex flex-col items-center gap-1.5">
                 <button
                   onClick={() => {
                     if (isLocked) { onUpgrade(); return; }
                     setPattern(name);
                   }}
-                  className={`relative h-9 w-9 rounded-md border overflow-hidden transition-all hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-400 ${
+                  className={`relative h-10 w-10 rounded-lg border overflow-hidden transition-all hover:scale-105 focus:outline-none ${
                     isActive
-                      ? "border-gray-900 dark:border-gray-100 ring-1 ring-gray-900 dark:ring-gray-100"
+                      ? "border-gray-900 dark:border-gray-100 ring-2 ring-gray-900 dark:ring-gray-100 ring-offset-1"
                       : "border-gray-200 dark:border-gray-700"
                   }`}
                   style={{
@@ -345,7 +357,7 @@ function PatternSection({
                     <Lock className="absolute inset-0 m-auto h-3 w-3 text-white/70 drop-shadow-sm" />
                   )}
                 </button>
-                <span className="text-[10px] text-gray-500 dark:text-gray-300">
+                <span className="text-[10px] text-gray-400 dark:text-gray-400">
                   {t(`pattern${name.charAt(0).toUpperCase() + name.slice(1)}`)}
                 </span>
               </div>
@@ -356,30 +368,27 @@ function PatternSection({
 
       {/* Intensity sliders */}
       <div className={patternName === "none" ? "opacity-40 pointer-events-none" : ""}>
-        <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-2">
+        <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-3">
           {t("patternIntensity")}
         </p>
-        <div className="space-y-2">
-          <div className={scope === "main" ? "opacity-40 pointer-events-none" : ""}>
-            <p className="text-[10px] text-gray-400 dark:text-gray-400 mb-1">{t("patternScopeSidebar")}</p>
-            <div className="flex items-center gap-3">
-              <Slider min={1} max={5} step={1} value={[sidebarIntensity]} onValueChange={([v]) => setSidebarIntensity(v as PatternIntensity)} className="flex-1" />
-              <span className="text-xs font-medium text-gray-500 dark:text-gray-300 w-5 text-center">{sidebarIntensity}</span>
-            </div>
+        <div className="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800">
+          <div className={`flex items-center gap-3 px-4 py-2.5 ${scope === "main" ? "opacity-40 pointer-events-none" : ""}`}>
+            <span className="text-[13px] text-gray-600 dark:text-gray-300 shrink-0">{t("patternScopeSidebar")}</span>
+            <Slider min={1} max={5} step={1} value={[sidebarIntensity]} onValueChange={([v]) => setSidebarIntensity(v as PatternIntensity)} className="flex-1" />
+            <span className="text-[13px] font-medium text-gray-500 dark:text-gray-300 w-4 text-right shrink-0">{sidebarIntensity}</span>
           </div>
-          <div className={scope === "sidebar" ? "opacity-40 pointer-events-none" : ""}>
-            <p className="text-[10px] text-gray-400 dark:text-gray-400 mb-1">{t("patternScopeMain")}</p>
-            <div className="flex items-center gap-3">
-              <Slider min={1} max={5} step={1} value={[mainIntensity]} onValueChange={([v]) => setMainIntensity(v as PatternIntensity)} className="flex-1" />
-              <span className="text-xs font-medium text-gray-500 dark:text-gray-300 w-5 text-center">{mainIntensity}</span>
-            </div>
+          <div className="h-px bg-gray-100 dark:bg-white/5" />
+          <div className={`flex items-center gap-3 px-4 py-2.5 ${scope === "sidebar" ? "opacity-40 pointer-events-none" : ""}`}>
+            <span className="text-[13px] text-gray-600 dark:text-gray-300 shrink-0">{t("patternScopeMain")}</span>
+            <Slider min={1} max={5} step={1} value={[mainIntensity]} onValueChange={([v]) => setMainIntensity(v as PatternIntensity)} className="flex-1" />
+            <span className="text-[13px] font-medium text-gray-500 dark:text-gray-300 w-4 text-right shrink-0">{mainIntensity}</span>
           </div>
         </div>
       </div>
 
       {/* Scope selector */}
       <div className={patternName === "none" ? "opacity-40 pointer-events-none" : ""}>
-        <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-2">
+        <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-3">
           {t("patternScope")}
         </p>
         <div className="flex gap-1.5">
@@ -390,7 +399,7 @@ function PatternSection({
                 <TooltipTrigger asChild>
                   <button
                     onClick={() => setScope(s)}
-                    className={`h-7 w-7 rounded-md flex items-center justify-center transition-colors ${
+                    className={`h-8 w-8 rounded-lg flex items-center justify-center transition-colors ${
                       scope === s
                         ? "bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900"
                         : "bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-accent dark:text-gray-300 dark:hover:bg-accent/80"
@@ -432,30 +441,32 @@ function FontSection({
     <div className="space-y-4">
       {/* Font Family list */}
       <div>
-        <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-2">
+        <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-3">
           {t("fontFamily")}
         </p>
-        <div className="space-y-0.5 max-h-48 overflow-y-auto scrollbar-thin">
-          {FONT_FAMILIES.map((font) => {
+        <div className="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800">
+          {FONT_FAMILIES.map((font, idx) => {
             const isLocked = !isPremium && !FREE_FONTS.includes(font.id);
             return (
-              <button
-                key={font.id}
-                onClick={() => {
-                  if (isLocked) { onUpgrade(); return; }
-                  setFontFamily(font.id);
-                }}
-                className="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-accent transition-colors"
-                style={{ fontFamily: font.cssStack }}
-              >
-                <span className="flex items-center gap-2">
-                  {font.displayName}
-                  {isLocked && <PremiumBadge />}
-                </span>
-                {fontFamilyId === font.id && (
-                  <Check className="h-4 w-4 text-gray-900 dark:text-gray-100" />
-                )}
-              </button>
+              <React.Fragment key={font.id}>
+                {idx > 0 && <div className="h-px bg-gray-100 dark:bg-white/5" />}
+                <button
+                  onClick={() => {
+                    if (isLocked) { onUpgrade(); return; }
+                    setFontFamily(font.id);
+                  }}
+                  className="flex w-full items-center justify-between h-10 px-4 text-[13px] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                  style={{ fontFamily: font.cssStack }}
+                >
+                  <span className="flex items-center gap-2">
+                    {font.displayName}
+                    {isLocked && <PremiumBadge />}
+                  </span>
+                  {fontFamilyId === font.id && (
+                    <Check className="h-3.5 w-3.5 text-gray-900 dark:text-gray-100 shrink-0" />
+                  )}
+                </button>
+              </React.Fragment>
             );
           })}
         </div>
@@ -463,7 +474,7 @@ function FontSection({
 
       {/* Font Size */}
       <div>
-        <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-2">
+        <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-3">
           {t("fontSize")}
         </p>
         <div className="flex gap-1.5">
@@ -473,7 +484,7 @@ function FontSection({
               <button
                 key={level}
                 onClick={() => setFontSizeLevel(level)}
-                className={`h-7 w-7 rounded-md flex items-center justify-center text-xs font-medium transition-colors ${
+                className={`h-8 w-8 rounded-lg flex items-center justify-center text-xs font-medium transition-colors ${
                   fontSizeLevel === level
                     ? "bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900"
                     : "bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-accent dark:text-gray-300 dark:hover:bg-accent/80"
@@ -505,19 +516,45 @@ function SectionsContent({
   mobile?: boolean;
 }) {
   return (
-    <div className="space-y-3">
+    <div className={mobile ? "space-y-3" : "space-y-4"}>
       <div>
-        <p className={`font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 ${mobile ? "text-[11px] pb-1" : "text-xs mb-1"}`}>{t("sectionsTitle")}</p>
-        <SectionToggle label={t("sectionLocation")} checked={data.visibility.location} onToggle={() => toggleSection("location")} mobile={mobile} />
-        <SectionToggle label={t("sectionLinkedin")} checked={data.visibility.linkedin} onToggle={() => toggleSection("linkedin")} mobile={mobile} />
-        <SectionToggle label={t("sectionWebsite")} checked={data.visibility.website} onToggle={() => toggleSection("website")} mobile={mobile} />
+        <p className={`font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 ${mobile ? "text-[11px] pb-1" : "text-[10px] tracking-widest mb-3"}`}>{t("sectionsTitle")}</p>
+        {mobile ? (
+          <>
+            <SectionToggle label={t("sectionLocation")} checked={data.visibility.location} onToggle={() => toggleSection("location")} mobile={mobile} />
+            <SectionToggle label={t("sectionLinkedin")} checked={data.visibility.linkedin} onToggle={() => toggleSection("linkedin")} mobile={mobile} />
+            <SectionToggle label={t("sectionWebsite")} checked={data.visibility.website} onToggle={() => toggleSection("website")} mobile={mobile} />
+          </>
+        ) : (
+          <div className="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800">
+            <SectionToggle label={t("sectionLocation")} checked={data.visibility.location} onToggle={() => toggleSection("location")} mobile={mobile} />
+            <div className="h-px bg-gray-100 dark:bg-white/5" />
+            <SectionToggle label={t("sectionLinkedin")} checked={data.visibility.linkedin} onToggle={() => toggleSection("linkedin")} mobile={mobile} />
+            <div className="h-px bg-gray-100 dark:bg-white/5" />
+            <SectionToggle label={t("sectionWebsite")} checked={data.visibility.website} onToggle={() => toggleSection("website")} mobile={mobile} />
+          </div>
+        )}
       </div>
       <div>
-        <p className={`font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 ${mobile ? "text-[11px] pt-3 pb-1" : "text-xs mb-1"}`}>{t("optionalSections")}</p>
-        <SectionToggle label={t("sectionSummary")} checked={data.visibility.summary} onToggle={() => toggleSection("summary")} mobile={mobile} />
-        <SectionToggle label={t("sectionCourses")} checked={data.visibility.courses} locked={!isPremium} onToggle={() => { if (!isPremium) { onUpgrade(); return; } toggleSection("courses"); }} mobile={mobile} />
-        <SectionToggle label={t("sectionCertifications")} checked={data.visibility.certifications} locked={!isPremium} onToggle={() => { if (!isPremium) { onUpgrade(); return; } toggleSection("certifications"); }} mobile={mobile} />
-        <SectionToggle label={t("sectionAwards")} checked={data.visibility.awards} locked={!isPremium} onToggle={() => { if (!isPremium) { onUpgrade(); return; } toggleSection("awards"); }} mobile={mobile} />
+        <p className={`font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 ${mobile ? "text-[11px] pt-3 pb-1" : "text-[10px] tracking-widest mb-3"}`}>{t("optionalSections")}</p>
+        {mobile ? (
+          <>
+            <SectionToggle label={t("sectionSummary")} checked={data.visibility.summary} onToggle={() => toggleSection("summary")} mobile={mobile} />
+            <SectionToggle label={t("sectionCourses")} checked={data.visibility.courses} locked={!isPremium} onToggle={() => { if (!isPremium) { onUpgrade(); return; } toggleSection("courses"); }} mobile={mobile} />
+            <SectionToggle label={t("sectionCertifications")} checked={data.visibility.certifications} locked={!isPremium} onToggle={() => { if (!isPremium) { onUpgrade(); return; } toggleSection("certifications"); }} mobile={mobile} />
+            <SectionToggle label={t("sectionAwards")} checked={data.visibility.awards} locked={!isPremium} onToggle={() => { if (!isPremium) { onUpgrade(); return; } toggleSection("awards"); }} mobile={mobile} />
+          </>
+        ) : (
+          <div className="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800">
+            <SectionToggle label={t("sectionSummary")} checked={data.visibility.summary} onToggle={() => toggleSection("summary")} mobile={mobile} />
+            <div className="h-px bg-gray-100 dark:bg-white/5" />
+            <SectionToggle label={t("sectionCourses")} checked={data.visibility.courses} locked={!isPremium} onToggle={() => { if (!isPremium) { onUpgrade(); return; } toggleSection("courses"); }} mobile={mobile} />
+            <div className="h-px bg-gray-100 dark:bg-white/5" />
+            <SectionToggle label={t("sectionCertifications")} checked={data.visibility.certifications} locked={!isPremium} onToggle={() => { if (!isPremium) { onUpgrade(); return; } toggleSection("certifications"); }} mobile={mobile} />
+            <div className="h-px bg-gray-100 dark:bg-white/5" />
+            <SectionToggle label={t("sectionAwards")} checked={data.visibility.awards} locked={!isPremium} onToggle={() => { if (!isPremium) { onUpgrade(); return; } toggleSection("awards"); }} mobile={mobile} />
+          </div>
+        )}
       </div>
     </div>
   );
@@ -821,9 +858,9 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     </div>
                     <button
                       onClick={() => setMobileMenuOpen(false)}
-                      className="h-8 w-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-accent transition-colors cursor-pointer"
+                      className="group h-8 w-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-accent transition-colors cursor-pointer active:scale-90"
                     >
-                      <X className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                      <X className="h-4 w-4 text-gray-500 dark:text-gray-400 transition-transform duration-200 group-hover:rotate-90" />
                     </button>
                   </div>
 
@@ -837,7 +874,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
                     <button onClick={() => setMobileMenuPage("color")} className={menuItemClass}>
                       <span className="flex items-center gap-3">
-                        <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-pink-50 dark:bg-pink-900/20 text-pink-500 shrink-0">
+                        <span className="h-10 w-10 flex items-center justify-center rounded-xl bg-pink-50 dark:bg-pink-900/20 text-pink-500 shrink-0">
                           <Palette className="h-[18px] w-[18px]" />
                         </span>
                         {t("colorScheme")}
@@ -847,7 +884,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
                     <button onClick={() => setMobileMenuPage("pattern")} className={menuItemClass}>
                       <span className="flex items-center gap-3">
-                        <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-violet-50 dark:bg-violet-900/20 text-violet-500 shrink-0">
+                        <span className="h-10 w-10 flex items-center justify-center rounded-xl bg-violet-50 dark:bg-violet-900/20 text-violet-500 shrink-0">
                           <Layers className="h-[18px] w-[18px]" />
                         </span>
                         {t("sidebarPattern")}
@@ -857,7 +894,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
                     <button onClick={() => setMobileMenuPage("font")} className={menuItemClass}>
                       <span className="flex items-center gap-3">
-                        <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-sky-50 dark:bg-sky-900/20 text-sky-500 shrink-0">
+                        <span className="h-10 w-10 flex items-center justify-center rounded-xl bg-sky-50 dark:bg-sky-900/20 text-sky-500 shrink-0">
                           <Type className="h-[18px] w-[18px]" />
                         </span>
                         {t("fontFamily")}
@@ -867,7 +904,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
                     <button onClick={() => setMobileMenuPage("sections")} className={menuItemClass}>
                       <span className="flex items-center gap-3">
-                        <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 shrink-0">
+                        <span className="h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 shrink-0">
                           <SlidersHorizontal className="h-[18px] w-[18px]" />
                         </span>
                         {t("sections")}
@@ -882,7 +919,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
                     <div className={`${menuItemClass} cursor-default`} onClick={toggleTheme}>
                       <span className="flex items-center gap-3">
-                        <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-indigo-50 dark:bg-indigo-900/20 text-indigo-500 shrink-0">
+                        <span className="h-10 w-10 flex items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-500 shrink-0">
                           <Moon className="h-[18px] w-[18px]" />
                         </span>
                         {t("themeDark")}
@@ -897,7 +934,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
                     <button onClick={() => setMobileMenuPage("language")} className={menuItemClass}>
                       <span className="flex items-center gap-3">
-                        <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-500 shrink-0">
+                        <span className="h-10 w-10 flex items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-500 shrink-0">
                           <Globe className="h-[18px] w-[18px]" />
                         </span>
                         {t("language")}
@@ -915,7 +952,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
                     <button onClick={() => { setMobileMenuOpen(false); onPrintPDF(); }} disabled={isGeneratingPDF} className={`${menuItemClass} disabled:opacity-50`}>
                       <span className="flex items-center gap-3">
-                        <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-red-50 dark:bg-red-900/20 text-red-500 shrink-0">
+                        <span className="h-10 w-10 flex items-center justify-center rounded-xl bg-red-50 dark:bg-red-900/20 text-red-500 shrink-0">
                           {isGeneratingPDF ? <Loader2 className="h-[18px] w-[18px] animate-spin" /> : <Download className="h-[18px] w-[18px]" />}
                         </span>
                         {t("pdfTitle")}
@@ -924,7 +961,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
                     <button onClick={exportToJSON} className={menuItemClass}>
                       <span className="flex items-center gap-3">
-                        <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-500 shrink-0">
+                        <span className="h-10 w-10 flex items-center justify-center rounded-xl bg-amber-50 dark:bg-amber-900/20 text-amber-500 shrink-0">
                           <FileDown className="h-[18px] w-[18px]" />
                         </span>
                         {t("export")}
@@ -933,7 +970,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
                     <button onClick={() => fileInputRef.current?.click()} className={menuItemClass}>
                       <span className="flex items-center gap-3">
-                        <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-500 shrink-0">
+                        <span className="h-10 w-10 flex items-center justify-center rounded-xl bg-amber-50 dark:bg-amber-900/20 text-amber-500 shrink-0">
                           <FileUp className="h-[18px] w-[18px]" />
                         </span>
                         {t("import")}
@@ -943,7 +980,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     {user ? (
                       <button onClick={handleShare} disabled={isSharing || !canShare} className={`${menuItemClass} ${!canShare ? "opacity-50" : ""}`}>
                         <span className="flex items-center gap-3">
-                          <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-green-50 dark:bg-green-900/20 text-green-500 shrink-0">
+                          <span className="h-10 w-10 flex items-center justify-center rounded-xl bg-green-50 dark:bg-green-900/20 text-green-500 shrink-0">
                             {isSharing ? <Loader2 className="h-[18px] w-[18px] animate-spin" /> : <Share2 className="h-[18px] w-[18px]" />}
                           </span>
                           {t("share")}
@@ -955,7 +992,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                         className={`${menuItemClass} opacity-50`}
                       >
                         <span className="flex items-center gap-3">
-                          <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-green-50 dark:bg-green-900/20 text-green-500 shrink-0">
+                          <span className="h-10 w-10 flex items-center justify-center rounded-xl bg-green-50 dark:bg-green-900/20 text-green-500 shrink-0">
                             <Share2 className="h-[18px] w-[18px]" />
                           </span>
                           {t("share")}
@@ -1265,10 +1302,16 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
             </SheetContent>
           </Sheet>
-          <FileText className="hidden md:block h-5 w-5 text-gray-900 dark:text-gray-100" />
-          <span className="font-display text-lg md:text-base font-bold tracking-tight text-gray-900 dark:text-gray-100">
-            Applio
-          </span>
+          <button
+            className="flex items-center gap-1.5 md:pointer-events-none"
+            onClick={() => handleMobileMenuOpen(true)}
+            aria-label="Abrir menú"
+          >
+            <FileText className="hidden md:block h-5 w-5 text-gray-900 dark:text-gray-100" />
+            <span className="font-display text-lg md:text-base font-bold tracking-tight text-gray-900 dark:text-gray-100">
+              Applio
+            </span>
+          </button>
         </div>
 
         {/* Actions */}
@@ -1298,15 +1341,17 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       size="icon"
                       aria-label={t("colorScheme")}
                       data-testid="btn-color-scheme"
-                      className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
+                      className="h-10 w-10"
                     >
-                      <Palette className="h-4 w-4" />
+                      <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-pink-50 dark:bg-pink-900/20 text-pink-500">
+                        <Palette className="h-4 w-4" />
+                      </span>
                     </Button>
                   </PopoverTrigger>
                 </TooltipTrigger>
                 <TooltipContent>{t("colorScheme")}</TooltipContent>
               </Tooltip>
-              <PopoverContent className="w-auto p-3" align="end">
+              <PopoverContent className="w-auto p-4" align="end">
                 <ColorSection {...colorProps} />
               </PopoverContent>
             </Popover>
@@ -1321,15 +1366,17 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       size="icon"
                       aria-label={t("sidebarPattern")}
                       data-testid="btn-pattern"
-                      className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
+                      className="h-10 w-10"
                     >
-                      <Layers className="h-4 w-4" />
+                      <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-violet-50 dark:bg-violet-900/20 text-violet-500">
+                        <Layers className="h-4 w-4" />
+                      </span>
                     </Button>
                   </PopoverTrigger>
                 </TooltipTrigger>
                 <TooltipContent>{t("sidebarPattern")}</TooltipContent>
               </Tooltip>
-              <PopoverContent className="w-72 p-3 space-y-4 scrollbar-thin" align="end">
+              <PopoverContent className="w-72 p-4 space-y-5" align="end">
                 <PatternSection {...patternProps} />
               </PopoverContent>
             </Popover>
@@ -1344,15 +1391,17 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       size="icon"
                       aria-label={t("fontFamily")}
                       data-testid="btn-font"
-                      className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
+                      className="h-10 w-10"
                     >
-                      <Type className="h-4 w-4" />
+                      <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-sky-50 dark:bg-sky-900/20 text-sky-500">
+                        <Type className="h-4 w-4" />
+                      </span>
                     </Button>
                   </PopoverTrigger>
                 </TooltipTrigger>
                 <TooltipContent>{t("fontFamily")}</TooltipContent>
               </Tooltip>
-              <PopoverContent className="w-48 p-3" align="end">
+              <PopoverContent className="w-56 p-4" align="end">
                 <FontSection {...fontProps} />
               </PopoverContent>
             </Popover>
@@ -1367,15 +1416,17 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       size="icon"
                       aria-label={t("sections")}
                       data-testid="btn-sections"
-                      className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
+                      className="h-10 w-10"
                     >
-                      <SlidersHorizontal className="h-4 w-4" />
+                      <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500">
+                        <SlidersHorizontal className="h-4 w-4" />
+                      </span>
                     </Button>
                   </PopoverTrigger>
                 </TooltipTrigger>
                 <TooltipContent>{t("sections")}</TooltipContent>
               </Tooltip>
-              <PopoverContent className="w-64" align="end">
+              <PopoverContent className="w-72 p-4" align="end">
                 <SectionsContent {...sectionsProps} />
               </PopoverContent>
             </Popover>
@@ -1390,37 +1441,41 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       size="icon"
                       aria-label={t("fileMenu")}
                       data-testid="btn-file-menu"
-                      className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
+                      className="h-10 w-10"
                     >
-                      <FolderDown className="h-4 w-4" />
+                      <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-red-50 dark:bg-red-900/20 text-red-500">
+                        <FolderDown className="h-4 w-4" />
+                      </span>
                     </Button>
                   </PopoverTrigger>
                 </TooltipTrigger>
                 <TooltipContent>{t("fileMenu")}</TooltipContent>
               </Tooltip>
-              <PopoverContent className="w-auto p-1" align="end">
-                <div className="space-y-0.5">
+              <PopoverContent className="w-52 p-3 space-y-2" align="end">
+                <div className="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800">
                   <button
                     onClick={() => { setFileMenuOpen(false); onPrintPDF(); }}
                     disabled={isGeneratingPDF}
-                    className="flex w-full items-center gap-2.5 rounded-sm px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-accent transition-colors disabled:opacity-50"
+                    className="flex w-full items-center gap-3 h-10 px-4 text-[13px] font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors disabled:opacity-50"
                   >
-                    {isGeneratingPDF ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+                    {isGeneratingPDF ? <Loader2 className="h-3.5 w-3.5 animate-spin shrink-0 text-red-500" /> : <Download className="h-3.5 w-3.5 shrink-0 text-red-500" />}
                     {t("pdfTitle")}
                   </button>
-                  <div className="my-1 border-t border-gray-100 dark:border-border" />
+                </div>
+                <div className="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800">
                   <button
                     onClick={exportToJSON}
-                    className="flex w-full items-center gap-2.5 rounded-sm px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-accent transition-colors"
+                    className="flex w-full items-center gap-3 h-10 px-4 text-[13px] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                   >
-                    <FileDown className="h-4 w-4" />
+                    <FileDown className="h-3.5 w-3.5 shrink-0 text-amber-500" />
                     {t("export")}
                   </button>
+                  <div className="h-px bg-gray-100 dark:bg-white/5" />
                   <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="flex w-full items-center gap-2.5 rounded-sm px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-accent transition-colors"
+                    className="flex w-full items-center gap-3 h-10 px-4 text-[13px] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                   >
-                    <FileUp className="h-4 w-4" />
+                    <FileUp className="h-3.5 w-3.5 shrink-0 text-amber-500" />
                     {t("import")}
                   </button>
                 </div>
@@ -1437,9 +1492,11 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     aria-label={t("share")}
                     onClick={handleShare}
                     disabled={isSharing || !canShare}
-                    className={`h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100 ${!canShare ? "opacity-50" : ""}`}
+                    className={`h-10 w-10 ${!canShare ? "opacity-50" : ""}`}
                   >
-                    {isSharing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Share2 className="h-4 w-4" />}
+                    <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-green-50 dark:bg-green-900/20 text-green-500">
+                      {isSharing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Share2 className="h-4 w-4" />}
+                    </span>
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>{t("share")}</TooltipContent>
@@ -1460,9 +1517,11 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                   aria-label={theme === "dark" ? t("themeLight") : t("themeDark")}
                   data-testid="btn-theme"
                   onClick={toggleTheme}
-                  className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
+                  className="h-10 w-10"
                 >
-                  {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                  <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-indigo-50 dark:bg-indigo-900/20 text-indigo-500">
+                    {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                  </span>
                 </Button>
               </TooltipTrigger>
               <TooltipContent>{theme === "dark" ? t("themeLight") : t("themeDark")}</TooltipContent>
@@ -1478,33 +1537,37 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       size="icon"
                       aria-label={t("language")}
                       data-testid="btn-language"
-                      className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
+                      className="h-10 w-10"
                     >
-                      <Globe className="h-4 w-4" />
+                      <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-500">
+                        <Globe className="h-4 w-4" />
+                      </span>
                     </Button>
                   </PopoverTrigger>
                 </TooltipTrigger>
                 <TooltipContent>{t("language")}</TooltipContent>
               </Tooltip>
-              <PopoverContent className="w-48 p-1" align="end">
-                <div className="space-y-0.5 max-h-80 overflow-y-auto scrollbar-thin">
-                  {LOCALES.map((code) => {
+              <PopoverContent className="w-52 p-3" align="end">
+                <div className="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800">
+                  {LOCALES.map((code, idx) => {
                     const translated = tl(code);
                     const native = LOCALE_NAMES[code];
                     return (
-                      <button
-                        key={code}
-                        onClick={() => setLocale(code)}
-                        className="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-accent transition-colors"
-                      >
-                        <span>
-                          {native}
-                          <span className="ml-1.5 text-xs text-gray-400 dark:text-gray-400">({translated})</span>
-                        </span>
-                        {locale === code && (
-                          <Check className="h-4 w-4 text-gray-900 dark:text-gray-100" />
-                        )}
-                      </button>
+                      <React.Fragment key={code}>
+                        {idx > 0 && <div className="h-px bg-gray-100 dark:bg-white/5" />}
+                        <button
+                          onClick={() => setLocale(code)}
+                          className="flex w-full items-center justify-between h-10 px-4 text-[13px] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                        >
+                          <span>
+                            {native}
+                            <span className="ml-1.5 text-[11px] text-gray-400 dark:text-gray-500">({translated})</span>
+                          </span>
+                          {locale === code && (
+                            <Check className="h-3.5 w-3.5 text-gray-900 dark:text-gray-100 shrink-0" />
+                          )}
+                        </button>
+                      </React.Fragment>
                     );
                   })}
                 </div>
@@ -1538,7 +1601,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                   </span>
                 </button>
               </PopoverTrigger>
-              <PopoverContent className="w-72 p-0 overflow-hidden" align="end">
+              <PopoverContent className={`${user ? "w-64" : "w-60"} p-0 overflow-hidden`} align="end">
                 <AccountContent
                   user={user}
                   isPremium={isPremium}

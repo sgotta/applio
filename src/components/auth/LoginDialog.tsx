@@ -58,19 +58,19 @@ export const LoginDialog = memo(function LoginDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-sm">
-        <DialogHeader>
-          <DialogTitle className="text-center">{t("loginTitle")}</DialogTitle>
-          <DialogDescription className="text-center">
+      <DialogContent className="sm:max-w-sm px-8 py-8">
+        <DialogHeader className="mb-2">
+          <DialogTitle className="text-center text-xl">{t("loginTitle")}</DialogTitle>
+          <DialogDescription className="text-center mt-2">
             {t("loginDescription")}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-3 pt-2">
+        <div className="space-y-3 pt-4">
           <button
             onClick={handleGoogle}
             disabled={loadingProvider !== null}
-            className="flex w-full items-center justify-center gap-3 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+            className="flex w-full items-center justify-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
           >
             {loadingProvider === "google" ? (
               <Loader2 className="h-5 w-5 animate-spin" />
@@ -83,7 +83,7 @@ export const LoginDialog = memo(function LoginDialog({
           <button
             onClick={handleGithub}
             disabled={loadingProvider !== null}
-            className="flex w-full items-center justify-center gap-3 rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-gray-800 disabled:opacity-50 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
+            className="flex w-full items-center justify-center gap-3 rounded-xl bg-gray-900 px-4 py-3.5 text-sm font-medium text-white transition-colors hover:bg-gray-800 disabled:opacity-50 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
           >
             {loadingProvider === "github" ? (
               <Loader2 className="h-5 w-5 animate-spin" />
@@ -94,7 +94,7 @@ export const LoginDialog = memo(function LoginDialog({
           </button>
         </div>
 
-        <p className="text-center text-xs text-gray-400 pt-1">
+        <p className="text-center text-xs text-gray-400 pt-4">
           {t("loginDisclaimer")}
         </p>
       </DialogContent>

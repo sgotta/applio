@@ -465,7 +465,7 @@ export function CloudSync() {
     <Dialog open={true} onOpenChange={(open) => { if (!open) handleConflictResolution("local"); }}>
       <DialogContent
         showCloseButton
-        className="max-w-[calc(100vw-3rem)] sm:max-w-xs py-8 px-6 sm:p-6"
+        className="max-w-[calc(100vw-3rem)] sm:max-w-xs py-8 px-6 sm:px-8 sm:py-8"
       >
         <div className="flex flex-col items-center text-center gap-4 sm:gap-3">
           <div className="w-16 h-16 sm:w-12 sm:h-12 rounded-2xl bg-sky-50 dark:bg-sky-950/30 flex items-center justify-center">
@@ -475,7 +475,7 @@ export function CloudSync() {
             <DialogTitle className="text-base">
               {t("title")}
             </DialogTitle>
-            <DialogDescription className="text-xs leading-relaxed">
+            <DialogDescription className="text-sm leading-relaxed">
               {t("description", { date: formattedDate })}
             </DialogDescription>
           </DialogHeader>
@@ -484,14 +484,14 @@ export function CloudSync() {
         <div className="flex flex-col gap-2 mt-2 sm:mt-1">
           <Button
             onClick={() => handleConflictResolution("cloud")}
-            className="w-full"
+            className="w-full rounded-xl"
           >
             {t("useCloud")}
           </Button>
           <Button
             variant="ghost"
             onClick={() => handleConflictResolution("local")}
-            className="w-full text-muted-foreground"
+            className="w-full rounded-xl text-muted-foreground"
           >
             {t("useLocal")}
           </Button>
