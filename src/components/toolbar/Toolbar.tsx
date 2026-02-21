@@ -31,23 +31,18 @@ import { PremiumBadge } from "@/components/premium/PremiumBadge";
 import {
   Download, FileUp, FileDown, FileText, FolderDown, Globe, Type,
   SlidersHorizontal, Check, Sun, Moon,
-  LayoutGrid, Grip, MoreVertical, X, ChevronRight, ChevronLeft, Palette,
+  Menu, X, ChevronRight, ChevronLeft, Palette,
   Loader2, Share2, LogIn, LogOut, User, Copy, ExternalLink,
   PanelLeft, PanelRight, Square, Lock, HardDrive, Cloud, Layers, Sparkles,
 } from "lucide-react";
 
 /* ── Free-tier feature limits ──────────────────────────── */
-export const FREE_COLORS: ColorSchemeName[] = ["default"];
-export const FREE_FONTS: FontFamilyId[] = ["inter", "lato"];
-
-// Toggle to show/hide the account button (top-right avatar, desktop + mobile)
-const SHOW_ACCOUNT_BUTTON = false;
+const FREE_COLORS: ColorSchemeName[] = ["default"];
+const FREE_FONTS: FontFamilyId[] = ["inter", "lato"];
 
 interface ToolbarProps {
   onPrintPDF: () => void | Promise<void>;
   isGeneratingPDF?: boolean;
-  desktopMenuOpen: boolean;
-  onToggleDesktopMenu: () => void;
 }
 
 function isValidCVData(data: unknown): data is CVData {
@@ -64,7 +59,7 @@ function isValidCVData(data: unknown): data is CVData {
   );
 }
 
-export function SectionToggle({
+function SectionToggle({
   label,
   checked,
   onToggle,
@@ -88,7 +83,7 @@ export function SectionToggle({
   );
 }
 
-export function UserAvatar({ url, size }: { url?: string; size: number }) {
+function UserAvatar({ url, size }: { url?: string; size: number }) {
   const [failed, setFailed] = useState(false);
   const sizeClass = size >= 10 ? "h-10 w-10" : size === 9 ? "h-9 w-9" : size === 8 ? "h-8 w-8" : "h-7 w-7";
   const iconSize = size >= 10 ? "h-5 w-5" : size >= 8 ? "h-4 w-4" : "h-3.5 w-3.5";
@@ -241,7 +236,7 @@ function AccountContent({
 
 /* ── Shared sub-components for Design content ──────────── */
 
-export function ColorSection({
+function ColorSection({
   colorSchemeName,
   setColorScheme,
   isPremium,
@@ -294,7 +289,7 @@ export function ColorSection({
   );
 }
 
-export function PatternSection({
+function PatternSection({
   colorSchemeName,
   patternName,
   setPattern,
@@ -425,7 +420,7 @@ export function PatternSection({
   );
 }
 
-export function FontSection({
+function FontSection({
   fontFamilyId,
   fontSizeLevel,
   setFontFamily,
@@ -505,7 +500,7 @@ export function FontSection({
   );
 }
 
-export function SectionsContent({
+function SectionsContent({
   data,
   toggleSection,
   isPremium,
@@ -569,7 +564,7 @@ export function SectionsContent({
 
 type MobileMenuPage = "main" | "color" | "pattern" | "font" | "sections" | "language";
 
-export function Toolbar({ onPrintPDF, isGeneratingPDF, desktopMenuOpen, onToggleDesktopMenu }: ToolbarProps) {
+export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   const { data, importData, toggleSection, updatePersonalInfo } = useCV();
   const { user, signOut } = useAuth();
   const { isPremium, devOverride, setDevOverride } = usePlan();
@@ -844,21 +839,18 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF, desktopMenuOpen, onToggle
 
   return (
     <>
-    <header
-      className={`sticky top-0 z-50 border-b border-border bg-white/95 dark:bg-card/95 backdrop-blur-sm transition-transform duration-300 ease-out ${toolbarHidden ? "-translate-y-full md:translate-y-0" : "translate-y-0"}`}
-      onClick={() => { if (desktopMenuOpen) onToggleDesktopMenu(); }}
-    >
+    <header className={`sticky top-0 z-50 border-b border-border bg-white/95 dark:bg-card/95 backdrop-blur-sm transition-transform duration-300 ease-out ${toolbarHidden ? "-translate-y-full md:translate-y-0" : "translate-y-0"}`}>
       <div className="mx-auto flex h-16 md:h-14 max-w-7xl items-center justify-between px-4 sm:px-6">
         {/* Left: hamburger (mobile) + logo */}
-        <div className="flex items-center gap-1 md:gap-1.5">
+        <div className="flex items-center gap-0 md:gap-1.5">
           <Sheet open={mobileMenuOpen} onOpenChange={handleMobileMenuOpen}>
             <SheetTrigger asChild>
               <Button
                 variant="ghost"
                 size="icon"
-                className="md:hidden -ml-2 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
+                className="md:hidden text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
               >
-                <MoreVertical className="size-5" />
+                <Menu className="size-6" />
               </Button>
             </SheetTrigger>
             <SheetContent side="left" showCloseButton={false} className="w-72 p-0 gap-0">
@@ -1323,19 +1315,12 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF, desktopMenuOpen, onToggle
             </SheetContent>
           </Sheet>
           <button
-            className="flex items-center gap-1 md:-ml-1 cursor-pointer"
-            onClick={(e) => {
-              if (typeof window !== "undefined" && window.matchMedia("(min-width: 768px)").matches) {
-                e.stopPropagation();
-                onToggleDesktopMenu();
-              } else {
-                handleMobileMenuOpen(true);
-              }
-            }}
-            aria-label="Menú"
+            className="flex items-center gap-1.5 md:pointer-events-none"
+            onClick={() => handleMobileMenuOpen(true)}
+            aria-label="Abrir menú"
           >
-            <MoreVertical className="hidden md:block size-[18px] text-gray-600 dark:text-gray-300" />
-            <span className="font-display text-lg md:text-[17px] font-bold tracking-tight text-gray-900 dark:text-gray-100">
+            <FileText className="hidden md:block h-5 w-5 text-gray-900 dark:text-gray-100" />
+            <span className="font-display text-lg md:text-base font-bold tracking-tight text-gray-900 dark:text-gray-100">
               Applio
             </span>
           </button>
@@ -1353,47 +1338,300 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF, desktopMenuOpen, onToggle
             aria-label={t("importAriaLabel")}
           />
 
-          {/* ===== DESKTOP: Account button — controlled by SHOW_ACCOUNT_BUTTON ===== */}
-          {SHOW_ACCOUNT_BUTTON && <Popover open={accountDesktopOpen} onOpenChange={setAccountDesktopOpen}>
-            <PopoverTrigger asChild>
-              <button
-                data-testid="btn-account"
-                aria-label={user ? (user.user_metadata?.full_name || user.email || "Account") : "Sign in"}
-                className="relative cursor-pointer h-8 w-8 items-center justify-center rounded-full overflow-visible transition-all hidden md:flex group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-1"
-              >
-                {user ? (
-                  <span className="h-8 w-8 rounded-full overflow-hidden ring-1 ring-gray-200 dark:ring-gray-700 group-hover:ring-gray-400 dark:group-hover:ring-gray-500 transition-all block">
-                    <UserAvatar url={user.user_metadata?.avatar_url} size={8} />
-                  </span>
-                ) : (
-                  <span className="h-8 w-8 rounded-full ring-1 ring-gray-200 dark:ring-gray-700 group-hover:ring-gray-400 dark:group-hover:ring-gray-500 transition-all flex items-center justify-center bg-gray-100 dark:bg-gray-800">
-                    <User className="h-5 w-5 text-gray-400 dark:text-gray-500" />
-                  </span>
-                )}
-                {/* Sync status badge */}
-                <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3">
-                  <span className={`absolute inset-0 rounded-full animate-pulse ${syncStatus === "synced" ? "bg-emerald-400/40" : "bg-amber-400/40"}`} />
-                  <span className={`absolute inset-0 rounded-full ${syncStatus === "synced" ? "bg-emerald-500 shadow-[0_0_8px_2px_rgba(16,185,129,0.4)]" : "bg-amber-500 shadow-[0_0_8px_2px_rgba(245,158,11,0.4)]"}`} />
-                </span>
-              </button>
-            </PopoverTrigger>
-            <PopoverContent className={`${user ? "w-64" : "w-60"} p-0 overflow-hidden`} align="end">
-              <AccountContent
-                user={user}
-                isPremium={isPremium}
-                onSignOut={signOut}
-                onUpgrade={() => setUpgradeDialogOpen(true)}
-                onLogin={() => setLoginDialogOpen(true)}
-                onClose={() => setAccountDesktopOpen(false)}
-                t={t as (key: string) => string}
-                tauth={tauth as (key: string) => string}
-                tsync={tsync as (key: string) => string}
-              />
-            </PopoverContent>
-          </Popover>}
+          {/* ===== DESKTOP BUTTONS (hidden on mobile) ===== */}
+          <div className="hidden md:flex items-center gap-1">
 
-          {/* ===== MOBILE: Account button — controlled by SHOW_ACCOUNT_BUTTON ===== */}
-          {SHOW_ACCOUNT_BUTTON && <Popover open={accountMobileOpen} onOpenChange={setAccountMobileOpen}>
+            {/* ── CV style (visual impact order) ── */}
+
+            {/* Color scheme */}
+            <Popover>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label={t("colorScheme")}
+                      data-testid="btn-color-scheme"
+                      className="h-10 w-10"
+                    >
+                      <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-pink-50 dark:bg-pink-900/20 text-pink-500">
+                        <Palette className="h-4 w-4" />
+                      </span>
+                    </Button>
+                  </PopoverTrigger>
+                </TooltipTrigger>
+                <TooltipContent>{t("colorScheme")}</TooltipContent>
+              </Tooltip>
+              <PopoverContent className="w-auto p-4" align="end">
+                <ColorSection {...colorProps} />
+              </PopoverContent>
+            </Popover>
+
+            {/* Pattern */}
+            <Popover>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label={t("sidebarPattern")}
+                      data-testid="btn-pattern"
+                      className="h-10 w-10"
+                    >
+                      <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-violet-50 dark:bg-violet-900/20 text-violet-500">
+                        <Layers className="h-4 w-4" />
+                      </span>
+                    </Button>
+                  </PopoverTrigger>
+                </TooltipTrigger>
+                <TooltipContent>{t("sidebarPattern")}</TooltipContent>
+              </Tooltip>
+              <PopoverContent className="w-72 p-4 space-y-5" align="end">
+                <PatternSection {...patternProps} />
+              </PopoverContent>
+            </Popover>
+
+            {/* Font */}
+            <Popover>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label={t("fontFamily")}
+                      data-testid="btn-font"
+                      className="h-10 w-10"
+                    >
+                      <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-sky-50 dark:bg-sky-900/20 text-sky-500">
+                        <Type className="h-4 w-4" />
+                      </span>
+                    </Button>
+                  </PopoverTrigger>
+                </TooltipTrigger>
+                <TooltipContent>{t("fontFamily")}</TooltipContent>
+              </Tooltip>
+              <PopoverContent className="w-56 p-4" align="end">
+                <FontSection {...fontProps} />
+              </PopoverContent>
+            </Popover>
+
+            {/* Sections toggle */}
+            <Popover>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label={t("sections")}
+                      data-testid="btn-sections"
+                      className="h-10 w-10"
+                    >
+                      <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500">
+                        <SlidersHorizontal className="h-4 w-4" />
+                      </span>
+                    </Button>
+                  </PopoverTrigger>
+                </TooltipTrigger>
+                <TooltipContent>{t("sections")}</TooltipContent>
+              </Tooltip>
+              <PopoverContent className="w-72 p-4" align="end">
+                <SectionsContent {...sectionsProps} />
+              </PopoverContent>
+            </Popover>
+
+            {/* File actions menu (PDF + Export + Import) */}
+            <Popover open={fileMenuOpen} onOpenChange={setFileMenuOpen}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label={t("fileMenu")}
+                      data-testid="btn-file-menu"
+                      className="h-10 w-10"
+                    >
+                      <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-red-50 dark:bg-red-900/20 text-red-500">
+                        <FolderDown className="h-4 w-4" />
+                      </span>
+                    </Button>
+                  </PopoverTrigger>
+                </TooltipTrigger>
+                <TooltipContent>{t("fileMenu")}</TooltipContent>
+              </Tooltip>
+              <PopoverContent className="w-52 p-3 space-y-2" align="end">
+                <div className="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800">
+                  <button
+                    onClick={() => { setFileMenuOpen(false); onPrintPDF(); }}
+                    disabled={isGeneratingPDF}
+                    className="flex w-full items-center gap-3 h-10 px-4 text-[13px] font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors disabled:opacity-50"
+                  >
+                    {isGeneratingPDF ? <Loader2 className="h-3.5 w-3.5 animate-spin shrink-0 text-red-500" /> : <Download className="h-3.5 w-3.5 shrink-0 text-red-500" />}
+                    {t("pdfTitle")}
+                  </button>
+                </div>
+                <div className="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800">
+                  <button
+                    onClick={exportToJSON}
+                    className="flex w-full items-center gap-3 h-10 px-4 text-[13px] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                  >
+                    <FileDown className="h-3.5 w-3.5 shrink-0 text-amber-500" />
+                    {t("export")}
+                  </button>
+                  <div className="h-px bg-gray-100 dark:bg-white/5" />
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex w-full items-center gap-3 h-10 px-4 text-[13px] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                  >
+                    <FileUp className="h-3.5 w-3.5 shrink-0 text-amber-500" />
+                    {t("import")}
+                  </button>
+                </div>
+              </PopoverContent>
+            </Popover>
+
+            {/* Share button (only for logged-in users) */}
+            {user && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label={t("share")}
+                    onClick={handleShare}
+                    disabled={isSharing || !canShare}
+                    className={`h-10 w-10 ${!canShare ? "opacity-50" : ""}`}
+                  >
+                    <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-green-50 dark:bg-green-900/20 text-green-500">
+                      {isSharing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Share2 className="h-4 w-4" />}
+                    </span>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>{t("share")}</TooltipContent>
+              </Tooltip>
+            )}
+
+            {/* Divider: CV tools | App settings */}
+            <div className="h-5 w-px bg-gray-200 dark:bg-gray-700 mx-1" />
+
+            {/* ── App settings ── */}
+
+            {/* Theme toggle */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label={theme === "dark" ? t("themeLight") : t("themeDark")}
+                  data-testid="btn-theme"
+                  onClick={toggleTheme}
+                  className="h-10 w-10"
+                >
+                  <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-indigo-50 dark:bg-indigo-900/20 text-indigo-500">
+                    {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                  </span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>{theme === "dark" ? t("themeLight") : t("themeDark")}</TooltipContent>
+            </Tooltip>
+
+            {/* Language selector */}
+            <Popover>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label={t("language")}
+                      data-testid="btn-language"
+                      className="h-10 w-10"
+                    >
+                      <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-500">
+                        <Globe className="h-4 w-4" />
+                      </span>
+                    </Button>
+                  </PopoverTrigger>
+                </TooltipTrigger>
+                <TooltipContent>{t("language")}</TooltipContent>
+              </Tooltip>
+              <PopoverContent className="w-52 p-3" align="end">
+                <div className="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800">
+                  {LOCALES.map((code, idx) => {
+                    const translated = tl(code);
+                    const native = LOCALE_NAMES[code];
+                    return (
+                      <React.Fragment key={code}>
+                        {idx > 0 && <div className="h-px bg-gray-100 dark:bg-white/5" />}
+                        <button
+                          onClick={() => setLocale(code)}
+                          className="flex w-full items-center justify-between h-10 px-4 text-[13px] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                        >
+                          <span>
+                            {native}
+                            <span className="ml-1.5 text-[11px] text-gray-400 dark:text-gray-500">({translated})</span>
+                          </span>
+                          {locale === code && (
+                            <Check className="h-3.5 w-3.5 text-gray-900 dark:text-gray-100 shrink-0" />
+                          )}
+                        </button>
+                      </React.Fragment>
+                    );
+                  })}
+                </div>
+              </PopoverContent>
+            </Popover>
+
+            {/* Divider: App settings | Account */}
+            <div className="h-5 w-px bg-gray-200 dark:bg-gray-700 mx-1" />
+
+            {/* ── Account popover (sync status + auth + upgrade) ── */}
+            <Popover open={accountDesktopOpen} onOpenChange={setAccountDesktopOpen}>
+              <PopoverTrigger asChild>
+                <button
+                  data-testid="btn-account"
+                  aria-label={user ? (user.user_metadata?.full_name || user.email || "Account") : "Sign in"}
+                  className="relative cursor-pointer h-8 w-8 items-center justify-center rounded-full overflow-visible transition-all hidden md:flex group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-1"
+                >
+                  {user ? (
+                    <span className="h-8 w-8 rounded-full overflow-hidden ring-1 ring-gray-200 dark:ring-gray-700 group-hover:ring-gray-400 dark:group-hover:ring-gray-500 transition-all block">
+                      <UserAvatar url={user.user_metadata?.avatar_url} size={8} />
+                    </span>
+                  ) : (
+                    <span className="h-8 w-8 rounded-full ring-1 ring-gray-200 dark:ring-gray-700 group-hover:ring-gray-400 dark:group-hover:ring-gray-500 transition-all flex items-center justify-center bg-gray-100 dark:bg-gray-800">
+                      <User className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+                    </span>
+                  )}
+                  {/* Sync status badge */}
+                  <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3">
+                    <span className={`absolute inset-0 rounded-full animate-pulse ${syncStatus === "synced" ? "bg-emerald-400/40" : "bg-amber-400/40"}`} />
+                    <span className={`absolute inset-0 rounded-full ${syncStatus === "synced" ? "bg-emerald-500 shadow-[0_0_8px_2px_rgba(16,185,129,0.4)]" : "bg-amber-500 shadow-[0_0_8px_2px_rgba(245,158,11,0.4)]"}`} />
+                  </span>
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className={`${user ? "w-64" : "w-60"} p-0 overflow-hidden`} align="end">
+                <AccountContent
+                  user={user}
+                  isPremium={isPremium}
+                  onSignOut={signOut}
+                  onUpgrade={() => setUpgradeDialogOpen(true)}
+                  onLogin={() => setLoginDialogOpen(true)}
+                  onClose={() => setAccountDesktopOpen(false)}
+                  t={t as (key: string) => string}
+                  tauth={tauth as (key: string) => string}
+                  tsync={tsync as (key: string) => string}
+                />
+              </PopoverContent>
+            </Popover>
+
+          </div>
+
+          {/* ===== MOBILE: Account button (always visible) ===== */}
+          <Popover open={accountMobileOpen} onOpenChange={setAccountMobileOpen}>
             <PopoverTrigger asChild>
               <button
                 aria-label={user ? (user.user_metadata?.full_name || user.email || "Account") : "Sign in"}
@@ -1429,7 +1667,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF, desktopMenuOpen, onToggle
                 mobile
               />
             </PopoverContent>
-          </Popover>}
+          </Popover>
 
         </div>
       </div>
