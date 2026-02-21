@@ -68,6 +68,8 @@
     "copyright": "All rights reserved.",
     "pdfNoBranding": "Remove Applio branding",
     "design": "Design",
+    "menuPreferences": "Preferences",
+    "menuAccount": "Account",
     "fileMenu": "File",
     "syncLocal": "Local storage",
     "syncLocalExplain": "Only on this browser, no sync.",
@@ -301,7 +303,8 @@
     "moveDown": "Move down",
     "addBelow": "Add below",
     "gripDragHint": "Drag to reorder",
-    "gripLongPressHint": "Long press to reorder"
+    "gripLongPressHint": "Long press to reorder",
+    "undo": "Undo"
   },
   "landing": {
     "nav": {

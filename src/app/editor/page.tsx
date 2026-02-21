@@ -61,7 +61,7 @@ function AppContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-stone-100 dark:bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-white md:bg-stone-100 md:dark:bg-background flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
         </div>
@@ -70,7 +70,7 @@ function AppContent() {
   }
 
   return (
-    <div className="min-h-screen bg-stone-100 dark:bg-background animate-editor-enter">
+    <div className="min-h-screen bg-white md:bg-stone-100 md:dark:bg-background animate-editor-enter">
       <Toolbar
         onPrintPDF={handlePrint}
         isGeneratingPDF={isGeneratingPDF}
@@ -130,6 +130,7 @@ export default function Home() {
                 toastOptions={{
                   classNames: {
                     toast: "!bg-gray-900 !text-white !border-none !shadow-lg !rounded-xl !py-3 !px-5 !text-sm !max-w-[calc(100vw-2rem)] dark:!bg-gray-100 dark:!text-gray-900",
+                    actionButton: "!bg-white/15 !text-white !text-[13px] !font-medium !rounded-lg !px-3 !py-1.5 hover:!bg-white/25 !transition-colors dark:!bg-black/10 dark:!text-gray-900 dark:hover:!bg-black/20",
                   },
                 }}
               />

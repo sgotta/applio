@@ -9,6 +9,7 @@ import { CVData } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useTheme } from "@/lib/theme-context";
@@ -32,7 +33,7 @@ import {
   SlidersHorizontal, Check, Sun, Moon,
   Menu, X, ChevronRight, ChevronLeft, Palette,
   Loader2, Share2, LogIn, LogOut, User, Copy, ExternalLink,
-  PanelLeft, PanelRight, Square, Lock, HardDrive, Cloud, Layers, FlaskConical,
+  PanelLeft, PanelRight, Square, Lock, HardDrive, Cloud, Layers, Sparkles,
 } from "lucide-react";
 
 /* ── Free-tier feature limits ──────────────────────────── */
@@ -63,15 +64,17 @@ function SectionToggle({
   checked,
   onToggle,
   locked,
+  mobile,
 }: {
   label: string;
   checked: boolean;
   onToggle: () => void;
   locked?: boolean;
+  mobile?: boolean;
 }) {
   return (
-    <label className="flex items-center justify-between gap-3 py-1.5 cursor-pointer">
-      <span className="flex items-center gap-2 text-[15px] text-gray-700 dark:text-gray-200">
+    <label className={`flex items-center justify-between gap-3 cursor-pointer ${mobile ? "py-3.5 min-h-[52px]" : "py-1.5"}`}>
+      <span className={`flex items-center gap-2 ${mobile ? "text-[17px]" : "text-[15px]"} text-gray-700 dark:text-gray-200`}>
         {label}
         {locked && <PremiumBadge />}
       </span>
@@ -82,8 +85,8 @@ function SectionToggle({
 
 function UserAvatar({ url, size }: { url?: string; size: number }) {
   const [failed, setFailed] = useState(false);
-  const sizeClass = size >= 10 ? "h-10 w-10" : size === 8 ? "h-8 w-8" : "h-7 w-7";
-  const iconSize = size >= 10 ? "h-5 w-5" : size === 8 ? "h-4 w-4" : "h-3.5 w-3.5";
+  const sizeClass = size >= 10 ? "h-10 w-10" : size === 9 ? "h-9 w-9" : size === 8 ? "h-8 w-8" : "h-7 w-7";
+  const iconSize = size >= 10 ? "h-5 w-5" : size >= 8 ? "h-4 w-4" : "h-3.5 w-3.5";
 
   if (url && !failed) {
     return (
@@ -116,6 +119,7 @@ function AccountContent({
   t,
   tauth,
   tsync,
+  mobile = false,
 }: {
   user: { email?: string; user_metadata?: { full_name?: string; avatar_url?: string } } | null;
   isPremium: boolean;
@@ -126,17 +130,26 @@ function AccountContent({
   t: (key: string) => string;
   tauth: (key: string) => string;
   tsync: (key: string) => string;
+  mobile?: boolean;
 }) {
+  // Mobile: texto notablemente más grande para lectura cómoda sin zoom
+  const nameSize   = mobile ? "text-xl"   : "text-[15px]";
+  const emailSize  = mobile ? "text-base" : "text-[13px]";
+  const bodyText   = mobile ? "text-base" : "text-[13px]";
+  const hintText   = mobile ? "text-sm"   : "text-xs";
+  const iconSize   = mobile ? "h-5 w-5"   : "h-4 w-4";
+  const iconBoxSize = mobile ? "h-9 w-9"  : "h-7 w-7";
+
   if (user) {
     return (
       <div>
-        {/* Name + email — no redundant avatar */}
+        {/* Name + email */}
         <div className="px-5 pt-5 pb-4">
-          <p className="text-[15px] font-semibold text-gray-900 dark:text-gray-50 truncate leading-tight">
+          <p className={`${nameSize} font-semibold text-gray-900 dark:text-gray-50 truncate leading-tight`}>
             {user.user_metadata?.full_name || user.email}
           </p>
           {user.email && user.user_metadata?.full_name && (
-            <p className="text-[13px] text-gray-400 dark:text-gray-500 truncate mt-1">
+            <p className={`${emailSize} text-gray-400 dark:text-gray-500 truncate mt-1`}>
               {user.email}
             </p>
           )}
@@ -144,10 +157,10 @@ function AccountContent({
 
         {/* Sync status pill */}
         <div className="mx-4 mb-4 flex items-center gap-2.5 rounded-lg bg-gray-50 dark:bg-gray-800/60 px-3 py-2.5">
-          <Cloud className="h-4 w-4 text-emerald-500 shrink-0" />
-          <span className="text-[13px] text-gray-500 dark:text-gray-400">{t("syncCloud")}</span>
+          <Cloud className={`${iconSize} text-emerald-500 shrink-0`} />
+          <span className={`${bodyText} text-gray-500 dark:text-gray-400`}>{t("syncCloud")}</span>
           <span className="ml-auto h-2 w-2 shrink-0 relative">
-            <span className="absolute inset-0 rounded-full bg-emerald-400/40 animate-pulse" />
+            <span className="absolute inset-0 rounded-full bg-emerald-400/50 animate-ping" />
             <span className="absolute inset-0 rounded-full bg-emerald-500 shadow-[0_0_6px_1px_rgba(16,185,129,0.4)]" />
           </span>
         </div>
@@ -157,17 +170,21 @@ function AccountContent({
           {!isPremium && (
             <button
               onClick={() => { onClose(); onUpgrade(); }}
-              className="w-full flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[13px] text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+              className={`w-full cursor-pointer flex items-center gap-3 rounded-lg px-3 py-2.5 min-h-[44px] ${bodyText} font-medium text-gray-600 dark:text-gray-300 hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:text-amber-700 dark:hover:text-amber-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300 dark:focus-visible:ring-gray-600`}
             >
-              <FlaskConical className="h-4 w-4 text-gray-400" />
+              <span className={`${iconBoxSize} flex items-center justify-center rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-500 shrink-0`}>
+                <Sparkles className={iconSize} />
+              </span>
               {tsync("upgrade")}
             </button>
           )}
           <button
             onClick={() => { onClose(); onSignOut(); }}
-            className="w-full flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[13px] text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+            className={`w-full cursor-pointer flex items-center gap-3 rounded-lg px-3 py-2.5 min-h-[44px] ${bodyText} font-medium text-gray-500 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-200 dark:focus-visible:ring-red-800`}
           >
-            <LogOut className="h-4 w-4" />
+            <span className={`${iconBoxSize} flex items-center justify-center rounded-lg bg-red-50 dark:bg-red-900/20 text-red-500 shrink-0`}>
+              <LogOut className={iconSize} />
+            </span>
             {tauth("signOut")}
           </button>
         </div>
@@ -178,25 +195,27 @@ function AccountContent({
   return (
     <div className="p-5">
       {/* Status */}
-      <div className="flex items-center gap-2.5 mb-3">
-        <HardDrive className="h-4 w-4 text-amber-500 shrink-0" />
-        <span className="text-[13px] font-medium text-gray-600 dark:text-gray-300">{t("syncLocal")}</span>
+      <div className="flex items-center gap-3 mb-3">
+        <span className={`${iconBoxSize} flex items-center justify-center rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-500 shrink-0`}>
+          <HardDrive className={iconSize} />
+        </span>
+        <span className={`${bodyText} font-medium text-gray-600 dark:text-gray-300`}>{t("syncLocal")}</span>
         <span className="ml-auto h-2.5 w-2.5 shrink-0 relative">
-          <span className="absolute inset-0 rounded-full bg-amber-400/40 animate-pulse" />
+          <span className="absolute inset-0 rounded-full bg-amber-400/50 animate-ping" />
           <span className="absolute inset-0 rounded-full bg-amber-500 shadow-[0_0_6px_1px_rgba(245,158,11,0.4)]" />
         </span>
       </div>
 
-      <p className="text-xs text-gray-400 dark:text-gray-500 leading-relaxed mb-4">
+      <p className={`${hintText} text-gray-400 dark:text-gray-500 leading-relaxed mb-4`}>
         {t("syncLoginHint")}
       </p>
 
       {/* CTA */}
       <button
         onClick={() => { onClose(); onLogin(); }}
-        className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-gray-800 to-gray-900 px-4 py-3 text-sm font-medium text-white shadow-sm hover:from-gray-700 hover:to-gray-800 transition-colors dark:from-gray-100 dark:to-gray-200 dark:text-gray-900 dark:hover:from-gray-200 dark:hover:to-gray-300"
+        className="cursor-pointer w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-gray-800 to-gray-900 px-4 py-3 min-h-[44px] text-sm font-medium text-white shadow-sm hover:from-gray-700 hover:to-gray-800 transition-colors dark:from-gray-100 dark:to-gray-200 dark:text-gray-900 dark:hover:from-gray-200 dark:hover:to-gray-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2"
       >
-        <LogIn className="h-4 w-4" />
+        <LogIn className={iconSize} />
         {tauth("login")}
       </button>
     </div>
@@ -476,27 +495,29 @@ function SectionsContent({
   isPremium,
   onUpgrade,
   t,
+  mobile,
 }: {
   data: CVData;
   toggleSection: (key: keyof import("@/lib/types").SectionVisibility) => void;
   isPremium: boolean;
   onUpgrade: () => void;
   t: (key: string) => string;
+  mobile?: boolean;
 }) {
   return (
     <div className="space-y-3">
-      <div className="space-y-1">
-        <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-1">{t("sectionsTitle")}</p>
-        <SectionToggle label={t("sectionLocation")} checked={data.visibility.location} onToggle={() => toggleSection("location")} />
-        <SectionToggle label={t("sectionLinkedin")} checked={data.visibility.linkedin} onToggle={() => toggleSection("linkedin")} />
-        <SectionToggle label={t("sectionWebsite")} checked={data.visibility.website} onToggle={() => toggleSection("website")} />
+      <div>
+        <p className={`font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 ${mobile ? "text-[11px] pb-1" : "text-xs mb-1"}`}>{t("sectionsTitle")}</p>
+        <SectionToggle label={t("sectionLocation")} checked={data.visibility.location} onToggle={() => toggleSection("location")} mobile={mobile} />
+        <SectionToggle label={t("sectionLinkedin")} checked={data.visibility.linkedin} onToggle={() => toggleSection("linkedin")} mobile={mobile} />
+        <SectionToggle label={t("sectionWebsite")} checked={data.visibility.website} onToggle={() => toggleSection("website")} mobile={mobile} />
       </div>
-      <div className="space-y-1">
-        <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-1">{t("optionalSections")}</p>
-        <SectionToggle label={t("sectionSummary")} checked={data.visibility.summary} onToggle={() => toggleSection("summary")} />
-        <SectionToggle label={t("sectionCourses")} checked={data.visibility.courses} locked={!isPremium} onToggle={() => { if (!isPremium) { onUpgrade(); return; } toggleSection("courses"); }} />
-        <SectionToggle label={t("sectionCertifications")} checked={data.visibility.certifications} locked={!isPremium} onToggle={() => { if (!isPremium) { onUpgrade(); return; } toggleSection("certifications"); }} />
-        <SectionToggle label={t("sectionAwards")} checked={data.visibility.awards} locked={!isPremium} onToggle={() => { if (!isPremium) { onUpgrade(); return; } toggleSection("awards"); }} />
+      <div>
+        <p className={`font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 ${mobile ? "text-[11px] pt-3 pb-1" : "text-xs mb-1"}`}>{t("optionalSections")}</p>
+        <SectionToggle label={t("sectionSummary")} checked={data.visibility.summary} onToggle={() => toggleSection("summary")} mobile={mobile} />
+        <SectionToggle label={t("sectionCourses")} checked={data.visibility.courses} locked={!isPremium} onToggle={() => { if (!isPremium) { onUpgrade(); return; } toggleSection("courses"); }} mobile={mobile} />
+        <SectionToggle label={t("sectionCertifications")} checked={data.visibility.certifications} locked={!isPremium} onToggle={() => { if (!isPremium) { onUpgrade(); return; } toggleSection("certifications"); }} mobile={mobile} />
+        <SectionToggle label={t("sectionAwards")} checked={data.visibility.awards} locked={!isPremium} onToggle={() => { if (!isPremium) { onUpgrade(); return; } toggleSection("awards"); }} mobile={mobile} />
       </div>
     </div>
   );
@@ -756,10 +777,10 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   }, [shareUrl]);
 
   const menuItemClass =
-    "flex w-full items-center justify-between rounded-sm px-3.5 py-3 text-[15px] text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-accent transition-colors";
+    "flex w-full items-center justify-between px-4 py-2.5 text-[15px] font-medium text-gray-800 hover:bg-gray-50 dark:text-gray-100 dark:hover:bg-accent/60 transition-colors cursor-pointer";
 
   const backButtonClass =
-    "flex items-center gap-1.5 px-3.5 py-2.5 text-sm font-medium text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200 transition-colors";
+    "w-full flex items-center gap-2 px-4 h-14 border-b border-gray-100 dark:border-border text-[17px] font-bold text-gray-900 dark:text-gray-100 tracking-tight hover:bg-gray-50 dark:hover:bg-accent/40 transition-colors cursor-pointer shrink-0";
 
   /* ── Shared design section props ──────────────────────── */
   const colorProps = { colorSchemeName, setColorScheme, isPremium, onUpgrade: openUpgrade, t: t as (key: string) => string };
@@ -772,186 +793,257 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
   return (
     <>
-    <header className={`sticky top-0 z-50 border-b border-border bg-white/80 dark:bg-card/80 backdrop-blur-sm transition-transform duration-300 ease-out ${toolbarHidden ? "-translate-y-full md:translate-y-0" : "translate-y-0"}`}>
+    <header className={`sticky top-0 z-50 border-b border-border bg-white/95 dark:bg-card/95 backdrop-blur-sm transition-transform duration-300 ease-out ${toolbarHidden ? "-translate-y-full md:translate-y-0" : "translate-y-0"}`}>
       <div className="mx-auto flex h-16 md:h-14 max-w-7xl items-center justify-between px-4 sm:px-6">
         {/* Left: hamburger (mobile) + logo */}
-        <div className="flex items-center gap-1.5">
-          <Popover open={mobileMenuOpen} onOpenChange={handleMobileMenuOpen}>
-            <PopoverTrigger asChild>
+        <div className="flex items-center gap-0 md:gap-1.5">
+          <Sheet open={mobileMenuOpen} onOpenChange={handleMobileMenuOpen}>
+            <SheetTrigger asChild>
               <Button
                 variant="ghost"
                 size="icon"
                 className="md:hidden text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
               >
-                <span className="relative size-6">
-                  <Menu
-                    className={`size-6 absolute inset-0 transition-all duration-200 ${
-                      mobileMenuOpen
-                        ? "opacity-0 rotate-90 scale-75"
-                        : "opacity-100 rotate-0 scale-100"
-                    }`}
-                  />
-                  <X
-                    className={`size-6 absolute inset-0 transition-all duration-200 ${
-                      mobileMenuOpen
-                        ? "opacity-100 rotate-0 scale-100"
-                        : "opacity-0 -rotate-90 scale-75"
-                    }`}
-                  />
-                </span>
+                <Menu className="size-6" />
               </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-72 p-2" align="start">
+            </SheetTrigger>
+            <SheetContent side="left" showCloseButton={false} className="w-72 p-0 gap-0">
+              <SheetTitle className="sr-only">Menú</SheetTitle>
 
               {/* ── Mobile: Main page ── */}
               {mobileMenuPage === "main" && (
-                <div className="space-y-0.5">
-                  {/* ── CV style (visual impact order, matches desktop) ── */}
+                <>
+                  {/* Sheet header */}
+                  <div className="flex items-center justify-between px-4 h-14 border-b border-gray-100 dark:border-border shrink-0">
+                    <div className="flex items-center gap-2">
+                      <FileText className="h-5 w-5 text-gray-900 dark:text-gray-100" />
+                      <span className="font-bold text-[17px] text-gray-900 dark:text-gray-100 tracking-tight">Applio</span>
+                    </div>
+                    <button
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="h-8 w-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-accent transition-colors cursor-pointer"
+                    >
+                      <X className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                    </button>
+                  </div>
 
-                  {/* Color */}
-                  <button onClick={() => setMobileMenuPage("color")} className={menuItemClass}>
-                    <span className="flex items-center gap-2.5">
-                      <Palette className="h-4 w-4" />
-                      {t("colorScheme")}
-                    </span>
-                    <ChevronRight className="h-3.5 w-3.5 text-gray-400 dark:text-gray-400" />
-                  </button>
+                  {/* Scrollable content */}
+                  <div className="flex-1 overflow-y-auto overscroll-contain py-2">
 
-                  {/* Pattern */}
-                  <button onClick={() => setMobileMenuPage("pattern")} className={menuItemClass}>
-                    <span className="flex items-center gap-2.5">
-                      <Layers className="h-4 w-4" />
-                      {t("sidebarPattern")}
-                    </span>
-                    <ChevronRight className="h-3.5 w-3.5 text-gray-400 dark:text-gray-400" />
-                  </button>
+                    {/* ── DISEÑO ── */}
+                    <p className="px-4 pt-3 pb-1.5 text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
+                      {t("design")}
+                    </p>
 
-                  {/* Font */}
-                  <button onClick={() => setMobileMenuPage("font")} className={menuItemClass}>
-                    <span className="flex items-center gap-2.5">
-                      <Type className="h-4 w-4" />
-                      {t("fontFamily")}
-                    </span>
-                    <ChevronRight className="h-3.5 w-3.5 text-gray-400 dark:text-gray-400" />
-                  </button>
+                    <button onClick={() => setMobileMenuPage("color")} className={menuItemClass}>
+                      <span className="flex items-center gap-3">
+                        <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-pink-50 dark:bg-pink-900/20 text-pink-500 shrink-0">
+                          <Palette className="h-[18px] w-[18px]" />
+                        </span>
+                        {t("colorScheme")}
+                      </span>
+                      <ChevronRight className="h-4 w-4 text-gray-300 dark:text-gray-600 shrink-0" />
+                    </button>
 
-                  {/* Sections */}
-                  <button onClick={() => setMobileMenuPage("sections")} className={menuItemClass}>
-                    <span className="flex items-center gap-2.5">
-                      <SlidersHorizontal className="h-4 w-4" />
-                      {t("sections")}
-                    </span>
-                    <ChevronRight className="h-3.5 w-3.5 text-gray-400 dark:text-gray-400" />
-                  </button>
+                    <button onClick={() => setMobileMenuPage("pattern")} className={menuItemClass}>
+                      <span className="flex items-center gap-3">
+                        <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-violet-50 dark:bg-violet-900/20 text-violet-500 shrink-0">
+                          <Layers className="h-[18px] w-[18px]" />
+                        </span>
+                        {t("sidebarPattern")}
+                      </span>
+                      <ChevronRight className="h-4 w-4 text-gray-300 dark:text-gray-600 shrink-0" />
+                    </button>
 
-                  {/* Divider */}
-                  <div className="my-1.5 border-t border-gray-100 dark:border-border" />
+                    <button onClick={() => setMobileMenuPage("font")} className={menuItemClass}>
+                      <span className="flex items-center gap-3">
+                        <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-sky-50 dark:bg-sky-900/20 text-sky-500 shrink-0">
+                          <Type className="h-[18px] w-[18px]" />
+                        </span>
+                        {t("fontFamily")}
+                      </span>
+                      <ChevronRight className="h-4 w-4 text-gray-300 dark:text-gray-600 shrink-0" />
+                    </button>
 
-                  {/* ── App settings ── */}
+                    <button onClick={() => setMobileMenuPage("sections")} className={menuItemClass}>
+                      <span className="flex items-center gap-3">
+                        <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 shrink-0">
+                          <SlidersHorizontal className="h-[18px] w-[18px]" />
+                        </span>
+                        {t("sections")}
+                      </span>
+                      <ChevronRight className="h-4 w-4 text-gray-300 dark:text-gray-600 shrink-0" />
+                    </button>
 
-                  {/* Theme toggle */}
-                  <button onClick={toggleTheme} className={menuItemClass}>
-                    <span className="flex items-center gap-2.5">
-                      {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-                      {theme === "dark" ? t("themeLight") : t("themeDark")}
-                    </span>
-                  </button>
+                    {/* ── PREFERENCIAS ── */}
+                    <p className="px-4 pt-5 pb-1.5 text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
+                      {t("menuPreferences")}
+                    </p>
 
-                  {/* Language */}
-                  <button onClick={() => setMobileMenuPage("language")} className={menuItemClass}>
-                    <span className="flex items-center gap-2.5">
-                      <Globe className="h-4 w-4" />
-                      {t("language")}
-                    </span>
-                    <span className="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-400">
-                      {LOCALE_NAMES[locale]}
-                      <ChevronRight className="h-3.5 w-3.5" />
-                    </span>
-                  </button>
+                    <div className={`${menuItemClass} cursor-default`} onClick={toggleTheme}>
+                      <span className="flex items-center gap-3">
+                        <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-indigo-50 dark:bg-indigo-900/20 text-indigo-500 shrink-0">
+                          <Moon className="h-[18px] w-[18px]" />
+                        </span>
+                        {t("themeDark")}
+                      </span>
+                      <Switch
+                        checked={theme === "dark"}
+                        onCheckedChange={toggleTheme}
+                        onClick={(e) => e.stopPropagation()}
+                        className="pointer-events-none"
+                      />
+                    </div>
 
-                  {/* Divider */}
-                  <div className="my-1.5 border-t border-gray-100 dark:border-border" />
-
-                  {/* PDF */}
-                  <button onClick={() => { setMobileMenuOpen(false); onPrintPDF(); }} disabled={isGeneratingPDF} className={`${menuItemClass} disabled:opacity-50`}>
-                    <span className="flex items-center gap-2.5">
-                      {isGeneratingPDF ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
-                      {t("pdfTitle")}
-                    </span>
-                  </button>
-
-                  {/* Export JSON */}
-                  <button onClick={exportToJSON} className={menuItemClass}>
-                    <span className="flex items-center gap-2.5">
-                      <FileDown className="h-4 w-4" />
-                      {t("export")}
-                    </span>
-                  </button>
-
-                  {/* Import */}
-                  <button onClick={() => fileInputRef.current?.click()} className={menuItemClass}>
-                    <span className="flex items-center gap-2.5">
-                      <FileUp className="h-4 w-4" />
-                      {t("import")}
-                    </span>
-                  </button>
-
-                  {/* Divider */}
-                  <div className="my-1.5 border-t border-gray-100 dark:border-border" />
-
-                  {/* Copy link (only for logged-in users) */}
-                  {user && (
-                    <button onClick={handleShare} disabled={isSharing || !canShare} className={`${menuItemClass} ${!canShare ? "opacity-50" : ""}`}>
-                      <span className="flex items-center gap-2.5">
-                        {isSharing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Share2 className="h-4 w-4" />}
-                        {t("share")}
+                    <button onClick={() => setMobileMenuPage("language")} className={menuItemClass}>
+                      <span className="flex items-center gap-3">
+                        <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-500 shrink-0">
+                          <Globe className="h-[18px] w-[18px]" />
+                        </span>
+                        {t("language")}
+                      </span>
+                      <span className="flex items-center gap-1.5 text-sm text-gray-400 dark:text-gray-500">
+                        {LOCALE_NAMES[locale]}
+                        <ChevronRight className="h-4 w-4" />
                       </span>
                     </button>
-                  )}
-                </div>
+
+                    {/* ── ARCHIVO ── */}
+                    <p className="px-4 pt-5 pb-1.5 text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
+                      {t("fileMenu")}
+                    </p>
+
+                    <button onClick={() => { setMobileMenuOpen(false); onPrintPDF(); }} disabled={isGeneratingPDF} className={`${menuItemClass} disabled:opacity-50`}>
+                      <span className="flex items-center gap-3">
+                        <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-red-50 dark:bg-red-900/20 text-red-500 shrink-0">
+                          {isGeneratingPDF ? <Loader2 className="h-[18px] w-[18px] animate-spin" /> : <Download className="h-[18px] w-[18px]" />}
+                        </span>
+                        {t("pdfTitle")}
+                      </span>
+                    </button>
+
+                    <button onClick={exportToJSON} className={menuItemClass}>
+                      <span className="flex items-center gap-3">
+                        <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-500 shrink-0">
+                          <FileDown className="h-[18px] w-[18px]" />
+                        </span>
+                        {t("export")}
+                      </span>
+                    </button>
+
+                    <button onClick={() => fileInputRef.current?.click()} className={menuItemClass}>
+                      <span className="flex items-center gap-3">
+                        <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-500 shrink-0">
+                          <FileUp className="h-[18px] w-[18px]" />
+                        </span>
+                        {t("import")}
+                      </span>
+                    </button>
+
+                    {user ? (
+                      <button onClick={handleShare} disabled={isSharing || !canShare} className={`${menuItemClass} ${!canShare ? "opacity-50" : ""}`}>
+                        <span className="flex items-center gap-3">
+                          <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-green-50 dark:bg-green-900/20 text-green-500 shrink-0">
+                            {isSharing ? <Loader2 className="h-[18px] w-[18px] animate-spin" /> : <Share2 className="h-[18px] w-[18px]" />}
+                          </span>
+                          {t("share")}
+                        </span>
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => { setMobileMenuOpen(false); setLoginDialogOpen(true); }}
+                        className={`${menuItemClass} opacity-50`}
+                      >
+                        <span className="flex items-center gap-3">
+                          <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-green-50 dark:bg-green-900/20 text-green-500 shrink-0">
+                            <Share2 className="h-[18px] w-[18px]" />
+                          </span>
+                          {t("share")}
+                        </span>
+                        <Lock className="h-4 w-4 text-gray-300 dark:text-gray-600 shrink-0" />
+                      </button>
+                    )}
+
+                    <div className="h-4" />
+                  </div>
+
+                  {/* Footer: Account (fixed at bottom) */}
+                  <div className="border-t border-gray-100 dark:border-border shrink-0">
+                    {user ? (
+                      <div className="flex items-center gap-3 px-5 py-4">
+                        <span className="h-10 w-10 rounded-full overflow-hidden ring-1 ring-gray-200 dark:ring-gray-700 shrink-0">
+                          <UserAvatar url={user.user_metadata?.avatar_url} size={10} />
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-[15px] font-semibold text-gray-800 dark:text-gray-100 truncate leading-tight">
+                            {user.user_metadata?.full_name || user.email}
+                          </p>
+                          {user.email && user.user_metadata?.full_name && (
+                            <p className="text-[13px] text-gray-400 dark:text-gray-500 truncate">{user.email}</p>
+                          )}
+                        </div>
+                        <button
+                          onClick={() => { setMobileMenuOpen(false); signOut(); }}
+                          className="h-9 w-9 flex items-center justify-center rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors cursor-pointer shrink-0"
+                          title={tauth("signOut")}
+                        >
+                          <LogOut className="h-[18px] w-[18px]" />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="px-5 py-4">
+                        <button
+                          onClick={() => { setMobileMenuOpen(false); setLoginDialogOpen(true); }}
+                          className="w-full flex items-center justify-center gap-2 h-12 rounded-xl bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-[15px] font-semibold cursor-pointer hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+                        >
+                          <LogIn className="h-4.5 w-4.5" />
+                          {tauth("login")}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </>
               )}
 
               {/* ── Mobile: Color page ── */}
               {mobileMenuPage === "color" && (
-                <div>
+                <div className="flex flex-col h-full">
                   <button onClick={() => setMobileMenuPage("main")} className={backButtonClass}>
-                    <ChevronLeft className="h-3.5 w-3.5" />
+                    <ChevronLeft className="h-5 w-5 text-gray-400 dark:text-gray-500" />
                     {t("colorScheme")}
                   </button>
-                  <div className="px-3.5 pt-2.5 pb-1.5 max-h-[60vh] overflow-y-auto overscroll-contain scrollbar-thin">
-                    <div>
-                      <div className="flex flex-wrap gap-3">
-                        {COLOR_SCHEME_NAMES.map((name) => {
-                          const scheme = COLOR_SCHEMES[name];
-                          const isLight = scheme.sidebarText !== "#ffffff";
-                          const isLocked = !isPremium && !FREE_COLORS.includes(name);
-                          return (
-                            <button
-                              key={name}
-                              onClick={() => {
-                                if (isLocked) { setUpgradeDialogOpen(true); return; }
-                                setColorScheme(name);
-                              }}
-                              className="relative flex flex-col items-center gap-1.5"
+                  <div className="flex-1 overflow-y-auto overscroll-contain scrollbar-thin px-5 pt-5 pb-4">
+                    <div className="flex flex-wrap gap-4">
+                      {COLOR_SCHEME_NAMES.map((name) => {
+                        const scheme = COLOR_SCHEMES[name];
+                        const isLight = scheme.sidebarText !== "#ffffff";
+                        const isLocked = !isPremium && !FREE_COLORS.includes(name);
+                        return (
+                          <button
+                            key={name}
+                            onClick={() => {
+                              if (isLocked) { setUpgradeDialogOpen(true); return; }
+                              setColorScheme(name);
+                            }}
+                            className="relative flex flex-col items-center gap-2"
+                          >
+                            <span
+                              className={`relative h-[52px] w-[52px] rounded-full transition-transform hover:scale-105 ${isLight ? "ring-1 ring-inset ring-black/10" : ""} ${colorSchemeName === name ? "ring-2 ring-offset-2 ring-gray-900 dark:ring-gray-100" : ""}`}
+                              style={{ backgroundColor: scheme.sidebarBg }}
                             >
-                              <span
-                                className={`relative h-9 w-9 rounded-full transition-transform hover:scale-110 ${isLight ? "ring-1 ring-inset ring-black/10" : ""}`}
-                                style={{ backgroundColor: scheme.sidebarBg }}
-                              >
-                                {colorSchemeName === name && (
-                                  <Check className={`absolute inset-0 m-auto h-4 w-4 drop-shadow-sm ${isLight ? "text-gray-800" : "text-white"}`} />
-                                )}
-                                {isLocked && (
-                                  <Lock className={`absolute inset-0 m-auto h-3.5 w-3.5 drop-shadow-sm ${isLight ? "text-gray-800/60" : "text-white/70"}`} />
-                                )}
-                              </span>
-                              <span className="text-[11px] text-gray-500 dark:text-gray-300">
-                                {t(`colorScheme${name.charAt(0).toUpperCase() + name.slice(1)}` as Parameters<typeof t>[0])}
-                              </span>
-                            </button>
-                          );
-                        })}
-                      </div>
+                              {colorSchemeName === name && (
+                                <Check className={`absolute inset-0 m-auto h-4.5 w-4.5 drop-shadow-sm ${isLight ? "text-gray-800" : "text-white"}`} />
+                              )}
+                              {isLocked && (
+                                <Lock className={`absolute inset-0 m-auto h-3.5 w-3.5 drop-shadow-sm ${isLight ? "text-gray-800/60" : "text-white/70"}`} />
+                              )}
+                            </span>
+                            <span className="text-[12px] text-gray-500 dark:text-gray-300">
+                              {t(`colorScheme${name.charAt(0).toUpperCase() + name.slice(1)}` as Parameters<typeof t>[0])}
+                            </span>
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
@@ -959,12 +1051,12 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
               {/* ── Mobile: Pattern page ── */}
               {mobileMenuPage === "pattern" && (
-                <div>
+                <div className="flex flex-col h-full">
                   <button onClick={() => setMobileMenuPage("main")} className={backButtonClass}>
-                    <ChevronLeft className="h-3.5 w-3.5" />
+                    <ChevronLeft className="h-5 w-5 text-gray-400 dark:text-gray-500" />
                     {t("sidebarPattern")}
                   </button>
-                  <div className="px-3.5 pt-2.5 pb-1.5 space-y-4 max-h-[60vh] overflow-y-auto overscroll-contain scrollbar-thin">
+                  <div className="flex-1 overflow-y-auto overscroll-contain scrollbar-thin px-4 pt-4 pb-4 space-y-4">
                     <div>
                       <div className="flex flex-wrap gap-3">
                         {SIDEBAR_PATTERN_NAMES.map((name) => {
@@ -983,7 +1075,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                               className="relative flex flex-col items-center gap-1.5"
                             >
                               <span
-                                className={`relative h-10 w-10 rounded-md border overflow-hidden transition-transform hover:scale-105 ${
+                                className={`relative h-[52px] w-[52px] rounded-xl border overflow-hidden transition-transform hover:scale-105 ${
                                   isActive
                                     ? "border-gray-900 dark:border-gray-100 ring-1 ring-gray-900 dark:ring-gray-100"
                                     : "border-gray-200 dark:border-gray-700"
@@ -1012,8 +1104,8 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       </div>
 
                       {/* Intensity sliders */}
-                      <div className={`mt-3 ${patternName === "none" ? "opacity-40 pointer-events-none" : ""}`}>
-                        <p className="text-[13px] font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-2">
+                      <div className={`mt-6 ${patternName === "none" ? "opacity-40 pointer-events-none" : ""}`}>
+                        <p className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-3">
                           {t("patternIntensity")}
                         </p>
                         <div className="space-y-2">
@@ -1035,8 +1127,8 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       </div>
 
                       {/* Scope selector */}
-                      <div className={`mt-3 ${patternName === "none" ? "opacity-40 pointer-events-none" : ""}`}>
-                        <p className="text-[13px] font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-2">
+                      <div className={`mt-6 ${patternName === "none" ? "opacity-40 pointer-events-none" : ""}`}>
+                        <p className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-3">
                           {t("patternScope")}
                         </p>
                         <div className="flex gap-2">
@@ -1046,13 +1138,13 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                               <button
                                 key={s}
                                 onClick={() => setScope(s)}
-                                className={`h-8 w-8 rounded-md flex items-center justify-center transition-colors ${
+                                className={`h-11 w-11 rounded-xl flex items-center justify-center transition-colors ${
                                   scope === s
                                     ? "bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900"
                                     : "bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-accent dark:text-gray-300 dark:hover:bg-accent/80"
                                 }`}
                               >
-                                <ScopeIcon className="h-4 w-4" />
+                                <ScopeIcon className="h-5 w-5" />
                               </button>
                             );
                           })}
@@ -1065,12 +1157,12 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
               {/* ── Mobile: Font page ── */}
               {mobileMenuPage === "font" && (
-                <div>
+                <div className="flex flex-col h-full">
                   <button onClick={() => setMobileMenuPage("main")} className={backButtonClass}>
-                    <ChevronLeft className="h-3.5 w-3.5" />
+                    <ChevronLeft className="h-5 w-5 text-gray-400 dark:text-gray-500" />
                     {t("fontFamily")}
                   </button>
-                  <div className="px-3.5 pt-2.5 pb-1.5 space-y-4 max-h-[60vh] overflow-y-auto overscroll-contain scrollbar-thin">
+                  <div className="flex-1 overflow-y-auto overscroll-contain scrollbar-thin px-4 pt-4 pb-4 space-y-4">
                     <div>
                       <div className="space-y-0.5">
                         {FONT_FAMILIES.map((font) => {
@@ -1096,8 +1188,8 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       </div>
 
                       {/* Font Size */}
-                      <div className="mt-3">
-                        <p className="text-[13px] font-medium uppercase tracking-wide text-gray-400 dark:text-gray-400 mb-2">
+                      <div className="mt-6">
+                        <p className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-3">
                           {t("fontSize")}
                         </p>
                         <div className="flex gap-2">
@@ -1107,7 +1199,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                               <button
                                 key={level}
                                 onClick={() => setFontSizeLevel(level)}
-                                className={`h-8 w-8 rounded-md flex items-center justify-center text-sm font-medium transition-colors ${
+                                className={`h-11 w-11 rounded-xl flex items-center justify-center text-sm font-medium transition-colors ${
                                   fontSizeLevel === level
                                     ? "bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900"
                                     : "bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-accent dark:text-gray-300 dark:hover:bg-accent/80"
@@ -1126,25 +1218,25 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
               {/* ── Mobile: Sections page ── */}
               {mobileMenuPage === "sections" && (
-                <div>
+                <div className="flex flex-col h-full">
                   <button onClick={() => setMobileMenuPage("main")} className={backButtonClass}>
-                    <ChevronLeft className="h-3.5 w-3.5" />
+                    <ChevronLeft className="h-5 w-5 text-gray-400 dark:text-gray-500" />
                     {t("sections")}
                   </button>
-                  <div className="px-3.5 pt-2.5 pb-1.5">
-                    <SectionsContent {...sectionsProps} />
+                  <div className="flex-1 overflow-y-auto overscroll-contain px-4 pt-2 pb-4">
+                    <SectionsContent {...sectionsProps} mobile />
                   </div>
                 </div>
               )}
 
               {/* ── Mobile: Language page ── */}
               {mobileMenuPage === "language" && (
-                <div>
+                <div className="flex flex-col h-full">
                   <button onClick={() => setMobileMenuPage("main")} className={backButtonClass}>
-                    <ChevronLeft className="h-3.5 w-3.5" />
+                    <ChevronLeft className="h-5 w-5 text-gray-400 dark:text-gray-500" />
                     {t("language")}
                   </button>
-                  <div className="space-y-0.5 mt-1 max-h-[60vh] overflow-y-auto overscroll-contain scrollbar-thin">
+                  <div className="flex-1 overflow-y-auto overscroll-contain scrollbar-thin py-2">
                     {LOCALES.map((code) => {
                       const translated = tl(code);
                       const native = LOCALE_NAMES[code];
@@ -1155,16 +1247,14 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                             setLocale(code);
                             setMobileMenuPage("main");
                           }}
-                          className={menuItemClass}
+                          className="flex w-full items-center justify-between px-4 py-3.5 min-h-[52px] text-[15px] font-medium text-gray-800 hover:bg-gray-50 dark:text-gray-100 dark:hover:bg-accent/60 transition-colors cursor-pointer"
                         >
-                          <span>
+                          <span className="flex items-baseline gap-1.5">
                             {native}
-                            {translated !== native && (
-                              <span className="ml-1.5 text-xs text-gray-400 dark:text-gray-400">({translated})</span>
-                            )}
+                            <span className="text-[13px] text-gray-400 dark:text-gray-500">({translated})</span>
                           </span>
                           {locale === code && (
-                            <Check className="h-4 w-4 text-gray-900 dark:text-gray-100" />
+                            <Check className="h-4.5 w-4.5 text-gray-900 dark:text-gray-100 shrink-0" />
                           )}
                         </button>
                       );
@@ -1173,8 +1263,8 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                 </div>
               )}
 
-            </PopoverContent>
-          </Popover>
+            </SheetContent>
+          </Sheet>
           <FileText className="hidden md:block h-5 w-5 text-gray-900 dark:text-gray-100" />
           <span className="font-display text-lg md:text-base font-bold tracking-tight text-gray-900 dark:text-gray-100">
             Applio
@@ -1206,6 +1296,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <Button
                       variant="ghost"
                       size="icon"
+                      aria-label={t("colorScheme")}
                       data-testid="btn-color-scheme"
                       className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
                     >
@@ -1228,6 +1319,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <Button
                       variant="ghost"
                       size="icon"
+                      aria-label={t("sidebarPattern")}
                       data-testid="btn-pattern"
                       className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
                     >
@@ -1250,6 +1342,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <Button
                       variant="ghost"
                       size="icon"
+                      aria-label={t("fontFamily")}
                       data-testid="btn-font"
                       className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
                     >
@@ -1272,6 +1365,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <Button
                       variant="ghost"
                       size="icon"
+                      aria-label={t("sections")}
                       data-testid="btn-sections"
                       className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
                     >
@@ -1294,6 +1388,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <Button
                       variant="ghost"
                       size="icon"
+                      aria-label={t("fileMenu")}
                       data-testid="btn-file-menu"
                       className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
                     >
@@ -1339,6 +1434,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                   <Button
                     variant="ghost"
                     size="icon"
+                    aria-label={t("share")}
                     onClick={handleShare}
                     disabled={isSharing || !canShare}
                     className={`h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100 ${!canShare ? "opacity-50" : ""}`}
@@ -1361,6 +1457,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                 <Button
                   variant="ghost"
                   size="icon"
+                  aria-label={theme === "dark" ? t("themeLight") : t("themeDark")}
                   data-testid="btn-theme"
                   onClick={toggleTheme}
                   className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
@@ -1379,6 +1476,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <Button
                       variant="ghost"
                       size="icon"
+                      aria-label={t("language")}
                       data-testid="btn-language"
                       className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
                     >
@@ -1421,15 +1519,16 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
               <PopoverTrigger asChild>
                 <button
                   data-testid="btn-account"
-                  className="relative h-8 w-8 items-center justify-center rounded-full overflow-visible transition-all hidden md:flex group"
+                  aria-label={user ? (user.user_metadata?.full_name || user.email || "Account") : "Sign in"}
+                  className="relative cursor-pointer h-8 w-8 items-center justify-center rounded-full overflow-visible transition-all hidden md:flex group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-1"
                 >
                   {user ? (
                     <span className="h-8 w-8 rounded-full overflow-hidden ring-1 ring-gray-200 dark:ring-gray-700 group-hover:ring-gray-400 dark:group-hover:ring-gray-500 transition-all block">
                       <UserAvatar url={user.user_metadata?.avatar_url} size={8} />
                     </span>
                   ) : (
-                    <span className="h-8 w-8 rounded-full border-[1.5px] border-dashed border-gray-300 dark:border-gray-600 group-hover:border-gray-400 dark:group-hover:border-gray-500 flex items-center justify-center transition-colors bg-gray-50 dark:bg-gray-800/50">
-                      <User className="h-3.5 w-3.5 text-gray-400 dark:text-gray-500" />
+                    <span className="h-8 w-8 rounded-full ring-1 ring-gray-200 dark:ring-gray-700 group-hover:ring-gray-400 dark:group-hover:ring-gray-500 transition-all flex items-center justify-center bg-gray-100 dark:bg-gray-800">
+                      <User className="h-5 w-5 text-gray-400 dark:text-gray-500" />
                     </span>
                   )}
                   {/* Sync status badge */}
@@ -1459,20 +1558,27 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
           {/* ===== MOBILE: Account button (always visible) ===== */}
           <Popover open={accountMobileOpen} onOpenChange={setAccountMobileOpen}>
             <PopoverTrigger asChild>
-              <button className="relative md:hidden h-8 w-8 mr-1 items-center justify-center rounded-full overflow-visible transition-all flex group">
+              <button
+                aria-label={user ? (user.user_metadata?.full_name || user.email || "Account") : "Sign in"}
+                className="relative cursor-pointer md:hidden h-[44px] w-[44px] mr-1 items-center justify-center rounded-full overflow-visible transition-all flex group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-1"
+              >
                 {user ? (
-                  <span className="h-8 w-8 rounded-full overflow-hidden ring-1 ring-gray-200 dark:ring-gray-700 group-hover:ring-gray-400 dark:group-hover:ring-gray-500 transition-all block">
-                    <UserAvatar url={user.user_metadata?.avatar_url} size={8} />
+                  <span className="h-9 w-9 rounded-full overflow-hidden ring-1 ring-gray-200 dark:ring-gray-700 group-hover:ring-gray-400 dark:group-hover:ring-gray-500 transition-all block">
+                    <UserAvatar url={user.user_metadata?.avatar_url} size={9} />
                   </span>
                 ) : (
-                  <span className="h-8 w-8 rounded-full border-[1.5px] border-dashed border-gray-300 dark:border-gray-600 group-hover:border-gray-400 dark:group-hover:border-gray-500 flex items-center justify-center transition-colors bg-gray-50 dark:bg-gray-800/50">
-                    <User className="h-3.5 w-3.5 text-gray-400 dark:text-gray-500" />
+                  <span className="h-9 w-9 rounded-full ring-1 ring-gray-200 dark:ring-gray-700 group-hover:ring-gray-400 dark:group-hover:ring-gray-500 transition-all flex items-center justify-center bg-gray-100 dark:bg-gray-800">
+                    <User className="h-5 w-5 text-gray-400 dark:text-gray-500" />
                   </span>
                 )}
-                <span className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-white dark:border-gray-950 ${syncStatus === "synced" ? "bg-emerald-500" : "bg-amber-500"}`} />
+                {/* Sync badge — consistent with desktop: pulse animation */}
+                <span className="absolute bottom-1 right-1 h-3 w-3">
+                  <span className={`absolute inset-0 rounded-full animate-ping ${syncStatus === "synced" ? "bg-emerald-400/50" : "bg-amber-400/50"}`} />
+                  <span className={`absolute inset-0 rounded-full ${syncStatus === "synced" ? "bg-emerald-500 shadow-[0_0_6px_1px_rgba(16,185,129,0.4)]" : "bg-amber-500 shadow-[0_0_6px_1px_rgba(245,158,11,0.4)]"}`} />
+                </span>
               </button>
             </PopoverTrigger>
-            <PopoverContent className="w-72 p-0 overflow-hidden" align="end">
+            <PopoverContent className="w-72 p-0 overflow-hidden" align="end" sideOffset={6}>
               <AccountContent
                 user={user}
                 isPremium={isPremium}
@@ -1483,6 +1589,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                 t={t as (key: string) => string}
                 tauth={tauth as (key: string) => string}
                 tsync={tsync as (key: string) => string}
+                mobile
               />
             </PopoverContent>
           </Popover>
@@ -1500,34 +1607,40 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
     {/* Share dialog */}
     <Dialog open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
       <DialogContent className="sm:max-w-sm">
-        <DialogHeader>
-          <DialogTitle>{t("shareTitle")}</DialogTitle>
+        <DialogHeader className="text-center sm:text-center">
+          <DialogTitle className="text-xl">{t("shareTitle")}</DialogTitle>
           <DialogDescription>{t("shareDescription")}</DialogDescription>
         </DialogHeader>
-        <div className="flex items-center gap-2">
+
+        {/* URL + botón copiar */}
+        <div className="flex items-center gap-1.5 rounded-xl border border-input bg-muted overflow-hidden px-1 py-1">
           <input
             type="text"
             readOnly
             value={shareUrl}
-            className="flex-1 min-w-0 rounded-md border border-input bg-muted px-3 py-2 text-xs text-muted-foreground truncate outline-none"
+            className="flex-1 min-w-0 bg-transparent pl-2.5 pr-1 py-2 text-[13px] text-muted-foreground truncate outline-none cursor-default select-all"
             onFocus={(e) => e.target.select()}
           />
-          <Button
-            variant="outline"
-            size="icon"
-            className="shrink-0"
+          <button
             onClick={handleCopyShareUrl}
+            className={`h-9 w-9 flex items-center justify-center shrink-0 rounded-lg transition-colors cursor-pointer ${
+              shareCopied
+                ? "bg-green-500 text-white"
+                : "bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-200"
+            }`}
           >
             {shareCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-          </Button>
+          </button>
         </div>
+
+        {/* Abrir en nueva pestaña */}
         <a
           href={shareUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center gap-1.5 rounded-md px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          className="flex items-center justify-center gap-2 rounded-xl px-3 py-3 text-[13px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors border border-input"
         >
-          <ExternalLink className="h-3.5 w-3.5" />
+          <ExternalLink className="h-4 w-4 shrink-0" />
           {t("shareOpen")}
         </a>
       </DialogContent>
@@ -1538,13 +1651,15 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
     {(
       <button
         onClick={() => setDevOverride(devOverride === "premium" ? "free" : "premium")}
-        className="fixed bottom-6 right-5 md:bottom-6 md:right-6 z-50 flex items-center gap-1.5 md:gap-2 rounded-full border border-gray-200 bg-white/90 backdrop-blur-sm px-2.5 py-2 md:px-3 md:py-2 shadow-md md:shadow-lg transition-all hover:shadow-xl hover:scale-105 active:scale-95 dark:border-gray-700 dark:bg-card/90"
+        className="fixed bottom-5 right-4 md:bottom-6 md:right-6 z-50 flex items-center gap-2 rounded-full border border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-card/90 backdrop-blur-sm pl-2 pr-3.5 py-2 shadow-lg transition-all hover:shadow-xl hover:scale-105 active:scale-95"
       >
-        <FlaskConical className="h-3.5 w-3.5 md:h-4 md:w-4 text-gray-500 dark:text-gray-400" />
-        <span className={`hidden md:inline text-xs font-semibold tracking-wide ${isPremium ? "text-emerald-600 dark:text-emerald-400" : "text-gray-500 dark:text-gray-400"}`}>
+        <span className="h-7 w-7 flex items-center justify-center rounded-full bg-amber-50 dark:bg-amber-900/20 text-amber-500 shrink-0">
+          <Sparkles className="h-3.5 w-3.5" />
+        </span>
+        <span className={`text-xs font-semibold tracking-wide ${isPremium ? "text-emerald-600 dark:text-emerald-400" : "text-gray-500 dark:text-gray-400"}`}>
           {isPremium ? "PRO" : "FREE"}
         </span>
-        <span className={`h-1.5 w-1.5 md:h-2 md:w-2 rounded-full shrink-0 ${isPremium ? "bg-emerald-500 shadow-[0_0_6px_1px_rgba(16,185,129,0.4)]" : "bg-gray-300 dark:bg-gray-600"}`} />
+        <span className={`h-2 w-2 rounded-full shrink-0 ${isPremium ? "bg-emerald-500 shadow-[0_0_6px_1px_rgba(16,185,129,0.4)]" : "bg-gray-300 dark:bg-gray-600"}`} />
       </button>
     )}
     </>

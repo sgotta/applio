@@ -100,15 +100,15 @@ function ContactLine({
         </button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-64 border-0 bg-gray-900 p-3 rounded-lg shadow-xl"
+        className="w-72 border-0 bg-gray-900 p-3.5 rounded-xl shadow-xl"
         align="start"
         side="bottom"
         sideOffset={6}
       >
         <div className="space-y-3">
           {/* Display text field */}
-          <div className="space-y-1">
-            <label className="block text-[10px] font-medium uppercase tracking-wider text-white/40">
+          <div className="space-y-1.5">
+            <label className="block text-[11px] font-semibold uppercase tracking-widest text-white/40">
               {t("linkTextLabel")}
             </label>
             <input
@@ -116,23 +116,23 @@ function ContactLine({
               value={value}
               onChange={(e) => onChange(field, e.target.value)}
               placeholder={placeholder}
-              className="w-full rounded-md bg-white/10 px-2.5 py-1.5 text-xs text-white placeholder:text-white/30 outline-none focus:bg-white/15 transition-colors"
+              className="w-full rounded-lg bg-white/10 px-3 py-2 text-[13px] text-white placeholder:text-white/30 outline-none focus:bg-white/15 transition-colors"
               autoFocus
             />
           </div>
           {/* URL field */}
-          <div className="space-y-1">
-            <label className="block text-[10px] font-medium uppercase tracking-wider text-white/40">
+          <div className="space-y-1.5">
+            <label className="block text-[11px] font-semibold uppercase tracking-widest text-white/40">
               {t("linkUrlLabel")}
             </label>
-            <div className="flex items-center rounded-md bg-white/10 focus-within:bg-white/15 transition-colors">
-              <Link2 className="h-3 w-3 text-white/30 ml-2.5 shrink-0" />
+            <div className="flex items-center rounded-lg bg-white/10 focus-within:bg-white/15 transition-colors">
+              <Link2 className="h-3.5 w-3.5 text-white/30 ml-3 shrink-0" />
               <input
                 type="url"
                 value={urlValue || ""}
                 onChange={(e) => onChange(urlField!, e.target.value || undefined)}
                 placeholder={urlPlaceholder}
-                className="flex-1 min-w-0 bg-transparent px-2 py-1.5 text-xs text-white/80 placeholder:text-white/30 outline-none"
+                className="flex-1 min-w-0 bg-transparent px-2.5 py-2 text-[13px] text-white/80 placeholder:text-white/30 outline-none"
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === "Escape") setLinkOpen(false);
                 }}
@@ -143,21 +143,21 @@ function ContactLine({
           {hasUrl && (
             <>
               <div className="w-full h-px bg-white/10" />
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-0.5">
                 <a
                   href={urlValue}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 rounded-md px-2 py-1.5 text-[11px] text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+                  className="flex items-center gap-2 rounded-lg px-2.5 py-2 text-[13px] text-white/60 hover:text-white hover:bg-white/10 transition-colors"
                 >
-                  <ExternalLink className="h-3 w-3 shrink-0" />
+                  <ExternalLink className="h-3.5 w-3.5 shrink-0" />
                   {t("linkOpen")}
                 </a>
                 <button
                   onClick={() => { onChange(urlField!, undefined); setLinkOpen(false); }}
-                  className="flex items-center gap-1.5 rounded-md px-2 py-1.5 text-[11px] text-white/60 hover:text-red-300 hover:bg-white/10 transition-colors"
+                  className="flex items-center gap-2 rounded-lg px-2.5 py-2 text-[13px] text-white/60 hover:text-red-300 hover:bg-white/10 transition-colors"
                 >
-                  <Trash2 className="h-3 w-3 shrink-0" />
+                  <Trash2 className="h-3.5 w-3.5 shrink-0" />
                   {t("linkRemove")}
                 </button>
               </div>
@@ -190,7 +190,7 @@ function SkillBadge({
 }) {
   return (
     <span
-      className={`inline-flex items-center rounded px-2 py-0.5 transition-all duration-150 [&_.tiptap]:text-inherit ${isEditing ? "brightness-125 shadow-md shadow-black/15 scale-105 ring-[1.5px] ring-white" : ""}`}
+      className={`inline-flex items-center rounded px-2.5 py-1.5 md:px-2 md:py-0.5 transition-all duration-150 [&_.tiptap]:text-inherit ${isEditing ? "brightness-125 shadow-md shadow-black/15 scale-105 ring-[1.5px] ring-white" : ""}`}
       style={{ backgroundColor: badgeBg, color: badgeText }}
     >
       <EditableText
@@ -385,7 +385,17 @@ function SortableSkillCategory({
                         const deleted = skillGroup.items[i];
                         const newItems = skillGroup.items.filter((_, idx) => idx !== i);
                         updateSkillCategory(skillGroup.id, { items: newItems });
-                        if (deleted) toast(t("skillDeleted", { tag: deleted }));
+                        if (deleted) toast(t("skillDeleted", { tag: deleted }), {
+                          icon: <Trash2 className="h-4 w-4 shrink-0 opacity-60" />,
+                          action: {
+                            label: tc("undo"),
+                            onClick: () => {
+                              updateSkillCategory(skillGroup.id, {
+                                items: [...newItems.slice(0, i), deleted, ...newItems.slice(i)],
+                              });
+                            },
+                          },
+                        });
                       } else {
                         const newItems = [...skillGroup.items];
                         newItems[i] = v;
@@ -401,7 +411,7 @@ function SortableSkillCategory({
                     items: [...skillGroup.items, "Skill"],
                   });
                 }}
-                className="inline-flex items-center justify-center rounded border border-dashed px-2 py-0.5 transition-all duration-200 hover:scale-105 active:scale-95"
+                className="inline-flex items-center justify-center rounded border border-dashed px-2.5 py-1.5 md:px-2 md:py-0.5 transition-all duration-200 hover:scale-105 active:scale-95"
                 style={{ borderColor: colorScheme.sidebarMuted, color: colorScheme.sidebarMuted, fontSize: "0.9em" }}
               >
                 {"\u200B"}<Plus className="h-[0.75em] w-[0.75em]" strokeWidth={2} />

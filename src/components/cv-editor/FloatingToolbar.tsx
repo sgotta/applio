@@ -125,12 +125,12 @@ export function FloatingToolbar({
 
   const btnClass = (active: boolean) =>
     docked
-      ? `h-10 min-w-10 rounded-xl grid place-items-center transition-all ${
+      ? `h-11 min-w-11 rounded-xl grid place-items-center transition-all ${
           active
             ? "bg-white/25 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]"
             : "text-white/50 active:bg-white/15 active:text-white"
         }`
-      : `w-7 h-7 rounded-md grid place-items-center transition-colors ${
+      : `w-7 h-7 rounded-md grid place-items-center transition-colors cursor-pointer ${
           active
             ? "bg-white/20 text-white"
             : "text-white/60 hover:text-white hover:bg-white/10"
@@ -171,7 +171,8 @@ export function FloatingToolbar({
           e.preventDefault();
           editor.chain().focus().toggleBold().run();
         }}
-        title={t("bold")}
+        aria-label={t("bold")}
+        aria-pressed={isBold}
         className={btnClass(isBold)}
       >
         <Bold className={iconSize} strokeWidth={2.5} />
@@ -184,7 +185,8 @@ export function FloatingToolbar({
           e.preventDefault();
           editor.chain().focus().toggleItalic().run();
         }}
-        title={t("italic")}
+        aria-label={t("italic")}
+        aria-pressed={isItalic}
         className={btnClass(isItalic)}
       >
         <Italic className={iconSize} />
@@ -194,6 +196,7 @@ export function FloatingToolbar({
       {blockEditing && (
         <>
           <div
+            aria-hidden="true"
             className={
               docked
                 ? "w-px h-5 bg-white/10 mx-1"
@@ -208,7 +211,8 @@ export function FloatingToolbar({
               e.preventDefault();
               editor.chain().focus().toggleBulletList().run();
             }}
-            title={t("typeBulletList")}
+            aria-label={t("typeBulletList")}
+            aria-pressed={isBulletList}
             className={btnClass(isBulletList)}
           >
             <List className={iconSize} />
@@ -221,7 +225,8 @@ export function FloatingToolbar({
               e.preventDefault();
               editor.chain().focus().toggleOrderedList().run();
             }}
-            title={t("typeOrderedList")}
+            aria-label={t("typeOrderedList")}
+            aria-pressed={isOrderedList}
             className={btnClass(isOrderedList)}
           >
             <ListOrdered className={iconSize} />

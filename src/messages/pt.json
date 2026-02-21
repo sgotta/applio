@@ -68,6 +68,8 @@
     "copyright": "Todos os direitos reservados.",
     "pdfNoBranding": "Remover logo do Applio",
     "design": "Design",
+    "menuPreferences": "Preferências",
+    "menuAccount": "Conta",
     "fileMenu": "Arquivo",
     "syncLocal": "Armazenamento local",
     "syncLocalExplain": "Apenas neste navegador, sem sincronização.",
@@ -301,7 +303,8 @@
     "moveDown": "Mover abaixo",
     "addBelow": "Adicionar abaixo",
     "gripDragHint": "Arraste para reordenar",
-    "gripLongPressHint": "Pressione e segure para reordenar"
+    "gripLongPressHint": "Pressione e segure para reordenar",
+    "undo": "Desfazer"
   },
   "landing": {
     "nav": {

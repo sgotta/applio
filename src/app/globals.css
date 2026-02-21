@@ -128,6 +128,13 @@
 }
 
 @layer utilities {
+  /* CV editor — mobile reading/editing improvements */
+  @media (max-width: 767px) {
+    .cv-preview-content {
+      font-size: 1.15em;
+    }
+  }
+
   .scrollbar-thin {
     scrollbar-width: thin;
     scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
@@ -318,4 +325,13 @@
 }
 .animate-wiggle {
   animation: wiggle 0.3s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-editor-enter {
+    animation: none;
+  }
+  .animate-wiggle {
+    animation: none;
+  }
 }
