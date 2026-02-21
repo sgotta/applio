@@ -19,6 +19,7 @@ import { getFontDefinition, FONT_SIZE_LEVELS, PDF_BASE_FONT_SCALE } from "@/lib/
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 import { Toolbar } from "@/components/toolbar/Toolbar";
+import { DesktopPanel } from "@/components/toolbar/DesktopPanel";
 import { CVEditor } from "@/components/cv-editor/CVEditor";
 import { CloudSync } from "@/components/cloud-sync/CloudSync";
 
@@ -32,6 +33,7 @@ function AppContent() {
   const { locale } = useAppLocale();
   const { isPremium } = usePlan();
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [desktopMenuOpen, setDesktopMenuOpen] = useState(false);
 
   const handlePrint = useCallback(async () => {
     if (isGeneratingPDF) return;
@@ -74,20 +76,37 @@ function AppContent() {
       <Toolbar
         onPrintPDF={handlePrint}
         isGeneratingPDF={isGeneratingPDF}
+        desktopMenuOpen={desktopMenuOpen}
+        onToggleDesktopMenu={() => setDesktopMenuOpen((v) => !v)}
       />
-      <CVEditor />
-
-      <footer className="mt-4 border-t border-gray-200 dark:border-white/6 bg-white/60 dark:bg-card/60 backdrop-blur-sm py-6 px-6">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <FileText className="w-4 h-4 text-gray-400 dark:text-gray-300" />
-            <span className="text-sm font-semibold tracking-tight text-gray-500 dark:text-gray-100">Applio</span>
-          </div>
-          <p className="text-xs text-gray-400 dark:text-gray-300">
-            &copy; {new Date().getFullYear()} Applio v{process.env.NEXT_PUBLIC_APP_VERSION}. {t("copyright")}
-          </p>
+      <div className="flex items-start">
+        <DesktopPanel
+          open={desktopMenuOpen}
+          onClose={() => setDesktopMenuOpen(false)}
+          onPrintPDF={handlePrint}
+          isGeneratingPDF={isGeneratingPDF}
+        />
+        {desktopMenuOpen && (
+          <div
+            className="hidden md:block fixed inset-0 z-40"
+            onClick={() => setDesktopMenuOpen(false)}
+          />
+        )}
+        <div className={`flex-1 min-w-0 transition-[margin-left] duration-300 ease-out ${desktopMenuOpen ? "md:ml-72" : ""}`}>
+          <CVEditor />
+          <footer className="mt-4 border-t border-gray-200 dark:border-white/6 bg-white/60 dark:bg-card/60 backdrop-blur-sm py-6 px-6">
+            <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <FileText className="w-4 h-4 text-gray-400 dark:text-gray-300" />
+                <span className="text-sm font-semibold tracking-tight text-gray-500 dark:text-gray-100">Applio</span>
+              </div>
+              <p className="text-xs text-gray-400 dark:text-gray-300">
+                &copy; {new Date().getFullYear()} Applio v{process.env.NEXT_PUBLIC_APP_VERSION}. {t("copyright")}
+              </p>
+            </div>
+          </footer>
         </div>
-      </footer>
+      </div>
 
       {/* Full-screen loading overlay while generating PDF */}
       {isGeneratingPDF && (
