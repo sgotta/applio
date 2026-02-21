@@ -80,10 +80,10 @@ function AppContent() {
       <footer className="mt-4 border-t border-gray-200 dark:border-white/6 bg-white/60 dark:bg-card/60 backdrop-blur-sm py-6 px-6">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <FileText className="w-4 h-4 text-gray-400 dark:text-gray-500" />
-            <span className="text-sm font-semibold tracking-tight text-gray-500 dark:text-gray-400">Applio</span>
+            <FileText className="w-4 h-4 text-gray-400 dark:text-gray-300" />
+            <span className="text-sm font-semibold tracking-tight text-gray-500 dark:text-gray-100">Applio</span>
           </div>
-          <p className="text-xs text-gray-400 dark:text-gray-500">
+          <p className="text-xs text-gray-400 dark:text-gray-300">
             &copy; {new Date().getFullYear()} Applio v{process.env.NEXT_PUBLIC_APP_VERSION}. {t("copyright")}
           </p>
         </div>
@@ -129,8 +129,8 @@ export default function Home() {
                 icons={{ success: null }}
                 toastOptions={{
                   classNames: {
-                    toast: "!bg-gray-900 !text-white !border-none !shadow-lg !rounded-xl !py-3 !px-5 !text-sm !max-w-[calc(100vw-2rem)] dark:!bg-gray-100 dark:!text-gray-900",
-                    actionButton: "!bg-white/15 !text-white !text-[13px] !font-medium !rounded-lg !px-3 !py-1.5 hover:!bg-white/25 !transition-colors dark:!bg-black/10 dark:!text-gray-900 dark:hover:!bg-black/20",
+                    toast: "!bg-gray-950 !text-white !border !border-white/[0.07] !shadow-[0_8px_32px_rgba(0,0,0,0.32)] !rounded-2xl !py-4 !px-5 !text-[15px] !font-medium !max-w-[calc(100vw-2rem)] !gap-4 dark:!bg-white dark:!text-gray-900 dark:!border-gray-200/80 dark:!shadow-[0_4px_20px_rgba(0,0,0,0.08)]",
+                    actionButton: "!bg-white !text-gray-900 !text-[14px] !font-semibold !rounded-lg !px-5 !py-3.5 hover:!bg-gray-100 !transition-colors !shrink-0 dark:!bg-gray-900 dark:!text-white dark:hover:!bg-gray-800",
                   },
                 }}
               />

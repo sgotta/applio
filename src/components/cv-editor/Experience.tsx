@@ -56,15 +56,17 @@ function ExperienceCard({
   const cardStyle: React.CSSProperties = {
     transform: CSS.Translate.toString(cardTransform),
     transition: cardTransition,
-    opacity: isCardDragging ? 0.5 : undefined,
-    zIndex: isCardDragging ? 10 : undefined,
+    zIndex: isCardDragging ? 50 : undefined,
+    ...(isCardDragging && {
+      boxShadow: "0 20px 60px rgba(0,0,0,0.18), 0 8px 24px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,0,0,0.06)",
+    }),
   };
 
   return (
     <div
       ref={setCardNodeRef}
       style={cardStyle}
-      className="group/entry relative rounded-sm transition-colors duration-150 -mx-1.5 px-1.5 py-1.5 hover:bg-gray-50/50"
+      className={`group/entry relative transition-[box-shadow,border-radius,background-color] duration-200 px-2.5 py-2 ${isCardDragging ? "rounded-lg bg-white" : "rounded-md shadow-[inset_0_0_0_1px_rgba(0,0,0,0.07)] hover:shadow-[inset_0_0_0_1px_rgba(0,0,0,0.13),0_2px_8px_rgba(0,0,0,0.06)]"}`}
     >
       {/* Entry grip — left side */}
       <EntryGrip

@@ -386,7 +386,7 @@ function SortableSkillCategory({
                         const newItems = skillGroup.items.filter((_, idx) => idx !== i);
                         updateSkillCategory(skillGroup.id, { items: newItems });
                         if (deleted) toast(t("skillDeleted", { tag: deleted }), {
-                          icon: <Trash2 className="h-4 w-4 shrink-0 opacity-60" />,
+                          icon: <Trash2 className="h-4.5 w-4.5 shrink-0 text-red-400" />,
                           action: {
                             label: tc("undo"),
                             onClick: () => {
@@ -450,11 +450,11 @@ function SortableSidebarSection({
   return (
     <div ref={setNodeRef} style={style} className="group/sidebar-section relative">
       <button
-        className="absolute -left-5 top-0.5 can-hover:opacity-0 can-hover:group-hover/sidebar-section:opacity-100 transition-opacity duration-150 p-0.5 rounded cursor-grab active:cursor-grabbing touch-manipulation"
+        className="absolute -left-6 can-hover:-left-5 top-0.5 opacity-60 can-hover:opacity-40 can-hover:group-hover/sidebar-section:opacity-100 transition-opacity duration-150 p-1.5 can-hover:p-1 rounded cursor-grab active:cursor-grabbing touch-manipulation hover:bg-white/10"
         {...attributes}
         {...listeners}
       >
-        <GripVertical className="h-3.5 w-3.5 opacity-50" />
+        <GripVertical className="h-4 w-4 opacity-60" />
       </button>
       {children}
     </div>

@@ -318,6 +318,21 @@
   animation: editor-enter 0.45s cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
 
+@keyframes spin-in {
+  from { transform: rotate(-90deg); opacity: 0; }
+  to   { transform: rotate(0deg);   opacity: 1; }
+}
+.animate-spin-in {
+  animation: spin-in 0.25s ease-out 0.35s both;
+}
+@keyframes spin-out {
+  from { transform: rotate(0deg);  opacity: 1; }
+  to   { transform: rotate(90deg); opacity: 0; }
+}
+.animate-spin-out {
+  animation: spin-out 0.2s ease-in forwards;
+}
+
 @keyframes wiggle {
   0%, 100% { rotate: 0deg; }
   25% { rotate: -1deg; }

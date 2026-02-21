@@ -580,6 +580,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   const { fontFamilyId, fontSizeLevel, setFontFamily, setFontSizeLevel } = useFontSettings();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isClosingMenu, setIsClosingMenu] = useState(false);
   const [mobileMenuPage, setMobileMenuPage] = useState<MobileMenuPage>("main");
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
   const [upgradeDialogOpen, setUpgradeDialogOpen] = useState(false);
@@ -665,6 +666,14 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
     setMobileMenuOpen(open);
     if (!open) setMobileMenuPage("main");
   }, []);
+
+  const handleCloseMenu = useCallback(() => {
+    setIsClosingMenu(true);
+    setTimeout(() => {
+      setIsClosingMenu(false);
+      handleMobileMenuOpen(false);
+    }, 200);
+  }, [handleMobileMenuOpen]);
 
   const [isSharing, setIsSharing] = useState(false);
   const [fileMenuOpen, setFileMenuOpen] = useState(false);
@@ -857,10 +866,13 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       <span className="font-bold text-[17px] text-gray-900 dark:text-gray-100 tracking-tight">Applio</span>
                     </div>
                     <button
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="group h-8 w-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-accent transition-colors cursor-pointer active:scale-90"
+                      onClick={handleCloseMenu}
+                      className="h-8 w-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-accent transition-colors cursor-pointer active:scale-90"
                     >
-                      <X className="h-4 w-4 text-gray-500 dark:text-gray-400 transition-transform duration-200 group-hover:rotate-90" />
+                      <X
+                        key={mobileMenuOpen ? 1 : 0}
+                        className={`h-5 w-5 text-gray-500 dark:text-gray-400 ${isClosingMenu ? "animate-spin-out" : "animate-spin-in"}`}
+                      />
                     </button>
                   </div>
 
