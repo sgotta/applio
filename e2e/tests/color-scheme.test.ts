@@ -2,7 +2,7 @@ import { test, expect, seedCVData, minimalCV, openToolbarPopover, popoverContent
 
 test.describe("Color Schemes", () => {
   test("all color scheme swatches are visible in picker", async ({ appPage: page }) => {
-    await openToolbarPopover(page, "btn-design");
+    await openToolbarPopover(page, "btn-color-scheme");
     const panel = popoverContent(page);
 
     // There should be 5 color scheme swatches (circular buttons)
@@ -13,15 +13,23 @@ test.describe("Color Schemes", () => {
   test("change color scheme updates sidebar background", async ({ appPage: page }) => {
     await seedCVData(page, minimalCV);
 
-    // Get initial sidebar background
+    // Seed a non-default color scheme so we can switch back to the free "default"
+    await page.evaluate(() => {
+      localStorage.setItem("applio-color-scheme", "peterRiver");
+    });
+    await page.reload();
+    await page.waitForLoadState("networkidle");
+    await page.locator(".cv-preview-content").waitFor({ state: "visible" });
+
+    // Get initial sidebar background (peterRiver)
     const sidebar = cvSidebar(page);
     const initialBg = await sidebar.evaluate((el) => el.style.backgroundColor);
 
-    // Open color scheme picker and click a different swatch (second one)
-    await openToolbarPopover(page, "btn-design");
+    // Open color scheme picker and click the first swatch (default/ivory — free)
+    await openToolbarPopover(page, "btn-color-scheme");
     const panel = popoverContent(page);
     const swatches = panel.locator("button.rounded-full");
-    await swatches.nth(1).click();
+    await swatches.nth(0).click();
     await page.waitForTimeout(300);
 
     // Sidebar background should have changed
@@ -32,11 +40,19 @@ test.describe("Color Schemes", () => {
   test("color scheme persists after reload", async ({ appPage: page }) => {
     await seedCVData(page, minimalCV);
 
-    // Change color scheme
-    await openToolbarPopover(page, "btn-design");
+    // Seed a non-default color scheme so we can switch back to the free "default"
+    await page.evaluate(() => {
+      localStorage.setItem("applio-color-scheme", "peterRiver");
+    });
+    await page.reload();
+    await page.waitForLoadState("networkidle");
+    await page.locator(".cv-preview-content").waitFor({ state: "visible" });
+
+    // Change color scheme to default (first swatch, free)
+    await openToolbarPopover(page, "btn-color-scheme");
     const panel = popoverContent(page);
     const swatches = panel.locator("button.rounded-full");
-    await swatches.nth(1).click();
+    await swatches.nth(0).click();
     await page.waitForTimeout(300);
 
     // Get the new background color

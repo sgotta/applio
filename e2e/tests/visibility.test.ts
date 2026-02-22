@@ -1,83 +1,82 @@
-import { test, expect, seedCVData, minimalCV, openToolbarPopover, popoverContent, skillCategories } from "../helpers/setup";
+import { test, expect, seedCVData, minimalCV, openToolbarPopover, popoverContent } from "../helpers/setup";
 
 test.describe("Section Visibility", () => {
-  test("toggle skills off hides skills section", async ({ appPage: page }) => {
+  test("toggle summary off hides summary section", async ({ appPage: page }) => {
     await seedCVData(page, minimalCV);
 
-    // Verify skills are visible
-    const skills = skillCategories(page);
-    await expect(skills.first()).toBeVisible();
+    // Verify summary text is visible in sidebar
+    const summaryText = page.locator("[data-testid='cv-sidebar']").getByText("A test summary for E2E testing.");
+    await expect(summaryText).toBeVisible();
 
-    // Open sections popover and toggle skills off
+    // Open sections popover and toggle summary off (uses "Professional Profile" label)
     await openToolbarPopover(page, "btn-sections");
     const panel = popoverContent(page);
-    const skillsToggle = panel.locator("label").filter({ hasText: "Skills" }).locator("button[role='switch']");
-    await skillsToggle.click();
+    const summaryToggle = panel.locator("label").filter({ hasText: "Professional Profile" }).locator("button[role='switch']");
+    await summaryToggle.click();
 
     // Close popover
     await page.mouse.click(1, 1);
     await page.waitForTimeout(300);
 
-    // Skills heading should no longer be visible
-    const skillsHeading = page.locator("h3").filter({ hasText: /^Skills$/i });
-    await expect(skillsHeading).toHaveCount(0);
+    // Summary text should no longer be visible
+    await expect(summaryText).not.toBeVisible();
   });
 
-  test("toggle courses on shows courses section", async ({ appPage: page }) => {
+  test("toggle location off hides location in sidebar", async ({ appPage: page }) => {
     await seedCVData(page, minimalCV);
 
-    // Courses section should NOT be visible by default
-    const coursesHeading = page.locator("h3").filter({ hasText: /Courses/i });
-    await expect(coursesHeading).toHaveCount(0);
+    // Verify location is visible
+    const locationText = page.locator("[data-testid='cv-sidebar']").getByText("Test City");
+    await expect(locationText).toBeVisible();
 
-    // Toggle courses on
+    // Toggle location off
     await openToolbarPopover(page, "btn-sections");
     const panel = popoverContent(page);
-    const coursesToggle = panel.locator("label").filter({ hasText: "Courses" }).locator("button[role='switch']");
-    await coursesToggle.click();
-
-    // Close popover
-    await page.mouse.click(1, 1);
-    await page.waitForTimeout(300);
-
-    // Courses section should now be visible
-    await expect(coursesHeading).toBeVisible();
-  });
-
-  test("toggle certifications on shows certifications section", async ({ appPage: page }) => {
-    await seedCVData(page, minimalCV);
-
-    const certsHeading = page.locator("h3").filter({ hasText: /Certifications/i });
-    await expect(certsHeading).toHaveCount(0);
-
-    await openToolbarPopover(page, "btn-sections");
-    const panel = popoverContent(page);
-    const certsToggle = panel.locator("label").filter({ hasText: "Certifications" }).locator("button[role='switch']");
-    await certsToggle.click();
+    const locationToggle = panel.locator("label").filter({ hasText: "Location" }).locator("button[role='switch']");
+    await locationToggle.click();
 
     await page.mouse.click(1, 1);
     await page.waitForTimeout(300);
 
-    await expect(certsHeading).toBeVisible();
+    // Location should no longer be visible
+    await expect(locationText).not.toBeVisible();
   });
 
-  test("toggle contact off hides contact fields", async ({ appPage: page }) => {
+  test("toggle linkedin off hides linkedin in sidebar", async ({ appPage: page }) => {
     await seedCVData(page, minimalCV);
 
-    // Verify email is visible in sidebar
-    const emailText = page.locator("[data-testid='cv-sidebar']").getByText("test@example.com");
-    await expect(emailText).toBeVisible();
+    // Verify linkedin is visible
+    const linkedinText = page.locator("[data-testid='cv-sidebar']").getByText("linkedin.com/in/testuser");
+    await expect(linkedinText).toBeVisible();
 
-    // Toggle contact section off
+    // Toggle linkedin off
     await openToolbarPopover(page, "btn-sections");
     const panel = popoverContent(page);
-    const contactToggle = panel.locator("label").filter({ hasText: "Contact" }).first().locator("button[role='switch']");
-    await contactToggle.click();
+    const linkedinToggle = panel.locator("label").filter({ hasText: "LinkedIn" }).locator("button[role='switch']");
+    await linkedinToggle.click();
 
     await page.mouse.click(1, 1);
     await page.waitForTimeout(300);
 
-    // Email should no longer be visible
-    await expect(emailText).not.toBeVisible();
+    await expect(linkedinText).not.toBeVisible();
+  });
+
+  test("toggle website off hides website in sidebar", async ({ appPage: page }) => {
+    await seedCVData(page, minimalCV);
+
+    // Verify website is visible
+    const websiteText = page.locator("[data-testid='cv-sidebar']").getByText("testuser.dev");
+    await expect(websiteText).toBeVisible();
+
+    // Toggle website off
+    await openToolbarPopover(page, "btn-sections");
+    const panel = popoverContent(page);
+    const websiteToggle = panel.locator("label").filter({ hasText: "Website" }).locator("button[role='switch']");
+    await websiteToggle.click();
+
+    await page.mouse.click(1, 1);
+    await page.waitForTimeout(300);
+
+    await expect(websiteText).not.toBeVisible();
   });
 });

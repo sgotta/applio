@@ -78,7 +78,7 @@ test.describe("Import / Export", () => {
       ...minimalCV,
       settings: {
         colorScheme: "peterRiver",
-        fontFamily: "lora",
+        fontFamily: "lato",
         fontSizeLevel: 1,
         marginLevel: 1,
         pattern: { name: "none", sidebarIntensity: 3, mainIntensity: 2, scope: "sidebar" },
@@ -101,9 +101,9 @@ test.describe("Import / Export", () => {
     const bg = await sidebar.evaluate((el) => el.style.backgroundColor);
     expect(bg).toBeTruthy();
 
-    // Font should be Lora
+    // Font should be Lato
     const cvContent = page.locator(".cv-preview-content");
     const font = await cvContent.evaluate((el) => el.style.fontFamily);
-    expect(font).toContain("Lora");
+    expect(font).toContain("Lato");
   });
 });
