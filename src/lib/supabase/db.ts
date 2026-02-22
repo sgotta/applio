@@ -2,7 +2,7 @@ import { createClient } from "./client";
 import type { CVData } from "@/lib/types";
 import type { User } from "@supabase/supabase-js";
 
-/** Shape of the settings JSONB stored in the cvs table */
+/** Shape of the settings JSONB stored in the cv_settings table */
 export interface CloudSettings {
   colorScheme: string;
   fontFamily: string;
@@ -17,7 +17,7 @@ export interface CloudSettings {
   };
 }
 
-/** Shape of a row from the cvs table */
+/** Shape of a CV row as returned by load_full_cv() */
 export interface CVRow {
   id: string;
   user_id: string;
@@ -63,21 +63,35 @@ export async function ensureProfile(user: User): Promise<boolean> {
 
 /**
  * Fetch the most recently updated CV for a user.
+ * Uses load_full_cv() RPC to assemble from normalized tables.
  * Returns null if user has no CVs yet or on error.
  */
 export async function fetchUserCV(userId: string): Promise<CVRow | null> {
   try {
     const supabase = createClient();
-    const { data, error } = await supabase
+
+    // Get the most recent CV id for this user
+    const { data: cvMeta, error: metaErr } = await supabase
       .from("cvs")
-      .select("*")
+      .select("id")
       .eq("user_id", userId)
       .order("updated_at", { ascending: false })
       .limit(1)
       .maybeSingle();
 
+    if (metaErr) {
+      console.warn("[CloudSync] Failed to fetch CV metadata:", metaErr.message);
+      return null;
+    }
+    if (!cvMeta) return null;
+
+    // Assemble from normalized tables via RPC
+    const { data, error } = await supabase.rpc("load_full_cv", {
+      p_cv_id: cvMeta.id,
+    });
+
     if (error) {
-      console.warn("[CloudSync] Failed to fetch CV:", error.message);
+      console.warn("[CloudSync] load_full_cv failed:", error.message);
       return null;
     }
     return data as CVRow | null;
@@ -89,6 +103,7 @@ export async function fetchUserCV(userId: string): Promise<CVRow | null> {
 
 /**
  * Insert a new CV row for the user (first-ever login scenario).
+ * Uses create_cv_full() RPC for atomic multi-table insert.
  * Returns the created row or null on error.
  */
 export async function createCV(
@@ -99,22 +114,38 @@ export async function createCV(
 ): Promise<CVRow | null> {
   try {
     const supabase = createClient();
-    const { data, error } = await supabase
-      .from("cvs")
-      .insert({
-        user_id: userId,
-        title: title || "Mi CV",
-        cv_data: cvData,
-        settings,
-      })
-      .select()
-      .single();
 
-    if (error) {
-      console.warn("[CloudSync] Failed to create CV:", error.message);
+    const { data: cvId, error: createErr } = await supabase.rpc("create_cv_full", {
+      p_user_id: userId,
+      p_title: title || "Mi CV",
+      p_personal_info: cvData.personalInfo,
+      p_summary: cvData.summary,
+      p_experience: cvData.experience,
+      p_education: cvData.education,
+      p_skills: cvData.skills,
+      p_courses: cvData.courses,
+      p_certifications: cvData.certifications,
+      p_awards: cvData.awards,
+      p_visibility: cvData.visibility,
+      p_sidebar_order: cvData.sidebarOrder,
+      p_settings: settings,
+    });
+
+    if (createErr || !cvId) {
+      console.warn("[CloudSync] Failed to create CV:", createErr?.message);
       return null;
     }
-    return data as CVRow;
+
+    // Fetch the assembled row to return
+    const { data, error } = await supabase.rpc("load_full_cv", {
+      p_cv_id: cvId,
+    });
+
+    if (error) {
+      console.warn("[CloudSync] load_full_cv after create failed:", error.message);
+      return null;
+    }
+    return data as CVRow | null;
   } catch (err) {
     console.warn("[CloudSync] createCV exception:", err);
     return null;
@@ -122,7 +153,7 @@ export async function createCV(
 }
 
 /**
- * Update an existing CV row. Only sends the fields provided.
+ * Update an existing CV row. Dispatches to save_cv_data and/or save_cv_settings RPCs.
  */
 export async function updateCV(
   cvId: string,
@@ -136,15 +167,64 @@ export async function updateCV(
 ): Promise<boolean> {
   try {
     const supabase = createClient();
-    const { error } = await supabase
-      .from("cvs")
-      .update(updates)
-      .eq("id", cvId);
 
-    if (error) {
-      console.warn("[CloudSync] Failed to update CV:", error.message);
-      return false;
+    // Save CV data if provided
+    if (updates.cv_data) {
+      const d = updates.cv_data;
+      const { error } = await supabase.rpc("save_cv_data", {
+        p_cv_id: cvId,
+        p_personal_info: d.personalInfo,
+        p_summary: d.summary,
+        p_experience: d.experience,
+        p_education: d.education,
+        p_skills: d.skills,
+        p_courses: d.courses,
+        p_certifications: d.certifications,
+        p_awards: d.awards,
+        p_visibility: d.visibility,
+        p_sidebar_order: d.sidebarOrder,
+      });
+      if (error) {
+        console.warn("[CloudSync] save_cv_data failed:", error.message);
+        return false;
+      }
     }
+
+    // Save settings if provided
+    if (updates.settings) {
+      const s = updates.settings;
+      const { error } = await supabase.rpc("save_cv_settings", {
+        p_cv_id: cvId,
+        p_color_scheme: s.colorScheme,
+        p_font_family: s.fontFamily,
+        p_font_size_level: s.fontSizeLevel,
+        p_theme: s.theme,
+        p_locale: s.locale,
+        p_pattern_name: s.pattern.name,
+        p_pattern_sidebar_intensity: s.pattern.sidebarIntensity,
+        p_pattern_main_intensity: s.pattern.mainIntensity,
+        p_pattern_scope: s.pattern.scope,
+      });
+      if (error) {
+        console.warn("[CloudSync] save_cv_settings failed:", error.message);
+        return false;
+      }
+    }
+
+    // Update metadata fields if provided (title, is_published, slug)
+    const metaUpdates: Record<string, unknown> = {};
+    if (updates.title !== undefined) metaUpdates.title = updates.title;
+    if (updates.is_published !== undefined) metaUpdates.is_published = updates.is_published;
+    if (updates.slug !== undefined) metaUpdates.slug = updates.slug;
+
+    if (Object.keys(metaUpdates).length > 0) {
+      const { error } = await supabase.from("cvs").update(metaUpdates).eq("id", cvId);
+      if (error) {
+        console.warn("[CloudSync] metadata update failed:", error.message);
+        return false;
+      }
+    }
+
     return true;
   } catch (err) {
     console.warn("[CloudSync] updateCV exception:", err);
@@ -190,18 +270,16 @@ export async function publishCV(
 
     const slug = row.slug || generateSlug();
 
-    const { error: updateErr } = await supabase
-      .from("cvs")
-      .update({
-        cv_data: cvData,
-        settings,
-        is_published: true,
-        slug,
-      })
-      .eq("id", row.id);
+    // Save data + settings + publish metadata
+    const success = await updateCV(row.id, {
+      cv_data: cvData,
+      settings,
+      is_published: true,
+      slug,
+    });
 
-    if (updateErr) {
-      console.warn("[Share] Failed to publish CV:", updateErr.message);
+    if (!success) {
+      console.warn("[Share] Failed to publish CV");
       return null;
     }
 
@@ -214,20 +292,33 @@ export async function publishCV(
 
 /**
  * Fetch a published CV by slug. Intended for the public /cv/[slug] page.
+ * Uses load_full_cv() RPC to assemble from normalized tables.
  * Uses the browser client — for SSR use fetchPublishedCVServer().
  */
 export async function fetchPublishedCV(slug: string): Promise<CVRow | null> {
   try {
     const supabase = createClient();
-    const { data, error } = await supabase
+
+    // Find the published CV by slug
+    const { data: cvMeta, error: metaErr } = await supabase
       .from("cvs")
-      .select("*")
+      .select("id")
       .eq("slug", slug)
       .eq("is_published", true)
       .maybeSingle();
 
+    if (metaErr || !cvMeta) {
+      console.warn("[Share] Failed to fetch published CV metadata:", metaErr?.message);
+      return null;
+    }
+
+    // Assemble from normalized tables
+    const { data, error } = await supabase.rpc("load_full_cv", {
+      p_cv_id: cvMeta.id,
+    });
+
     if (error) {
-      console.warn("[Share] Failed to fetch published CV:", error.message);
+      console.warn("[Share] load_full_cv failed:", error.message);
       return null;
     }
     return data as CVRow | null;
