@@ -16,6 +16,7 @@ test.describe("Inline Editing @smoke", () => {
     const originalName = (await name.textContent()) ?? "";
 
     // Click to activate editor
+    await name.waitFor({ state: "visible", timeout: 5000 });
     await name.click();
     const editor = page.locator(".ProseMirror:focus");
     await editor.waitFor({ state: "visible", timeout: 5000 });

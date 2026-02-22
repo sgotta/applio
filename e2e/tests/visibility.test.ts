@@ -12,6 +12,7 @@ test.describe("Section Visibility @regression", () => {
     await openToolbarPopover(page, "btn-sections");
     const panel = popoverContent(page);
     const summaryToggle = panel.locator("label").filter({ hasText: "Professional Profile" }).locator("button[role='switch']");
+    await summaryToggle.waitFor({ state: "visible", timeout: 5000 });
     await summaryToggle.click();
 
     // Close popover
@@ -33,6 +34,7 @@ test.describe("Section Visibility @regression", () => {
     await openToolbarPopover(page, "btn-sections");
     const panel = popoverContent(page);
     const locationToggle = panel.locator("label").filter({ hasText: "Location" }).locator("button[role='switch']");
+    await locationToggle.waitFor({ state: "visible", timeout: 5000 });
     await locationToggle.click();
 
     await page.mouse.click(1, 1);
@@ -53,6 +55,7 @@ test.describe("Section Visibility @regression", () => {
     await openToolbarPopover(page, "btn-sections");
     const panel = popoverContent(page);
     const linkedinToggle = panel.locator("label").filter({ hasText: "LinkedIn" }).locator("button[role='switch']");
+    await linkedinToggle.waitFor({ state: "visible", timeout: 5000 });
     await linkedinToggle.click();
 
     await page.mouse.click(1, 1);
@@ -72,6 +75,7 @@ test.describe("Section Visibility @regression", () => {
     await openToolbarPopover(page, "btn-sections");
     const panel = popoverContent(page);
     const websiteToggle = panel.locator("label").filter({ hasText: "Website" }).locator("button[role='switch']");
+    await websiteToggle.waitFor({ state: "visible", timeout: 5000 });
     await websiteToggle.click();
 
     await page.mouse.click(1, 1);

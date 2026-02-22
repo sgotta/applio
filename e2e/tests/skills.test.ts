@@ -39,6 +39,7 @@ test.describe("Skills CRUD @smoke", () => {
 
     // Click the dashed "+" button inside the category
     const addBtn = firstCategory.locator("button").last();
+    await addBtn.waitFor({ state: "visible", timeout: 5000 });
     await addBtn.click();
     await page.waitForTimeout(500);
 
@@ -57,6 +58,7 @@ test.describe("Skills CRUD @smoke", () => {
 
     // Double-click the first badge to edit
     const firstBadge = badges.first().locator("[role='textbox']");
+    await firstBadge.waitFor({ state: "visible", timeout: 5000 });
     await firstBadge.dblclick();
     const editor = page.locator(".ProseMirror:focus");
     await editor.waitFor({ state: "visible", timeout: 5000 });

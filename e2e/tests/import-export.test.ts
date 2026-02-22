@@ -6,7 +6,9 @@ test.describe("Import / Export @smoke", () => {
     await seedCVData(page, minimalCV);
 
     // Open file menu
-    await page.locator("[data-testid='btn-file-menu']").click();
+    const fileMenuBtn = page.locator("[data-testid='btn-file-menu']");
+    await fileMenuBtn.waitFor({ state: "visible", timeout: 5000 });
+    await fileMenuBtn.click();
     await page.locator("[data-radix-popper-content-wrapper]").first().waitFor({ state: "visible" });
 
     // Start waiting for download before clicking
@@ -98,11 +100,13 @@ test.describe("Import / Export @smoke", () => {
 
     // Sidebar should have peterRiver color (#1a7ed6 → rgb(26, 126, 214))
     const sidebar = page.locator("[data-testid='cv-sidebar']");
+    await sidebar.waitFor({ state: "visible", timeout: 5000 });
     const bg = await sidebar.evaluate((el) => el.style.backgroundColor);
     expect(bg).toBeTruthy();
 
     // Font should be Lato
     const cvContent = page.locator(".cv-preview-content");
+    await cvContent.waitFor({ state: "visible", timeout: 5000 });
     const font = await cvContent.evaluate((el) => el.style.fontFamily);
     expect(font).toContain("Lato");
   });

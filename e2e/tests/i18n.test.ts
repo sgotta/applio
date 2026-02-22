@@ -9,7 +9,9 @@ test.describe("i18n Language Switching @regression", () => {
 
     // Open language popover and select Spanish
     await openToolbarPopover(page, "btn-language");
-    await page.getByText("Español").click();
+    const espBtn = page.getByText("Español");
+    await espBtn.waitFor({ state: "visible", timeout: 5000 });
+    await espBtn.click();
     await page.waitForTimeout(500);
 
     // Section headings should now be in Spanish
@@ -26,20 +28,23 @@ test.describe("i18n Language Switching @regression", () => {
 
     // Switch to Spanish
     await openToolbarPopover(page, "btn-language");
-    await page.getByText("Español").click();
+    const espBtn = page.getByText("Español");
+    await espBtn.waitFor({ state: "visible", timeout: 5000 });
+    await espBtn.click();
     await page.waitForTimeout(300);
 
     // Close popover (locale change re-renders everything while popover is open)
-    await page.mouse.click(1, 1);
+    await page.keyboard.press("Escape");
     await page.waitForTimeout(500);
     await expect(page.locator("h3").filter({ hasText: /^Experiencia$/i })).toBeVisible();
 
     // Switch back to English
     await openToolbarPopover(page, "btn-language");
+    const engBtn = page.locator("button").filter({ hasText: "English" }).first();
+    await engBtn.waitFor({ state: "visible", timeout: 5000 });
+    await engBtn.click();
     await page.waitForTimeout(300);
-    await page.locator("button").filter({ hasText: "English" }).first().click();
-    await page.waitForTimeout(300);
-    await page.mouse.click(1, 1);
+    await page.keyboard.press("Escape");
     await page.waitForTimeout(500);
 
     // Headings should be back in English
@@ -52,7 +57,9 @@ test.describe("i18n Language Switching @regression", () => {
 
     // Switch to Spanish
     await openToolbarPopover(page, "btn-language");
-    await page.getByText("Español").click();
+    const espBtn = page.getByText("Español");
+    await espBtn.waitFor({ state: "visible", timeout: 5000 });
+    await espBtn.click();
     await page.waitForTimeout(500);
     await expect(page.locator("h3").filter({ hasText: /^Experiencia$/i })).toBeVisible();
 

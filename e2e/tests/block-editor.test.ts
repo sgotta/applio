@@ -7,6 +7,7 @@ test.describe("Block Editor Formatting @smoke", () => {
     // Click the experience description (blockEditing field)
     const entries = sectionEntries(page, "Experience");
     const description = entries.first().locator("[role='textbox']").last();
+    await description.waitFor({ state: "visible", timeout: 5000 });
     await description.click();
 
     // Wait for Tiptap editor to mount
@@ -31,6 +32,7 @@ test.describe("Block Editor Formatting @smoke", () => {
 
     const entries = sectionEntries(page, "Experience");
     const description = entries.first().locator("[role='textbox']").last();
+    await description.waitFor({ state: "visible", timeout: 5000 });
     await description.click();
 
     const editor = page.locator(".ProseMirror:focus");
@@ -51,6 +53,7 @@ test.describe("Block Editor Formatting @smoke", () => {
 
     const entries = sectionEntries(page, "Experience");
     const description = entries.first().locator("[role='textbox']").last();
+    await description.waitFor({ state: "visible", timeout: 5000 });
     await description.click();
 
     const editor = page.locator(".ProseMirror:focus");
@@ -76,6 +79,7 @@ test.describe("Block Editor Formatting @smoke", () => {
     // Click the experience description
     const entries = sectionEntries(page, "Experience");
     const description = entries.first().locator("[role='textbox']").last();
+    await description.waitFor({ state: "visible", timeout: 5000 });
     await description.click();
 
     const editor = page.locator(".ProseMirror:focus");
