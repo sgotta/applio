@@ -26,6 +26,7 @@ async function getCroppedImg(
   pixelCrop: Area
 ): Promise<string> {
   const image = new Image();
+  image.crossOrigin = "anonymous";
   image.src = imageSrc;
   await new Promise<void>((resolve, reject) => {
     image.onload = () => resolve();
@@ -246,6 +247,7 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
                   {previewError ? (
                     <ImagePlus className="w-8 h-8 text-gray-400" />
                   ) : (
+                    /* eslint-disable-next-line @next/next/no-img-element -- preview thumbnail inside dialog, not LCP-critical */
                     <img
                       src={currentPhoto}
                       alt={t("altText")}
