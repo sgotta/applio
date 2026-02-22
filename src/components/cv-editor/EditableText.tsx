@@ -79,6 +79,8 @@ export function EditableText({
   const t = useTranslations("editableText");
   const placeholder = placeholderProp ?? t("defaultPlaceholder");
   const [isActive, setIsActive] = useState(autoEdit);
+  const [activeClickCoords, setActiveClickCoords] = useState<{ x: number; y: number } | null>(null);
+  const [activeClickCount, setActiveClickCount] = useState(0);
   const clickCoordsRef = useRef<{ x: number; y: number } | null>(null);
   const lastClickTimeRef = useRef(0);
   const clickCountRef = useRef(0);
@@ -114,6 +116,8 @@ export function EditableText({
     if (doubleClickToEdit && clickCountRef.current < 2) return;
 
     clickCoordsRef.current = { x: e.clientX, y: e.clientY };
+    setActiveClickCoords(clickCoordsRef.current);
+    setActiveClickCount(clickCountRef.current);
     setIsActive(true);
   }, [doubleClickToEdit]);
 
@@ -127,6 +131,8 @@ export function EditableText({
       longPressFiredRef.current = true;
       clickCoordsRef.current = touchStartRef.current;
       clickCountRef.current = 2; // select word
+      setActiveClickCoords(clickCoordsRef.current);
+      setActiveClickCount(clickCountRef.current);
       setIsActive(true);
     }, 500);
   }, []);
@@ -169,8 +175,8 @@ export function EditableText({
         value={value}
         onSave={handleSave}
         onCancel={handleCancel}
-        clickCoords={clickCoordsRef.current}
-        clickCount={clickCountRef.current}
+        clickCoords={activeClickCoords}
+        clickCount={activeClickCount}
         richText={richText || blockEditing}
         blockEditing={blockEditing}
         multiline={multiline || blockEditing}
@@ -355,11 +361,14 @@ function TiptapEditor({
   const cancelledRef = useRef(false);
   const savedRef = useRef(false);
   const onSaveRef = useRef(onSave);
-  onSaveRef.current = onSave;
   const onCancelRef = useRef(onCancel);
-  onCancelRef.current = onCancel;
   const clickCoordsRef = useRef(clickCoords);
   const clickCountRef = useRef(clickCount);
+
+  useEffect(() => {
+    onSaveRef.current = onSave;
+    onCancelRef.current = onCancel;
+  });
   const pasteToastMsgRef = useRef(t("pasteLineBreaksCleaned"));
 
   const extensions = useMemo(() => {

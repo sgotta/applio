@@ -60,6 +60,7 @@ export function FontSettingsProvider({
   const [sizeLevel, setSizeLevel] = useState<FontSizeLevel>(DEFAULT_FONT_SIZE_LEVEL);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- hydration-safe: read localStorage after mount
     setFamilyId(getInitialFamily());
     setSizeLevel(getInitialSize());
   }, []);

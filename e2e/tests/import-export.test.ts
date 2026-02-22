@@ -1,4 +1,4 @@
-import { test, expect, seedCVData, minimalCV, openToolbarPopover, popoverContent, nameField } from "../helpers/setup";
+import { test, expect, seedCVData, minimalCV, nameField } from "../helpers/setup";
 import type { CVData } from "../../src/lib/types";
 
 test.describe("Import / Export", () => {

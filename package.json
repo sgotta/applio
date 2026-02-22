@@ -1,12 +1,13 @@
 {
   "name": "applio",
-  "version": "1.28.2",
+  "version": "1.28.3",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "type-check": "tsc --noEmit",
     "test:e2e": "npx playwright test --config e2e/playwright.config.ts",
     "test:e2e:headed": "npx playwright test --config e2e/playwright.config.ts --headed"
   },

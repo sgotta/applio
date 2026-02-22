@@ -48,6 +48,7 @@ export const UpgradeDialog = memo(function UpgradeDialog({
   const goPrev = useCallback(() => setCurrent((c) => Math.max(0, c - 1)), []);
   const goNext = useCallback(() => setCurrent((c) => Math.min(FEATURES.length - 1, c + 1)), []);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- reset carousel on open
   useEffect(() => { if (open) setCurrent(0); }, [open]);
 
   useEffect(() => {
