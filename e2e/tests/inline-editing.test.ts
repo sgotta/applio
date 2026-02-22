@@ -1,6 +1,6 @@
 import { test, expect, resetToDefaults, nameField, titleField, editTextbox } from "../helpers/setup";
 
-test.describe("Inline Editing", () => {
+test.describe("Inline Editing @smoke", () => {
   test.beforeEach(async ({ appPage: page }) => {
     await resetToDefaults(page);
   });
@@ -16,6 +16,7 @@ test.describe("Inline Editing", () => {
     const originalName = (await name.textContent()) ?? "";
 
     // Click to activate editor
+    await name.waitFor({ state: "visible", timeout: 5000 });
     await name.click();
     const editor = page.locator(".ProseMirror:focus");
     await editor.waitFor({ state: "visible", timeout: 5000 });

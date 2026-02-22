@@ -1,6 +1,6 @@
 import { test, expect } from "../helpers/setup";
 
-test.describe("Theme Toggle", () => {
+test.describe("Theme Toggle @regression", () => {
   test("toggle to dark mode adds dark class to html", async ({ appPage: page }) => {
     // Click theme button
     await page.locator("[data-testid='btn-theme']").click();

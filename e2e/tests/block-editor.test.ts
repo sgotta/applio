@@ -1,12 +1,13 @@
 import { test, expect, seedCVData, minimalCV, sectionEntries } from "../helpers/setup";
 
-test.describe("Block Editor Formatting", () => {
+test.describe("Block Editor Formatting @smoke", () => {
   test("bold formatting with Ctrl+B", async ({ appPage: page }) => {
     await seedCVData(page, minimalCV);
 
     // Click the experience description (blockEditing field)
     const entries = sectionEntries(page, "Experience");
     const description = entries.first().locator("[role='textbox']").last();
+    await description.waitFor({ state: "visible", timeout: 5000 });
     await description.click();
 
     // Wait for Tiptap editor to mount
@@ -31,6 +32,7 @@ test.describe("Block Editor Formatting", () => {
 
     const entries = sectionEntries(page, "Experience");
     const description = entries.first().locator("[role='textbox']").last();
+    await description.waitFor({ state: "visible", timeout: 5000 });
     await description.click();
 
     const editor = page.locator(".ProseMirror:focus");
@@ -51,6 +53,7 @@ test.describe("Block Editor Formatting", () => {
 
     const entries = sectionEntries(page, "Experience");
     const description = entries.first().locator("[role='textbox']").last();
+    await description.waitFor({ state: "visible", timeout: 5000 });
     await description.click();
 
     const editor = page.locator(".ProseMirror:focus");
@@ -76,6 +79,7 @@ test.describe("Block Editor Formatting", () => {
     // Click the experience description
     const entries = sectionEntries(page, "Experience");
     const description = entries.first().locator("[role='textbox']").last();
+    await description.waitFor({ state: "visible", timeout: 5000 });
     await description.click();
 
     const editor = page.locator(".ProseMirror:focus");

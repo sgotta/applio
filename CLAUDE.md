@@ -26,9 +26,15 @@ npm run lint         # Run ESLint
 # Add shadcn/ui components
 npx shadcn@latest add [component-name]
 
+# Unit Testing (Vitest)
+npm run test:unit         # Run all unit tests (78 tests, ~2s)
+npm run test:unit:watch   # Run in watch mode
+
 # E2E Testing (Playwright)
 npm run test:e2e          # Run all E2E tests (headless)
 npm run test:e2e:headed   # Run with visible browser
+npx playwright test --config e2e/playwright.config.ts --grep @smoke       # Smoke only (27 tests)
+npx playwright test --config e2e/playwright.config.ts --grep @regression  # Regression only (27 tests)
 
 # Deploy
 vercel               # Deploy to production (requires Vercel CLI)
@@ -77,7 +83,7 @@ All CV data lives in `src/lib/cv-context.tsx` using React Context API. This is t
 - All methods use `useCallback` for memoization
 - Immutable updates with spread operator and functional setState
 - Auto-save to localStorage with 500ms debounce
-- Migration function (`migrateCVData`) for backward compatibility with old localStorage formats
+- Migration functions in `src/lib/cv-migrations.ts` (`migrateCVData`, `migrateMarkdownBold`, `migrateBulletsToHtml`, `migrateSidebarOrder`, `moveItem`) for backward compatibility with old localStorage formats
 - Exposes `loading`, `hadSavedData` flags
 
 **Data flow:**
@@ -371,9 +377,18 @@ src/
 │       └── stripe/
 │           ├── checkout/route.ts    # Create Stripe session
 │           └── webhook/route.ts     # Handle Stripe events
+├── __tests__/                       # Unit tests (Vitest)
+│   ├── cv-migrations.test.ts        # Migration functions (28 tests)
+│   ├── render-rich-text.test.ts     # Rich text rendering (21 tests)
+│   ├── fonts.test.ts                # Font definitions (10 tests)
+│   ├── color-schemes.test.ts        # Color schemes (6 tests)
+│   ├── default-data.test.ts         # Default data (6 tests)
+│   ├── utils.test.ts                # Utility functions (3 tests)
+│   └── storage.test.ts              # localStorage operations (4 tests)
 ├── lib/
 │   ├── types.ts                     # All TypeScript interfaces
 │   ├── cv-context.tsx               # CV state management (~32 methods)
+│   ├── cv-migrations.ts             # Data migration functions (extracted from cv-context)
 │   ├── default-data.ts              # Initial CV data
 │   ├── storage.ts                   # localStorage load/save
 │   ├── utils.ts                     # cn() utility + filenameDateStamp()
@@ -435,7 +450,8 @@ e2e/
 ├── playwright.config.ts             # Playwright configuration
 ├── helpers/
 │   └── setup.ts                     # Fixtures, locators, interaction helpers
-└── tests/                           # 54 E2E tests across 14 files
+└── tests/                           # 54 E2E tests across 14 files (27 @smoke + 27 @regression)
+vitest.config.ts                     # Vitest configuration
 docs/
 └── design-system.md                 # Visual conventions reference
 supabase/
@@ -499,8 +515,9 @@ R2_PUBLIC_URL
 - Backup on conflict: check `localStorage["cv-builder-backup"]`
 
 **Migration issues:**
-- Check `migrateCVData()` in cv-context.tsx
+- Check `migrateCVData()` in `src/lib/cv-migrations.ts`
 - Verify backward compatibility when changing types.ts
+- Unit tests cover all migration paths — run `npm run test:unit` after changes
 
 ## Critical Files for Features
 
@@ -530,6 +547,54 @@ When implementing new features, these files almost always need updates:
 | `next-themes` | Dark/light mode |
 | `sonner` | Toast notifications |
 | `lucide-react` | Icons (only icon library used) |
+| `vitest` | Unit testing framework (78 tests) |
+
+## Testing Strategy
+
+### Unit Tests (Vitest)
+
+**78 tests** across 7 files in `src/__tests__/`. Run in ~2s.
+
+| File | Tests | Covers |
+|---|---|---|
+| `cv-migrations.test.ts` | 28 | `moveItem`, `migrateSidebarOrder`, `migrateMarkdownBold`, `migrateBulletsToHtml`, `migrateCVData` |
+| `render-rich-text.test.ts` | 21 | `renderRichText`, `renderRichDocument` (HTML → React nodes) |
+| `fonts.test.ts` | 10 | `getFontDefinition`, `FONT_FAMILIES` integrity |
+| `color-schemes.test.ts` | 6 | `getColorScheme`, `COLOR_SCHEMES` integrity |
+| `default-data.test.ts` | 6 | `getDefaultCVData`, `defaultVisibility`, `DEFAULT_SIDEBAR_ORDER` |
+| `utils.test.ts` | 3 | `filenameDateStamp` (with fake timers) |
+| `storage.test.ts` | 4 | `saveCVData`/`loadCVData`/`clearCVData` round-trips |
+
+**Config:** `vitest.config.ts` — jsdom environment, `@vitejs/plugin-react`, `@/` alias.
+
+**Key refactor:** Migration functions were extracted from `cv-context.tsx` into `src/lib/cv-migrations.ts` for testability. `cv-context.tsx` imports them.
+
+### E2E Tests (Playwright)
+
+**54 tests** across 14 files, classified with tags:
+
+**@smoke (27 tests)** — Critical flows. If any fails, the app is unusable:
+- `smoke.test.ts` (2) — App loads, toolbar visible
+- `inline-editing.test.ts` (4) — Core Tiptap editing
+- `experience.test.ts` (4) — Experience CRUD
+- `education.test.ts` (3) — Education CRUD
+- `skills.test.ts` (5) — Skills CRUD (dblclick, deleteOnEmpty)
+- `import-export.test.ts` (4) — JSON/PDF export, import
+- `pdf.test.ts` (1) — PDF generation
+- `block-editor.test.ts` (4) — Rich text formatting
+
+**@regression (27 tests)** — Important but non-critical:
+- `visibility.test.ts` (4), `color-scheme.test.ts` (3), `font.test.ts` (3), `theme.test.ts` (2), `i18n.test.ts` (3), `optional-sections.test.ts` (12)
+
+### CI Workflows
+
+| Workflow | Trigger | Unit Tests | E2E | Sharding |
+|---|---|---|---|---|
+| `development.yml` | push/PR to `development` | Yes | No | — |
+| `staging.yml` | push/PR to `staging` | Yes | @smoke only | 3 shards |
+| `hotfix.yml` | push `hotfix/**`, PR to `main` | Yes | No | — |
+| `nightly.yml` | Cron 3:00 AM ARG (UTC-3) + manual | Yes | All (smoke + regression) | 3 shards |
+| `release.yml` | push to `main` (package.json change) | No | No | — |
 
 ## Documentation Maintenance
 
@@ -579,6 +644,7 @@ After every commit, evaluate which docs were affected. At the end of the commit 
 | UI redesign (no arch change) | — | — | — | — | — |
 | Premium gating change | ✏️ premium section | ✏️ premium line | — | — | — |
 | New component (no new section) | ✏️ file tree, component arch | — | — | ⚠️ Componentes (if significant) | — |
+| Testing changes | ✏️ testing strategy section | ✏️ testing section | ✏️ testing section | ⚠️ Guía de Desarrollo | — |
 
 ### Periodic doc sync
 

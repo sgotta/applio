@@ -1,6 +1,6 @@
 import { test, expect, seedCVData, minimalCV } from "../helpers/setup";
 
-test.describe("PDF Generation", () => {
+test.describe("PDF Generation @smoke", () => {
   test("PDF download triggers with correct filename", async ({ appPage: page }) => {
     await seedCVData(page, minimalCV);
 

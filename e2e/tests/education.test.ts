@@ -1,6 +1,6 @@
 import { test, expect, seedCVData, minimalCV, sectionEntries, openGripMenu, editTextbox } from "../helpers/setup";
 
-test.describe("Education CRUD", () => {
+test.describe("Education CRUD @smoke", () => {
   test("default data shows at least one education entry", async ({ appPage: page }) => {
     const entries = sectionEntries(page, "Education");
     const count = await entries.count();
