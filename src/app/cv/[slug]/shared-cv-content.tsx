@@ -1,8 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Download, Heart, Loader2, FileText } from "lucide-react";
+import { Download, Heart, Loader2 } from "lucide-react";
+import Link from "next/link";
 import { LocaleProvider, useAppLocale } from "@/lib/locale-context";
 import { ThemeProvider } from "@/lib/theme-context";
 import { ColorSchemeProvider } from "@/lib/color-scheme-context";
@@ -48,14 +49,14 @@ function SharedCVInner({ cvData, settings }: SharedCVContentProps) {
     ? getFontDefinition(fontFamilyId)
     : null;
 
-  const patternSettings: PatternSettings | undefined = settings.pattern
+  const patternSettings: PatternSettings | undefined = useMemo(() => settings.pattern
     ? {
         name: settings.pattern.name as PatternSettings["name"],
         sidebarIntensity: (settings.pattern.sidebarIntensity ?? 3) as PatternSettings["sidebarIntensity"],
         mainIntensity: (settings.pattern.mainIntensity ?? 2) as PatternSettings["mainIntensity"],
         scope: settings.pattern.scope as PatternSettings["scope"],
       }
-    : undefined;
+    : undefined, [settings.pattern]);
 
   // The photo is already an R2 URL in cv_data.personalInfo.photo (not base64)
   const photoUrl = cvData.personalInfo.photo;
@@ -147,13 +148,13 @@ function SharedCVInner({ cvData, settings }: SharedCVContentProps) {
       </div>
 
       <div className="text-center py-6 space-y-1">
-        <a
+        <Link
           href="/"
           className="inline-flex items-center gap-1.5 text-gray-400 hover:text-gray-500 transition-colors"
         >
           <span className="text-sm font-normal tracking-tight">Applio</span>
           <Heart className="h-3 w-3 fill-current" />
-        </a>
+        </Link>
         <p className="text-xs text-gray-400">
           &copy; {new Date().getFullYear()} Applio. {tt("copyright")}
         </p>

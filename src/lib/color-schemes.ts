@@ -30,17 +30,6 @@ export interface ColorScheme {
   pageBgDark: string;
 }
 
-/** Pre-blend an 8-digit hex (#rrggbbaa) over a 6-digit hex (#rrggbb)
- *  to get an opaque result. If fg is already 6/7 chars, return as-is. */
-function blend(fg: string, bg: string): string {
-  if (fg.length <= 7) return fg;
-  const a = parseInt(fg.slice(7, 9), 16) / 255;
-  const r = Math.round(parseInt(fg.slice(1, 3), 16) * a + parseInt(bg.slice(1, 3), 16) * (1 - a));
-  const g = Math.round(parseInt(fg.slice(3, 5), 16) * a + parseInt(bg.slice(3, 5), 16) * (1 - a));
-  const b = Math.round(parseInt(fg.slice(5, 7), 16) * a + parseInt(bg.slice(5, 7), 16) * (1 - a));
-  return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
-}
-
 export const COLOR_SCHEMES: Record<ColorSchemeName, ColorScheme> = {
   /* Default — blue-gray, optimised for B&W print (~12% density) */
   default: {

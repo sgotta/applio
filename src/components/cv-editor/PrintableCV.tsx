@@ -89,7 +89,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
     const { colorScheme: contextColors } = useColorScheme();
     const { pattern: ctxPattern, sidebarIntensity: ctxSidebarIntensity, mainIntensity: ctxMainIntensity, scope: ctxScope } = useSidebarPattern();
     const { fontFamilyId, fontSizeLevel } = useFontSettings();
-    const { locale } = useAppLocale();
+    useAppLocale();
 
     const colors = colorSchemeOverride ?? contextColors;
 

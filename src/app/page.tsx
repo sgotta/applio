@@ -66,7 +66,6 @@ function Reveal({
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setVisible(true);
       return;
     }
     const el = ref.current;

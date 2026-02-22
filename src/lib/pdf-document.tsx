@@ -17,7 +17,6 @@ import type { CVData } from "@/lib/types";
 import { DEFAULT_SIDEBAR_ORDER } from "@/lib/default-data";
 import type { ColorScheme } from "@/lib/color-schemes";
 import type { PatternSettings } from "@/lib/sidebar-patterns";
-import type { Style } from "@react-pdf/types";
 import { PdfRichText, PdfRichDocument } from "@/lib/render-rich-text-pdf";
 
 /* ── Font registration ──────────────────────────────────── */

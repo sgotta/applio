@@ -225,6 +225,7 @@ export const test = base.extend<{ appPage: Page }>({
     await page.goto("/editor");
     await page.waitForLoadState("networkidle");
     await page.locator(".cv-preview-content").waitFor({ state: "visible" });
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     await use(page);
   },
 });
