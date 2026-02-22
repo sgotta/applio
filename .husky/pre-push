@@ -1,0 +1,27 @@
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+# Skip validation for protected branches
+if [ "$BRANCH" = "development" ] || [ "$BRANCH" = "staging" ] || [ "$BRANCH" = "main" ]; then
+  exit 0
+fi
+
+# Validate branch naming convention
+if echo "$BRANCH" | grep -qE "^(feature|fix|chore|refactor|docs|hotfix)/"; then
+  echo "✅ Branch name '$BRANCH' follows naming conventions."
+else
+  echo ""
+  echo "❌ Branch name '$BRANCH' doesn't follow naming conventions."
+  echo ""
+  echo "  Prefix       | Use"
+  echo "  -------------|------------------------------------------"
+  echo "  feature/*    | New functionality"
+  echo "  fix/*        | Bug fix"
+  echo "  chore/*      | Maintenance, dependencies, config"
+  echo "  refactor/*   | Refactoring without behavior change"
+  echo "  docs/*       | Documentation only"
+  echo "  hotfix/*     | Urgent production fix (targets main)"
+  echo ""
+  echo "Examples: feature/add-dark-mode, fix/login-redirect, chore/update-deps"
+  echo ""
+  exit 1
+fi
