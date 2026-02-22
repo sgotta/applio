@@ -3,7 +3,7 @@ import type { CVData } from "../../src/lib/types";
 
 // ─── Courses ──────────────────────────────────────────────
 
-test.describe("Courses CRUD", () => {
+test.describe("Courses CRUD @regression", () => {
   test("courses section visible with seeded data", async ({ appPage: page }) => {
     await seedCVData(page, cvWithOptionalSections);
 
@@ -63,7 +63,7 @@ test.describe("Courses CRUD", () => {
 
 // ─── Certifications ───────────────────────────────────────
 
-test.describe("Certifications CRUD", () => {
+test.describe("Certifications CRUD @regression", () => {
   test("certifications section visible with seeded data", async ({ appPage: page }) => {
     await seedCVData(page, cvWithOptionalSections);
 
@@ -123,7 +123,7 @@ test.describe("Certifications CRUD", () => {
 
 // ─── Awards ───────────────────────────────────────────────
 
-test.describe("Awards CRUD", () => {
+test.describe("Awards CRUD @regression", () => {
   test("awards section visible with seeded data", async ({ appPage: page }) => {
     await seedCVData(page, cvWithOptionalSections);
 

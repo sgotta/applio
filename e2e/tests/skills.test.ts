@@ -1,6 +1,6 @@
 import { test, expect, seedCVData, minimalCV, skillCategories, openGripMenu } from "../helpers/setup";
 
-test.describe("Skills CRUD", () => {
+test.describe("Skills CRUD @smoke", () => {
   test("default data shows at least one skill category", async ({ appPage: page }) => {
     const categories = skillCategories(page);
     const count = await categories.count();
@@ -15,6 +15,7 @@ test.describe("Skills CRUD", () => {
     await expect(categoryName).toContainText("Testing");
 
     // Double-click to edit category name (EditableText with doubleClickToEdit)
+    await categoryName.waitFor({ state: "visible", timeout: 5000 });
     await categoryName.dblclick();
     const editor = page.locator(".ProseMirror:focus");
     await editor.waitFor({ state: "visible", timeout: 5000 });
@@ -38,6 +39,7 @@ test.describe("Skills CRUD", () => {
 
     // Click the dashed "+" button inside the category
     const addBtn = firstCategory.locator("button").last();
+    await addBtn.waitFor({ state: "visible", timeout: 5000 });
     await addBtn.click();
     await page.waitForTimeout(500);
 
@@ -56,6 +58,7 @@ test.describe("Skills CRUD", () => {
 
     // Double-click the first badge to edit
     const firstBadge = badges.first().locator("[role='textbox']");
+    await firstBadge.waitFor({ state: "visible", timeout: 5000 });
     await firstBadge.dblclick();
     const editor = page.locator(".ProseMirror:focus");
     await editor.waitFor({ state: "visible", timeout: 5000 });

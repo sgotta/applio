@@ -1,6 +1,6 @@
 import { test, expect, seedCVData, minimalCV, openToolbarPopover, popoverContent } from "../helpers/setup";
 
-test.describe("Font Settings", () => {
+test.describe("Font Settings @regression", () => {
   test("change font family updates CV font", async ({ appPage: page }) => {
     await seedCVData(page, minimalCV);
 
@@ -8,30 +8,34 @@ test.describe("Font Settings", () => {
     const cvContent = page.locator(".cv-preview-content");
     const initialFont = await cvContent.evaluate((el) => el.style.fontFamily);
 
-    // Open font popover and select a different font (e.g., Merriweather — a serif font)
-    await openToolbarPopover(page, "btn-design");
+    // Open font popover and select Lato (free tier)
+    await openToolbarPopover(page, "btn-font");
     const panel = popoverContent(page);
-    await panel.getByText("Merriweather").click();
+    const latoBtn = panel.getByText("Lato");
+    await latoBtn.waitFor({ state: "visible", timeout: 5000 });
+    await latoBtn.click();
     await page.waitForTimeout(300);
 
     // Font should have changed
     const newFont = await cvContent.evaluate((el) => el.style.fontFamily);
     expect(newFont).not.toBe(initialFont);
-    expect(newFont).toContain("Merriweather");
+    expect(newFont).toContain("Lato");
   });
 
   test("font family persists after reload", async ({ appPage: page }) => {
     await seedCVData(page, minimalCV);
 
     // Change font
-    await openToolbarPopover(page, "btn-design");
+    await openToolbarPopover(page, "btn-font");
     const panel = popoverContent(page);
-    await panel.getByText("Lora").click();
+    const latoBtn = panel.getByText("Lato");
+    await latoBtn.waitFor({ state: "visible", timeout: 5000 });
+    await latoBtn.click();
     await page.waitForTimeout(300);
 
     const cvContent = page.locator(".cv-preview-content");
     const fontAfterChange = await cvContent.evaluate((el) => el.style.fontFamily);
-    expect(fontAfterChange).toContain("Lora");
+    expect(fontAfterChange).toContain("Lato");
 
     // Reload and verify
     await page.reload();
@@ -46,21 +50,26 @@ test.describe("Font Settings", () => {
     await seedCVData(page, minimalCV);
 
     // Open font popover
-    await openToolbarPopover(page, "btn-design");
+    await openToolbarPopover(page, "btn-font");
     const panel = popoverContent(page);
 
     // Font size buttons: S, M, L — M is default (level 2)
     // Click "S" to change to small
-    await panel.getByText("S", { exact: true }).click();
+    const smallBtn = panel.getByText("S", { exact: true });
+    await smallBtn.waitFor({ state: "visible", timeout: 5000 });
+    await smallBtn.click();
     await page.waitForTimeout(300);
 
     // The font-size scale wrapper should have a fontSize style
     const scaleWrapper = page.locator(".cv-preview-content > div").first();
+    await scaleWrapper.waitFor({ state: "visible", timeout: 5000 });
     const fontSize = await scaleWrapper.evaluate((el) => el.style.fontSize);
     expect(fontSize).toBeTruthy(); // non-empty means a custom size is applied (not default)
 
     // Click "M" to go back to default
-    await panel.getByText("M", { exact: true }).click();
+    const mediumBtn = panel.getByText("M", { exact: true });
+    await mediumBtn.waitFor({ state: "visible", timeout: 5000 });
+    await mediumBtn.click();
     await page.waitForTimeout(300);
 
     const fontSizeDefault = await scaleWrapper.evaluate((el) => el.style.fontSize);

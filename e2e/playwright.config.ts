@@ -4,7 +4,7 @@ export default defineConfig({
   testDir: "./tests",
   timeout: 30_000,
   retries: 0,
-  workers: 1,
+  workers: process.env.CI ? 1 : undefined,
   reporter: [["list"]],
   use: {
     baseURL: "http://localhost:3000",

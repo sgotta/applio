@@ -85,7 +85,8 @@ Open [http://localhost:3000](http://localhost:3000). The page hot-reloads as you
 ```bash
 npm run build              # Production build (includes type-check)
 npm run lint               # ESLint
-npm run test:e2e           # Playwright E2E tests (headless)
+npm run test:unit          # Vitest unit tests (78 tests, ~2s)
+npm run test:e2e           # Playwright E2E tests (headless, 54 tests)
 npm run test:e2e:headed    # Playwright with visible browser
 ```
 
@@ -131,8 +132,35 @@ src/
         ├── Certifications.tsx   # Optional: certifications
         ├── Awards.tsx           # Optional: awards
         └── ...                  # Photo crop, section titles, etc.
-e2e/                             # 54 Playwright tests across 14 files
+e2e/                             # 54 Playwright E2E tests (27 @smoke + 27 @regression)
+vitest.config.ts                 # Vitest configuration
 ```
+
+## Testing
+
+### Unit Tests (Vitest)
+
+78 tests covering data migrations, rich text rendering, font/color scheme lookups, default data, utilities, and localStorage operations.
+
+```bash
+npm run test:unit          # Run once
+npm run test:unit:watch    # Watch mode
+```
+
+### E2E Tests (Playwright)
+
+54 tests across 14 files, tagged as `@smoke` (critical) or `@regression` (nice-to-have):
+
+```bash
+npm run test:e2e                                                          # All tests
+npx playwright test --config e2e/playwright.config.ts --grep @smoke       # Smoke only
+npx playwright test --config e2e/playwright.config.ts --grep @regression  # Regression only
+```
+
+### CI
+
+- **PRs to staging** run unit tests + smoke E2E (3 shards)
+- **Nightly** (3:00 AM Argentina) runs unit tests + all E2E (3 shards)
 
 ## Deployment
 

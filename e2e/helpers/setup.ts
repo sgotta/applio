@@ -103,11 +103,14 @@ export const cvWithOptionalSections: CVData = {
  * Inject CV data into localStorage and reload the page.
  */
 export async function seedCVData(page: Page, data: CVData) {
+  // Wait for CVContext auto-save debounce (500ms) to settle before overwriting localStorage
+  await page.waitForTimeout(600);
   await page.evaluate((json) => {
     localStorage.setItem("cv-builder-data", json);
   }, JSON.stringify(data));
   await page.reload();
   await page.waitForLoadState("networkidle");
+  await page.locator(".cv-preview-content").waitFor({ state: "visible" });
 }
 
 /**
@@ -188,6 +191,7 @@ export function popoverContent(page: Page) {
  * and click outside to save.
  */
 export async function editTextbox(page: Page, textbox: Locator, newText: string) {
+  await textbox.waitFor({ state: "visible", timeout: 5000 });
   await textbox.click();
 
   // Wait for Tiptap editor to mount
@@ -207,8 +211,10 @@ export async function editTextbox(page: Page, textbox: Locator, newText: string)
  * Open the EntryGrip popover for a given entry by hovering and clicking the grip icon.
  */
 export async function openGripMenu(page: Page, entry: Locator) {
+  await entry.waitFor({ state: "visible", timeout: 5000 });
   await entry.hover();
   const grip = entry.locator("button").first();
+  await grip.waitFor({ state: "visible", timeout: 5000 });
   await grip.click();
   await page.locator("[data-radix-popper-content-wrapper]").waitFor({ state: "visible" });
 }
