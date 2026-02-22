@@ -15,6 +15,7 @@ test.describe("Skills CRUD @smoke", () => {
     await expect(categoryName).toContainText("Testing");
 
     // Double-click to edit category name (EditableText with doubleClickToEdit)
+    await categoryName.waitFor({ state: "visible", timeout: 5000 });
     await categoryName.dblclick();
     const editor = page.locator(".ProseMirror:focus");
     await editor.waitFor({ state: "visible", timeout: 5000 });
