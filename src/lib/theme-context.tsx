@@ -51,6 +51,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const initial = getInitialTheme();
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- hydration-safe: read localStorage after mount
     setThemeState(initial);
     applyTheme(initial);
   }, []);

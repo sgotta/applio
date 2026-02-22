@@ -27,6 +27,7 @@ export function ProfilePhotoUpload({
   const [photoError, setPhotoError] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reset error when photo prop changes
     setPhotoError(false);
   }, [currentPhoto]);
 

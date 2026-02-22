@@ -810,7 +810,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
     } finally {
       setIsSharing(false);
     }
-  }, [user, data, colorSchemeName, isSharing, canShare, patternSettings, fontFamilyId, fontSizeLevel, updatePersonalInfo, t]);
+  }, [user, data, colorSchemeName, isSharing, canShare, patternSettings, fontFamilyId, fontSizeLevel, updatePersonalInfo, t, locale, theme]);
 
   const handleCopyShareUrl = useCallback(async () => {
     try {

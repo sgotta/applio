@@ -121,6 +121,7 @@ function stableStringify(value: unknown): string {
  * Uses stableStringify so key ordering differences from JSONB don't matter.
  */
 function cvContentFingerprint(data: CVData): string {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { photo: _photo, ...personalInfoWithoutPhoto } = data.personalInfo;
   return stableStringify({
     personalInfo: personalInfoWithoutPhoto,

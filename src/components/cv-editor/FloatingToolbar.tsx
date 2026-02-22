@@ -70,6 +70,7 @@ export function FloatingToolbar({
   // Re-clamp position when toolbar mounts/resizes
   useEffect(() => {
     if (visible && toolbarRef.current) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- updatePosition sets coords from DOM measurements
       updatePosition();
     }
   }, [visible, updatePosition]);
@@ -80,6 +81,7 @@ export function FloatingToolbar({
   const [stayDocked, setStayDocked] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- react to external keyboard state
     if (keyboard.isOpen) setStayDocked(true);
   }, [keyboard.isOpen]);
 

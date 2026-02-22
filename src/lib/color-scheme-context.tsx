@@ -45,6 +45,7 @@ export function ColorSchemeProvider({
   const [name, setName] = useState<ColorSchemeName>(DEFAULT_COLOR_SCHEME);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- hydration-safe: read localStorage after mount
     setName(getInitialScheme());
   }, []);
 

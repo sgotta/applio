@@ -72,6 +72,7 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- hydration-safe: read localStorage after mount
     setLocaleState(getInitialLocale());
     setMounted(true);
   }, []);

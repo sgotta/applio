@@ -95,6 +95,7 @@ export function SidebarPatternProvider({
   const [settings, setSettings] = useState<PatternSettings>(DEFAULT_PATTERN_SETTINGS);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- hydration-safe: read localStorage after mount
     setSettings(getInitialSettings());
   }, []);
 
