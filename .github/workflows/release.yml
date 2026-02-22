@@ -13,22 +13,47 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Get version from package.json
         id: version
         run: echo "version=v$(node -p 'require("./package.json").version')" >> "$GITHUB_OUTPUT"
 
-      - name: Check if tag already exists
-        id: check
+      - name: Get latest existing tag
+        id: latest
         run: |
-          if git ls-remote --tags origin "${{ steps.version.outputs.version }}" | grep -q .; then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "exists=false" >> "$GITHUB_OUTPUT"
+          latest=$(git tag -l 'v*' --sort=-version:refname | head -1)
+          echo "tag=${latest:-v0.0.0}" >> "$GITHUB_OUTPUT"
+
+      - name: Validate version is newer than latest tag
+        run: |
+          new="${{ steps.version.outputs.version }}"
+          latest="${{ steps.latest.outputs.tag }}"
+
+          echo "New version: $new"
+          echo "Latest tag:  $latest"
+
+          # Strip 'v' prefix for comparison
+          new_semver="${new#v}"
+          latest_semver="${latest#v}"
+
+          # Compare using sort -V (version sort)
+          higher=$(printf '%s\n%s' "$new_semver" "$latest_semver" | sort -V | tail -1)
+
+          if [ "$new_semver" = "$latest_semver" ]; then
+            echo "::error::Version $new already exists as a tag. Bump the version in package.json before merging to main."
+            exit 1
           fi
 
+          if [ "$higher" != "$new_semver" ]; then
+            echo "::error::Version $new is LOWER than latest tag $latest. Bump the version in package.json before merging to main."
+            exit 1
+          fi
+
+          echo "Version $new is newer than $latest. Proceeding with release."
+
       - name: Create GitHub Release
-        if: steps.check.outputs.exists == 'false'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.version.outputs.version }}
