@@ -1,6 +1,6 @@
 import { test, expect, seedCVData, minimalCV, openToolbarPopover, popoverContent, cvSidebar } from "../helpers/setup";
 
-test.describe("Color Schemes", () => {
+test.describe("Color Schemes @regression", () => {
   test("all color scheme swatches are visible in picker", async ({ appPage: page }) => {
     await openToolbarPopover(page, "btn-color-scheme");
     const panel = popoverContent(page);

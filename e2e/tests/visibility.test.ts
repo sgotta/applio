@@ -1,6 +1,6 @@
 import { test, expect, seedCVData, minimalCV, openToolbarPopover, popoverContent } from "../helpers/setup";
 
-test.describe("Section Visibility", () => {
+test.describe("Section Visibility @regression", () => {
   test("toggle summary off hides summary section", async ({ appPage: page }) => {
     await seedCVData(page, minimalCV);
 

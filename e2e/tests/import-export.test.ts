@@ -1,7 +1,7 @@
 import { test, expect, seedCVData, minimalCV, nameField } from "../helpers/setup";
 import type { CVData } from "../../src/lib/types";
 
-test.describe("Import / Export", () => {
+test.describe("Import / Export @smoke", () => {
   test("export JSON triggers download with correct filename", async ({ appPage: page }) => {
     await seedCVData(page, minimalCV);
 

@@ -1,6 +1,6 @@
 import { test, expect, seedCVData, minimalCV, openToolbarPopover } from "../helpers/setup";
 
-test.describe("i18n Language Switching", () => {
+test.describe("i18n Language Switching @regression", () => {
   test("switch to Spanish changes section headings", async ({ appPage: page }) => {
     await seedCVData(page, minimalCV);
 

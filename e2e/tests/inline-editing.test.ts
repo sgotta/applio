@@ -1,6 +1,6 @@
 import { test, expect, resetToDefaults, nameField, titleField, editTextbox } from "../helpers/setup";
 
-test.describe("Inline Editing", () => {
+test.describe("Inline Editing @smoke", () => {
   test.beforeEach(async ({ appPage: page }) => {
     await resetToDefaults(page);
   });

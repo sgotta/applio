@@ -1,6 +1,6 @@
 import { test, expect, seedCVData, minimalCV, sectionEntries } from "../helpers/setup";
 
-test.describe("Block Editor Formatting", () => {
+test.describe("Block Editor Formatting @smoke", () => {
   test("bold formatting with Ctrl+B", async ({ appPage: page }) => {
     await seedCVData(page, minimalCV);
 

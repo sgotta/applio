@@ -1,6 +1,6 @@
 import { test, expect, nameField } from "../helpers/setup";
 
-test.describe("Smoke Tests", () => {
+test.describe("Smoke Tests @smoke", () => {
   test("app loads and shows default CV data", async ({ appPage: page }) => {
     // The desktop header name should be visible and non-empty
     const name = nameField(page);

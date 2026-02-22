@@ -1,6 +1,6 @@
 import { test, expect, seedCVData, minimalCV, skillCategories, openGripMenu } from "../helpers/setup";
 
-test.describe("Skills CRUD", () => {
+test.describe("Skills CRUD @smoke", () => {
   test("default data shows at least one skill category", async ({ appPage: page }) => {
     const categories = skillCategories(page);
     const count = await categories.count();

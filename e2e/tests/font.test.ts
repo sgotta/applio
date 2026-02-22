@@ -1,6 +1,6 @@
 import { test, expect, seedCVData, minimalCV, openToolbarPopover, popoverContent } from "../helpers/setup";
 
-test.describe("Font Settings", () => {
+test.describe("Font Settings @regression", () => {
   test("change font family updates CV font", async ({ appPage: page }) => {
     await seedCVData(page, minimalCV);
 
