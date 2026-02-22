@@ -452,6 +452,11 @@ e2e/
 │   └── setup.ts                     # Fixtures, locators, interaction helpers
 └── tests/                           # 54 E2E tests across 14 files (27 @smoke + 27 @regression)
 vitest.config.ts                     # Vitest configuration
+commitlint.config.mjs                # Commitlint config (conventional commits)
+.husky/
+├── pre-commit                       # lint-staged (ESLint on staged files)
+├── commit-msg                       # commitlint (conventional commits)
+└── pre-push                         # Branch naming validation
 docs/
 └── design-system.md                 # Visual conventions reference
 supabase/
@@ -548,6 +553,9 @@ When implementing new features, these files almost always need updates:
 | `sonner` | Toast notifications |
 | `lucide-react` | Icons (only icon library used) |
 | `vitest` | Unit testing framework (78 tests) |
+| `husky` | Git hooks manager (pre-commit, commit-msg, pre-push) |
+| `@commitlint/cli` + `config-conventional` | Commit message linting (conventional commits) |
+| `lint-staged` | Run ESLint on staged files only (pre-commit) |
 
 ## Testing Strategy
 
@@ -586,15 +594,41 @@ When implementing new features, these files almost always need updates:
 **@regression (27 tests)** — Important but non-critical:
 - `visibility.test.ts` (4), `color-scheme.test.ts` (3), `font.test.ts` (3), `theme.test.ts` (2), `i18n.test.ts` (3), `optional-sections.test.ts` (12)
 
+### Git Workflow & Conventions
+
+**Branch strategy:**
+```
+feature/* | fix/* | chore/* | refactor/* | docs/*  →  development  →  staging  →  main
+hotfix/*  →  main (emergencies, skips dev/staging)
+```
+
+**Conventional commits** are enforced locally (commitlint) and in CI (pr-conventions.yml):
+- Format: `<type>(<optional scope>): <description>`
+- Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`
+- Examples: `feat: add dark mode`, `fix(auth): resolve redirect loop`, `ci: add E2E to staging`
+
+**Branch naming** convention enforced by husky pre-push and pr-conventions.yml:
+- `feature/*`, `fix/*`, `chore/*`, `refactor/*`, `docs/*`, `hotfix/*`
+
+**Husky git hooks** (local validation):
+| Hook | Tool | What it validates |
+|---|---|---|
+| `pre-commit` | lint-staged | ESLint on staged `.ts`/`.tsx`/`.js`/`.jsx` files |
+| `commit-msg` | commitlint | Conventional commits format |
+| `pre-push` | custom script | Branch naming convention |
+
 ### CI Workflows
 
-| Workflow | Trigger | Unit Tests | E2E | Sharding |
-|---|---|---|---|---|
-| `development.yml` | push/PR to `development` | Yes | No | — |
-| `staging.yml` | push/PR to `staging` | Yes | @smoke only | 3 shards |
-| `hotfix.yml` | push `hotfix/**`, PR to `main` | Yes | No | — |
-| `nightly.yml` | Cron 3:00 AM ARG (UTC-3) + manual | Yes | All (smoke + regression) | 3 shards |
-| `release.yml` | push to `main` (package.json change) | No | No | — |
+| Workflow | Trigger | What it runs | Concurrency |
+|---|---|---|---|
+| `quick-checks.yml` | `push` to feature branches | lint + typecheck | No |
+| `development.yml` | `pull_request` → development | unit tests + build | Yes |
+| `staging.yml` | `pull_request` → staging | validate source (only development) + build + E2E smoke (3 shards) | Yes |
+| `hotfix.yml` | `pull_request` → main | gate (only hotfix/*) + lint + typecheck + unit tests + build | Yes |
+| `main.yml` | `pull_request` → main | validate source (staging or hotfix/*) | No |
+| `pr-conventions.yml` | any `pull_request` | validate branch name (PRs to dev) + PR title (conventional commits) | No |
+| `release.yml` | `push` → main (paths: package.json) | validate semver > latest tag + create GitHub Release | No |
+| `nightly.yml` | Cron 3:00 AM ARG (UTC-3) + manual | unit tests + full E2E (3 shards) | No |
 
 ## Documentation Maintenance
 
