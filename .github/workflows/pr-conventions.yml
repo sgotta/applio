@@ -8,10 +8,8 @@ jobs:
   validate-branch-name:
     name: Validate branch name
     runs-on: ubuntu-latest
-    # Skip for PRs from protected branches (development → staging, staging → main)
-    if: >-
-      github.head_ref != 'development' &&
-      github.head_ref != 'staging'
+    # Only feature branches need naming validation (PRs to development)
+    if: github.base_ref == 'development'
     steps:
       - name: Check branch naming convention
         run: |
