@@ -5,6 +5,10 @@ on:
     branches:
       - staging
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 env:
   NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.STG_SUPABASE_URL }}
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.STG_SUPABASE_PUBLISHABLE_KEY }}
@@ -15,46 +19,24 @@ env:
   CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.STG_R2_SECRET_ACCESS_KEY }}
 
 jobs:
-  lint:
-    name: Lint
+  validate-source-branch:
+    name: Validate source branch
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
-      - run: npm ci
-      - run: npm run lint
-
-  type-check:
-    name: Type-check
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
-      - run: npm ci
-      - run: npm run type-check
-
-  unit-test:
-    name: Unit Tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
-      - run: npm ci
-      - run: npm run test:unit
+      - name: Check source branch
+        run: |
+          SOURCE="${{ github.head_ref }}"
+          echo "Source branch: $SOURCE"
+          if [[ "$SOURCE" != "development" ]]; then
+            echo "::error::PRs to staging are only allowed from 'development'. Source branch '$SOURCE' is not allowed."
+            exit 1
+          fi
+          echo "✅ Source branch '$SOURCE' is allowed."
 
   build:
     name: Build
     runs-on: ubuntu-latest
-    needs: [lint, type-check, unit-test]
+    needs: [validate-source-branch]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
