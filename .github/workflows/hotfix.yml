@@ -19,9 +19,17 @@ env:
   CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.PROD_R2_SECRET_ACCESS_KEY }}
 
 jobs:
+  is-hotfix:
+    name: Check source branch
+    runs-on: ubuntu-latest
+    if: startsWith(github.head_ref, 'hotfix/')
+    steps:
+      - run: echo "✅ Source branch '${{ github.head_ref }}' is a hotfix branch."
+
   lint:
     name: Lint
     runs-on: ubuntu-latest
+    needs: [is-hotfix]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -34,6 +42,7 @@ jobs:
   type-check:
     name: Type-check
     runs-on: ubuntu-latest
+    needs: [is-hotfix]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -46,6 +55,7 @@ jobs:
   unit-test:
     name: Unit Tests
     runs-on: ubuntu-latest
+    needs: [is-hotfix]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
