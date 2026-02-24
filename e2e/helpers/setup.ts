@@ -7,7 +7,7 @@ import type { CVData } from "../../src/lib/types";
 export const minimalCV: CVData = {
   personalInfo: {
     fullName: "Test User",
-    title: "QA Engineer",
+    jobTitle: "QA Engineer",
     email: "test@example.com",
     phone: "+1 555 0000",
     location: "Test City",
@@ -15,7 +15,7 @@ export const minimalCV: CVData = {
     website: "testuser.dev",
   },
   summary: "A test summary for E2E testing.",
-  experience: [
+  experiences: [
     {
       id: "exp-test-1",
       company: "Test Company",
@@ -35,7 +35,7 @@ export const minimalCV: CVData = {
       description: "",
     },
   ],
-  skills: [
+  skillCategories: [
     {
       id: "skill-test-1",
       category: "Testing",
@@ -54,7 +54,7 @@ export const minimalCV: CVData = {
     certifications: false,
     awards: false,
   },
-  sidebarOrder: ["contact", "summary", "skills"],
+  sidebarSections: ["contact", "summary", "skills"],
 };
 
 /**
@@ -237,3 +237,4 @@ export const test = base.extend<{ appPage: Page }>({
 });
 
 export { baseExpect as expect };
+export type { Page, Locator };

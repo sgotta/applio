@@ -71,9 +71,9 @@ export async function downloadPDF(
   isPremium?: boolean,
 ): Promise<void> {
   // Resolve remote photo URLs to base64 before passing to react-pdf
-  const resolvedPhoto = await resolvePhoto(data.personalInfo.photo);
-  const pdfData: CVData = resolvedPhoto !== data.personalInfo.photo
-    ? { ...data, personalInfo: { ...data.personalInfo, photo: resolvedPhoto } }
+  const resolvedPhoto = await resolvePhoto(data.personalInfo.photoUrl);
+  const pdfData: CVData = resolvedPhoto !== data.personalInfo.photoUrl
+    ? { ...data, personalInfo: { ...data.personalInfo, photoUrl: resolvedPhoto } }
     : data;
 
   const { generatePDFBlob } = await import("./pdf-document");

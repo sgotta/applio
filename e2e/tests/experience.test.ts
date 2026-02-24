@@ -38,8 +38,8 @@ test.describe("Experience CRUD @smoke", () => {
   test("delete an experience entry via grip menu", async ({ appPage: page }) => {
     const twoExpCV: CVData = {
       ...minimalCV,
-      experience: [
-        ...minimalCV.experience,
+      experiences: [
+        ...minimalCV.experiences,
         {
           id: "exp-test-2",
           company: "Second Company",

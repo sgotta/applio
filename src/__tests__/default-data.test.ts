@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   getDefaultCVData,
   defaultVisibility,
-  DEFAULT_SIDEBAR_ORDER,
+  DEFAULT_SIDEBAR_SECTIONS,
 } from "@/lib/default-data";
 
 describe("getDefaultCVData", () => {
@@ -25,11 +25,11 @@ describe("getDefaultCVData", () => {
     const data = getDefaultCVData("en");
     expect(data.personalInfo).toBeDefined();
     expect(data.summary).toBeTruthy();
-    expect(data.experience.length).toBeGreaterThan(0);
+    expect(data.experiences.length).toBeGreaterThan(0);
     expect(data.education.length).toBeGreaterThan(0);
-    expect(data.skills.length).toBeGreaterThan(0);
+    expect(data.skillCategories.length).toBeGreaterThan(0);
     expect(data.visibility).toEqual(defaultVisibility);
-    expect(data.sidebarOrder).toEqual(DEFAULT_SIDEBAR_ORDER);
+    expect(data.sidebarSections).toEqual(DEFAULT_SIDEBAR_SECTIONS);
   });
 });
 
@@ -45,8 +45,8 @@ describe("defaultVisibility", () => {
   });
 });
 
-describe("DEFAULT_SIDEBAR_ORDER", () => {
+describe("DEFAULT_SIDEBAR_SECTIONS", () => {
   it("has 3 sections in expected order", () => {
-    expect(DEFAULT_SIDEBAR_ORDER).toEqual(["contact", "summary", "skills"]);
+    expect(DEFAULT_SIDEBAR_SECTIONS).toEqual(["contact", "summary", "skills"]);
   });
 });

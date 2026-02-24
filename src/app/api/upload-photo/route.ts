@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
     const ip = getClientIP(req);
     if (isRateLimited(ip)) {
       return NextResponse.json(
-        { success: false, error: "Rate limit exceeded. Try again later." },
+        { success: false, error: "Rate limit exceeded. Try again later.", code: "RATE_LIMITED" },
         { status: 429 }
       );
     }
@@ -45,21 +45,21 @@ export async function POST(req: NextRequest) {
 
     if (!file || !(file instanceof Blob)) {
       return NextResponse.json(
-        { success: false, error: "No photo provided." },
+        { success: false, error: "No photo provided.", code: "NO_PHOTO" },
         { status: 400 }
       );
     }
 
     if (!ALLOWED_TYPES.includes(file.type)) {
       return NextResponse.json(
-        { success: false, error: "Invalid file type. Only JPEG, PNG, and WebP are allowed." },
+        { success: false, error: "Invalid file type. Only JPEG, PNG, and WebP are allowed.", code: "INVALID_TYPE" },
         { status: 400 }
       );
     }
 
     if (file.size > MAX_SIZE) {
       return NextResponse.json(
-        { success: false, error: "File too large. Maximum size is 5MB." },
+        { success: false, error: "File too large. Maximum size is 5MB.", code: "FILE_TOO_LARGE" },
         { status: 400 }
       );
     }
@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("Upload failed:", error);
     return NextResponse.json(
-      { success: false, error: "Upload failed. Please try again." },
+      { success: false, error: "Upload failed. Please try again.", code: "UPLOAD_FAILED" },
       { status: 500 }
     );
   }

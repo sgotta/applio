@@ -5,7 +5,7 @@ import type { CVData } from "@/lib/types";
 const mockData: CVData = {
   personalInfo: {
     fullName: "Test User",
-    title: "Dev",
+    jobTitle: "Dev",
     email: "test@test.com",
     phone: "",
     location: "",
@@ -13,9 +13,9 @@ const mockData: CVData = {
     website: "",
   },
   summary: "A summary",
-  experience: [],
+  experiences: [],
   education: [],
-  skills: [],
+  skillCategories: [],
   courses: [],
   certifications: [],
   awards: [],
@@ -28,7 +28,7 @@ const mockData: CVData = {
     certifications: false,
     awards: false,
   },
-  sidebarOrder: ["contact", "summary", "skills"],
+  sidebarSections: ["contact", "summary", "skills"],
 };
 
 describe("storage", () => {

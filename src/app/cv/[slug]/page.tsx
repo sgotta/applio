@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { fetchPublishedCVServer } from "@/lib/supabase/db-server";
+import { fetchPublishedCVBySlug } from "@/lib/actions/public";
 import { SharedCVContent } from "./shared-cv-content";
 
 interface Props {
@@ -9,11 +9,14 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const row = await fetchPublishedCVServer(slug);
-  if (!row) return { title: "CV not found" };
+  const result = await fetchPublishedCVBySlug(slug);
 
-  const name = row.cv_data.personalInfo.fullName || "CV";
-  const title = row.cv_data.personalInfo.title || "";
+  if (!result) {
+    return { title: "CV not found" };
+  }
+
+  const name = result.cvData.personalInfo.fullName;
+  const title = result.cvData.personalInfo.jobTitle;
   const description = title ? `${name} — ${title}` : name;
 
   return {
@@ -29,13 +32,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function SharedCVPage({ params }: Props) {
   const { slug } = await params;
-  const row = await fetchPublishedCVServer(slug);
-  if (!row) notFound();
+  const result = await fetchPublishedCVBySlug(slug);
 
-  return (
-    <SharedCVContent
-      cvData={row.cv_data}
-      settings={row.settings}
-    />
-  );
+  if (!result) {
+    notFound();
+  }
+
+  return <SharedCVContent cvData={result.cvData} settings={result.settings} />;
 }

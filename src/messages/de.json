@@ -76,7 +76,9 @@
     "syncCloud": "In der Cloud synchronisiert",
     "syncCloudExplain": "Ihre Daten werden automatisch synchronisiert und gesichert. Greifen Sie von jedem Gerät auf Ihren Lebenslauf zu.",
     "syncProHint": "Mit Pro, Sync in der Cloud.",
-    "syncLoginHint": "Melden Sie sich an, um Ihre Daten zu synchronisieren und von jedem Gerät darauf zuzugreifen."
+    "syncLoginHint": "Melden Sie sich an, um Ihre Daten zu synchronisieren und von jedem Gerät darauf zuzugreifen.",
+    "syncSyncing": "Synchronisierung...",
+    "syncError": "Synchronisierungsfehler"
   },
   "cvPreview": {
     "fullNamePlaceholder": "Dein vollständiger Name",
@@ -393,7 +395,10 @@
     "benefit2": "Automatisches Cloud-Backup",
     "benefit3": "Teilen Sie Ihren Lebenslauf mit einem personalisierten Link",
     "upgrade": "Auf Pro upgraden",
-    "comingSoon": "Demnächst verfügbar"
+    "comingSoon": "Demnächst verfügbar",
+    "loadError": "Ihr Lebenslauf konnte nicht aus der Cloud geladen werden",
+    "saveError": "Speichern in der Cloud fehlgeschlagen. Wir versuchen es weiter.",
+    "photoUploadFailed": "Foto lokal gespeichert — Upload in die Cloud fehlgeschlagen"
   },
   "premium": {
     "pro": "PRO",
@@ -424,6 +429,7 @@
     "title": "Wir haben Ihren Lebenslauf gefunden",
     "description": "Sie haben eine in Ihrem Konto gespeicherte Version vom {date}. Möchten Sie sie wiederherstellen?",
     "useCloud": "Wiederherstellen",
-    "useLocal": "Nein, hier fortfahren"
+    "useLocal": "Nein, hier fortfahren",
+    "backup": "Die verworfene Version wird als Backup in Ihrem Browser gespeichert."
   }
 }
