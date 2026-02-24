@@ -3,6 +3,21 @@ import { minimalCV, seedCVData } from "../helpers/setup";
 import { mockAuthSession, clearAuthSession, mockCVApi } from "../helpers/auth-mock";
 import type { CVData, CloudSettings } from "../../src/lib/types";
 
+/**
+ * Helper: after reload, wait for /api/cv response to arrive and then
+ * for the conflict dialog to render.  CI is slower than local, so we
+ * give up to 10 s and also explicitly wait for the API round-trip.
+ */
+async function waitForConflictDialog(page: import("@playwright/test").Page) {
+  const apiDone = page.waitForResponse((r) => r.url().includes("/api/cv") && r.request().method() === "GET");
+  await page.reload();
+  await page.locator(".cv-preview-content").waitFor({ state: "visible" });
+  await apiDone;                        // API data received
+  const dialog = page.locator("text=We found your CV");
+  await dialog.waitFor({ state: "visible", timeout: 10_000 });
+  return dialog;
+}
+
 const defaultSettings: CloudSettings = {
   colorScheme: "ivory",
   fontFamily: "inter",
@@ -37,7 +52,7 @@ test.describe("Smoke Tests @smoke", () => {
 
       // Conflict dialog should NOT appear
       await page.waitForTimeout(1000);
-      await expect(page.locator("text=Encontramos tu CV")).not.toBeVisible();
+      await expect(page.locator("text=We found your CV")).not.toBeVisible();
     });
 
     test("login with identical cloud data — no conflict dialog", async ({ page }) => {
@@ -61,7 +76,7 @@ test.describe("Smoke Tests @smoke", () => {
       await page.locator(".cv-preview-content").waitFor({ state: "visible" });
 
       await page.waitForTimeout(1000);
-      await expect(page.locator("text=Encontramos tu CV")).not.toBeVisible();
+      await expect(page.locator("text=We found your CV")).not.toBeVisible();
     });
 
     test("login with different cloud data — shows conflict dialog", async ({ page }) => {
@@ -81,11 +96,8 @@ test.describe("Smoke Tests @smoke", () => {
         },
       });
 
-      await page.reload();
-      await page.locator(".cv-preview-content").waitFor({ state: "visible" });
-
-      // Conflict dialog should appear
-      await expect(page.locator("text=Encontramos tu CV")).toBeVisible({ timeout: 5000 });
+      // waitForConflictDialog handles reload + API wait + dialog assertion
+      await waitForConflictDialog(page);
     });
 
     test("'Keep local' preserves local data and closes dialog", async ({ page }) => {
@@ -105,11 +117,7 @@ test.describe("Smoke Tests @smoke", () => {
         },
       });
 
-      await page.reload();
-      await page.locator(".cv-preview-content").waitFor({ state: "visible" });
-
-      const dialog = page.locator("text=Encontramos tu CV");
-      await dialog.waitFor({ state: "visible", timeout: 5000 });
+      const dialog = await waitForConflictDialog(page);
 
       // Click "No, seguir acá"
       await page.locator("button", { hasText: /seguir|continue/i }).click();
@@ -139,11 +147,7 @@ test.describe("Smoke Tests @smoke", () => {
         },
       });
 
-      await page.reload();
-      await page.locator(".cv-preview-content").waitFor({ state: "visible" });
-
-      const dialog = page.locator("text=Encontramos tu CV");
-      await dialog.waitFor({ state: "visible", timeout: 5000 });
+      const dialog = await waitForConflictDialog(page);
 
       // Click "Recuperar"
       await page.locator("button", { hasText: /recuperar|recover/i }).click();
@@ -220,18 +224,22 @@ test.describe("Smoke Tests @smoke", () => {
         });
       });
 
+      // Use waitForResponse for the initial GET /api/cv instead of the shared
+      // helper because this test registers its own route handlers above.
+      const apiDone = page.waitForResponse((r) => r.url().includes("/api/cv") && r.request().method() === "GET");
       await page.reload();
       await page.locator(".cv-preview-content").waitFor({ state: "visible" });
+      await apiDone;
 
-      const dialog = page.locator("text=Encontramos tu CV");
-      await dialog.waitFor({ state: "visible", timeout: 5000 });
+      const dialog = page.locator("text=We found your CV");
+      await dialog.waitFor({ state: "visible", timeout: 10_000 });
 
       // Click "No, seguir acá" (keep local)
       await page.locator("button", { hasText: /seguir|continue/i }).click();
       await expect(dialog).not.toBeVisible({ timeout: 3000 });
 
-      // Wait for upload + save
-      await page.waitForTimeout(3000);
+      // Wait for upload + save (3s debounce + network)
+      await page.waitForTimeout(4000);
 
       // Upload should have been called
       expect(uploadCalled).toBe(true);
@@ -314,7 +322,7 @@ test.describe("Smoke Tests @smoke", () => {
 
       // No conflict dialog should appear
       await page.waitForTimeout(1000);
-      await expect(page.locator("text=Encontramos tu CV")).not.toBeVisible();
+      await expect(page.locator("text=We found your CV")).not.toBeVisible();
     });
   });
 });
