@@ -88,7 +88,6 @@ export function CloudSync() {
 
   // Refs for debounced saves
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const settingsTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const initialLoadStarted = useRef(false);
   const initialSyncComplete = useRef(false);
   const lastSavedFingerprint = useRef<string>("");
@@ -147,6 +146,10 @@ export function CloudSync() {
 
     return () => {
       cancelled = true;
+      // If cancelled before sync completed, allow retry on next render cycle
+      if (!initialSyncComplete.current) {
+        initialLoadStarted.current = false;
+      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, cvLoading]);
@@ -164,27 +167,37 @@ export function CloudSync() {
   }, [user, setStatus, setLastError]);
 
   // -----------------------------------------------------------------------
-  // Effect 2: CV auto-save (3s debounce)
+  // Effect 2: Unified auto-save — CV data + settings (3s debounce)
+  // Merged into a single effect to prevent race conditions where a settings
+  // save could overwrite a photo URL that was just uploaded by a data save.
   // -----------------------------------------------------------------------
   useEffect(() => {
     if (!user || cvLoading || !initialSyncComplete.current || showConflict) return;
 
     const fingerprint = cvContentFingerprint(data);
-    if (fingerprint === lastSavedFingerprint.current) return;
+    const settings = buildSettings();
+    const settingsStr = JSON.stringify(settings);
+    const hasBase64Photo = !!data.personalInfo.photoUrl?.startsWith("data:");
+
+    const fingerprintChanged = fingerprint !== lastSavedFingerprint.current;
+    const settingsChanged = settingsStr !== lastSavedSettings.current;
+
+    // Skip if nothing changed — but always run if there's a base64 photo pending upload
+    if (!fingerprintChanged && !settingsChanged && !hasBase64Photo) return;
 
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     setStatus("syncing");
     saveTimerRef.current = setTimeout(async () => {
       try {
         const dataToSave = await ensurePhotoUploaded(data);
-        const settings = buildSettings();
-        await saveCV(dataToSave, settings);
+        const currentSettings = buildSettings();
+        await saveCV(dataToSave, currentSettings);
         lastSavedFingerprint.current = cvContentFingerprint(dataToSave);
-        lastSavedSettings.current = JSON.stringify(settings);
+        lastSavedSettings.current = JSON.stringify(currentSettings);
         setStatus("synced");
         setLastError(null);
       } catch (err) {
-        console.error("CloudSync: CV save failed", err);
+        console.error("CloudSync: save failed", err);
         setStatus("error");
         setLastError(tSync("saveError"));
         toast.error(tSync("saveError"));
@@ -195,40 +208,7 @@ export function CloudSync() {
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, user, cvLoading, showConflict]);
-
-  // -----------------------------------------------------------------------
-  // Effect 3: Settings auto-save (3s debounce)
-  // -----------------------------------------------------------------------
-  useEffect(() => {
-    if (!user || cvLoading || !initialSyncComplete.current || showConflict) return;
-
-    const settings = buildSettings();
-    const settingsStr = JSON.stringify(settings);
-    if (settingsStr === lastSavedSettings.current) return;
-
-    if (settingsTimerRef.current) clearTimeout(settingsTimerRef.current);
-    setStatus("syncing");
-    settingsTimerRef.current = setTimeout(async () => {
-      try {
-        await saveCV(data, settings);
-        lastSavedFingerprint.current = cvContentFingerprint(data);
-        lastSavedSettings.current = JSON.stringify(settings);
-        setStatus("synced");
-        setLastError(null);
-      } catch (err) {
-        console.error("CloudSync: settings save failed", err);
-        setStatus("error");
-        setLastError(tSync("saveError"));
-        toast.error(tSync("saveError"));
-      }
-    }, 3000);
-
-    return () => {
-      if (settingsTimerRef.current) clearTimeout(settingsTimerRef.current);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [colorSchemeName, fontFamilyId, fontSizeLevel, theme, locale, patternSettings, user, cvLoading, showConflict]);
+  }, [data, colorSchemeName, fontFamilyId, fontSizeLevel, theme, locale, patternSettings, user, cvLoading, showConflict]);
 
   // -----------------------------------------------------------------------
   // Helpers

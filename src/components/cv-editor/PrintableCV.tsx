@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useState } from "react";
+import { forwardRef, useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { CVData } from "@/lib/types";
 import { DEFAULT_SIDEBAR_SECTIONS } from "@/lib/default-data";
@@ -112,6 +112,15 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
     const [localPhotoError, setLocalPhotoError] = useState(false);
     const [localPhotoLoaded, setLocalPhotoLoaded] = useState(false);
     const hasLocalPhoto = !forceInitials && !!personalInfo.photoUrl && !localPhotoError;
+
+    // SSR hydration fix: if the image loaded before React hydrated, onLoad won't fire.
+    // The ref callback checks img.complete to catch already-loaded images.
+    const localPhotoRef = useCallback((el: HTMLImageElement | null) => {
+      if (el?.complete && el.naturalWidth > 0) setLocalPhotoLoaded(true);
+    }, []);
+    const remotePhotoRef = useCallback((el: HTMLImageElement | null) => {
+      if (el?.complete && el.naturalWidth > 0) setPhotoUrlLoaded(true);
+    }, []);
     const initials = personalInfo.fullName
       .split(" ")
       .map((n) => n[0])
@@ -173,6 +182,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
               {hasLocalPhoto && (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
+                  ref={localPhotoRef}
                   src={personalInfo.photoUrl}
                   alt={t("profilePhotoAlt")}
                   className={`absolute inset-0 w-full h-full object-cover ${localPhotoLoaded ? "" : "invisible"}`}
@@ -184,6 +194,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
               {!hasLocalPhoto && photoUrl && !photoUrlError && (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
+                  ref={remotePhotoRef}
                   src={photoUrl}
                   alt={t("profilePhotoAlt")}
                   className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${photoUrlLoaded ? "opacity-100" : "opacity-0"}`}

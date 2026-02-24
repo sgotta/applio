@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { Separator } from "@/components/ui/separator";
 import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
@@ -57,6 +57,11 @@ export function MobileCVView({
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageFailed, setImageFailed] = useState(false);
 
+  // SSR hydration fix: if the image loaded before React hydrated, onLoad won't fire.
+  const photoRef = useCallback((el: HTMLImageElement | null) => {
+    if (el?.complete && el.naturalWidth > 0) setImageLoaded(true);
+  }, []);
+
   const initials = personalInfo.fullName
     .split(" ")
     .map((n) => n[0])
@@ -97,6 +102,7 @@ export function MobileCVView({
             {photoUrl && !imageFailed && (
               // eslint-disable-next-line @next/next/no-img-element
               <img
+                ref={photoRef}
                 src={photoUrl}
                 alt={personalInfo.fullName}
                 className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
