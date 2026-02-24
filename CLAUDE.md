@@ -27,7 +27,7 @@ npm run lint         # Run ESLint
 npx shadcn@latest add [component-name]
 
 # Unit Testing (Vitest)
-npm run test:unit         # Run all unit tests (78 tests, ~2s)
+npm run test:unit         # Run all unit tests (114 tests, ~2s)
 npm run test:unit:watch   # Run in watch mode
 
 # E2E Testing (Playwright)
@@ -65,7 +65,7 @@ ThemeProvider
         LocaleProvider
           AuthProvider              ← Supabase auth session
             PlanProvider            ← free/premium plan from Supabase profiles
-              SyncStatusProvider    ← sync state indicator (idle/synced)
+              SyncStatusProvider    ← sync state indicator (idle/syncing/synced/error)
                 CVProvider          ← CV data (single source of truth)
                   TooltipProvider
                     <CloudSync />   ← Invisible component, handles bi-directional sync
@@ -193,9 +193,9 @@ The CVContext exposes `reorder*` methods (using `arrayMove`) in addition to the 
 - `src/lib/render-rich-text.tsx` — Renders rich text markup as React elements (web editor)
 - `src/lib/render-rich-text-pdf.tsx` — Renders rich text markup as `@react-pdf/renderer` elements (PDF)
 
-### Authentication: Supabase OAuth
+### Authentication: Auth.js v5 (NextAuth)
 
-**Files:** `src/lib/auth-context.tsx`, `src/lib/supabase/client.ts`, `src/lib/supabase/server.ts`, `src/lib/supabase/middleware.ts`
+**Files:** `src/lib/auth.ts`, `src/lib/auth-context.tsx`
 
 - Providers: **Google** and **GitHub** via `supabase.auth.signInWithOAuth`
 - `src/middleware.ts` calls `updateSession()` on every request to refresh Supabase auth cookies
@@ -360,12 +360,10 @@ src/
 │   ├── globals.css                  # Tailwind base, CSS variables
 │   ├── layout.tsx                   # Root layout with fonts, viewport meta
 │   ├── page.tsx                     # Landing page (marketing)
+│   ├── error.tsx                      # Global error boundary
 │   ├── editor/
-│   │   └── page.tsx                 # CV editor (full provider stack)
-│   ├── auth/
-│   │   └── callback/route.ts       # Supabase OAuth callback
-│   ├── checkout/
-│   │   └── success/page.tsx         # Post-payment confirmation
+│   │   ├── page.tsx                   # CV editor (full provider stack)
+│   │   └── error.tsx                  # Editor-specific error boundary
 │   ├── cv/
 │   │   └── [slug]/                  # Shared CV public view (SSR)
 │   │       ├── page.tsx
@@ -374,6 +372,12 @@ src/
 │   │       └── not-found.tsx
 │   └── api/
 │       ├── upload-photo/route.ts    # Photo upload to R2
+│       ├── cv/
+│       │   ├── route.ts              # CV load/save API
+│       │   ├── plan/route.ts         # Plan fetch API
+│       │   └── publish/route.ts      # CV publish/unpublish API
+│       ├── auth/
+│       │   └── [...nextauth]/route.ts # Auth.js route handler
 │       └── stripe/
 │           ├── checkout/route.ts    # Create Stripe session
 │           └── webhook/route.ts     # Handle Stripe events
@@ -384,7 +388,8 @@ src/
 │   ├── color-schemes.test.ts        # Color schemes (6 tests)
 │   ├── default-data.test.ts         # Default data (6 tests)
 │   ├── utils.test.ts                # Utility functions (3 tests)
-│   └── storage.test.ts              # localStorage operations (4 tests)
+│   ├── storage.test.ts              # localStorage operations (4 tests)
+│   └── cv-sync.test.ts               # CV sync functions (36 tests)
 ├── lib/
 │   ├── types.ts                     # All TypeScript interfaces
 │   ├── cv-context.tsx               # CV state management (~32 methods)
@@ -407,6 +412,17 @@ src/
 │   ├── auth-context.tsx             # AuthProvider (Supabase OAuth)
 │   ├── plan-context.tsx             # PlanProvider (free/premium)
 │   ├── sync-status-context.tsx      # SyncStatusProvider
+│   ├── cv-sync.ts                     # Shared pure functions (fingerprint, serialize, doc↔CVData)
+│   ├── mongodb.ts                     # MongoDB connection helper
+│   ├── mongoose.ts                    # Mongoose connection singleton
+│   ├── auth.ts                        # Auth.js v5 configuration
+│   ├── models/                        # Mongoose models
+│   │   ├── cv.ts                      # CV document model
+│   │   ├── user.ts                    # User model
+│   │   └── index.ts                   # Model exports
+│   ├── actions/                       # Server actions
+│   │   ├── cv.ts                      # CV CRUD server actions
+│   │   └── public.ts                  # Public CV fetch actions
 │   ├── r2.ts                        # Cloudflare R2 S3Client
 │   ├── use-virtual-keyboard.ts      # Mobile virtual keyboard hook
 │   └── supabase/
@@ -449,8 +465,9 @@ src/
 e2e/
 ├── playwright.config.ts             # Playwright configuration
 ├── helpers/
-│   └── setup.ts                     # Fixtures, locators, interaction helpers
-└── tests/                           # 54 E2E tests across 14 files (27 @smoke + 27 @regression)
+│   ├── setup.ts                     # Fixtures, locators, interaction helpers
+│   └── auth-mock.ts                  # Auth session mocking for E2E tests
+└── tests/                           # 65 E2E tests across 17 files (35 @smoke + 30 @regression)
 vitest.config.ts                     # Vitest configuration
 commitlint.config.mjs                # Commitlint config (conventional commits)
 .husky/
@@ -552,7 +569,9 @@ When implementing new features, these files almost always need updates:
 | `next-themes` | Dark/light mode |
 | `sonner` | Toast notifications |
 | `lucide-react` | Icons (only icon library used) |
-| `vitest` | Unit testing framework (78 tests) |
+| `mongoose` | MongoDB ODM for data models |
+| `next-auth` | Authentication (Auth.js v5, Google + GitHub OAuth) |
+| `vitest` | Unit testing framework (114 tests) |
 | `husky` | Git hooks manager (pre-commit, commit-msg, pre-push) |
 | `@commitlint/cli` + `config-conventional` | Commit message linting (conventional commits) |
 | `lint-staged` | Run ESLint on staged files only (pre-commit) |
@@ -561,7 +580,7 @@ When implementing new features, these files almost always need updates:
 
 ### Unit Tests (Vitest)
 
-**78 tests** across 7 files in `src/__tests__/`. Run in ~2s.
+**114 tests** across 8 files in `src/__tests__/`. Run in ~2s.
 
 | File | Tests | Covers |
 |---|---|---|
@@ -572,6 +591,7 @@ When implementing new features, these files almost always need updates:
 | `default-data.test.ts` | 6 | `getDefaultCVData`, `defaultVisibility`, `DEFAULT_SIDEBAR_ORDER` |
 | `utils.test.ts` | 3 | `filenameDateStamp` (with fake timers) |
 | `storage.test.ts` | 4 | `saveCVData`/`loadCVData`/`clearCVData` round-trips |
+| `cv-sync.test.ts` | 36 | `stableStringify`, `cvContentFingerprint`, `sortBySortOrder`, `docToCVData`, `cvDataToDoc`, `toSettings` |
 
 **Config:** `vitest.config.ts` — jsdom environment, `@vitejs/plugin-react`, `@/` alias.
 
@@ -579,9 +599,9 @@ When implementing new features, these files almost always need updates:
 
 ### E2E Tests (Playwright)
 
-**54 tests** across 14 files, classified with tags:
+**65 tests** across 17 files, classified with tags:
 
-**@smoke (27 tests)** — Critical flows. If any fails, the app is unusable:
+**@smoke (35 tests)** — Critical flows. If any fails, the app is unusable:
 - `smoke.test.ts` (2) — App loads, toolbar visible
 - `inline-editing.test.ts` (4) — Core Tiptap editing
 - `experience.test.ts` (4) — Experience CRUD
@@ -590,9 +610,10 @@ When implementing new features, these files almost always need updates:
 - `import-export.test.ts` (4) — JSON/PDF export, import
 - `pdf.test.ts` (1) — PDF generation
 - `block-editor.test.ts` (4) — Rich text formatting
+- `cloud-sync.test.ts` (8) — Cloud sync, conflict dialog, photo upload
 
-**@regression (27 tests)** — Important but non-critical:
-- `visibility.test.ts` (4), `color-scheme.test.ts` (3), `font.test.ts` (3), `theme.test.ts` (2), `i18n.test.ts` (3), `optional-sections.test.ts` (12)
+**@regression (30 tests)** — Important but non-critical:
+- `visibility.test.ts` (4), `color-scheme.test.ts` (3), `font.test.ts` (3), `theme.test.ts` (2), `i18n.test.ts` (3), `optional-sections.test.ts` (12), `photo-sync.test.ts` (3), `import-backward-compat.test.ts` (1 - import from prior format)
 
 ### Git Workflow & Conventions
 
