@@ -20,11 +20,10 @@ import { FONT_FAMILIES, FONT_SIZE_LEVEL_IDS, type FontFamilyId, type FontSizeLev
 import { SIDEBAR_PATTERN_NAMES, SIDEBAR_PATTERNS, PATTERN_SCOPES, type PatternScope, type PatternIntensity, type SidebarPatternName } from "@/lib/sidebar-patterns";
 import { Slider } from "@/components/ui/slider";
 import { COLOR_SCHEME_NAMES, COLOR_SCHEMES, type ColorSchemeName } from "@/lib/color-schemes";
-import { publishCV } from "@/lib/supabase/db";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth-context";
 import { usePlan } from "@/lib/plan-context";
-import { useSyncStatus } from "@/lib/sync-status-context";
+import { useSyncStatus, type SyncStatus } from "@/lib/sync-status-context";
 import { LoginDialog } from "@/components/auth/LoginDialog";
 import { UpgradeDialog } from "@/components/premium/UpgradeDialog";
 import { PremiumBadge } from "@/components/premium/PremiumBadge";
@@ -33,7 +32,7 @@ import {
   SlidersHorizontal, Check, Sun, Moon,
   Menu, X, ChevronRight, ChevronLeft, Palette,
   Loader2, Share2, LogIn, LogOut, User, Copy, ExternalLink,
-  PanelLeft, PanelRight, Square, Lock, HardDrive, Cloud, Layers, Sparkles,
+  PanelLeft, PanelRight, Square, Lock, HardDrive, Cloud, CloudOff, Layers, Sparkles,
 } from "lucide-react";
 
 /* ── Free-tier feature limits ──────────────────────────── */
@@ -52,9 +51,9 @@ function isValidCVData(data: unknown): data is CVData {
     typeof d.personalInfo === "object" &&
     d.personalInfo !== null &&
     typeof (d.personalInfo as Record<string, unknown>).fullName === "string" &&
-    Array.isArray(d.experience) &&
+    (Array.isArray(d.experiences) || Array.isArray(d.experience)) &&
     Array.isArray(d.education) &&
-    Array.isArray(d.skills) &&
+    (Array.isArray(d.skillCategories) || Array.isArray(d.skills)) &&
     typeof d.summary === "string"
   );
 }
@@ -83,13 +82,14 @@ function SectionToggle({
   );
 }
 
-function UserAvatar({ url, size }: { url?: string; size: number }) {
+function UserAvatar({ url, size }: { url?: string | null; size: number }) {
   const [failed, setFailed] = useState(false);
   const sizeClass = size >= 10 ? "h-10 w-10" : size === 9 ? "h-9 w-9" : size === 8 ? "h-8 w-8" : "h-7 w-7";
   const iconSize = size >= 10 ? "h-5 w-5" : size >= 8 ? "h-4 w-4" : "h-3.5 w-3.5";
 
   if (url && !failed) {
     return (
+      // eslint-disable-next-line @next/next/no-img-element
       <img
         src={url}
         alt=""
@@ -112,6 +112,7 @@ function UserAvatar({ url, size }: { url?: string; size: number }) {
 function AccountContent({
   user,
   isPremium,
+  syncStatus,
   onSignOut,
   onUpgrade,
   onLogin,
@@ -121,8 +122,9 @@ function AccountContent({
   tsync,
   mobile = false,
 }: {
-  user: { email?: string; user_metadata?: { full_name?: string; avatar_url?: string } } | null;
+  user: { id: string; name?: string | null; email?: string | null; image?: string | null } | null;
   isPremium: boolean;
+  syncStatus: SyncStatus;
   onSignOut: () => void;
   onUpgrade: () => void;
   onLogin: () => void;
@@ -158,9 +160,9 @@ function AccountContent({
         {/* Name + email */}
         <div className={`${headerPx} ${headerPt} ${headerPb}`}>
           <p className={`${nameSize} font-semibold text-gray-900 dark:text-gray-50 truncate leading-tight`}>
-            {user.user_metadata?.full_name || user.email}
+            {user.name || user.email}
           </p>
-          {user.email && user.user_metadata?.full_name && (
+          {user.email && user.name && (
             <p className={`${emailSize} text-gray-400 dark:text-gray-500 truncate mt-1`}>
               {user.email}
             </p>
@@ -168,12 +170,35 @@ function AccountContent({
         </div>
 
         {/* Sync status pill */}
-        <div className={`${pillMx} flex items-center gap-2.5 rounded-lg bg-gray-50 dark:bg-gray-800/60 px-3 py-2.5`}>
-          <Cloud className={`${iconSize} text-emerald-500 shrink-0`} />
-          <span className={`${bodyText} text-gray-500 dark:text-gray-400`}>{t("syncCloud")}</span>
+        <div data-testid="sync-status-badge" className={`${pillMx} flex items-center gap-2.5 rounded-lg bg-gray-50 dark:bg-gray-800/60 px-3 py-2.5`}>
+          {syncStatus === "syncing" ? (
+            <Loader2 className={`${iconSize} text-blue-500 shrink-0 animate-spin`} />
+          ) : syncStatus === "error" ? (
+            <CloudOff className={`${iconSize} text-red-500 shrink-0`} />
+          ) : syncStatus === "synced" ? (
+            <Cloud className={`${iconSize} text-emerald-500 shrink-0`} />
+          ) : (
+            <HardDrive className={`${iconSize} text-amber-500 shrink-0`} />
+          )}
+          <span className={`${bodyText} text-gray-500 dark:text-gray-400`}>
+            {syncStatus === "syncing" ? t("syncSyncing")
+              : syncStatus === "error" ? t("syncError")
+              : syncStatus === "synced" ? t("syncCloud")
+              : t("syncLocal")}
+          </span>
           <span className="ml-auto h-2 w-2 shrink-0 relative">
-            <span className="absolute inset-0 rounded-full bg-emerald-400/50 animate-ping" />
-            <span className="absolute inset-0 rounded-full bg-emerald-500 shadow-[0_0_6px_1px_rgba(16,185,129,0.4)]" />
+            <span className={`absolute inset-0 rounded-full animate-ping ${
+              syncStatus === "syncing" ? "bg-blue-400/50"
+              : syncStatus === "error" ? "bg-red-400/50"
+              : syncStatus === "synced" ? "bg-emerald-400/50"
+              : "bg-amber-400/50"
+            }`} />
+            <span className={`absolute inset-0 rounded-full ${
+              syncStatus === "syncing" ? "bg-blue-500 shadow-[0_0_6px_1px_rgba(59,130,246,0.4)]"
+              : syncStatus === "error" ? "bg-red-500 shadow-[0_0_6px_1px_rgba(239,68,68,0.4)]"
+              : syncStatus === "synced" ? "bg-emerald-500 shadow-[0_0_6px_1px_rgba(16,185,129,0.4)]"
+              : "bg-amber-500 shadow-[0_0_6px_1px_rgba(245,158,11,0.4)]"
+            }`} />
           </span>
         </div>
 
@@ -565,7 +590,7 @@ function SectionsContent({
 type MobileMenuPage = "main" | "color" | "pattern" | "font" | "sections" | "language";
 
 export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
-  const { data, importData, toggleSection, updatePersonalInfo } = useCV();
+  const { data, importData, toggleSection } = useCV();
   const { user, signOut } = useAuth();
   const { isPremium, devOverride, setDevOverride } = usePlan();
   const t = useTranslations("toolbar");
@@ -594,9 +619,26 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
   const openUpgrade = useCallback(() => setUpgradeDialogOpen(true), []);
 
-  const exportToJSON = () => {
+  const exportToJSON = async () => {
+    // If photo is an R2 URL, embed it as base64 so the JSON is self-contained
+    let photoUrl = data.personalInfo.photoUrl;
+    if (photoUrl && !photoUrl.startsWith("data:")) {
+      try {
+        const res = await fetch(photoUrl);
+        const blob = await res.blob();
+        photoUrl = await new Promise<string>((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result as string);
+          reader.readAsDataURL(blob);
+        });
+      } catch {
+        // Keep the original URL if fetch fails
+      }
+    }
+
     const exportData = {
       ...data,
+      personalInfo: { ...data.personalInfo, photoUrl },
       settings: {
         colorScheme: colorSchemeName,
         fontFamily: fontFamilyId,
@@ -757,46 +799,9 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
     setMobileMenuOpen(false);
 
     try {
-      let photoForPublish = data.personalInfo.photo;
-
-      // Upload base64 photo to R2 if needed
-      if (photoForPublish && photoForPublish.startsWith("data:")) {
-        try {
-          const res = await fetch(photoForPublish);
-          const blob = await res.blob();
-          const formData = new FormData();
-          formData.append("photo", blob, "photo.jpg");
-
-          const uploadRes = await fetch("/api/upload-photo", {
-            method: "POST",
-            body: formData,
-          });
-          const result = await uploadRes.json();
-          if (result.success && result.url) {
-            photoForPublish = result.url;
-            // Also update local state so future shares skip the upload
-            updatePersonalInfo("photo", result.url);
-          }
-        } catch {
-          // Upload failed — continue without photo
-        }
-      }
-
-      const cvData: CVData = {
-        ...data,
-        personalInfo: { ...data.personalInfo, photo: photoForPublish },
-      };
-
-      const settings = {
-        colorScheme: colorSchemeName,
-        fontFamily: fontFamilyId,
-        fontSizeLevel,
-        theme,
-        locale,
-        pattern: patternSettings,
-      };
-
-      const slug = await publishCV(user.id, cvData, settings);
+      const res = await fetch("/api/cv/publish", { method: "POST" });
+      const result = res.ok ? await res.json() : null;
+      const slug: string | null = result?.slug ?? null;
 
       if (slug) {
         setShareUrl(`${window.location.origin}/cv/${slug}`);
@@ -810,7 +815,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
     } finally {
       setIsSharing(false);
     }
-  }, [user, data, colorSchemeName, isSharing, canShare, patternSettings, fontFamilyId, fontSizeLevel, updatePersonalInfo, t, locale, theme]);
+  }, [user, isSharing, canShare, t]);
 
   const handleCopyShareUrl = useCallback(async () => {
     try {
@@ -1021,13 +1026,13 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     {user ? (
                       <div className="flex items-center gap-3 px-5 py-4">
                         <span className="h-10 w-10 rounded-full overflow-hidden ring-1 ring-gray-200 dark:ring-gray-700 shrink-0">
-                          <UserAvatar url={user.user_metadata?.avatar_url} size={10} />
+                          <UserAvatar url={user.image} size={10} />
                         </span>
                         <div className="min-w-0 flex-1">
                           <p className="text-[15px] font-semibold text-gray-800 dark:text-gray-100 truncate leading-tight">
-                            {user.user_metadata?.full_name || user.email}
+                            {user.name || user.email}
                           </p>
-                          {user.email && user.user_metadata?.full_name && (
+                          {user.email && user.name && (
                             <p className="text-[13px] text-gray-400 dark:text-gray-500 truncate">{user.email}</p>
                           )}
                         </div>
@@ -1594,12 +1599,12 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
               <PopoverTrigger asChild>
                 <button
                   data-testid="btn-account"
-                  aria-label={user ? (user.user_metadata?.full_name || user.email || "Account") : "Sign in"}
+                  aria-label={user ? (user.name || user.email || "Account") : "Sign in"}
                   className="relative cursor-pointer h-8 w-8 items-center justify-center rounded-full overflow-visible transition-all hidden md:flex group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-1"
                 >
                   {user ? (
                     <span className="h-8 w-8 rounded-full overflow-hidden ring-1 ring-gray-200 dark:ring-gray-700 group-hover:ring-gray-400 dark:group-hover:ring-gray-500 transition-all block">
-                      <UserAvatar url={user.user_metadata?.avatar_url} size={8} />
+                      <UserAvatar url={user.image} size={8} />
                     </span>
                   ) : (
                     <span className="h-8 w-8 rounded-full ring-1 ring-gray-200 dark:ring-gray-700 group-hover:ring-gray-400 dark:group-hover:ring-gray-500 transition-all flex items-center justify-center bg-gray-100 dark:bg-gray-800">
@@ -1608,8 +1613,18 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                   )}
                   {/* Sync status badge */}
                   <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3">
-                    <span className={`absolute inset-0 rounded-full animate-pulse ${syncStatus === "synced" ? "bg-emerald-400/40" : "bg-amber-400/40"}`} />
-                    <span className={`absolute inset-0 rounded-full ${syncStatus === "synced" ? "bg-emerald-500 shadow-[0_0_8px_2px_rgba(16,185,129,0.4)]" : "bg-amber-500 shadow-[0_0_8px_2px_rgba(245,158,11,0.4)]"}`} />
+                    <span className={`absolute inset-0 rounded-full animate-pulse ${
+                      syncStatus === "syncing" ? "bg-blue-400/40"
+                      : syncStatus === "error" ? "bg-red-400/40"
+                      : syncStatus === "synced" ? "bg-emerald-400/40"
+                      : "bg-amber-400/40"
+                    }`} />
+                    <span className={`absolute inset-0 rounded-full ${
+                      syncStatus === "syncing" ? "bg-blue-500 shadow-[0_0_8px_2px_rgba(59,130,246,0.4)]"
+                      : syncStatus === "error" ? "bg-red-500 shadow-[0_0_8px_2px_rgba(239,68,68,0.4)]"
+                      : syncStatus === "synced" ? "bg-emerald-500 shadow-[0_0_8px_2px_rgba(16,185,129,0.4)]"
+                      : "bg-amber-500 shadow-[0_0_8px_2px_rgba(245,158,11,0.4)]"
+                    }`} />
                   </span>
                 </button>
               </PopoverTrigger>
@@ -1617,6 +1632,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                 <AccountContent
                   user={user}
                   isPremium={isPremium}
+                  syncStatus={syncStatus}
                   onSignOut={signOut}
                   onUpgrade={() => setUpgradeDialogOpen(true)}
                   onLogin={() => setLoginDialogOpen(true)}
@@ -1634,12 +1650,12 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
           <Popover open={accountMobileOpen} onOpenChange={setAccountMobileOpen}>
             <PopoverTrigger asChild>
               <button
-                aria-label={user ? (user.user_metadata?.full_name || user.email || "Account") : "Sign in"}
+                aria-label={user ? (user.name || user.email || "Account") : "Sign in"}
                 className="relative cursor-pointer md:hidden h-[44px] w-[44px] mr-1 items-center justify-center rounded-full overflow-visible transition-all flex group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-1"
               >
                 {user ? (
                   <span className="h-9 w-9 rounded-full overflow-hidden ring-1 ring-gray-200 dark:ring-gray-700 group-hover:ring-gray-400 dark:group-hover:ring-gray-500 transition-all block">
-                    <UserAvatar url={user.user_metadata?.avatar_url} size={9} />
+                    <UserAvatar url={user.image} size={9} />
                   </span>
                 ) : (
                   <span className="h-9 w-9 rounded-full ring-1 ring-gray-200 dark:ring-gray-700 group-hover:ring-gray-400 dark:group-hover:ring-gray-500 transition-all flex items-center justify-center bg-gray-100 dark:bg-gray-800">
@@ -1648,8 +1664,18 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                 )}
                 {/* Sync badge — consistent with desktop: pulse animation */}
                 <span className="absolute bottom-1 right-1 h-3 w-3">
-                  <span className={`absolute inset-0 rounded-full animate-ping ${syncStatus === "synced" ? "bg-emerald-400/50" : "bg-amber-400/50"}`} />
-                  <span className={`absolute inset-0 rounded-full ${syncStatus === "synced" ? "bg-emerald-500 shadow-[0_0_6px_1px_rgba(16,185,129,0.4)]" : "bg-amber-500 shadow-[0_0_6px_1px_rgba(245,158,11,0.4)]"}`} />
+                  <span className={`absolute inset-0 rounded-full animate-ping ${
+                    syncStatus === "syncing" ? "bg-blue-400/50"
+                    : syncStatus === "error" ? "bg-red-400/50"
+                    : syncStatus === "synced" ? "bg-emerald-400/50"
+                    : "bg-amber-400/50"
+                  }`} />
+                  <span className={`absolute inset-0 rounded-full ${
+                    syncStatus === "syncing" ? "bg-blue-500 shadow-[0_0_6px_1px_rgba(59,130,246,0.4)]"
+                    : syncStatus === "error" ? "bg-red-500 shadow-[0_0_6px_1px_rgba(239,68,68,0.4)]"
+                    : syncStatus === "synced" ? "bg-emerald-500 shadow-[0_0_6px_1px_rgba(16,185,129,0.4)]"
+                    : "bg-amber-500 shadow-[0_0_6px_1px_rgba(245,158,11,0.4)]"
+                  }`} />
                 </span>
               </button>
             </PopoverTrigger>
@@ -1657,6 +1683,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
               <AccountContent
                 user={user}
                 isPremium={isPremium}
+                syncStatus={syncStatus}
                 onSignOut={signOut}
                 onUpgrade={() => setUpgradeDialogOpen(true)}
                 onLogin={() => setLoginDialogOpen(true)}

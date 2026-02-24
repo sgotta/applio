@@ -24,8 +24,7 @@ import {
   type FontFamilyId,
   type FontSizeLevel,
 } from "@/lib/fonts";
-import type { CVData } from "@/lib/types";
-import type { CloudSettings } from "@/lib/supabase/db";
+import type { CVData, CloudSettings } from "@/lib/types";
 
 const FONT_SIZE_SCALES: Record<number, number> = { 1: 0.85, 2: 1.0, 3: 1.18 };
 
@@ -58,8 +57,8 @@ function SharedCVInner({ cvData, settings }: SharedCVContentProps) {
       }
     : undefined, [settings.pattern]);
 
-  // The photo is already an R2 URL in cv_data.personalInfo.photo (not base64)
-  const photoUrl = cvData.personalInfo.photo;
+  // The photo is already an R2 URL in personalInfo.photoUrl (not base64)
+  const photoUrl = cvData.personalInfo.photoUrl;
 
   // Dynamically load Google Font
   useEffect(() => {

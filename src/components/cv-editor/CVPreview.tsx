@@ -43,8 +43,8 @@ function CVHeader() {
       )}
       <div className="mt-0.5">
         <EditableText
-          value={personalInfo.title}
-          onChange={(v) => updatePersonalInfo("title", v)}
+          value={personalInfo.jobTitle}
+          onChange={(v) => updatePersonalInfo("jobTitle", v)}
           as="subheading"
           placeholder={t("titlePlaceholder")}
         />
@@ -63,9 +63,9 @@ function MobileHeader() {
   return (
     <div className="flex flex-col items-center px-6 pt-6">
       <ProfilePhotoUpload
-        currentPhoto={personalInfo.photo}
+        currentPhoto={personalInfo.photoUrl}
         fullName={personalInfo.fullName}
-        onPhotoChange={(photo) => updatePersonalInfo("photo", photo)}
+        onPhotoChange={(photoUrl) => updatePersonalInfo("photoUrl", photoUrl)}
         placeholderBg={`${colorScheme.nameAccent}18`}
         placeholderText={`${colorScheme.nameAccent}90`}
       />

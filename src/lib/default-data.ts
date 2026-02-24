@@ -1,6 +1,6 @@
 import type { CVData, SectionVisibility, SidebarSectionId } from "./types";
 
-export const DEFAULT_SIDEBAR_ORDER: SidebarSectionId[] = ["contact", "summary", "skills"];
+export const DEFAULT_SIDEBAR_SECTIONS: SidebarSectionId[] = ["contact", "summary", "skills"];
 
 export const defaultVisibility: SectionVisibility = {
   location: true,
@@ -15,7 +15,7 @@ export const defaultVisibility: SectionVisibility = {
 const enData: CVData = {
   personalInfo: {
     fullName: "John Doe",
-    title: "Sr. Software Engineer",
+    jobTitle: "Sr. Software Engineer",
     email: "john.doe@email.com",
     phone: "+1 (555) 123-4567",
     location: "New York, NY",
@@ -24,7 +24,7 @@ const enData: CVData = {
   },
   summary:
     "Software engineer with 5+ years of experience building scalable web applications. Specialized in React, TypeScript, and microservices architectures. Passionate about clean code and delivering high-quality user experiences.",
-  experience: [
+  experiences: [
     {
       id: "exp-1",
       company: "Acme Corp",
@@ -53,7 +53,7 @@ const enData: CVData = {
         "Thesis: Optimization of search algorithms in distributed graph systems.",
     },
   ],
-  skills: [
+  skillCategories: [
     {
       id: "skill-1",
       category: "Frontend",
@@ -74,13 +74,13 @@ const enData: CVData = {
   certifications: [],
   awards: [],
   visibility: defaultVisibility,
-  sidebarOrder: DEFAULT_SIDEBAR_ORDER,
+  sidebarSections: DEFAULT_SIDEBAR_SECTIONS,
 };
 
 const esData: CVData = {
   personalInfo: {
     fullName: "Simón Gotta",
-    title: "Ingeniero de Software Sr.",
+    jobTitle: "Ingeniero de Software Sr.",
     email: "simon@ejemplo.com",
     phone: "+54 11 1234-5678",
     location: "Buenos Aires, Argentina",
@@ -89,7 +89,7 @@ const esData: CVData = {
   },
   summary:
     "Ingeniero de software con más de 5 años de experiencia desarrollando aplicaciones web escalables. Especializado en React, TypeScript y arquitecturas de microservicios.",
-  experience: [
+  experiences: [
     {
       id: "exp-1",
       company: "Santander Tecnología",
@@ -118,7 +118,7 @@ const esData: CVData = {
         "Tesis: Optimización de algoritmos de búsqueda en grafos distribuidos.",
     },
   ],
-  skills: [
+  skillCategories: [
     {
       id: "skill-1",
       category: "Frontend",
@@ -139,7 +139,7 @@ const esData: CVData = {
   certifications: [],
   awards: [],
   visibility: defaultVisibility,
-  sidebarOrder: DEFAULT_SIDEBAR_ORDER,
+  sidebarSections: DEFAULT_SIDEBAR_SECTIONS,
 };
 
 const dataByLocale: Record<string, CVData> = { en: enData, es: esData };

@@ -40,15 +40,30 @@ function reencodeAsJpeg(blob: Blob): Promise<string> {
  * If `photo` is a remote URL (not a data-URI), fetch it and convert
  * to a JPEG base64 data-URI so @react-pdf/renderer can embed it.
  * Returns undefined on failure so the PDF falls back to the initials circle.
+ *
+ * For remote URLs, preloads the image via an `Image()` element first to warm
+ * the browser cache — this prevents first-time failures from cold CDN edges.
  */
 async function resolvePhoto(photo: string | undefined): Promise<string | undefined> {
   if (!photo) return undefined;
   if (photo.startsWith("data:image/jpeg") || photo.startsWith("data:image/png")) {
     return photo; // already a react-pdf compatible format
   }
+
   try {
-    // For data URIs in unsupported formats (webp) or remote URLs,
-    // fetch/decode and re-encode as JPEG via canvas.
+    // For remote URLs, preload the image first to warm the browser cache.
+    // This prevents race conditions where the fetch below fails on a cold CDN edge
+    // but succeeds on retry because the image is now cached.
+    if (!photo.startsWith("data:")) {
+      await new Promise<void>((resolve) => {
+        const img = new globalThis.Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => resolve();
+        img.onerror = () => resolve(); // continue anyway — fetch below will handle errors
+        img.src = photo;
+      });
+    }
+
     const blob = photo.startsWith("data:")
       ? await (await fetch(photo)).blob()
       : await (async () => { const r = await fetch(photo); if (!r.ok) return null; return r.blob(); })();
@@ -71,9 +86,9 @@ export async function downloadPDF(
   isPremium?: boolean,
 ): Promise<void> {
   // Resolve remote photo URLs to base64 before passing to react-pdf
-  const resolvedPhoto = await resolvePhoto(data.personalInfo.photo);
-  const pdfData: CVData = resolvedPhoto !== data.personalInfo.photo
-    ? { ...data, personalInfo: { ...data.personalInfo, photo: resolvedPhoto } }
+  const resolvedPhoto = await resolvePhoto(data.personalInfo.photoUrl);
+  const pdfData: CVData = resolvedPhoto !== data.personalInfo.photoUrl
+    ? { ...data, personalInfo: { ...data.personalInfo, photoUrl: resolvedPhoto } }
     : data;
 
   const { generatePDFBlob } = await import("./pdf-document");

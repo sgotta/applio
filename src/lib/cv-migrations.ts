@@ -1,5 +1,5 @@
 import type { CVData, SidebarSectionId } from "./types";
-import { defaultVisibility, DEFAULT_SIDEBAR_ORDER } from "./default-data";
+import { defaultVisibility, DEFAULT_SIDEBAR_SECTIONS } from "./default-data";
 
 export function moveItem<T>(
   arr: T[],
@@ -13,17 +13,17 @@ export function moveItem<T>(
   return newArr;
 }
 
-/** Ensure sidebarOrder is a valid array containing all section IDs */
+/** Ensure sidebarSections is a valid array containing all section IDs */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function migrateSidebarOrder(raw: any): SidebarSectionId[] {
-  if (!Array.isArray(raw)) return [...DEFAULT_SIDEBAR_ORDER];
+export function migrateSidebarSections(raw: any): SidebarSectionId[] {
+  if (!Array.isArray(raw)) return [...DEFAULT_SIDEBAR_SECTIONS];
   const valid = raw.filter(
     (id: unknown): id is SidebarSectionId =>
       typeof id === "string" &&
-      (DEFAULT_SIDEBAR_ORDER as readonly string[]).includes(id)
+      (DEFAULT_SIDEBAR_SECTIONS as readonly string[]).includes(id)
   );
   // Append any missing sections at the end
-  for (const id of DEFAULT_SIDEBAR_ORDER) {
+  for (const id of DEFAULT_SIDEBAR_SECTIONS) {
     if (!valid.includes(id)) valid.push(id);
   }
   return valid;
@@ -113,8 +113,8 @@ export function migrateCVData(data: any): CVData {
     const oldResult: CVData = {
       personalInfo: {
         fullName: personalInfo.fullName || "",
-        title: personalInfo.title || "",
-        photo: personalInfo.photo,
+        jobTitle: personalInfo.jobTitle || personalInfo.title || "",
+        photoUrl: personalInfo.photoUrl || personalInfo.photo,
         email: findContact("email") || personalInfo.email || "",
         phone: findContact("phone") || personalInfo.phone || "",
         location: findContact("location") || personalInfo.location || "",
@@ -124,19 +124,19 @@ export function migrateCVData(data: any): CVData {
         websiteUrl: personalInfo.websiteUrl,
       },
       summary: data.summary || "",
-      experience: data.experience || [],
+      experiences: data.experiences || data.experience || [],
       education: data.education || [],
-      skills: data.skills || [],
+      skillCategories: data.skillCategories || data.skills || [],
       courses: data.courses || [],
       certifications: data.certifications || [],
       awards: data.awards || [],
       visibility: { ...defaultVisibility, ...data.visibility },
-      sidebarOrder: migrateSidebarOrder(data.sidebarOrder),
+      sidebarSections: migrateSidebarSections(data.sidebarSections || data.sidebarOrder),
     };
 
     // Migrate bullets to HTML string + roleDescription → paragraph prepended
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    oldResult.experience = oldResult.experience.map((exp: any) => {
+    oldResult.experiences = oldResult.experiences.map((exp: any) => {
       const roleDesc = exp.roleDescription?.trim();
       const bullets = Array.isArray(exp.description) ? exp.description : [];
       const allBullets = roleDesc
@@ -165,8 +165,8 @@ export function migrateCVData(data: any): CVData {
   const result: CVData = {
     personalInfo: {
       fullName: personalInfo.fullName || "",
-      title: personalInfo.title || "",
-      photo: personalInfo.photo,
+      jobTitle: personalInfo.jobTitle || personalInfo.title || "",
+      photoUrl: personalInfo.photoUrl || personalInfo.photo,
       email: personalInfo.email || "",
       phone: personalInfo.phone || "",
       location: personalInfo.location || "",
@@ -176,19 +176,19 @@ export function migrateCVData(data: any): CVData {
       websiteUrl: personalInfo.websiteUrl,
     },
     summary: data.summary || "",
-    experience: data.experience || [],
+    experiences: data.experiences || data.experience || [],
     education: data.education || [],
-    skills: data.skills || [],
+    skillCategories: data.skillCategories || data.skills || [],
     courses: data.courses || [],
     certifications: data.certifications || [],
     awards: data.awards || [],
     visibility: { ...defaultVisibility, ...data.visibility },
-    sidebarOrder: migrateSidebarOrder(data.sidebarOrder),
+    sidebarSections: migrateSidebarSections(data.sidebarSections || data.sidebarOrder),
   };
 
   // Migrate bullets (BulletItem[] or string[]) to HTML string + roleDescription → paragraph prepended
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  result.experience = result.experience.map((exp: any) => {
+  result.experiences = result.experiences.map((exp: any) => {
     // Already migrated to string — skip
     if (typeof exp.description === "string") return exp;
     const roleDesc = exp.roleDescription?.trim();
