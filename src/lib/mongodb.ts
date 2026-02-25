@@ -1,11 +1,14 @@
-import { MongoClient } from "mongodb";
+import { MongoClient, type MongoClientOptions } from "mongodb";
 
 declare global {
   var __mongoClientPromise: Promise<MongoClient> | undefined;
 }
 
 const uri = process.env.MONGODB_URI!;
-const options = {};
+const options: MongoClientOptions = {
+  tls: true,
+  tlsAllowInvalidCertificates: false,
+};
 
 let clientPromise: Promise<MongoClient>;
 
