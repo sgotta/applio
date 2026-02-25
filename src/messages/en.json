@@ -76,7 +76,9 @@
     "syncCloud": "Synced to the cloud",
     "syncCloudExplain": "Your data is automatically synced and backed up. Access your CV from any device.",
     "syncProHint": "With Pro, syncs to the cloud.",
-    "syncLoginHint": "Sign in to sync your data and access it from any device."
+    "syncLoginHint": "Sign in to sync your data and access it from any device.",
+    "syncSyncing": "Syncing...",
+    "syncError": "Sync error"
   },
   "cvPreview": {
     "fullNamePlaceholder": "Your Full Name",
@@ -393,7 +395,10 @@
     "benefit2": "Automatic cloud backup",
     "benefit3": "Share your CV with a custom link",
     "upgrade": "Upgrade to Pro",
-    "comingSoon": "Coming soon"
+    "comingSoon": "Coming soon",
+    "loadError": "Could not load your CV from the cloud",
+    "saveError": "Could not save to the cloud. We'll keep trying.",
+    "photoUploadFailed": "Photo saved locally — couldn't upload to cloud"
   },
   "premium": {
     "pro": "PRO",
@@ -424,6 +429,7 @@
     "title": "We found your CV",
     "description": "You have a version saved in your account from {date}. Want to recover it?",
     "useCloud": "Recover",
-    "useLocal": "No, continue here"
+    "useLocal": "No, continue here",
+    "backup": "The discarded version will be backed up in your browser."
   }
 }

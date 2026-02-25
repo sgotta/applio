@@ -34,9 +34,10 @@ A CV builder with Notion-style inline editing. Click any text to edit it, drag t
 - **Shareable link** — Publish your CV at `applio.dev/cv/{slug}` with public PDF download *(requires login)*
 
 ### Accounts & Sync
-- **OAuth login** — Google and GitHub via Supabase Auth (optional — the editor works without login)
-- **Cloud sync** — Auto-sync CV data across sessions when logged in (Supabase)
+- **OAuth login** — Google and GitHub via Auth.js v5 (optional — the editor works without login)
+- **Cloud sync** — Auto-sync CV data and settings across sessions when logged in (MongoDB). Conflict resolution dialog when local and cloud data differ.
 - **Premium plan** — One-time payment via Stripe unlocks additional color schemes, fonts, sections, patterns, and removes PDF branding
+- **Error handling** — Toast notifications for sync errors, visual sync indicator in toolbar (4 states), global error boundaries
 
 ### i18n
 6 languages: English, Español, Français, Deutsch, Italiano, Português. Auto-detected from browser on first visit.
@@ -55,7 +56,8 @@ Responsive layout with a single-column view, hamburger menu, scroll-aware toolba
 | Drag & drop | [@dnd-kit](https://dndkit.com/) |
 | PDF | [@react-pdf/renderer](https://react-pdf.org/) |
 | i18n | [next-intl](https://next-intl.dev/) |
-| Auth & DB | [Supabase](https://supabase.com/) |
+| Auth | [Auth.js v5](https://authjs.dev/) (NextAuth) |
+| Database | [MongoDB](https://www.mongodb.com/) + [Mongoose](https://mongoosejs.com/) |
 | Payments | [Stripe](https://stripe.com/) |
 | Storage | [Cloudflare R2](https://www.cloudflare.com/developer-platform/r2/) (photos) |
 | Animations | [Motion](https://motion.dev/) |
@@ -85,7 +87,7 @@ Open [http://localhost:3000](http://localhost:3000). The page hot-reloads as you
 ```bash
 npm run build              # Production build (includes type-check)
 npm run lint               # ESLint
-npm run test:unit          # Vitest unit tests (78 tests, ~2s)
+npm run test:unit          # Vitest unit tests (114 tests, ~2s)
 npm run test:e2e           # Playwright E2E tests (headless, 54 tests)
 npm run test:e2e:headed    # Playwright with visible browser
 ```
@@ -94,9 +96,10 @@ npm run test:e2e:headed    # Playwright with visible browser
 
 For full functionality (auth, sync, sharing, payments), you need:
 
-- `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` — Supabase project
+- `MONGODB_URI` — MongoDB connection string
+- `AUTH_SECRET` / `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` / `AUTH_GITHUB_ID` / `AUTH_GITHUB_SECRET` — Auth.js v5
 - `STRIPE_SECRET_KEY` / `STRIPE_PRICE_ID` / `STRIPE_WEBHOOK_SECRET` — Stripe
-- `R2_ACCESS_KEY_ID` / `R2_SECRET_ACCESS_KEY` / `R2_BUCKET_NAME` / `R2_ENDPOINT` / `R2_PUBLIC_URL` — Cloudflare R2
+- `CLOUDFLARE_ACCOUNT_ID` / `CLOUDFLARE_R2_ACCESS_KEY_ID` / `CLOUDFLARE_R2_SECRET_ACCESS_KEY` / `CLOUDFLARE_R2_BUCKET_NAME` / `CLOUDFLARE_R2_PUBLIC_URL` — Cloudflare R2
 
 The editor works fully offline (localStorage only) without any of these.
 
@@ -109,11 +112,20 @@ src/
 │   ├── editor/page.tsx          # CV editor
 │   ├── cv/[slug]/page.tsx       # Public shared CV view
 │   ├── checkout/success/        # Post-payment redirect
-│   ├── auth/callback/           # OAuth callback
-│   └── api/                     # Stripe webhooks, photo upload
+│   └── api/
+│       ├── auth/[...nextauth]/  # Auth.js route handlers
+│       ├── cv/                  # CV CRUD, publish, plan
+│       ├── upload-photo/        # Photo upload to R2
+│       └── stripe/              # Checkout + webhook
 ├── lib/
 │   ├── types.ts                 # Data model (CVData, etc.)
 │   ├── cv-context.tsx           # Central state (React Context + useCV hook)
+│   ├── cv-sync.ts               # MongoDB↔CVData mapping, fingerprinting
+│   ├── auth.ts                  # Auth.js v5 config (NextAuth)
+│   ├── mongodb.ts               # MongoClient for Auth.js adapter
+│   ├── mongoose.ts              # Mongoose connection for API routes
+│   ├── models/cv.ts             # Mongoose CV model (normalized schema)
+│   ├── models/user.ts           # Mongoose User model (with subscription)
 │   ├── default-data.ts          # Sample CV data
 │   ├── color-schemes.ts         # Color scheme definitions
 │   └── ...                      # Storage, utils, context providers
@@ -140,7 +152,7 @@ vitest.config.ts                 # Vitest configuration
 
 ### Unit Tests (Vitest)
 
-78 tests covering data migrations, rich text rendering, font/color scheme lookups, default data, utilities, and localStorage operations.
+114 tests covering data migrations, rich text rendering, MongoDB↔CVData mapping, fingerprinting, font/color scheme lookups, default data, utilities, and localStorage operations.
 
 ```bash
 npm run test:unit          # Run once

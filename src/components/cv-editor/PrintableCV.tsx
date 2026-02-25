@@ -1,9 +1,9 @@
 "use client";
 
-import { forwardRef, useState } from "react";
+import { forwardRef, useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { CVData } from "@/lib/types";
-import { DEFAULT_SIDEBAR_ORDER } from "@/lib/default-data";
+import { DEFAULT_SIDEBAR_SECTIONS } from "@/lib/default-data";
 import { Separator } from "@/components/ui/separator";
 import { useColorScheme } from "@/lib/color-scheme-context";
 import { useSidebarPattern } from "@/lib/sidebar-pattern-context";
@@ -76,15 +76,15 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
     const {
       personalInfo,
       summary,
-      experience,
+      experiences,
       education,
-      skills,
+      skillCategories,
       courses,
       certifications,
       awards,
       visibility,
     } = data;
-    const sidebarOrder = data.sidebarOrder ?? DEFAULT_SIDEBAR_ORDER;
+    const sidebarSections = data.sidebarSections ?? DEFAULT_SIDEBAR_SECTIONS;
     const t = useTranslations("printable");
     const { colorScheme: contextColors } = useColorScheme();
     const { pattern: ctxPattern, sidebarIntensity: ctxSidebarIntensity, mainIntensity: ctxMainIntensity, scope: ctxScope } = useSidebarPattern();
@@ -111,7 +111,16 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
     const [photoUrlLoaded, setPhotoUrlLoaded] = useState(false);
     const [localPhotoError, setLocalPhotoError] = useState(false);
     const [localPhotoLoaded, setLocalPhotoLoaded] = useState(false);
-    const hasLocalPhoto = !forceInitials && !!personalInfo.photo && !localPhotoError;
+    const hasLocalPhoto = !forceInitials && !!personalInfo.photoUrl && !localPhotoError;
+
+    // SSR hydration fix: if the image loaded before React hydrated, onLoad won't fire.
+    // The ref callback checks img.complete to catch already-loaded images.
+    const localPhotoRef = useCallback((el: HTMLImageElement | null) => {
+      if (el?.complete && el.naturalWidth > 0) setLocalPhotoLoaded(true);
+    }, []);
+    const remotePhotoRef = useCallback((el: HTMLImageElement | null) => {
+      if (el?.complete && el.naturalWidth > 0) setPhotoUrlLoaded(true);
+    }, []);
     const initials = personalInfo.fullName
       .split(" ")
       .map((n) => n[0])
@@ -171,8 +180,10 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
               </span>
               {/* Local photo overlay — starts invisible, shown only on successful load */}
               {hasLocalPhoto && (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={personalInfo.photo}
+                  ref={localPhotoRef}
+                  src={personalInfo.photoUrl}
                   alt={t("profilePhotoAlt")}
                   className={`absolute inset-0 w-full h-full object-cover ${localPhotoLoaded ? "" : "invisible"}`}
                   onLoad={() => setLocalPhotoLoaded(true)}
@@ -181,7 +192,9 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
               )}
               {/* Remote photo overlay (shared view) */}
               {!hasLocalPhoto && photoUrl && !photoUrlError && (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img
+                  ref={remotePhotoRef}
                   src={photoUrl}
                   alt={t("profilePhotoAlt")}
                   className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${photoUrlLoaded ? "opacity-100" : "opacity-0"}`}
@@ -191,7 +204,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
               )}
             </div>
 
-            {sidebarOrder.map((sectionId) => {
+            {sidebarSections.map((sectionId) => {
               if (sectionId === "contact") {
                 const hasFields = personalInfo.email || personalInfo.phone || (visibility.location && personalInfo.location) || (visibility.linkedin && personalInfo.linkedin) || (visibility.website && personalInfo.website);
                 if (!hasFields) return null;
@@ -255,14 +268,14 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
                 );
               }
               if (sectionId === "skills") {
-                if (skills.length === 0) return null;
+                if (skillCategories.length === 0) return null;
                 return (
                   <div key="skills">
                     <SectionHeading color={colors.sidebarText} separatorColor={colors.sidebarSeparator}>
                       {t("skills")}
                     </SectionHeading>
                     <div className="space-y-3">
-                      {skills.map((skillGroup) => (
+                      {skillCategories.map((skillGroup) => (
                         <div key={skillGroup.id} style={{ pageBreakInside: "avoid" }}>
                           <p
                             className="font-semibold uppercase tracking-wide mb-1"
@@ -335,7 +348,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
                     className="font-medium uppercase tracking-wide text-gray-500"
                     style={{ fontSize: FS.subheading }}
                   >
-                    {personalInfo.title}
+                    {personalInfo.jobTitle}
                   </p>
                 </div>
               </div>
@@ -345,13 +358,13 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
             <div style={{ padding: `${mg(16)}px ${mg(24)}px ${mg(24)}px` }}>
               <div className="space-y-5">
                 {/* Experience */}
-                {experience.length > 0 && (
+                {experiences.length > 0 && (
                   <div>
                     <SectionHeading color={colors.heading} separatorColor={colors.separator}>
                       {t("experience")}
                     </SectionHeading>
                     <div className="space-y-2.5">
-                      {experience.map((exp) => (
+                      {experiences.map((exp) => (
                         <div key={exp.id} style={{ pageBreakInside: "avoid" }}>
                           <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0">
                             <h4

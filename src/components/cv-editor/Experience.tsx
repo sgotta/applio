@@ -144,7 +144,7 @@ function ExperienceCard({
 
 export const Experience = memo(function Experience() {
   const {
-    data: { experience },
+    data: { experiences },
     addExperience,
     reorderExperience,
   } = useCV();
@@ -159,13 +159,13 @@ export const Experience = memo(function Experience() {
   const handleCardDragEnd = useCallback((event: DragEndEvent) => {
     const { active, over } = event;
     if (over && active.id !== over.id) {
-      const oldIndex = experience.findIndex(e => e.id === active.id);
-      const newIndex = experience.findIndex(e => e.id === over.id);
+      const oldIndex = experiences.findIndex(e => e.id === active.id);
+      const newIndex = experiences.findIndex(e => e.id === over.id);
       if (oldIndex !== -1 && newIndex !== -1) {
         reorderExperience(oldIndex, newIndex);
       }
     }
-  }, [experience, reorderExperience]);
+  }, [experiences, reorderExperience]);
 
   return (
     <div>
@@ -177,16 +177,16 @@ export const Experience = memo(function Experience() {
         onDragEnd={handleCardDragEnd}
       >
         <SortableContext
-          items={experience.map(e => e.id)}
+          items={experiences.map(e => e.id)}
           strategy={verticalListSortingStrategy}
         >
           <div className="space-y-2.5">
-            {experience.map((exp, i) => (
+            {experiences.map((exp, i) => (
               <ExperienceCard
                 key={exp.id}
                 exp={exp}
                 index={i}
-                total={experience.length}
+                total={experiences.length}
                 sortableId={exp.id}
                 onAddBelow={() => addExperience(i)}
               />

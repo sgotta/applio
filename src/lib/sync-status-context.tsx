@@ -13,11 +13,13 @@ import {
 // Types
 // ---------------------------------------------------------------------------
 
-export type SyncStatus = "idle" | "synced";
+export type SyncStatus = "idle" | "syncing" | "synced" | "error";
 
 interface SyncStatusContextValue {
   status: SyncStatus;
+  lastError: string | null;
   setStatus: (s: SyncStatus) => void;
+  setLastError: (msg: string | null) => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -32,12 +34,14 @@ const SyncStatusContext = createContext<SyncStatusContextValue | null>(null);
 
 export function SyncStatusProvider({ children }: { children: ReactNode }) {
   const [status, setStatusRaw] = useState<SyncStatus>("idle");
+  const [lastError, setLastErrorRaw] = useState<string | null>(null);
 
   const setStatus = useCallback((s: SyncStatus) => setStatusRaw(s), []);
+  const setLastError = useCallback((msg: string | null) => setLastErrorRaw(msg), []);
 
   const value = useMemo(
-    () => ({ status, setStatus }),
-    [status, setStatus],
+    () => ({ status, lastError, setStatus, setLastError }),
+    [status, lastError, setStatus, setLastError],
   );
 
   return (

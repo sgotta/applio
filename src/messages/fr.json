@@ -76,7 +76,9 @@
     "syncCloud": "Synchronisé dans le cloud",
     "syncCloudExplain": "Vos données sont synchronisées et sauvegardées automatiquement. Accédez à votre CV depuis n'importe quel appareil.",
     "syncProHint": "Avec Pro, sync dans le cloud.",
-    "syncLoginHint": "Connectez-vous pour synchroniser vos données et y accéder depuis n'importe quel appareil."
+    "syncLoginHint": "Connectez-vous pour synchroniser vos données et y accéder depuis n'importe quel appareil.",
+    "syncSyncing": "Synchronisation...",
+    "syncError": "Erreur de synchronisation"
   },
   "cvPreview": {
     "fullNamePlaceholder": "Votre Nom Complet",
@@ -393,7 +395,10 @@
     "benefit2": "Sauvegarde automatique dans le cloud",
     "benefit3": "Partagez votre CV avec un lien personnalisé",
     "upgrade": "Passer à Pro",
-    "comingSoon": "Bientôt disponible"
+    "comingSoon": "Bientôt disponible",
+    "loadError": "Impossible de charger votre CV depuis le cloud",
+    "saveError": "Impossible de sauvegarder dans le cloud. Nous réessayerons.",
+    "photoUploadFailed": "Photo enregistrée localement — échec de l'envoi vers le cloud"
   },
   "premium": {
     "pro": "PRO",
@@ -424,6 +429,7 @@
     "title": "Nous avons trouvé votre CV",
     "description": "Vous avez une version enregistrée dans votre compte du {date}. Voulez-vous la récupérer ?",
     "useCloud": "Récupérer",
-    "useLocal": "Non, continuer ici"
+    "useLocal": "Non, continuer ici",
+    "backup": "La version ignorée sera sauvegardée dans votre navigateur."
   }
 }

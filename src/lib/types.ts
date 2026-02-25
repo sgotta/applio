@@ -1,7 +1,7 @@
 export interface PersonalInfo {
   fullName: string;
-  title: string;
-  photo?: string;
+  jobTitle: string;
+  photoUrl?: string;
   email: string;
   phone: string;
   location: string;
@@ -74,12 +74,40 @@ export interface SectionVisibility {
 export interface CVData {
   personalInfo: PersonalInfo;
   summary: string;
-  experience: ExperienceItem[];
+  experiences: ExperienceItem[];
   education: EducationItem[];
-  skills: SkillCategory[];
+  skillCategories: SkillCategory[];
   courses: CourseItem[];
   certifications: CertificationItem[];
   awards: AwardItem[];
   visibility: SectionVisibility;
-  sidebarOrder: SidebarSectionId[];
+  sidebarSections: SidebarSectionId[];
+}
+
+/** Shape of the settings stored alongside a CV in the cloud */
+export interface CloudSettings {
+  colorScheme: string;
+  fontFamily: string;
+  fontSizeLevel: number;
+  theme: string;
+  locale: string;
+  pattern: {
+    name: string;
+    sidebarIntensity: number;
+    mainIntensity: number;
+    scope: string;
+  };
+}
+
+/** Shape of a CV row as returned from the database */
+export interface CVRow {
+  id: string;
+  user_id: string;
+  title: string;
+  cv_data: CVData;
+  settings: CloudSettings;
+  is_published: boolean;
+  slug: string | null;
+  created_at: string;
+  updated_at: string;
 }

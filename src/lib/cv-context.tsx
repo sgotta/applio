@@ -22,7 +22,7 @@ import type {
 import { getDefaultCVData, defaultVisibility } from "./default-data";
 import { loadCVData, saveCVData } from "./storage";
 import { arrayMove } from "@dnd-kit/sortable";
-import { moveItem, migrateCVData, migrateSidebarOrder } from "./cv-migrations";
+import { moveItem, migrateCVData, migrateSidebarSections } from "./cv-migrations";
 
 interface CVContextValue {
   data: CVData;
@@ -125,7 +125,7 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     (id: string, updates: Partial<ExperienceItem>) => {
       setData((prev) => ({
         ...prev,
-        experience: prev.experience.map((exp) =>
+        experiences: prev.experiences.map((exp) =>
           exp.id === id ? { ...exp, ...updates } : exp
         ),
       }));
@@ -144,29 +144,29 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     };
     setData((prev) => {
       if (afterIndex !== undefined) {
-        const arr = [...prev.experience];
+        const arr = [...prev.experiences];
         arr.splice(afterIndex + 1, 0, newExp);
-        return { ...prev, experience: arr };
+        return { ...prev, experiences: arr };
       }
-      return { ...prev, experience: [...prev.experience, newExp] };
+      return { ...prev, experiences: [...prev.experiences, newExp] };
     });
   }, []);
 
   const removeExperience = useCallback((id: string) => {
     setData((prev) => ({
       ...prev,
-      experience: prev.experience.filter((exp) => exp.id !== id),
+      experiences: prev.experiences.filter((exp) => exp.id !== id),
     }));
   }, []);
 
   const moveExperience = useCallback(
     (id: string, direction: "up" | "down") => {
       setData((prev) => {
-        const index = prev.experience.findIndex((exp) => exp.id === id);
+        const index = prev.experiences.findIndex((exp) => exp.id === id);
         if (index === -1) return prev;
         return {
           ...prev,
-          experience: moveItem(prev.experience, index, direction),
+          experiences: moveItem(prev.experiences, index, direction),
         };
       });
     },
@@ -174,7 +174,7 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
   );
 
   const reorderExperience = useCallback((from: number, to: number) => {
-    setData((prev) => ({ ...prev, experience: arrayMove(prev.experience, from, to) }));
+    setData((prev) => ({ ...prev, experiences: arrayMove(prev.experiences, from, to) }));
   }, []);
 
   const updateEducation = useCallback(
@@ -236,7 +236,7 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     (id: string, updates: Partial<SkillCategory>) => {
       setData((prev) => ({
         ...prev,
-        skills: prev.skills.map((skill) =>
+        skillCategories: prev.skillCategories.map((skill) =>
           skill.id === id ? { ...skill, ...updates } : skill
         ),
       }));
@@ -252,29 +252,29 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     };
     setData((prev) => {
       if (afterIndex !== undefined) {
-        const arr = [...prev.skills];
+        const arr = [...prev.skillCategories];
         arr.splice(afterIndex + 1, 0, newSkill);
-        return { ...prev, skills: arr };
+        return { ...prev, skillCategories: arr };
       }
-      return { ...prev, skills: [...prev.skills, newSkill] };
+      return { ...prev, skillCategories: [...prev.skillCategories, newSkill] };
     });
   }, []);
 
   const removeSkillCategory = useCallback((id: string) => {
     setData((prev) => ({
       ...prev,
-      skills: prev.skills.filter((skill) => skill.id !== id),
+      skillCategories: prev.skillCategories.filter((skill) => skill.id !== id),
     }));
   }, []);
 
   const moveSkillCategory = useCallback(
     (id: string, direction: "up" | "down") => {
       setData((prev) => {
-        const index = prev.skills.findIndex((s) => s.id === id);
+        const index = prev.skillCategories.findIndex((s) => s.id === id);
         if (index === -1) return prev;
         return {
           ...prev,
-          skills: moveItem(prev.skills, index, direction),
+          skillCategories: moveItem(prev.skillCategories, index, direction),
         };
       });
     },
@@ -282,7 +282,7 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
   );
 
   const reorderSkillCategory = useCallback((from: number, to: number) => {
-    setData((prev) => ({ ...prev, skills: arrayMove(prev.skills, from, to) }));
+    setData((prev) => ({ ...prev, skillCategories: arrayMove(prev.skillCategories, from, to) }));
   }, []);
 
   const updateCourse = useCallback(
@@ -471,7 +471,7 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
   const reorderSidebarSection = useCallback((from: number, to: number) => {
     setData((prev) => ({
       ...prev,
-      sidebarOrder: arrayMove(prev.sidebarOrder, from, to),
+      sidebarSections: arrayMove(prev.sidebarSections, from, to),
     }));
   }, []);
 
@@ -480,10 +480,11 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const importData = useCallback((imported: CVData) => {
+    const migrated = migrateCVData(imported);
     setData({
-      ...imported,
-      visibility: { ...defaultVisibility, ...imported.visibility },
-      sidebarOrder: migrateSidebarOrder(imported.sidebarOrder),
+      ...migrated,
+      visibility: { ...defaultVisibility, ...migrated.visibility },
+      sidebarSections: migrateSidebarSections(migrated.sidebarSections),
     });
   }, []);
 
