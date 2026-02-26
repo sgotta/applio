@@ -463,7 +463,7 @@ function SortableSidebarSection({
 
 export const PersonalInfo = memo(function PersonalInfo() {
   const {
-    data: { personalInfo, summary, skills, visibility, sidebarOrder },
+    data: { personalInfo, summary, skillCategories, visibility, sidebarSections },
     updatePersonalInfo,
     updateSummary,
     updateSkillCategory,
@@ -514,13 +514,13 @@ export const PersonalInfo = memo(function PersonalInfo() {
   const handleCategoryDragEnd = useCallback((event: DragEndEvent) => {
     const { active, over } = event;
     if (over && active.id !== over.id) {
-      const oldIndex = skills.findIndex(s => s.id === active.id);
-      const newIndex = skills.findIndex(s => s.id === over.id);
+      const oldIndex = skillCategories.findIndex(s => s.id === active.id);
+      const newIndex = skillCategories.findIndex(s => s.id === over.id);
       if (oldIndex !== -1 && newIndex !== -1) {
         reorderSkillCategory(oldIndex, newIndex);
       }
     }
-  }, [skills, reorderSkillCategory]);
+  }, [skillCategories, reorderSkillCategory]);
 
   // Section-level DnD
   const sectionSensors = useSensors(
@@ -532,13 +532,13 @@ export const PersonalInfo = memo(function PersonalInfo() {
   const handleSectionDragEnd = useCallback((event: DragEndEvent) => {
     const { active, over } = event;
     if (over && active.id !== over.id) {
-      const oldIndex = sidebarOrder.indexOf(active.id as SidebarSectionId);
-      const newIndex = sidebarOrder.indexOf(over.id as SidebarSectionId);
+      const oldIndex = sidebarSections.indexOf(active.id as SidebarSectionId);
+      const newIndex = sidebarSections.indexOf(over.id as SidebarSectionId);
       if (oldIndex !== -1 && newIndex !== -1) {
         reorderSidebarSection(oldIndex, newIndex);
       }
     }
-  }, [sidebarOrder, reorderSidebarSection]);
+  }, [sidebarSections, reorderSidebarSection]);
 
   const contactSection = (
     <div className="space-y-2">
@@ -615,7 +615,7 @@ export const PersonalInfo = memo(function PersonalInfo() {
     </div>
   );
 
-  const skillsSection = skills.length > 0 ? (
+  const skillsSection = skillCategories.length > 0 ? (
     <div>
       <SectionTitle sidebar>{t("skills")}</SectionTitle>
       <DndContext
@@ -625,16 +625,16 @@ export const PersonalInfo = memo(function PersonalInfo() {
         onDragEnd={handleCategoryDragEnd}
       >
         <SortableContext
-          items={skills.map(s => s.id)}
+          items={skillCategories.map(s => s.id)}
           strategy={verticalListSortingStrategy}
         >
           <div className="space-y-3">
-            {skills.map((skillGroup, index) => (
+            {skillCategories.map((skillGroup, index) => (
               <SortableSkillCategory
                 key={skillGroup.id}
                 skillGroup={skillGroup}
                 index={index}
-                total={skills.length}
+                total={skillCategories.length}
                 sensors={sensors}
                 onSkillDragEnd={handleSkillDragEnd}
                 onAddBelow={() => {
@@ -662,9 +662,9 @@ export const PersonalInfo = memo(function PersonalInfo() {
       {/* Profile photo upload — hidden on mobile (shown separately in CVPreview) */}
       <div className="hidden md:block">
         <ProfilePhotoUpload
-          currentPhoto={personalInfo.photo}
+          currentPhoto={personalInfo.photoUrl}
           fullName={personalInfo.fullName}
-          onPhotoChange={(photo) => updatePersonalInfo("photo", photo)}
+          onPhotoChange={(photoUrl) => updatePersonalInfo("photoUrl", photoUrl)}
           placeholderBg={colorScheme.sidebarText + "28"}
           placeholderText={colorScheme.sidebarMuted}
         />
@@ -677,9 +677,9 @@ export const PersonalInfo = memo(function PersonalInfo() {
         collisionDetection={closestCenter}
         onDragEnd={handleSectionDragEnd}
       >
-        <SortableContext items={sidebarOrder} strategy={verticalListSortingStrategy}>
+        <SortableContext items={sidebarSections} strategy={verticalListSortingStrategy}>
           <div className="space-y-5">
-            {sidebarOrder.map((sectionId) => {
+            {sidebarSections.map((sectionId) => {
               const content = sectionContent[sectionId];
               if (!content) return null;
               return (

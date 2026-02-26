@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { Separator } from "@/components/ui/separator";
 import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
 import { getSidebarPattern, type PatternSettings } from "@/lib/sidebar-patterns";
 import { renderRichDocument } from "@/lib/render-rich-text";
-import { DEFAULT_SIDEBAR_ORDER } from "@/lib/default-data";
+import { DEFAULT_SIDEBAR_SECTIONS } from "@/lib/default-data";
 import type { CVData } from "@/lib/types";
 import type { ColorScheme } from "@/lib/color-schemes";
 
@@ -52,10 +52,15 @@ export function MobileCVView({
   fontFamilyOverride?: string;
 }) {
   const t = useTranslations("printable");
-  const { personalInfo, summary, experience, education, skills, courses, certifications, awards, visibility } = data;
-  const sidebarOrder = data.sidebarOrder ?? DEFAULT_SIDEBAR_ORDER;
+  const { personalInfo, summary, experiences, education, skillCategories, courses, certifications, awards, visibility } = data;
+  const sidebarSections = data.sidebarSections ?? DEFAULT_SIDEBAR_SECTIONS;
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageFailed, setImageFailed] = useState(false);
+
+  // SSR hydration fix: if the image loaded before React hydrated, onLoad won't fire.
+  const photoRef = useCallback((el: HTMLImageElement | null) => {
+    if (el?.complete && el.naturalWidth > 0) setImageLoaded(true);
+  }, []);
 
   const initials = personalInfo.fullName
     .split(" ")
@@ -95,7 +100,9 @@ export function MobileCVView({
               {initials}
             </span>
             {photoUrl && !imageFailed && (
+              // eslint-disable-next-line @next/next/no-img-element
               <img
+                ref={photoRef}
                 src={photoUrl}
                 alt={personalInfo.fullName}
                 className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
@@ -124,7 +131,7 @@ export function MobileCVView({
               className="font-medium uppercase tracking-wide text-gray-500"
               style={{ fontSize: fs.subheading }}
             >
-              {personalInfo.title}
+              {personalInfo.jobTitle}
             </p>
           </div>
         </div>
@@ -139,7 +146,7 @@ export function MobileCVView({
           />
         )}
         <div className="relative space-y-5">
-        {sidebarOrder.map((sectionId) => {
+        {sidebarSections.map((sectionId) => {
           if (sectionId === "contact") {
             const hasFields = personalInfo.email || personalInfo.phone || (visibility.location && personalInfo.location) || (visibility.linkedin && personalInfo.linkedin) || (visibility.website && personalInfo.website);
             if (!hasFields) return null;
@@ -205,14 +212,14 @@ export function MobileCVView({
             );
           }
           if (sectionId === "skills") {
-            if (skills.length === 0) return null;
+            if (skillCategories.length === 0) return null;
             return (
               <div key="skills">
                 <MobileSectionHeading color={colors.sidebarText} separatorColor={colors.sidebarSeparator} fontSize={fs.section}>
                   {t("skills")}
                 </MobileSectionHeading>
                 <div className="space-y-3">
-                  {skills.map((group) => (
+                  {skillCategories.map((group) => (
                     <div key={group.id}>
                       <p
                         className="font-semibold uppercase tracking-wide mb-1"
@@ -251,13 +258,13 @@ export function MobileCVView({
           />
         )}
         <div className="relative space-y-5">
-        {experience.length > 0 && (
+        {experiences.length > 0 && (
           <div>
             <MobileSectionHeading color={colors.heading} separatorColor={colors.separator} fontSize={fs.section}>
               {t("experience")}
             </MobileSectionHeading>
             <div className="space-y-2.5">
-              {experience.map((exp) => (
+              {experiences.map((exp) => (
                 <div key={exp.id}>
                   <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0">
                     <h4 className="font-semibold text-gray-900" style={{ fontSize: fs.itemTitle }}>{exp.company}</h4>

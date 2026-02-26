@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   moveItem,
-  migrateSidebarOrder,
+  migrateSidebarSections,
   migrateMarkdownBold,
   migrateBulletsToHtml,
   migrateCVData,
@@ -33,24 +33,24 @@ describe("moveItem", () => {
   });
 });
 
-describe("migrateSidebarOrder", () => {
+describe("migrateSidebarSections", () => {
   it("returns default order for non-array input", () => {
-    expect(migrateSidebarOrder(null)).toEqual(["contact", "summary", "skills"]);
-    expect(migrateSidebarOrder(undefined)).toEqual(["contact", "summary", "skills"]);
-    expect(migrateSidebarOrder("foo")).toEqual(["contact", "summary", "skills"]);
+    expect(migrateSidebarSections(null)).toEqual(["contact", "summary", "skills"]);
+    expect(migrateSidebarSections(undefined)).toEqual(["contact", "summary", "skills"]);
+    expect(migrateSidebarSections("foo")).toEqual(["contact", "summary", "skills"]);
   });
 
   it("returns valid array as-is if complete", () => {
     const order = ["skills", "contact", "summary"];
-    expect(migrateSidebarOrder(order)).toEqual(["skills", "contact", "summary"]);
+    expect(migrateSidebarSections(order)).toEqual(["skills", "contact", "summary"]);
   });
 
   it("appends missing sections at the end", () => {
-    expect(migrateSidebarOrder(["contact"])).toEqual(["contact", "summary", "skills"]);
+    expect(migrateSidebarSections(["contact"])).toEqual(["contact", "summary", "skills"]);
   });
 
   it("strips invalid IDs", () => {
-    expect(migrateSidebarOrder(["contact", "invalid", "skills"])).toEqual([
+    expect(migrateSidebarSections(["contact", "invalid", "skills"])).toEqual([
       "contact",
       "skills",
       "summary",
@@ -194,7 +194,7 @@ describe("migrateCVData", () => {
     const newData = {
       personalInfo: {
         fullName: "John",
-        title: "Dev",
+        jobTitle: "Dev",
         email: "john@test.com",
         phone: "",
         location: "",
@@ -202,30 +202,30 @@ describe("migrateCVData", () => {
         website: "",
       },
       summary: "No markdown",
-      experience: [
+      experiences: [
         { id: "1", company: "A", position: "B", startDate: "2020", endDate: "2024", description: "<p>Already HTML</p>" },
       ],
       education: [],
-      skills: [],
+      skillCategories: [],
     };
 
     const result = migrateCVData(newData);
     expect(result.personalInfo.fullName).toBe("John");
-    expect(result.experience[0].description).toBe("<p>Already HTML</p>");
+    expect(result.experiences[0].description).toBe("<p>Already HTML</p>");
   });
 
   it("ensures all fields exist even with minimal input", () => {
     const result = migrateCVData({});
     expect(result.personalInfo.fullName).toBe("");
     expect(result.summary).toBe("");
-    expect(result.experience).toEqual([]);
+    expect(result.experiences).toEqual([]);
     expect(result.education).toEqual([]);
-    expect(result.skills).toEqual([]);
+    expect(result.skillCategories).toEqual([]);
     expect(result.courses).toEqual([]);
     expect(result.certifications).toEqual([]);
     expect(result.awards).toEqual([]);
     expect(result.visibility).toBeDefined();
-    expect(result.sidebarOrder).toEqual(["contact", "summary", "skills"]);
+    expect(result.sidebarSections).toEqual(["contact", "summary", "skills"]);
   });
 
   it("migrates experience bullet arrays to HTML", () => {
@@ -247,7 +247,7 @@ describe("migrateCVData", () => {
     };
 
     const result = migrateCVData(data);
-    expect(result.experience[0].description).toBe(
+    expect(result.experiences[0].description).toBe(
       "<ul><li><p>Did stuff</p></li><li><p>More stuff</p></li></ul>"
     );
   });

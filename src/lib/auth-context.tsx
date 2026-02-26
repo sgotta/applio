@@ -3,16 +3,26 @@
 import {
   createContext,
   useContext,
-  useState,
-  useEffect,
   useCallback,
+  useMemo,
   type ReactNode,
 } from "react";
-import { createClient } from "@/lib/supabase/client";
-import type { User } from "@supabase/supabase-js";
+import {
+  SessionProvider,
+  useSession,
+  signIn,
+  signOut as nextAuthSignOut,
+} from "next-auth/react";
+
+interface AppUser {
+  id: string;
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+}
 
 interface AuthContextValue {
-  user: User | null;
+  user: AppUser | null;
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
   signInWithGithub: () => Promise<void>;
@@ -21,63 +31,50 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+function AuthContextInner({ children }: { children: ReactNode }) {
+  const { data: session, status } = useSession();
 
-  useEffect(() => {
-    const supabase = createClient();
-
-    // Get initial session
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user);
-      setLoading(false);
-    });
-
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
+  const user: AppUser | null = useMemo(() => {
+    if (!session?.user) return null;
+    return {
+      id: session.user.id!,
+      name: session.user.name,
+      email: session.user.email,
+      image: session.user.image,
+    };
+  }, [session]);
 
   const signInWithGoogle = useCallback(async () => {
-    const supabase = createClient();
-    const next = window.location.pathname;
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
-      },
-    });
+    await signIn("google", { callbackUrl: window.location.pathname });
   }, []);
 
   const signInWithGithub = useCallback(async () => {
-    const supabase = createClient();
-    const next = window.location.pathname;
-    await supabase.auth.signInWithOAuth({
-      provider: "github",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
-      },
-    });
+    await signIn("github", { callbackUrl: window.location.pathname });
   }, []);
 
-  const signOut = useCallback(async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    setUser(null);
+  const handleSignOut = useCallback(async () => {
+    await nextAuthSignOut({ callbackUrl: "/editor" });
   }, []);
 
+  const value = useMemo<AuthContextValue>(
+    () => ({
+      user,
+      loading: status === "loading",
+      signInWithGoogle,
+      signInWithGithub,
+      signOut: handleSignOut,
+    }),
+    [user, status, signInWithGoogle, signInWithGithub, handleSignOut],
+  );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+export function AuthProvider({ children }: { children: ReactNode }) {
   return (
-    <AuthContext.Provider
-      value={{ user, loading, signInWithGoogle, signInWithGithub, signOut }}
-    >
-      {children}
-    </AuthContext.Provider>
+    <SessionProvider refetchOnWindowFocus={false} refetchInterval={0}>
+      <AuthContextInner>{children}</AuthContextInner>
+    </SessionProvider>
   );
 }
 

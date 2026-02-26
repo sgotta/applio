@@ -14,7 +14,7 @@ import {
   pdf,
 } from "@react-pdf/renderer";
 import type { CVData } from "@/lib/types";
-import { DEFAULT_SIDEBAR_ORDER } from "@/lib/default-data";
+import { DEFAULT_SIDEBAR_SECTIONS } from "@/lib/default-data";
 import type { ColorScheme } from "@/lib/color-schemes";
 import type { PatternSettings } from "@/lib/sidebar-patterns";
 import { PdfRichText, PdfRichDocument } from "@/lib/render-rich-text-pdf";
@@ -398,15 +398,15 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
   const {
     personalInfo,
     summary,
-    experience,
+    experiences,
     education,
-    skills,
+    skillCategories,
     courses,
     certifications,
     awards,
     visibility,
   } = data;
-  const sidebarOrder = data.sidebarOrder ?? DEFAULT_SIDEBAR_ORDER;
+  const sidebarSections = data.sidebarSections ?? DEFAULT_SIDEBAR_SECTIONS;
 
   // PrintableCV uses CSS pixels; react-pdf uses PDF points.
   // A4 is the same physical size in both, so we convert: 1px = 0.75pt (96dpi → 72dpi).
@@ -492,7 +492,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                 {/* Overlay: photo on top (if available).
                     Wrap in a clipping View because react-pdf doesn't clip
                     borderRadius on <Image> directly. */}
-                {personalInfo.photo && (
+                {personalInfo.photoUrl && (
                   <View
                     style={{
                       position: "absolute",
@@ -506,7 +506,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                   >
                     {/* eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image is PDF-only, not an HTML <img> */}
                     <Image
-                      src={personalInfo.photo}
+                      src={personalInfo.photoUrl}
                       style={{
                         width: PHOTO_SIZE,
                         height: PHOTO_SIZE,
@@ -518,7 +518,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
               </View>
             </View>
 
-            {sidebarOrder.map((sectionId) => {
+            {sidebarSections.map((sectionId) => {
               if (sectionId === "contact") {
                 if (!hasContact) return null;
                 return (
@@ -603,7 +603,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                 );
               }
               if (sectionId === "skills") {
-                if (skills.length === 0) return null;
+                if (skillCategories.length === 0) return null;
                 return (
                   <View key="skills">
                     <SidebarSectionHeading
@@ -614,7 +614,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                       {labels.skills}
                     </SidebarSectionHeading>
                     <View style={{ gap: 8 }}>
-                      {skills.map((skillGroup) => (
+                      {skillCategories.map((skillGroup) => (
                         <View key={skillGroup.id} wrap={false}>
                           <Text
                             style={{
@@ -691,12 +691,12 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                   marginTop: 0,
                 }}
               >
-                {personalInfo.title}
+                {personalInfo.jobTitle}
               </Text>
             </View>
 
             {/* Experience */}
-            {experience.length > 0 && (
+            {experiences.length > 0 && (
               <View style={{ marginBottom: SECTION_GAP }}>
                 {/* Heading + first entry kept together */}
                 <View wrap={false}>
@@ -709,23 +709,23 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                   </MainSectionHeading>
                   <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
                     <Text style={{ fontSize: fs(13), fontWeight: 600, color: "#111827", flex: 1, paddingRight: 6 }}>
-                      {experience[0].company}
+                      {experiences[0].company}
                     </Text>
                     <Text style={{ fontSize: fs(10), color: "#6b7280", flexShrink: 0, marginTop: 2 }}>
-                      {experience[0].startDate} — {experience[0].endDate}
+                      {experiences[0].startDate} — {experiences[0].endDate}
                     </Text>
                   </View>
                   <Text style={{ fontSize: fs(10), fontWeight: 500, color: "#6b7280", marginTop: 2 }}>
-                    {experience[0].position}
+                    {experiences[0].position}
                   </Text>
-                  {experience[0].description.length > 0 && (
+                  {experiences[0].description.length > 0 && (
                     <View style={{ marginTop: 4 }}>
-                      <PdfRichDocument html={experience[0].description} fontSize={fs(11)} bulletColor={colors.bullet} />
+                      <PdfRichDocument html={experiences[0].description} fontSize={fs(11)} bulletColor={colors.bullet} />
                     </View>
                   )}
                 </View>
                 {/* Remaining entries */}
-                {experience.slice(1).map((exp) => (
+                {experiences.slice(1).map((exp) => (
                   <View key={exp.id} wrap={false} style={{ marginTop: ITEM_GAP }}>
                     <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
                       <Text style={{ fontSize: fs(13), fontWeight: 600, color: "#111827", flex: 1, paddingRight: 6 }}>

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Applio** is a CV builder with a minimalist Notion-style inline editing experience. Built with Next.js 16 App Router, React 19, and Tailwind CSS v4. Features a marketing landing page at `/`, an interactive editor at `/editor`, OAuth authentication (Google/GitHub) via Supabase, cloud sync, shareable CV links, and a Stripe-based premium plan.
+**Applio** is a CV builder with a minimalist Notion-style inline editing experience. Built with Next.js 16 App Router, React 19, and Tailwind CSS v4. Features a marketing landing page at `/`, an interactive editor at `/editor`, OAuth authentication (Google/GitHub) via Auth.js v5, cloud sync (MongoDB), shareable CV links, and a Stripe-based premium plan.
 
 ## Version Bumping
 
@@ -27,7 +27,7 @@ npm run lint         # Run ESLint
 npx shadcn@latest add [component-name]
 
 # Unit Testing (Vitest)
-npm run test:unit         # Run all unit tests (78 tests, ~2s)
+npm run test:unit         # Run all unit tests (114 tests, ~2s)
 npm run test:unit:watch   # Run in watch mode
 
 # E2E Testing (Playwright)
@@ -49,7 +49,7 @@ vercel               # Deploy to production (requires Vercel CLI)
 | `/` | `src/app/page.tsx` | Marketing landing page (hero, feature demos, CTA to `/editor`) |
 | `/editor` | `src/app/editor/page.tsx` | CV editor — full provider stack, main app |
 | `/cv/[slug]` | `src/app/cv/[slug]/page.tsx` | Shared CV public view (SSR, read-only) |
-| `/auth/callback` | `src/app/auth/callback/route.ts` | Supabase OAuth callback handler |
+| `/api/auth/*` | `src/app/api/auth/[...nextauth]/route.ts` | Auth.js v5 route handlers (OAuth callbacks, session) |
 | `/checkout/success` | `src/app/checkout/success/page.tsx` | Post-payment confirmation, redirects to editor |
 | `/api/upload-photo` | API route | Uploads profile photo to Cloudflare R2 (sharp resize + WebP) |
 | `/api/stripe/checkout` | API route | Creates Stripe Checkout Session |
@@ -63,9 +63,9 @@ ThemeProvider
     SidebarPatternProvider
       FontSettingsProvider
         LocaleProvider
-          AuthProvider              ← Supabase auth session
-            PlanProvider            ← free/premium plan from Supabase profiles
-              SyncStatusProvider    ← sync state indicator (idle/synced)
+          AuthProvider              ← Auth.js v5 session (next-auth)
+            PlanProvider            ← free/premium plan from MongoDB users.subscription
+              SyncStatusProvider    ← sync state indicator (idle/syncing/synced/error)
                 CVProvider          ← CV data (single source of truth)
                   TooltipProvider
                     <CloudSync />   ← Invisible component, handles bi-directional sync
@@ -92,7 +92,7 @@ CVProvider (context)
   → useCV() hook
     → Components consume/update via context methods
       → Auto-save to localStorage (500ms debounce)
-      → CloudSync auto-saves to Supabase (3s debounce, when logged in)
+      → CloudSync auto-saves to MongoDB (3s debounce, when logged in)
 ```
 
 ### Data Model: src/lib/types.ts
@@ -193,39 +193,41 @@ The CVContext exposes `reorder*` methods (using `arrayMove`) in addition to the 
 - `src/lib/render-rich-text.tsx` — Renders rich text markup as React elements (web editor)
 - `src/lib/render-rich-text-pdf.tsx` — Renders rich text markup as `@react-pdf/renderer` elements (PDF)
 
-### Authentication: Supabase OAuth
+### Authentication: Auth.js v5 (NextAuth)
 
-**Files:** `src/lib/auth-context.tsx`, `src/lib/supabase/client.ts`, `src/lib/supabase/server.ts`, `src/lib/supabase/middleware.ts`
+**Files:** `src/lib/auth.ts`, `src/lib/auth-context.tsx`, `src/lib/mongodb.ts`
 
-- Providers: **Google** and **GitHub** via `supabase.auth.signInWithOAuth`
-- `src/middleware.ts` calls `updateSession()` on every request to refresh Supabase auth cookies
-- `src/app/auth/callback/route.ts` exchanges OAuth code for session and redirects to `?next=` param
-- `useAuth()` exposes: `user`, `loading`, `signInWithGoogle`, `signInWithGithub`, `signOut`
+- Providers: **Google** and **GitHub** via Auth.js v5 (`next-auth`)
+- `src/lib/auth.ts` configures NextAuth with `MongoDBAdapter(clientPromise)`, database session strategy, `allowDangerousEmailAccountLinking`
+- Route handler: `src/app/api/auth/[...nextauth]/route.ts` — exports `handlers` from auth config
+- `src/lib/mongodb.ts` — native `MongoClient` for the Auth.js adapter (separate from Mongoose)
+- `src/middleware.ts` is minimal (no auth checks) — Auth.js handles cookies via its own route handlers
+- `useAuth()` wraps `next-auth/react` `SessionProvider` — exposes: `user`, `loading`, `signInWithGoogle`, `signInWithGithub`, `signOut`
 - `LoginDialog` (`src/components/auth/LoginDialog.tsx`) shows Google/GitHub buttons
 
 ### Cloud Sync
 
 **File:** `src/components/cloud-sync/CloudSync.tsx` — render-null component with 3 effects:
 
-1. **On login:** Fetches cloud CV → if differs from local, shows conflict resolution dialog (keep local vs. use cloud). Discarded version backed up to `localStorage["cv-builder-backup"]`.
-2. **CV auto-save:** 3s debounce after any `data` change → `updateCV()` to Supabase. Strips base64 photos (only R2 URLs persisted to cloud).
-3. **Settings auto-save:** 3s debounce for colorScheme, font, theme, locale, pattern changes → `updateCV()`.
+1. **On login:** Fetches cloud CV via `GET /api/cv` → if differs from local (fingerprint comparison), shows conflict resolution dialog (keep local vs. use cloud). Discarded version backed up to `localStorage["cv-builder-backup"]`. Sets `initialSyncComplete` when done.
+2. **Logout reset:** Clears sync state refs when user logs out.
+3. **Unified auto-save:** 3s debounce after any `data` or settings change → `POST /api/cv` to MongoDB. Strips base64 photos (only R2 URLs persisted to cloud). Uploads base64 photos to R2 before saving. Only runs after initial sync completes.
 
-**Database helpers:** `src/lib/supabase/db.ts` (client-side), `src/lib/supabase/db-server.ts` (server-side SSR).
+**API routes:** `src/app/api/cv/route.ts` (GET/POST). Uses `cv-sync.ts` pure functions (`docToCVData`, `cvDataToDoc`) for MongoDB↔CVData mapping.
+**Error handling:** Uses `sonner` toasts + `useSyncStatus()` for visual feedback (4 states: idle/syncing/synced/error).
 
 ### Premium Plan: Stripe
 
 **Files:** `src/lib/plan-context.tsx`, `src/components/premium/UpgradeDialog.tsx`, `src/components/premium/PremiumBadge.tsx`
 
-- `PlanProvider` reads `profiles.plan` from Supabase (`"free"` or `"premium"`)
+- `PlanProvider` fetches plan via `GET /api/cv/plan` which reads `users.subscription` from MongoDB
 - `usePlan()` exposes `plan`, `isPremium`, `devOverride`/`setDevOverride` (for testing)
-- Stripe checkout: `POST /api/stripe/checkout` → creates session → redirect to Stripe → webhook updates profile
+- Stripe checkout: `POST /api/stripe/checkout` → creates session → redirect to Stripe → webhook updates user subscription in MongoDB
 - **Currently gated features:** extra color schemes, extra fonts (SourceSans3, Merriweather), sidebar patterns, optional sections (courses, certifications, awards)
 
-**Supabase `profiles` table:**
-- Auto-created on signup via trigger
-- Fields: `id`, `plan`, `stripe_customer_id`, `stripe_payment_id`, `premium_since`
-- RLS: users can only read own profile; only `service_role` (webhook) can UPDATE plan
+**MongoDB `users` collection (subscription subdocument):**
+- Fields: `plan` ("free" | "pro"), `billingInterval`, `provider` (stripe/mercadopago/paypal), `customerId`, `subscriptionId`, `currentPeriodEnd`
+- Defined in `src/lib/models/user.ts`
 
 ### Photo Upload: Cloudflare R2
 
@@ -240,7 +242,7 @@ The CVContext exposes `reorder*` methods (using `arrayMove`) in addition to the 
 
 **Route:** `/cv/[slug]`
 
-- `publishCV()` in `supabase/db.ts` generates an 8-char slug and sets `is_published = true`
+- `POST /api/cv/publish` generates an 8-char slug and sets `isPublished = true` in MongoDB
 - `src/app/cv/[slug]/page.tsx` uses `fetchPublishedCVServer()` (SSR) to render a read-only public view
 - `shared-cv-content.tsx` is the client component for the shared CV display
 
@@ -275,7 +277,7 @@ Other localStorage keys:
 - Add new components: `npx shadcn@latest add [name]`
 - Icons: lucide-react only
 
-**Color schemes:** 7 schemes defined in `src/lib/color-schemes.ts` (ivory default). Premium schemes gated behind plan.
+**Color schemes:** 5 schemes defined in `src/lib/color-schemes.ts` (ivory default). Premium schemes gated behind plan.
 
 **Sidebar patterns:** Decorative patterns for the sidebar, defined in `src/lib/sidebar-patterns.ts`. Settings managed by `SidebarPatternProvider`. All patterns except `"none"` are premium.
 
@@ -360,12 +362,10 @@ src/
 │   ├── globals.css                  # Tailwind base, CSS variables
 │   ├── layout.tsx                   # Root layout with fonts, viewport meta
 │   ├── page.tsx                     # Landing page (marketing)
+│   ├── error.tsx                      # Global error boundary
 │   ├── editor/
-│   │   └── page.tsx                 # CV editor (full provider stack)
-│   ├── auth/
-│   │   └── callback/route.ts       # Supabase OAuth callback
-│   ├── checkout/
-│   │   └── success/page.tsx         # Post-payment confirmation
+│   │   ├── page.tsx                   # CV editor (full provider stack)
+│   │   └── error.tsx                  # Editor-specific error boundary
 │   ├── cv/
 │   │   └── [slug]/                  # Shared CV public view (SSR)
 │   │       ├── page.tsx
@@ -374,6 +374,12 @@ src/
 │   │       └── not-found.tsx
 │   └── api/
 │       ├── upload-photo/route.ts    # Photo upload to R2
+│       ├── cv/
+│       │   ├── route.ts              # CV load/save API
+│       │   ├── plan/route.ts         # Plan fetch API
+│       │   └── publish/route.ts      # CV publish/unpublish API
+│       ├── auth/
+│       │   └── [...nextauth]/route.ts # Auth.js route handler
 │       └── stripe/
 │           ├── checkout/route.ts    # Create Stripe session
 │           └── webhook/route.ts     # Handle Stripe events
@@ -384,7 +390,8 @@ src/
 │   ├── color-schemes.test.ts        # Color schemes (6 tests)
 │   ├── default-data.test.ts         # Default data (6 tests)
 │   ├── utils.test.ts                # Utility functions (3 tests)
-│   └── storage.test.ts              # localStorage operations (4 tests)
+│   ├── storage.test.ts              # localStorage operations (4 tests)
+│   └── cv-sync.test.ts               # CV sync functions (36 tests)
 ├── lib/
 │   ├── types.ts                     # All TypeScript interfaces
 │   ├── cv-context.tsx               # CV state management (~32 methods)
@@ -398,24 +405,29 @@ src/
 │   ├── render-rich-text-pdf.tsx     # Rich text → PDF elements
 │   ├── fonts.ts                     # Font definitions and helpers
 │   ├── font-context.tsx             # FontSettingsProvider
-│   ├── color-schemes.ts             # 7 color scheme definitions
+│   ├── color-schemes.ts             # 5 color scheme definitions
 │   ├── color-scheme-context.tsx     # ColorSchemeProvider
 │   ├── theme-context.tsx            # ThemeProvider (dark/light)
 │   ├── locale-context.tsx           # LocaleProvider (i18n)
 │   ├── sidebar-patterns.ts          # Sidebar pattern definitions
 │   ├── sidebar-pattern-context.tsx  # SidebarPatternProvider
-│   ├── auth-context.tsx             # AuthProvider (Supabase OAuth)
+│   ├── auth-context.tsx             # AuthProvider (Auth.js v5 / next-auth)
 │   ├── plan-context.tsx             # PlanProvider (free/premium)
 │   ├── sync-status-context.tsx      # SyncStatusProvider
+│   ├── cv-sync.ts                     # Shared pure functions (fingerprint, serialize, doc↔CVData)
+│   ├── mongodb.ts                     # MongoDB connection helper
+│   ├── mongoose.ts                    # Mongoose connection singleton
+│   ├── auth.ts                        # Auth.js v5 configuration
+│   ├── models/                        # Mongoose models
+│   │   ├── cv.ts                      # CV document model
+│   │   ├── user.ts                    # User model
+│   │   └── index.ts                   # Model exports
+│   ├── actions/                       # Server actions
+│   │   ├── cv.ts                      # CV CRUD server actions
+│   │   └── public.ts                  # Public CV fetch actions
 │   ├── r2.ts                        # Cloudflare R2 S3Client
-│   ├── use-virtual-keyboard.ts      # Mobile virtual keyboard hook
-│   └── supabase/
-│       ├── client.ts                # Browser-side Supabase client
-│       ├── server.ts                # Server-side Supabase client
-│       ├── middleware.ts            # updateSession() for cookie refresh
-│       ├── db.ts                    # Client-side DB helpers (CRUD)
-│       └── db-server.ts            # Server-side DB helpers (SSR)
-├── middleware.ts                     # Root middleware (Supabase session refresh)
+│   └── use-virtual-keyboard.ts      # Mobile virtual keyboard hook
+├── middleware.ts                     # Root middleware (minimal, no auth checks)
 └── components/
     ├── ui/                          # shadcn/ui components
     ├── toolbar/
@@ -449,8 +461,9 @@ src/
 e2e/
 ├── playwright.config.ts             # Playwright configuration
 ├── helpers/
-│   └── setup.ts                     # Fixtures, locators, interaction helpers
-└── tests/                           # 54 E2E tests across 14 files (27 @smoke + 27 @regression)
+│   ├── setup.ts                     # Fixtures, locators, interaction helpers
+│   └── auth-mock.ts                  # Auth session mocking for E2E tests
+└── tests/                           # 65 E2E tests across 17 files (35 @smoke + 30 @regression)
 vitest.config.ts                     # Vitest configuration
 commitlint.config.mjs                # Commitlint config (conventional commits)
 .husky/
@@ -460,17 +473,22 @@ commitlint.config.mjs                # Commitlint config (conventional commits)
 docs/
 └── design-system.md                 # Visual conventions reference
 supabase/
-└── migrations/                      # Database migration files
+└── migrations/                      # Legacy Supabase migration files (historical)
 ```
 
 ## Environment Variables
 
 Required (see `env.local.example`):
 ```
-# Supabase
-NEXT_PUBLIC_SUPABASE_URL
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
-SUPABASE_SERVICE_ROLE_KEY            # Server-only (webhook)
+# MongoDB
+MONGODB_URI                          # MongoDB Atlas connection string
+
+# Auth.js v5
+AUTH_SECRET                          # Generate with: npx auth secret
+AUTH_GOOGLE_ID
+AUTH_GOOGLE_SECRET
+AUTH_GITHUB_ID
+AUTH_GITHUB_SECRET
 
 # Stripe
 STRIPE_SECRET_KEY
@@ -508,10 +526,11 @@ R2_PUBLIC_URL
 - Rich text: check both `render-rich-text.tsx` and `render-rich-text-pdf.tsx`
 
 **Auth issues:**
-- Check `src/middleware.ts` → `updateSession()` is running
-- Verify Supabase env vars are set
-- Check browser cookies for Supabase session
-- OAuth callback: verify `?next=` param redirects correctly
+- Check `src/lib/auth.ts` config (providers, adapter, session strategy)
+- Verify `MONGODB_URI`, `AUTH_SECRET`, `AUTH_GOOGLE_*`, `AUTH_GITHUB_*` env vars are set
+- Check browser cookies for `next-auth.session-token` (database session)
+- Auth.js route handler: `/api/auth/*` — handles all OAuth flows automatically
+- `src/middleware.ts` is minimal (no auth checks) — Auth.js manages its own cookies
 
 **Sync issues:**
 - CloudSync only runs when user is logged in
@@ -542,7 +561,6 @@ When implementing new features, these files almost always need updates:
 | `@tiptap/react` + extensions | Rich text editing engine inside EditableText |
 | `@dnd-kit/core` + `@dnd-kit/sortable` | Drag-and-drop reordering for all sections |
 | `@react-pdf/renderer` | PDF generation |
-| `@supabase/supabase-js` + `@supabase/ssr` | Auth (OAuth) + database |
 | `@aws-sdk/client-s3` | Photo upload to Cloudflare R2 |
 | `stripe` | Payment processing (server-side) |
 | `sharp` | Image optimization (server-side, resize + WebP) |
@@ -552,7 +570,9 @@ When implementing new features, these files almost always need updates:
 | `next-themes` | Dark/light mode |
 | `sonner` | Toast notifications |
 | `lucide-react` | Icons (only icon library used) |
-| `vitest` | Unit testing framework (78 tests) |
+| `mongoose` | MongoDB ODM for data models |
+| `next-auth` | Authentication (Auth.js v5, Google + GitHub OAuth) |
+| `vitest` | Unit testing framework (114 tests) |
 | `husky` | Git hooks manager (pre-commit, commit-msg, pre-push) |
 | `@commitlint/cli` + `config-conventional` | Commit message linting (conventional commits) |
 | `lint-staged` | Run ESLint on staged files only (pre-commit) |
@@ -561,7 +581,7 @@ When implementing new features, these files almost always need updates:
 
 ### Unit Tests (Vitest)
 
-**78 tests** across 7 files in `src/__tests__/`. Run in ~2s.
+**114 tests** across 8 files in `src/__tests__/`. Run in ~2s.
 
 | File | Tests | Covers |
 |---|---|---|
@@ -572,6 +592,7 @@ When implementing new features, these files almost always need updates:
 | `default-data.test.ts` | 6 | `getDefaultCVData`, `defaultVisibility`, `DEFAULT_SIDEBAR_ORDER` |
 | `utils.test.ts` | 3 | `filenameDateStamp` (with fake timers) |
 | `storage.test.ts` | 4 | `saveCVData`/`loadCVData`/`clearCVData` round-trips |
+| `cv-sync.test.ts` | 36 | `stableStringify`, `cvContentFingerprint`, `sortBySortOrder`, `docToCVData`, `cvDataToDoc`, `toSettings` |
 
 **Config:** `vitest.config.ts` — jsdom environment, `@vitejs/plugin-react`, `@/` alias.
 
@@ -579,9 +600,9 @@ When implementing new features, these files almost always need updates:
 
 ### E2E Tests (Playwright)
 
-**54 tests** across 14 files, classified with tags:
+**65 tests** across 17 files, classified with tags:
 
-**@smoke (27 tests)** — Critical flows. If any fails, the app is unusable:
+**@smoke (35 tests)** — Critical flows. If any fails, the app is unusable:
 - `smoke.test.ts` (2) — App loads, toolbar visible
 - `inline-editing.test.ts` (4) — Core Tiptap editing
 - `experience.test.ts` (4) — Experience CRUD
@@ -590,9 +611,10 @@ When implementing new features, these files almost always need updates:
 - `import-export.test.ts` (4) — JSON/PDF export, import
 - `pdf.test.ts` (1) — PDF generation
 - `block-editor.test.ts` (4) — Rich text formatting
+- `cloud-sync.test.ts` (8) — Cloud sync, conflict dialog, photo upload
 
-**@regression (27 tests)** — Important but non-critical:
-- `visibility.test.ts` (4), `color-scheme.test.ts` (3), `font.test.ts` (3), `theme.test.ts` (2), `i18n.test.ts` (3), `optional-sections.test.ts` (12)
+**@regression (30 tests)** — Important but non-critical:
+- `visibility.test.ts` (4), `color-scheme.test.ts` (3), `font.test.ts` (3), `theme.test.ts` (2), `i18n.test.ts` (3), `optional-sections.test.ts` (12), `photo-sync.test.ts` (3), `import-backward-compat.test.ts` (1 - import from prior format)
 
 ### Git Workflow & Conventions
 
