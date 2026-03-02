@@ -395,6 +395,7 @@
     "photoUploadFailed": "Foto lokal gespeichert — Upload in die Cloud fehlgeschlagen"
   },
   "premium": {
+    "pro": "Premium-Funktion",
     "upgradeTitle": "Premium freischalten",
     "upgradeDescription": "Holen Sie das Beste aus Ihrem Lebenslauf mit allen Premium-Funktionen.",
     "comingSoon": "Demnächst verfügbar",

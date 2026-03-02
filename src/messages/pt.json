@@ -395,6 +395,7 @@
     "photoUploadFailed": "Foto salva localmente — não foi possível enviá-la para a nuvem"
   },
   "premium": {
+    "pro": "Recurso Premium",
     "upgradeTitle": "Desbloquear Premium",
     "upgradeDescription": "Aproveite ao máximo seu CV com todos os recursos premium.",
     "comingSoon": "Em breve",

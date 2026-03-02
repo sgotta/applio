@@ -395,6 +395,7 @@
     "photoUploadFailed": "Foto salvata localmente — caricamento nel cloud non riuscito"
   },
   "premium": {
+    "pro": "Funzionalità Premium",
     "upgradeTitle": "Sblocca Premium",
     "upgradeDescription": "Sfrutta al massimo il tuo CV con tutte le funzionalità premium.",
     "comingSoon": "Prossimamente",

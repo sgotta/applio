@@ -395,6 +395,7 @@
     "photoUploadFailed": "Photo enregistrée localement — échec de l'envoi vers le cloud"
   },
   "premium": {
+    "pro": "Fonctionnalité Premium",
     "upgradeTitle": "Débloquer Premium",
     "upgradeDescription": "Profitez au maximum de votre CV avec toutes les fonctionnalités premium.",
     "comingSoon": "Bientôt disponible",
