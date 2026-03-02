@@ -72,7 +72,7 @@ function SectionToggle({
   mobile?: boolean;
 }) {
   return (
-    <label className={`flex items-center justify-between gap-3 cursor-pointer ${mobile ? "py-3.5 min-h-[52px]" : "py-2.5 px-4"}`}>
+    <label className={`flex items-center justify-between gap-3 cursor-pointer ${mobile ? "py-3.5 min-h-13" : "py-2.5 px-4"}`}>
       <span className={`flex items-center gap-2 ${mobile ? "text-[17px]" : "text-[13px]"} text-gray-700 dark:text-gray-200`}>
         {label}
         {locked && <PremiumBadge />}
@@ -250,7 +250,7 @@ function AccountContent({
       {/* CTA */}
       <button
         onClick={() => { onClose(); onLogin(); }}
-        className={`cursor-pointer w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-gray-800 to-gray-900 px-4 ${btnPy} ${rowMinH} text-sm font-medium text-white shadow-sm hover:from-gray-700 hover:to-gray-800 transition-colors dark:from-gray-100 dark:to-gray-200 dark:text-gray-900 dark:hover:from-gray-200 dark:hover:to-gray-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2`}
+        className={`cursor-pointer w-full flex items-center justify-center gap-2 rounded-xl bg-linear-to-b from-gray-800 to-gray-900 px-4 ${btnPy} ${rowMinH} text-sm font-medium text-white shadow-sm hover:from-gray-700 hover:to-gray-800 transition-colors dark:from-gray-100 dark:to-gray-200 dark:text-gray-900 dark:hover:from-gray-200 dark:hover:to-gray-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2`}
       >
         <LogIn className={iconSize} />
         {tauth("login")}
@@ -305,7 +305,7 @@ function ColorSection({
                   <Lock className={`absolute inset-0 m-auto h-3.5 w-3.5 drop-shadow-sm ${isLight ? "text-gray-800/60" : "text-white/70"}`} />
                 )}
               </button>
-              <span className="text-[10px] text-gray-400 dark:text-gray-500 leading-tight text-center truncate max-w-[40px]">{label}</span>
+              <span className="text-[10px] text-gray-400 dark:text-gray-500 leading-tight text-center truncate max-w-10">{label}</span>
             </div>
           );
         })}
@@ -892,7 +892,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <button onClick={() => setMobileMenuPage("color")} className={menuItemClass}>
                       <span className="flex items-center gap-3">
                         <span className="h-10 w-10 flex items-center justify-center rounded-xl bg-pink-50 dark:bg-pink-900/20 text-pink-500 shrink-0">
-                          <Palette className="h-[18px] w-[18px]" />
+                          <Palette className="h-4.5 w-4.5" />
                         </span>
                         {t("colorScheme")}
                       </span>
@@ -902,7 +902,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <button onClick={() => setMobileMenuPage("pattern")} className={menuItemClass}>
                       <span className="flex items-center gap-3">
                         <span className="h-10 w-10 flex items-center justify-center rounded-xl bg-violet-50 dark:bg-violet-900/20 text-violet-500 shrink-0">
-                          <Layers className="h-[18px] w-[18px]" />
+                          <Layers className="h-4.5 w-4.5" />
                         </span>
                         {t("sidebarPattern")}
                       </span>
@@ -912,7 +912,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <button onClick={() => setMobileMenuPage("font")} className={menuItemClass}>
                       <span className="flex items-center gap-3">
                         <span className="h-10 w-10 flex items-center justify-center rounded-xl bg-sky-50 dark:bg-sky-900/20 text-sky-500 shrink-0">
-                          <Type className="h-[18px] w-[18px]" />
+                          <Type className="h-4.5 w-4.5" />
                         </span>
                         {t("fontFamily")}
                       </span>
@@ -922,7 +922,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <button onClick={() => setMobileMenuPage("sections")} className={menuItemClass}>
                       <span className="flex items-center gap-3">
                         <span className="h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 shrink-0">
-                          <SlidersHorizontal className="h-[18px] w-[18px]" />
+                          <SlidersHorizontal className="h-4.5 w-4.5" />
                         </span>
                         {t("sections")}
                       </span>
@@ -937,7 +937,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <div className={`${menuItemClass} cursor-default`} onClick={toggleTheme}>
                       <span className="flex items-center gap-3">
                         <span className="h-10 w-10 flex items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-500 shrink-0">
-                          <Moon className="h-[18px] w-[18px]" />
+                          <Moon className="h-4.5 w-4.5" />
                         </span>
                         {t("themeDark")}
                       </span>
@@ -952,7 +952,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <button onClick={() => setMobileMenuPage("language")} className={menuItemClass}>
                       <span className="flex items-center gap-3">
                         <span className="h-10 w-10 flex items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-500 shrink-0">
-                          <Globe className="h-[18px] w-[18px]" />
+                          <Globe className="h-4.5 w-4.5" />
                         </span>
                         {t("language")}
                       </span>
@@ -970,7 +970,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <button onClick={() => { setMobileMenuOpen(false); onPrintPDF(); }} disabled={isGeneratingPDF} className={`${menuItemClass} disabled:opacity-50`}>
                       <span className="flex items-center gap-3">
                         <span className="h-10 w-10 flex items-center justify-center rounded-xl bg-red-50 dark:bg-red-900/20 text-red-500 shrink-0">
-                          {isGeneratingPDF ? <Loader2 className="h-[18px] w-[18px] animate-spin" /> : <Download className="h-[18px] w-[18px]" />}
+                          {isGeneratingPDF ? <Loader2 className="h-4.5 w-4.5 animate-spin" /> : <Download className="h-4.5 w-4.5" />}
                         </span>
                         {t("pdfTitle")}
                       </span>
@@ -979,7 +979,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <button onClick={exportToJSON} className={menuItemClass}>
                       <span className="flex items-center gap-3">
                         <span className="h-10 w-10 flex items-center justify-center rounded-xl bg-amber-50 dark:bg-amber-900/20 text-amber-500 shrink-0">
-                          <FileDown className="h-[18px] w-[18px]" />
+                          <FileDown className="h-4.5 w-4.5" />
                         </span>
                         {t("export")}
                       </span>
@@ -988,7 +988,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <button onClick={() => fileInputRef.current?.click()} className={menuItemClass}>
                       <span className="flex items-center gap-3">
                         <span className="h-10 w-10 flex items-center justify-center rounded-xl bg-amber-50 dark:bg-amber-900/20 text-amber-500 shrink-0">
-                          <FileUp className="h-[18px] w-[18px]" />
+                          <FileUp className="h-4.5 w-4.5" />
                         </span>
                         {t("import")}
                       </span>
@@ -998,7 +998,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       <button onClick={handleShare} disabled={isSharing || !canShare} className={`${menuItemClass} ${!canShare ? "opacity-50" : ""}`}>
                         <span className="flex items-center gap-3">
                           <span className="h-10 w-10 flex items-center justify-center rounded-xl bg-green-50 dark:bg-green-900/20 text-green-500 shrink-0">
-                            {isSharing ? <Loader2 className="h-[18px] w-[18px] animate-spin" /> : <Share2 className="h-[18px] w-[18px]" />}
+                            {isSharing ? <Loader2 className="h-4.5 w-4.5 animate-spin" /> : <Share2 className="h-4.5 w-4.5" />}
                           </span>
                           {t("share")}
                         </span>
@@ -1010,7 +1010,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       >
                         <span className="flex items-center gap-3">
                           <span className="h-10 w-10 flex items-center justify-center rounded-xl bg-green-50 dark:bg-green-900/20 text-green-500 shrink-0">
-                            <Share2 className="h-[18px] w-[18px]" />
+                            <Share2 className="h-4.5 w-4.5" />
                           </span>
                           {t("share")}
                         </span>
@@ -1041,7 +1041,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                           className="h-9 w-9 flex items-center justify-center rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors cursor-pointer shrink-0"
                           title={tauth("signOut")}
                         >
-                          <LogOut className="h-[18px] w-[18px]" />
+                          <LogOut className="h-4.5 w-4.5" />
                         </button>
                       </div>
                     ) : (
@@ -1082,7 +1082,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                             className="relative flex flex-col items-center gap-2"
                           >
                             <span
-                              className={`relative h-[52px] w-[52px] rounded-full transition-transform hover:scale-105 ${isLight ? "ring-1 ring-inset ring-black/10" : ""} ${colorSchemeName === name ? "ring-2 ring-offset-2 ring-gray-900 dark:ring-gray-100" : ""}`}
+                              className={`relative h-13 w-13 rounded-full transition-transform hover:scale-105 ${isLight ? "ring-1 ring-inset ring-black/10" : ""} ${colorSchemeName === name ? "ring-2 ring-offset-2 ring-gray-900 dark:ring-gray-100" : ""}`}
                               style={{ backgroundColor: scheme.sidebarBg }}
                             >
                               {colorSchemeName === name && (
@@ -1129,7 +1129,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                               className="relative flex flex-col items-center gap-1.5"
                             >
                               <span
-                                className={`relative h-[52px] w-[52px] rounded-xl border overflow-hidden transition-transform hover:scale-105 ${
+                                className={`relative h-13 w-13 rounded-xl border overflow-hidden transition-transform hover:scale-105 ${
                                   isActive
                                     ? "border-gray-900 dark:border-gray-100 ring-1 ring-gray-900 dark:ring-gray-100"
                                     : "border-gray-200 dark:border-gray-700"
@@ -1301,7 +1301,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                             setLocale(code);
                             setMobileMenuPage("main");
                           }}
-                          className="flex w-full items-center justify-between px-4 py-3.5 min-h-[52px] text-[15px] font-medium text-gray-800 hover:bg-gray-50 dark:text-gray-100 dark:hover:bg-accent/60 transition-colors cursor-pointer"
+                          className="flex w-full items-center justify-between px-4 py-3.5 min-h-13 text-[15px] font-medium text-gray-800 hover:bg-gray-50 dark:text-gray-100 dark:hover:bg-accent/60 transition-colors cursor-pointer"
                         >
                           <span className="flex items-baseline gap-1.5">
                             {native}
@@ -1651,7 +1651,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
             <PopoverTrigger asChild>
               <button
                 aria-label={user ? (user.name || user.email || "Account") : "Sign in"}
-                className="relative cursor-pointer md:hidden h-[44px] w-[44px] mr-1 items-center justify-center rounded-full overflow-visible transition-all flex group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-1"
+                className="relative cursor-pointer md:hidden h-11 w-11 mr-1 items-center justify-center rounded-full overflow-visible transition-all flex group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-1"
               >
                 {user ? (
                   <span className="h-9 w-9 rounded-full overflow-hidden ring-1 ring-gray-200 dark:ring-gray-700 group-hover:ring-gray-400 dark:group-hover:ring-gray-500 transition-all block">
