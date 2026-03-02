@@ -449,13 +449,17 @@ function SortableSidebarSection({
 
   return (
     <div ref={setNodeRef} style={style} className="group/sidebar-section relative">
-      <button
-        className="absolute -left-6 can-hover:-left-5 top-0.5 opacity-60 can-hover:opacity-40 can-hover:group-hover/sidebar-section:opacity-100 transition-opacity duration-150 p-1.5 can-hover:p-1 rounded cursor-grab active:cursor-grabbing touch-manipulation hover:bg-white/10"
-        {...attributes}
-        {...listeners}
+      <div
+        className="absolute -left-7 can-hover:-left-6 top-[calc(0.675em-14px)] can-hover:top-[calc(0.675em-12px)] opacity-60 can-hover:opacity-40 can-hover:group-hover/sidebar-section:opacity-100 transition-opacity duration-150"
       >
-        <GripVertical className="h-4 w-4 opacity-60" />
-      </button>
+        <button
+          className="p-1.5 can-hover:p-1 rounded cursor-grab active:cursor-grabbing touch-manipulation hover:bg-white/10"
+          {...attributes}
+          {...listeners}
+        >
+          <GripVertical className="h-4 w-4 opacity-60" />
+        </button>
+      </div>
       {children}
     </div>
   );
