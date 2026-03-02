@@ -342,7 +342,7 @@ function SortableSkillCategory({
             value={skillGroup.category}
             onChange={(v) => updateSkillCategory(skillGroup.id, { category: v })}
             as="tiny"
-            className="!font-semibold !uppercase !tracking-wide"
+            className="font-semibold! uppercase! tracking-wide!"
             placeholder={t("categoryPlaceholder")}
             displayStyle={{ color: colorScheme.sidebarText }}
             autoEdit={!!autoEditTarget?.startsWith("newCategory:") && index === total - 1}
