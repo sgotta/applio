@@ -926,12 +926,12 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
         {/* ===== noPhoto: single-column layout ===== */}
         {templateId === "noPhoto" && (
           <>
-            {/* Top accent bar — premium signature */}
-            <View style={{ height: 3, backgroundColor: colors.heading }} />
+            {/* Top accent bar — escapes page padding via absolute positioning */}
+            <View fixed style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, backgroundColor: colors.heading }} />
 
             <View style={{ paddingHorizontal: NOPHOTO_PAD }}>
             {/* Header: name + title + contact row */}
-            <View style={{ marginBottom: 16, paddingTop: 22, paddingBottom: 14, borderBottom: 1, borderBottomColor: safePdfColor(colors.heading + "14") }}>
+            <View style={{ paddingTop: 22, paddingBottom: 14 }}>
               <Text style={{ fontSize: fs(24), fontWeight: 600, color: "#111827", letterSpacing: -0.5 }}>
                 {personalInfo.fullName}
               </Text>
@@ -963,6 +963,8 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                 </View>
               )}
             </View>
+            {/* Header divider — standalone View avoids @react-pdf borderBottom color bug */}
+            <View style={{ height: 1, backgroundColor: safePdfColor(colors.heading + "14"), marginBottom: 16 }} />
 
             {/* Summary */}
             {visibility.summary && summary && (
@@ -990,7 +992,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                           textTransform: "uppercase",
                           letterSpacing: 0.8,
                           color: safePdfColor(colors.heading + "70"),
-                          width: 52,
+                          width: 80,
                           textAlign: "right",
                           paddingTop: 2,
                           paddingRight: 8,
