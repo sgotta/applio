@@ -976,51 +976,6 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
               </View>
             )}
 
-            {/* Skills — two-column: category label | chips */}
-            {skillCategories.length > 0 && (
-              <View style={{ marginBottom: SECTION_GAP }}>
-                <NoPhotoSectionHeading color={colors.heading} fontSize={fs(10)}>
-                  {labels.skills}
-                </NoPhotoSectionHeading>
-                <View style={{ gap: 5 }}>
-                  {skillCategories.map((cat) => (
-                    <View key={cat.id} style={{ flexDirection: "row", alignItems: "flex-start" }}>
-                      <Text
-                        style={{
-                          fontSize: fs(9),
-                          fontWeight: 700,
-                          textTransform: "uppercase",
-                          letterSpacing: 0.8,
-                          color: safePdfColor(colors.heading + "70"),
-                          width: 80,
-                          textAlign: "right",
-                          paddingTop: 2,
-                          paddingRight: 8,
-                        }}
-                      >
-                        {cat.category}
-                      </Text>
-                      <View style={{ flex: 1, flexDirection: "row", flexWrap: "wrap", gap: 3 }}>
-                        {cat.items.map((skill, i) => (
-                          <View
-                            key={i}
-                            style={{
-                              backgroundColor: safePdfColor(colors.heading + "12"),
-                              borderRadius: 3,
-                              paddingHorizontal: 5,
-                              paddingVertical: 2,
-                            }}
-                          >
-                            <Text style={{ fontSize: fs(10), color: colors.heading }}>{skill}</Text>
-                          </View>
-                        ))}
-                      </View>
-                    </View>
-                  ))}
-                </View>
-              </View>
-            )}
-
             {/* Experience */}
             {experiences.length > 0 && (
               <View style={{ marginBottom: SECTION_GAP }}>
@@ -1193,6 +1148,51 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                     )}
                   </View>
                 ))}
+              </View>
+            )}
+
+            {/* Skills — two-column: category label | chips (at end for noPhoto) */}
+            {skillCategories.length > 0 && (
+              <View style={{ marginBottom: SECTION_GAP }}>
+                <NoPhotoSectionHeading color={colors.heading} fontSize={fs(10)}>
+                  {labels.skills}
+                </NoPhotoSectionHeading>
+                <View style={{ gap: 5 }}>
+                  {skillCategories.map((cat) => (
+                    <View key={cat.id} style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                      <Text
+                        style={{
+                          fontSize: fs(9),
+                          fontWeight: 700,
+                          textTransform: "uppercase",
+                          letterSpacing: 0.8,
+                          color: safePdfColor(colors.heading + "70"),
+                          width: 80,
+                          textAlign: "right",
+                          paddingTop: 2,
+                          paddingRight: 8,
+                        }}
+                      >
+                        {cat.category}
+                      </Text>
+                      <View style={{ flex: 1, flexDirection: "row", flexWrap: "wrap", gap: 3 }}>
+                        {cat.items.map((skill, i) => (
+                          <View
+                            key={i}
+                            style={{
+                              backgroundColor: safePdfColor(colors.heading + "12"),
+                              borderRadius: 3,
+                              paddingHorizontal: 5,
+                              paddingVertical: 2,
+                            }}
+                          >
+                            <Text style={{ fontSize: fs(10), color: colors.heading }}>{skill}</Text>
+                          </View>
+                        ))}
+                      </View>
+                    </View>
+                  ))}
+                </View>
               </View>
             )}
             </View>

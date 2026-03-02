@@ -261,7 +261,13 @@ function NoPhotoTemplate() {
             </section>
           )}
 
-          {/* Skills — two-column: category label | chips */}
+          <Experience />
+          <Education />
+          {visibility.courses && <Courses />}
+          {visibility.certifications && <Certifications />}
+          {visibility.awards && <Awards />}
+
+          {/* Skills — two-column: category label | chips (at end for noPhoto) */}
           {skillCategories.length > 0 && (
             <section>
               {sectionTitle(tpi("skills"))}
@@ -290,12 +296,6 @@ function NoPhotoTemplate() {
               </div>
             </section>
           )}
-
-          <Experience />
-          <Education />
-          {visibility.courses && <Courses />}
-          {visibility.certifications && <Certifications />}
-          {visibility.awards && <Awards />}
         </div>
       </div>
 
