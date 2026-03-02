@@ -38,14 +38,6 @@
     "colorSchemeEmerald": "Emerald",
     "colorSchemeCarrot": "Carrot",
     "colorSchemeWetAsphalt": "Wet Asphalt",
-    "sidebarPattern": "Pattern",
-    "patternNone": "None",
-    "patternDots": "Dots",
-    "patternIntensity": "Intensity",
-    "patternScope": "Scope",
-    "patternScopeSidebar": "Sidebar",
-    "patternScopeMain": "Main content",
-    "patternScopeFull": "Full page",
     "fontSettings": "Typography",
     "fontFamily": "Font",
     "fontSize": "Font size",
@@ -78,7 +70,10 @@
     "syncProHint": "With Pro, syncs to the cloud.",
     "syncLoginHint": "Sign in to sync your data and access it from any device.",
     "syncSyncing": "Syncing...",
-    "syncError": "Sync error"
+    "syncError": "Sync error",
+    "templates": "Templates",
+    "templateClassic": "Classic",
+    "templateNoPhoto": "No photo"
   },
   "cvPreview": {
     "fullNamePlaceholder": "Your Full Name",
@@ -341,7 +336,7 @@
       "dragHintAfter": "Entries reorder instantly!"
     },
     "features": {
-      "sectionTitle": "Learn to edit in\u00a0seconds",
+      "sectionTitle": "Learn to edit in seconds",
       "sectionSubtitle": "No long tutorials or learning curves. Four things you need to know.",
       "step1Title": "Click and edit",
       "step1Desc": "Every text in your CV is editable. Click on the name, the position, the dates, the descriptions — anything. It becomes a text field instantly. No forms, no pop-ups.",
@@ -375,8 +370,7 @@
       "subtitle": "Start editing now and download your CV as a professional PDF. No hassle.",
       "button": "Start now"
     },
-    "footer": {
-    }
+    "footer": {}
   },
   "auth": {
     "loginTitle": "Sign in to Applio",
@@ -401,29 +395,13 @@
     "photoUploadFailed": "Photo saved locally — couldn't upload to cloud"
   },
   "premium": {
-    "pro": "PRO",
     "upgradeTitle": "Unlock Premium",
     "upgradeDescription": "Get the most out of your CV with all premium features.",
-    "feature_pdfNoBranding": "Download PDF without Applio watermark",
-    "feature_cloudSync": "Cloud sync",
-    "feature_multiDevice": "Access your CV from any device",
-    "feature_allColors": "All color schemes",
-    "feature_allFonts": "All fonts",
-    "feature_allPatterns": "Decorative patterns",
-    "feature_allSections": "All optional sections",
-    "feature_richText": "Advanced text formatting",
-    "feature_pdfNoBranding_desc": "Download your CV as a clean PDF — no Applio branding, just your work.",
-    "feature_cloudSync_desc": "Your CV is automatically backed up to the cloud. Never lose your work again.",
-    "feature_multiDevice_desc": "Edit on your phone, finish on your laptop. Your CV follows you everywhere.",
-    "feature_allColors_desc": "Unlock all color schemes to match your personal style perfectly.",
-    "feature_allFonts_desc": "Choose from Inter, Lato, Source Sans 3, or Merriweather for a unique look.",
-    "feature_allPatterns_desc": "Add elegant decorative patterns to make your CV stand out.",
-    "feature_allSections_desc": "Add courses, certifications, and awards to show the full picture.",
-    "feature_richText_desc": "Bold, italic, bullet points — format your experience exactly how you want.",
-    "upgradeButton": "Upgrade now",
     "comingSoon": "Coming soon",
-    "loginFirst": "Sign in to upgrade",
-    "watermark": "Made with Applio"
+    "feature_pdfNoBranding": "Download PDF without Applio watermark",
+    "feature_pdfNoBranding_desc": "Download your CV as a clean PDF — no Applio branding, just your work.",
+    "feature_premiumTemplates": "Premium templates",
+    "feature_premiumTemplates_desc": "Alternative CV layouts: no photo, single-column, and more."
   },
   "syncConflict": {
     "title": "We found your CV",

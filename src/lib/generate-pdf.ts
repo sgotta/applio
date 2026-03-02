@@ -8,7 +8,6 @@
 import type { CVData } from "@/lib/types";
 import type { ColorScheme } from "@/lib/color-schemes";
 import type { PDFLabels } from "@/lib/pdf-document";
-import type { PatternSettings } from "@/lib/sidebar-patterns";
 
 export type { PDFLabels };
 
@@ -80,7 +79,6 @@ export async function downloadPDF(
   colors: ColorScheme,
   labels: PDFLabels,
   locale?: string,
-  patternSettings?: PatternSettings,
   fontFamily?: string,
   fontScale?: number,
   isPremium?: boolean,
@@ -92,7 +90,7 @@ export async function downloadPDF(
     : data;
 
   const { generatePDFBlob } = await import("./pdf-document");
-  const blob = await generatePDFBlob({ data: pdfData, colors, labels, locale, patternSettings, fontFamily, fontScale, isPremium });
+  const blob = await generatePDFBlob({ data: pdfData, colors, labels, locale, fontFamily, fontScale, isPremium });
 
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");

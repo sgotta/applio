@@ -18,6 +18,7 @@ import type {
   CertificationItem,
   AwardItem,
   SectionVisibility,
+  TemplateId,
 } from "./types";
 import { getDefaultCVData, defaultVisibility } from "./default-data";
 import { loadCVData, saveCVData } from "./storage";
@@ -63,6 +64,7 @@ interface CVContextValue {
   reorderAward: (fromIndex: number, toIndex: number) => void;
   toggleSection: (key: keyof SectionVisibility) => void;
   reorderSidebarSection: (fromIndex: number, toIndex: number) => void;
+  setTemplate: (id: TemplateId) => void;
   resetData: () => void;
   importData: (data: CVData) => void;
 }
@@ -475,6 +477,10 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     }));
   }, []);
 
+  const setTemplate = useCallback((id: TemplateId) => {
+    setData((prev) => ({ ...prev, templateId: id }));
+  }, []);
+
   const resetData = useCallback(() => {
     setData(getDefaultCVData(localeRef.current));
   }, []);
@@ -528,6 +534,7 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
         reorderAward,
         toggleSection,
         reorderSidebarSection,
+        setTemplate,
         resetData,
         importData,
       }}

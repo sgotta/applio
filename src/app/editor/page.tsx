@@ -9,7 +9,6 @@ import { ThemeProvider } from "@/lib/theme-context";
 import { AuthProvider } from "@/lib/auth-context";
 import { PlanProvider, usePlan } from "@/lib/plan-context";
 import { ColorSchemeProvider, useColorScheme } from "@/lib/color-scheme-context";
-import { SidebarPatternProvider, useSidebarPattern } from "@/lib/sidebar-pattern-context";
 import { FontSettingsProvider, useFontSettings } from "@/lib/font-context";
 import { SyncStatusProvider } from "@/lib/sync-status-context";
 import { downloadPDF } from "@/lib/generate-pdf";
@@ -27,7 +26,6 @@ function AppContent() {
   const t = useTranslations("toolbar");
   const tp = useTranslations("printable");
   const { colorScheme } = useColorScheme();
-  const { patternSettings } = useSidebarPattern();
   const { fontFamilyId, fontSizeLevel } = useFontSettings();
   const { locale } = useAppLocale();
   const { isPremium } = usePlan();
@@ -51,13 +49,13 @@ function AppContent() {
       };
       const pdfFontFamily = getFontDefinition(fontFamilyId).pdfFamilyName;
       const pdfFontScale = FONT_SIZE_LEVELS[fontSizeLevel] * PDF_BASE_FONT_SCALE;
-      await downloadPDF(data, filename, colorScheme, labels, locale, patternSettings, pdfFontFamily, pdfFontScale, isPremium);
+      await downloadPDF(data, filename, colorScheme, labels, locale, pdfFontFamily, pdfFontScale, isPremium);
     } catch (err) {
       console.error("PDF generation failed:", err);
     } finally {
       setIsGeneratingPDF(false);
     }
-  }, [isGeneratingPDF, data, colorScheme, tp, patternSettings, locale, fontFamilyId, fontSizeLevel, isPremium]);
+  }, [isGeneratingPDF, data, colorScheme, tp, locale, fontFamilyId, fontSizeLevel, isPremium]);
 
   if (loading) {
     return (
@@ -112,8 +110,7 @@ export default function Home() {
   return (
     <ThemeProvider>
       <ColorSchemeProvider>
-        <SidebarPatternProvider>
-          <FontSettingsProvider>
+        <FontSettingsProvider>
           <LocaleProvider>
             <AuthProvider>
             <PlanProvider>
@@ -140,8 +137,7 @@ export default function Home() {
             </PlanProvider>
             </AuthProvider>
           </LocaleProvider>
-          </FontSettingsProvider>
-        </SidebarPatternProvider>
+        </FontSettingsProvider>
       </ColorSchemeProvider>
     </ThemeProvider>
   );

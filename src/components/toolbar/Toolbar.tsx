@@ -5,7 +5,7 @@ import { useCV } from "@/lib/cv-context";
 import { useTranslations } from "next-intl";
 import { useAppLocale, LOCALES, LOCALE_NAMES } from "@/lib/locale-context";
 import { filenameDateStamp } from "@/lib/utils";
-import { CVData } from "@/lib/types";
+import { CVData, type TemplateId } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -14,11 +14,8 @@ import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useTheme } from "@/lib/theme-context";
 import { useColorScheme } from "@/lib/color-scheme-context";
-import { useSidebarPattern } from "@/lib/sidebar-pattern-context";
 import { useFontSettings } from "@/lib/font-context";
 import { FONT_FAMILIES, FONT_SIZE_LEVEL_IDS, type FontFamilyId, type FontSizeLevel } from "@/lib/fonts";
-import { SIDEBAR_PATTERN_NAMES, SIDEBAR_PATTERNS, PATTERN_SCOPES, type PatternScope, type PatternIntensity, type SidebarPatternName } from "@/lib/sidebar-patterns";
-import { Slider } from "@/components/ui/slider";
 import { COLOR_SCHEME_NAMES, COLOR_SCHEMES, type ColorSchemeName } from "@/lib/color-schemes";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth-context";
@@ -32,12 +29,8 @@ import {
   SlidersHorizontal, Check, Sun, Moon,
   Menu, X, ChevronRight, ChevronLeft, Palette,
   Loader2, Share2, LogIn, LogOut, User, Copy, ExternalLink,
-  PanelLeft, PanelRight, Square, Lock, HardDrive, Cloud, CloudOff, Layers, Sparkles,
+  Lock, HardDrive, Cloud, CloudOff, LayoutTemplate, Sparkles,
 } from "lucide-react";
-
-/* ── Free-tier feature limits ──────────────────────────── */
-const FREE_COLORS: ColorSchemeName[] = ["default"];
-const FREE_FONTS: FontFamilyId[] = ["inter", "lato"];
 
 interface ToolbarProps {
   onPrintPDF: () => void | Promise<void>;
@@ -264,14 +257,10 @@ function AccountContent({
 function ColorSection({
   colorSchemeName,
   setColorScheme,
-  isPremium,
-  onUpgrade,
   t,
 }: {
   colorSchemeName: ColorSchemeName;
   setColorScheme: (name: ColorSchemeName) => void;
-  isPremium: boolean;
-  onUpgrade: () => void;
   t: (key: string) => string;
 }) {
   return (
@@ -283,26 +272,19 @@ function ColorSection({
         {COLOR_SCHEME_NAMES.map((name) => {
           const scheme = COLOR_SCHEMES[name];
           const isLight = scheme.sidebarText !== "#ffffff";
-          const isLocked = !isPremium && !FREE_COLORS.includes(name);
           const label = t(`colorScheme${name.charAt(0).toUpperCase() + name.slice(1)}`);
           return (
             <div key={name} className="flex flex-col items-center gap-1.5">
               <button
-                onClick={() => {
-                  if (isLocked) { onUpgrade(); return; }
-                  setColorScheme(name);
-                }}
+                onClick={() => setColorScheme(name)}
                 aria-label={label}
                 className={`relative h-10 w-10 rounded-full transition-all hover:scale-105 focus:outline-none ${
                   colorSchemeName === name ? "ring-2 ring-offset-2 ring-gray-900 dark:ring-gray-100" : ""
                 } ${isLight ? "ring-1 ring-inset ring-black/10" : ""}`}
                 style={{ backgroundColor: scheme.sidebarBg }}
               >
-                {colorSchemeName === name && !isLocked && (
+                {colorSchemeName === name && (
                   <Check className={`absolute inset-0 m-auto h-4 w-4 drop-shadow-sm ${isLight ? "text-gray-800" : "text-white"}`} />
-                )}
-                {isLocked && (
-                  <Lock className={`absolute inset-0 m-auto h-3.5 w-3.5 drop-shadow-sm ${isLight ? "text-gray-800/60" : "text-white/70"}`} />
                 )}
               </button>
               <span className="text-[10px] text-gray-400 dark:text-gray-500 leading-tight text-center truncate max-w-10">{label}</span>
@@ -314,134 +296,79 @@ function ColorSection({
   );
 }
 
-function PatternSection({
-  colorSchemeName,
-  patternName,
-  setPattern,
-  sidebarIntensity,
-  mainIntensity,
-  scope,
-  setSidebarIntensity,
-  setMainIntensity,
-  setScope,
+function TemplateSection({
+  templateId,
+  setTemplate,
   isPremium,
   onUpgrade,
   t,
 }: {
-  colorSchemeName: ColorSchemeName;
-  patternName: SidebarPatternName;
-  setPattern: (name: SidebarPatternName) => void;
-  sidebarIntensity: PatternIntensity;
-  mainIntensity: PatternIntensity;
-  scope: PatternScope;
-  setSidebarIntensity: (v: PatternIntensity) => void;
-  setMainIntensity: (v: PatternIntensity) => void;
-  setScope: (s: PatternScope) => void;
+  templateId: TemplateId;
+  setTemplate: (id: TemplateId) => void;
   isPremium: boolean;
   onUpgrade: () => void;
   t: (key: string) => string;
 }) {
+  const templates: { id: TemplateId; locked: boolean }[] = [
+    { id: "classic", locked: false },
+    { id: "noPhoto", locked: !isPremium },
+  ];
   return (
-    <>
-      {/* Pattern selection */}
-      <div>
-        <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-3">
-          {t("sidebarPattern")}
-        </p>
-        <div className="flex gap-3">
-          {SIDEBAR_PATTERN_NAMES.map((name) => {
-            const isActive = patternName === name;
-            const isNone = name === "none";
-            const isLocked = !isPremium && !isNone;
-            return (
-              <div key={name} className="flex flex-col items-center gap-1.5">
-                <button
-                  onClick={() => {
-                    if (isLocked) { onUpgrade(); return; }
-                    setPattern(name);
-                  }}
-                  className={`relative h-10 w-10 rounded-lg border overflow-hidden transition-all hover:scale-105 focus:outline-none ${
-                    isActive
-                      ? "border-gray-900 dark:border-gray-100 ring-2 ring-gray-900 dark:ring-gray-100 ring-offset-1"
-                      : "border-gray-200 dark:border-gray-700"
-                  }`}
-                  style={{
-                    backgroundColor: isNone ? "white" : COLOR_SCHEMES[colorSchemeName].sidebarBg,
-                    ...(!isNone ? SIDEBAR_PATTERNS[name].getStyle(COLOR_SCHEMES[colorSchemeName].sidebarText, sidebarIntensity) : {}),
-                  }}
-                >
-                  {isNone && (
-                    <span className="absolute inset-0" style={{ background: "linear-gradient(to top left, transparent calc(50% - 1px), #ef4444 calc(50% - 1px), #ef4444 calc(50% + 1px), transparent calc(50% + 1px))" }} />
-                  )}
-                  {isActive && !isNone && (
-                    <Check className={`absolute inset-0 m-auto h-3.5 w-3.5 drop-shadow-sm ${
-                      COLOR_SCHEMES[colorSchemeName].sidebarText === "#ffffff" ? "text-white" : "text-gray-800"
-                    }`} />
-                  )}
-                  {isLocked && (
-                    <Lock className="absolute inset-0 m-auto h-3 w-3 text-white/70 drop-shadow-sm" />
-                  )}
-                </button>
-                <span className="text-[10px] text-gray-400 dark:text-gray-400">
-                  {t(`pattern${name.charAt(0).toUpperCase() + name.slice(1)}`)}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Intensity sliders */}
-      <div className={patternName === "none" ? "opacity-40 pointer-events-none" : ""}>
-        <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-3">
-          {t("patternIntensity")}
-        </p>
-        <div className="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800">
-          <div className={`flex items-center gap-3 px-4 py-2.5 ${scope === "main" ? "opacity-40 pointer-events-none" : ""}`}>
-            <span className="text-[13px] text-gray-600 dark:text-gray-300 shrink-0">{t("patternScopeSidebar")}</span>
-            <Slider min={1} max={5} step={1} value={[sidebarIntensity]} onValueChange={([v]) => setSidebarIntensity(v as PatternIntensity)} className="flex-1" />
-            <span className="text-[13px] font-medium text-gray-500 dark:text-gray-300 w-4 text-right shrink-0">{sidebarIntensity}</span>
+    <div>
+      <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-3">
+        {t("templates")}
+      </p>
+      <div className="flex gap-3">
+        {templates.map(({ id, locked }) => (
+          <div key={id} className="flex flex-col items-center gap-1.5">
+            <button
+              onClick={() => { if (locked) { onUpgrade(); return; } setTemplate(id); }}
+              className={`relative h-14 w-10 rounded-lg border overflow-hidden transition-all hover:scale-105 focus:outline-none ${
+                templateId === id
+                  ? "border-gray-900 dark:border-gray-100 ring-2 ring-gray-900 dark:ring-gray-100 ring-offset-1"
+                  : "border-gray-200 dark:border-gray-700"
+              }`}
+            >
+              {id === "classic" ? (
+                <div className="absolute inset-0 flex">
+                  <div className="w-2/5 h-full bg-gray-200 dark:bg-gray-600" />
+                  <div className="flex-1 p-0.5 bg-white dark:bg-gray-800 space-y-0.5">
+                    <div className="h-1 bg-gray-300 dark:bg-gray-600 rounded" />
+                    <div className="h-0.5 bg-gray-200 dark:bg-gray-700 rounded" />
+                    <div className="h-0.5 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
+                  </div>
+                </div>
+              ) : (
+                <div className="absolute inset-0 p-1 bg-white dark:bg-gray-800 space-y-0.5">
+                  <div className="h-1 bg-gray-300 dark:bg-gray-600 rounded" />
+                  <div className="h-0.5 bg-gray-200 dark:bg-gray-700 rounded" />
+                  <div className="h-px bg-gray-100 dark:bg-gray-700 mt-0.5" />
+                  <div className="h-0.5 bg-gray-300 dark:bg-gray-600 rounded mt-0.5" />
+                  <div className="h-0.5 bg-gray-200 dark:bg-gray-700 rounded" />
+                  <div className="h-0.5 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
+                </div>
+              )}
+              {templateId === id && !locked && (
+                <div className="absolute inset-0 bg-gray-900/5 dark:bg-white/5 flex items-center justify-center">
+                  <Check className="h-3 w-3 text-gray-900 dark:text-gray-100 drop-shadow-sm" />
+                </div>
+              )}
+              {locked && (
+                <div className="absolute inset-0 bg-white/60 dark:bg-gray-900/60 flex items-end pb-1.5 justify-center">
+                  <Lock className="h-2.5 w-2.5 text-gray-500 dark:text-gray-400" />
+                </div>
+              )}
+            </button>
+            <div className="flex flex-col items-center gap-0.5">
+              <span className="text-[10px] text-gray-400 dark:text-gray-500 leading-tight text-center">
+                {t(`template${id.charAt(0).toUpperCase() + id.slice(1)}`)}
+              </span>
+              {locked && <PremiumBadge />}
+            </div>
           </div>
-          <div className="h-px bg-gray-100 dark:bg-white/5" />
-          <div className={`flex items-center gap-3 px-4 py-2.5 ${scope === "sidebar" ? "opacity-40 pointer-events-none" : ""}`}>
-            <span className="text-[13px] text-gray-600 dark:text-gray-300 shrink-0">{t("patternScopeMain")}</span>
-            <Slider min={1} max={5} step={1} value={[mainIntensity]} onValueChange={([v]) => setMainIntensity(v as PatternIntensity)} className="flex-1" />
-            <span className="text-[13px] font-medium text-gray-500 dark:text-gray-300 w-4 text-right shrink-0">{mainIntensity}</span>
-          </div>
-        </div>
+        ))}
       </div>
-
-      {/* Scope selector */}
-      <div className={patternName === "none" ? "opacity-40 pointer-events-none" : ""}>
-        <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-3">
-          {t("patternScope")}
-        </p>
-        <div className="flex gap-1.5">
-          {PATTERN_SCOPES.map((s) => {
-            const ScopeIcon = s === "sidebar" ? PanelLeft : s === "main" ? PanelRight : Square;
-            return (
-              <Tooltip key={s}>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={() => setScope(s)}
-                    className={`h-8 w-8 rounded-lg flex items-center justify-center transition-colors ${
-                      scope === s
-                        ? "bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900"
-                        : "bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-accent dark:text-gray-300 dark:hover:bg-accent/80"
-                    }`}
-                  >
-                    <ScopeIcon className="h-3.5 w-3.5" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  {t(`patternScope${s.charAt(0).toUpperCase() + s.slice(1)}`)}
-                </TooltipContent>
-              </Tooltip>
-            );
-          })}
-        </div>
-      </div>
-    </>
+    </div>
   );
 }
 
@@ -450,16 +377,12 @@ function FontSection({
   fontSizeLevel,
   setFontFamily,
   setFontSizeLevel,
-  isPremium,
-  onUpgrade,
   t,
 }: {
   fontFamilyId: FontFamilyId;
   fontSizeLevel: FontSizeLevel;
   setFontFamily: (id: FontFamilyId) => void;
   setFontSizeLevel: (level: FontSizeLevel) => void;
-  isPremium: boolean;
-  onUpgrade: () => void;
   t: (key: string) => string;
 }) {
   return (
@@ -470,30 +393,21 @@ function FontSection({
           {t("fontFamily")}
         </p>
         <div className="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800">
-          {FONT_FAMILIES.map((font, idx) => {
-            const isLocked = !isPremium && !FREE_FONTS.includes(font.id);
-            return (
-              <React.Fragment key={font.id}>
-                {idx > 0 && <div className="h-px bg-gray-100 dark:bg-white/5" />}
-                <button
-                  onClick={() => {
-                    if (isLocked) { onUpgrade(); return; }
-                    setFontFamily(font.id);
-                  }}
-                  className="flex w-full items-center justify-between h-10 px-4 text-[13px] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
-                  style={{ fontFamily: font.cssStack }}
-                >
-                  <span className="flex items-center gap-2">
-                    {font.displayName}
-                    {isLocked && <PremiumBadge />}
-                  </span>
-                  {fontFamilyId === font.id && (
-                    <Check className="h-3.5 w-3.5 text-gray-900 dark:text-gray-100 shrink-0" />
-                  )}
-                </button>
-              </React.Fragment>
-            );
-          })}
+          {FONT_FAMILIES.map((font, idx) => (
+            <React.Fragment key={font.id}>
+              {idx > 0 && <div className="h-px bg-gray-100 dark:bg-white/5" />}
+              <button
+                onClick={() => setFontFamily(font.id)}
+                className="flex w-full items-center justify-between h-10 px-4 text-[13px] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                style={{ fontFamily: font.cssStack }}
+              >
+                <span>{font.displayName}</span>
+                {fontFamilyId === font.id && (
+                  <Check className="h-3.5 w-3.5 text-gray-900 dark:text-gray-100 shrink-0" />
+                )}
+              </button>
+            </React.Fragment>
+          ))}
         </div>
       </div>
 
@@ -528,15 +442,11 @@ function FontSection({
 function SectionsContent({
   data,
   toggleSection,
-  isPremium,
-  onUpgrade,
   t,
   mobile,
 }: {
   data: CVData;
   toggleSection: (key: keyof import("@/lib/types").SectionVisibility) => void;
-  isPremium: boolean;
-  onUpgrade: () => void;
   t: (key: string) => string;
   mobile?: boolean;
 }) {
@@ -565,19 +475,19 @@ function SectionsContent({
         {mobile ? (
           <>
             <SectionToggle label={t("sectionSummary")} checked={data.visibility.summary} onToggle={() => toggleSection("summary")} mobile={mobile} />
-            <SectionToggle label={t("sectionCourses")} checked={data.visibility.courses} locked={!isPremium} onToggle={() => { if (!isPremium) { onUpgrade(); return; } toggleSection("courses"); }} mobile={mobile} />
-            <SectionToggle label={t("sectionCertifications")} checked={data.visibility.certifications} locked={!isPremium} onToggle={() => { if (!isPremium) { onUpgrade(); return; } toggleSection("certifications"); }} mobile={mobile} />
-            <SectionToggle label={t("sectionAwards")} checked={data.visibility.awards} locked={!isPremium} onToggle={() => { if (!isPremium) { onUpgrade(); return; } toggleSection("awards"); }} mobile={mobile} />
+            <SectionToggle label={t("sectionCourses")} checked={data.visibility.courses} onToggle={() => toggleSection("courses")} mobile={mobile} />
+            <SectionToggle label={t("sectionCertifications")} checked={data.visibility.certifications} onToggle={() => toggleSection("certifications")} mobile={mobile} />
+            <SectionToggle label={t("sectionAwards")} checked={data.visibility.awards} onToggle={() => toggleSection("awards")} mobile={mobile} />
           </>
         ) : (
           <div className="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800">
             <SectionToggle label={t("sectionSummary")} checked={data.visibility.summary} onToggle={() => toggleSection("summary")} mobile={mobile} />
             <div className="h-px bg-gray-100 dark:bg-white/5" />
-            <SectionToggle label={t("sectionCourses")} checked={data.visibility.courses} locked={!isPremium} onToggle={() => { if (!isPremium) { onUpgrade(); return; } toggleSection("courses"); }} mobile={mobile} />
+            <SectionToggle label={t("sectionCourses")} checked={data.visibility.courses} onToggle={() => toggleSection("courses")} mobile={mobile} />
             <div className="h-px bg-gray-100 dark:bg-white/5" />
-            <SectionToggle label={t("sectionCertifications")} checked={data.visibility.certifications} locked={!isPremium} onToggle={() => { if (!isPremium) { onUpgrade(); return; } toggleSection("certifications"); }} mobile={mobile} />
+            <SectionToggle label={t("sectionCertifications")} checked={data.visibility.certifications} onToggle={() => toggleSection("certifications")} mobile={mobile} />
             <div className="h-px bg-gray-100 dark:bg-white/5" />
-            <SectionToggle label={t("sectionAwards")} checked={data.visibility.awards} locked={!isPremium} onToggle={() => { if (!isPremium) { onUpgrade(); return; } toggleSection("awards"); }} mobile={mobile} />
+            <SectionToggle label={t("sectionAwards")} checked={data.visibility.awards} onToggle={() => toggleSection("awards")} mobile={mobile} />
           </div>
         )}
       </div>
@@ -587,10 +497,10 @@ function SectionsContent({
 
 /* ── Main Toolbar ──────────────────────────────────────── */
 
-type MobileMenuPage = "main" | "color" | "pattern" | "font" | "sections" | "language";
+type MobileMenuPage = "main" | "color" | "template" | "font" | "sections" | "language";
 
 export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
-  const { data, importData, toggleSection } = useCV();
+  const { data, importData, toggleSection, setTemplate } = useCV();
   const { user, signOut } = useAuth();
   const { isPremium, devOverride, setDevOverride } = usePlan();
   const t = useTranslations("toolbar");
@@ -601,7 +511,6 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   const { locale, setLocale } = useAppLocale();
   const { theme, setTheme } = useTheme();
   const { colorSchemeName, setColorScheme } = useColorScheme();
-  const { patternName, setPattern, sidebarIntensity, mainIntensity, scope, setSidebarIntensity, setMainIntensity, setScope, patternSettings, setPatternSettings } = useSidebarPattern();
   const { fontFamilyId, fontSizeLevel, setFontFamily, setFontSizeLevel } = useFontSettings();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -644,7 +553,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
         fontFamily: fontFamilyId,
         fontSizeLevel,
         marginLevel: 2,
-        pattern: patternSettings,
+        templateId: data.templateId,
       },
     };
     const dataStr = JSON.stringify(exportData, null, 2);
@@ -679,20 +588,12 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
         if (confirm(t("importConfirm"))) {
           importData(parsed);
           const settings = (parsed as unknown as Record<string, unknown>).settings as
-            | { colorScheme?: string; fontFamily?: string; fontSizeLevel?: number; pattern?: { name: string; sidebarIntensity?: number; mainIntensity?: number; intensity?: number; scope: string } }
+            | { colorScheme?: string; fontFamily?: string; fontSizeLevel?: number }
             | undefined;
           if (settings) {
             if (settings.colorScheme) setColorScheme(settings.colorScheme as ColorSchemeName);
             if (settings.fontFamily) setFontFamily(settings.fontFamily as FontFamilyId);
             if (settings.fontSizeLevel) setFontSizeLevel(settings.fontSizeLevel as FontSizeLevel);
-            if (settings.pattern) {
-              setPatternSettings({
-                name: settings.pattern.name as Parameters<typeof setPattern>[0],
-                sidebarIntensity: (settings.pattern.sidebarIntensity ?? 3) as PatternIntensity,
-                mainIntensity: (settings.pattern.mainIntensity ?? 2) as PatternIntensity,
-                scope: settings.pattern.scope as PatternScope,
-              });
-            }
           }
         }
       } catch {
@@ -834,13 +735,10 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
     "w-full flex items-center gap-2 px-4 h-14 border-b border-gray-100 dark:border-border text-[17px] font-bold text-gray-900 dark:text-gray-100 tracking-tight hover:bg-gray-50 dark:hover:bg-accent/40 transition-colors cursor-pointer shrink-0";
 
   /* ── Shared design section props ──────────────────────── */
-  const colorProps = { colorSchemeName, setColorScheme, isPremium, onUpgrade: openUpgrade, t: t as (key: string) => string };
-  const patternProps = {
-    colorSchemeName, patternName, setPattern, sidebarIntensity, mainIntensity, scope,
-    setSidebarIntensity, setMainIntensity, setScope, isPremium, onUpgrade: openUpgrade, t: t as (key: string) => string,
-  };
-  const fontProps = { fontFamilyId, fontSizeLevel, setFontFamily, setFontSizeLevel, isPremium, onUpgrade: openUpgrade, t: t as (key: string) => string };
-  const sectionsProps = { data, toggleSection, isPremium, onUpgrade: openUpgrade, t: t as (key: string) => string };
+  const colorProps = { colorSchemeName, setColorScheme, t: t as (key: string) => string };
+  const templateProps = { templateId: data.templateId ?? "classic" as TemplateId, setTemplate, isPremium, onUpgrade: openUpgrade, t: t as (key: string) => string };
+  const fontProps = { fontFamilyId, fontSizeLevel, setFontFamily, setFontSizeLevel, t: t as (key: string) => string };
+  const sectionsProps = { data, toggleSection, t: t as (key: string) => string };
 
   return (
     <>
@@ -899,12 +797,12 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       <ChevronRight className="h-4 w-4 text-gray-300 dark:text-gray-600 shrink-0" />
                     </button>
 
-                    <button onClick={() => setMobileMenuPage("pattern")} className={menuItemClass}>
+                    <button onClick={() => setMobileMenuPage("template")} className={menuItemClass}>
                       <span className="flex items-center gap-3">
                         <span className="h-10 w-10 flex items-center justify-center rounded-xl bg-violet-50 dark:bg-violet-900/20 text-violet-500 shrink-0">
-                          <Layers className="h-4.5 w-4.5" />
+                          <LayoutTemplate className="h-4.5 w-4.5" />
                         </span>
-                        {t("sidebarPattern")}
+                        {t("templates")}
                       </span>
                       <ChevronRight className="h-4 w-4 text-gray-300 dark:text-gray-600 shrink-0" />
                     </button>
@@ -1071,14 +969,10 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       {COLOR_SCHEME_NAMES.map((name) => {
                         const scheme = COLOR_SCHEMES[name];
                         const isLight = scheme.sidebarText !== "#ffffff";
-                        const isLocked = !isPremium && !FREE_COLORS.includes(name);
                         return (
                           <button
                             key={name}
-                            onClick={() => {
-                              if (isLocked) { setUpgradeDialogOpen(true); return; }
-                              setColorScheme(name);
-                            }}
+                            onClick={() => setColorScheme(name)}
                             className="relative flex flex-col items-center gap-2"
                           >
                             <span
@@ -1087,9 +981,6 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                             >
                               {colorSchemeName === name && (
                                 <Check className={`absolute inset-0 m-auto h-4.5 w-4.5 drop-shadow-sm ${isLight ? "text-gray-800" : "text-white"}`} />
-                              )}
-                              {isLocked && (
-                                <Lock className={`absolute inset-0 m-auto h-3.5 w-3.5 drop-shadow-sm ${isLight ? "text-gray-800/60" : "text-white/70"}`} />
                               )}
                             </span>
                             <span className="text-[12px] text-gray-500 dark:text-gray-300">
@@ -1103,107 +994,69 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                 </div>
               )}
 
-              {/* ── Mobile: Pattern page ── */}
-              {mobileMenuPage === "pattern" && (
+              {/* ── Mobile: Template page ── */}
+              {mobileMenuPage === "template" && (
                 <div className="flex flex-col h-full">
                   <button onClick={() => setMobileMenuPage("main")} className={backButtonClass}>
                     <ChevronLeft className="h-5 w-5 text-gray-400 dark:text-gray-500" />
-                    {t("sidebarPattern")}
+                    {t("templates")}
                   </button>
-                  <div className="flex-1 overflow-y-auto overscroll-contain scrollbar-thin px-4 pt-4 pb-4 space-y-4">
-                    <div>
-                      <div className="flex flex-wrap gap-3">
-                        {SIDEBAR_PATTERN_NAMES.map((name) => {
-                          const isActive = patternName === name;
-                          const scheme = COLOR_SCHEMES[colorSchemeName];
-                          const isLight = scheme.sidebarText !== "#ffffff";
-                          const isNone = name === "none";
-                          const isLocked = !isPremium && !isNone;
-                          return (
-                            <button
-                              key={name}
-                              onClick={() => {
-                                if (isLocked) { setUpgradeDialogOpen(true); return; }
-                                setPattern(name);
-                              }}
-                              className="relative flex flex-col items-center gap-1.5"
-                            >
-                              <span
-                                className={`relative h-13 w-13 rounded-xl border overflow-hidden transition-transform hover:scale-105 ${
-                                  isActive
-                                    ? "border-gray-900 dark:border-gray-100 ring-1 ring-gray-900 dark:ring-gray-100"
-                                    : "border-gray-200 dark:border-gray-700"
-                                }`}
-                                style={{
-                                  backgroundColor: isNone ? "white" : scheme.sidebarBg,
-                                  ...(!isNone ? SIDEBAR_PATTERNS[name].getStyle(scheme.sidebarText, sidebarIntensity) : {}),
-                                }}
-                              >
-                                {isNone && (
-                                  <span className="absolute inset-0" style={{ background: "linear-gradient(to top left, transparent calc(50% - 1px), #ef4444 calc(50% - 1px), #ef4444 calc(50% + 1px), transparent calc(50% + 1px))" }} />
-                                )}
-                                {isActive && !isNone && (
-                                  <Check className={`absolute inset-0 m-auto h-4 w-4 drop-shadow-sm ${isLight ? "text-gray-800" : "text-white"}`} />
-                                )}
-                                {isLocked && (
-                                  <Lock className="absolute inset-0 m-auto h-3.5 w-3.5 text-white/70 drop-shadow-sm" />
-                                )}
+                  <div className="flex-1 overflow-y-auto overscroll-contain scrollbar-thin px-5 pt-5 pb-4">
+                    <div className="flex gap-4">
+                      {([
+                        { id: "classic" as TemplateId, locked: false },
+                        { id: "noPhoto" as TemplateId, locked: !isPremium },
+                      ]).map(({ id, locked }) => (
+                        <button
+                          key={id}
+                          onClick={() => { if (locked) { setUpgradeDialogOpen(true); return; } setTemplate(id); setMobileMenuPage("main"); }}
+                          className="relative flex flex-col items-center gap-2"
+                        >
+                          <span
+                            className={`relative h-20 w-14 rounded-xl border overflow-hidden transition-transform hover:scale-105 ${
+                              data.templateId === id
+                                ? "border-gray-900 dark:border-gray-100 ring-2 ring-offset-2 ring-gray-900 dark:ring-gray-100"
+                                : "border-gray-200 dark:border-gray-700"
+                            }`}
+                          >
+                            {id === "classic" ? (
+                              <span className="absolute inset-0 flex">
+                                <span className="w-2/5 h-full bg-gray-200 dark:bg-gray-600" />
+                                <span className="flex-1 p-1 bg-white dark:bg-gray-800 space-y-0.5">
+                                  <span className="block h-1.5 bg-gray-300 dark:bg-gray-600 rounded" />
+                                  <span className="block h-1 bg-gray-200 dark:bg-gray-700 rounded" />
+                                  <span className="block h-1 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
+                                </span>
                               </span>
-                              <span className="text-[11px] text-gray-500 dark:text-gray-300">
-                                {t(`pattern${name.charAt(0).toUpperCase() + name.slice(1)}` as Parameters<typeof t>[0])}
+                            ) : (
+                              <span className="absolute inset-0 p-1.5 bg-white dark:bg-gray-800 space-y-1">
+                                <span className="block h-1.5 bg-gray-300 dark:bg-gray-600 rounded" />
+                                <span className="block h-1 bg-gray-200 dark:bg-gray-700 rounded" />
+                                <span className="block h-px bg-gray-100 dark:bg-gray-700 mt-1" />
+                                <span className="block h-1 bg-gray-300 dark:bg-gray-600 rounded mt-0.5" />
+                                <span className="block h-1 bg-gray-200 dark:bg-gray-700 rounded" />
+                                <span className="block h-1 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
                               </span>
-                            </button>
-                          );
-                        })}
-                      </div>
-
-                      {/* Intensity sliders */}
-                      <div className={`mt-6 ${patternName === "none" ? "opacity-40 pointer-events-none" : ""}`}>
-                        <p className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-3">
-                          {t("patternIntensity")}
-                        </p>
-                        <div className="space-y-2">
-                          <div className={scope === "main" ? "opacity-40 pointer-events-none" : ""}>
-                            <p className="text-[11px] text-gray-400 dark:text-gray-400 mb-1">{t("patternScopeSidebar")}</p>
-                            <div className="flex items-center gap-3">
-                              <Slider min={1} max={5} step={1} value={[sidebarIntensity]} onValueChange={([v]) => setSidebarIntensity(v as PatternIntensity)} className="flex-1" />
-                              <span className="text-xs font-medium text-gray-500 dark:text-gray-300 w-5 text-center">{sidebarIntensity}</span>
-                            </div>
+                            )}
+                            {data.templateId === id && !locked && (
+                              <span className="absolute inset-0 bg-gray-900/5 dark:bg-white/5 flex items-center justify-center">
+                                <Check className="h-4 w-4 text-gray-900 dark:text-gray-100" />
+                              </span>
+                            )}
+                            {locked && (
+                              <span className="absolute inset-0 bg-white/60 dark:bg-gray-900/60 flex items-end pb-2 justify-center">
+                                <Lock className="h-3 w-3 text-gray-500 dark:text-gray-400" />
+                              </span>
+                            )}
+                          </span>
+                          <div className="flex flex-col items-center gap-0.5">
+                            <span className="text-[12px] text-gray-600 dark:text-gray-300 font-medium">
+                              {t(`template${id.charAt(0).toUpperCase() + id.slice(1)}` as Parameters<typeof t>[0])}
+                            </span>
+                            {locked && <PremiumBadge />}
                           </div>
-                          <div className={scope === "sidebar" ? "opacity-40 pointer-events-none" : ""}>
-                            <p className="text-[11px] text-gray-400 dark:text-gray-400 mb-1">{t("patternScopeMain")}</p>
-                            <div className="flex items-center gap-3">
-                              <Slider min={1} max={5} step={1} value={[mainIntensity]} onValueChange={([v]) => setMainIntensity(v as PatternIntensity)} className="flex-1" />
-                              <span className="text-xs font-medium text-gray-500 dark:text-gray-300 w-5 text-center">{mainIntensity}</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Scope selector */}
-                      <div className={`mt-6 ${patternName === "none" ? "opacity-40 pointer-events-none" : ""}`}>
-                        <p className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-3">
-                          {t("patternScope")}
-                        </p>
-                        <div className="flex gap-2">
-                          {PATTERN_SCOPES.map((s) => {
-                            const ScopeIcon = s === "sidebar" ? PanelLeft : s === "main" ? PanelRight : Square;
-                            return (
-                              <button
-                                key={s}
-                                onClick={() => setScope(s)}
-                                className={`h-11 w-11 rounded-xl flex items-center justify-center transition-colors ${
-                                  scope === s
-                                    ? "bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900"
-                                    : "bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-accent dark:text-gray-300 dark:hover:bg-accent/80"
-                                }`}
-                              >
-                                <ScopeIcon className="h-5 w-5" />
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
+                        </button>
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -1219,26 +1072,17 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                   <div className="flex-1 overflow-y-auto overscroll-contain scrollbar-thin px-4 pt-4 pb-4 space-y-4">
                     <div>
                       <div className="space-y-0.5">
-                        {FONT_FAMILIES.map((font) => {
-                          const isLocked = !isPremium && !FREE_FONTS.includes(font.id);
-                          return (
-                            <button
-                              key={font.id}
-                              onClick={() => {
-                                if (isLocked) { setUpgradeDialogOpen(true); return; }
-                                setFontFamily(font.id);
-                              }}
-                              className={menuItemClass}
-                              style={{ fontFamily: font.cssStack }}
-                            >
-                              <span className="flex items-center gap-2">
-                                {font.displayName}
-                                {isLocked && <PremiumBadge />}
-                              </span>
-                              {fontFamilyId === font.id && <Check className="h-4 w-4 text-gray-900 dark:text-gray-100" />}
-                            </button>
-                          );
-                        })}
+                        {FONT_FAMILIES.map((font) => (
+                          <button
+                            key={font.id}
+                            onClick={() => setFontFamily(font.id)}
+                            className={menuItemClass}
+                            style={{ fontFamily: font.cssStack }}
+                          >
+                            <span>{font.displayName}</span>
+                            {fontFamilyId === font.id && <Check className="h-4 w-4 text-gray-900 dark:text-gray-100" />}
+                          </button>
+                        ))}
                       </div>
 
                       {/* Font Size */}
@@ -1373,7 +1217,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
               </PopoverContent>
             </Popover>
 
-            {/* Pattern */}
+            {/* Templates */}
             <Popover>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -1381,20 +1225,20 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <Button
                       variant="ghost"
                       size="icon"
-                      aria-label={t("sidebarPattern")}
-                      data-testid="btn-pattern"
+                      aria-label={t("templates")}
+                      data-testid="btn-template"
                       className="h-10 w-10"
                     >
                       <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-violet-50 dark:bg-violet-900/20 text-violet-500">
-                        <Layers className="h-4 w-4" />
+                        <LayoutTemplate className="h-4 w-4" />
                       </span>
                     </Button>
                   </PopoverTrigger>
                 </TooltipTrigger>
-                <TooltipContent>{t("sidebarPattern")}</TooltipContent>
+                <TooltipContent>{t("templates")}</TooltipContent>
               </Tooltip>
-              <PopoverContent className="w-72 p-4 space-y-5" align="end">
-                <PatternSection {...patternProps} />
+              <PopoverContent className="w-auto p-4" align="end">
+                <TemplateSection {...templateProps} />
               </PopoverContent>
             </Popover>
 

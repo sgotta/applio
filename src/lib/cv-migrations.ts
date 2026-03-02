@@ -1,5 +1,5 @@
-import type { CVData, SidebarSectionId } from "./types";
-import { defaultVisibility, DEFAULT_SIDEBAR_SECTIONS } from "./default-data";
+import type { CVData, SidebarSectionId, TemplateId } from "./types";
+import { defaultVisibility, DEFAULT_SIDEBAR_SECTIONS, DEFAULT_TEMPLATE_ID } from "./default-data";
 
 export function moveItem<T>(
   arr: T[],
@@ -132,6 +132,7 @@ export function migrateCVData(data: any): CVData {
       awards: data.awards || [],
       visibility: { ...defaultVisibility, ...data.visibility },
       sidebarSections: migrateSidebarSections(data.sidebarSections || data.sidebarOrder),
+      templateId: (data.templateId as TemplateId) || DEFAULT_TEMPLATE_ID,
     };
 
     // Migrate bullets to HTML string + roleDescription → paragraph prepended
@@ -184,6 +185,7 @@ export function migrateCVData(data: any): CVData {
     awards: data.awards || [],
     visibility: { ...defaultVisibility, ...data.visibility },
     sidebarSections: migrateSidebarSections(data.sidebarSections || data.sidebarOrder),
+    templateId: (data.templateId as TemplateId) || DEFAULT_TEMPLATE_ID,
   };
 
   // Migrate bullets (BulletItem[] or string[]) to HTML string + roleDescription → paragraph prepended

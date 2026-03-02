@@ -61,6 +61,8 @@ export interface AwardItem {
 
 export type SidebarSectionId = "contact" | "summary" | "skills";
 
+export type TemplateId = "classic" | "noPhoto";
+
 export interface SectionVisibility {
   location: boolean;
   linkedin: boolean;
@@ -82,6 +84,7 @@ export interface CVData {
   awards: AwardItem[];
   visibility: SectionVisibility;
   sidebarSections: SidebarSectionId[];
+  templateId?: TemplateId;
 }
 
 /** Shape of the settings stored alongside a CV in the cloud */
@@ -91,12 +94,7 @@ export interface CloudSettings {
   fontSizeLevel: number;
   theme: string;
   locale: string;
-  pattern: {
-    name: string;
-    sidebarIntensity: number;
-    mainIntensity: number;
-    scope: string;
-  };
+  templateId?: TemplateId;
 }
 
 /** Shape of a CV row as returned from the database */

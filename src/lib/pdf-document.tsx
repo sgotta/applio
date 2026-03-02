@@ -16,7 +16,6 @@ import {
 import type { CVData } from "@/lib/types";
 import { DEFAULT_SIDEBAR_SECTIONS } from "@/lib/default-data";
 import type { ColorScheme } from "@/lib/color-schemes";
-import type { PatternSettings } from "@/lib/sidebar-patterns";
 import { PdfRichText, PdfRichDocument } from "@/lib/render-rich-text-pdf";
 
 /* ── Font registration ──────────────────────────────────── */
@@ -114,6 +113,7 @@ const MAIN_H_PAD = 29;       // mg(24)=38px → 29pt
 const SECTION_GAP = 15;   // matches space-y-5 (20px)
 const ITEM_GAP = 12;      // matches space-y-4 (16px)
 const PHOTO_SIZE = 108;   // w-36 h-36 (144px) × 0.75 pt/px
+const NOPHOTO_PAD = 34;   // mg(28)=45px → 34pt — noPhoto template horizontal padding
 
 /* ── SVG contact icons (Lucide paths) ───────────────────── */
 
@@ -249,6 +249,35 @@ function MainSectionHeading({
   );
 }
 
+function NoPhotoSectionHeading({
+  children,
+  color,
+  fontSize,
+}: {
+  children: string;
+  color: string;
+  fontSize: number;
+}) {
+  return (
+    <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 8, marginTop: 4 }}>
+      <View style={{ width: 2, height: 11, backgroundColor: color, borderRadius: 1, marginRight: 5 }} />
+      <Text
+        style={{
+          fontSize,
+          fontWeight: 700,
+          textTransform: "uppercase",
+          letterSpacing: 1.8,
+          color,
+          marginRight: 6,
+        }}
+      >
+        {children}
+      </Text>
+      <View style={{ flex: 1, height: 1, backgroundColor: safePdfColor(color + "18") }} />
+    </View>
+  );
+}
+
 /* ── Props ──────────────────────────────────────────────── */
 
 export interface PDFLabels {
@@ -269,7 +298,6 @@ export interface PDFDocumentProps {
   locale?: string;
   fontScale?: number;
   marginScale?: number;
-  patternSettings?: PatternSettings;
   fontFamily?: string;
   isPremium?: boolean;
 }
@@ -340,61 +368,9 @@ function blendOver(fg: string, bg: string): string {
 
 /* ── PDF Dots Pattern ──────────────────────────────────── */
 
-/** Intensity 1–5 → multiplier (matches sidebar-patterns.ts) */
-const INTENSITY_MUL: Record<number, number> = { 1: 0.35, 2: 0.7, 3: 1.2, 4: 2.0, 5: 3.0 };
-function intensityMul(level: number): number {
-  return INTENSITY_MUL[level] ?? 1.2;
-}
-
-/** Renders a fixed SVG grid of dots over a given area (in pt).
- *  Uses `fill` + `fillOpacity` separately because react-pdf's SVG
- *  renderer doesn't reliably interpret `rgba()` strings. */
-function PdfDotsPattern({
-  width,
-  height,
-  color,
-  intensity,
-}: {
-  width: number;
-  height: number;
-  color: string;
-  intensity: number;
-}) {
-  const spacing = 9; // 12px × 0.75
-  const radius = 0.5; // smaller than web (1px) to compensate for solid SVG rendering
-  // PDF SVG circles with fillOpacity render much lighter than CSS radial-gradient,
-  // so we use ~2× the web base (0.18) to match visual weight
-  const fillOpacity = 0.35 * intensityMul(intensity);
-  const fillColor = color.startsWith("#") ? color : "#000000";
-
-  const cols = Math.ceil(width / spacing);
-  const rows = Math.ceil(height / spacing);
-  const circles: React.ReactElement[] = [];
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      circles.push(
-        <Circle
-          key={`${r}-${c}`}
-          cx={c * spacing + spacing / 2}
-          cy={r * spacing + spacing / 2}
-          r={radius}
-          fill={fillColor}
-          fillOpacity={fillOpacity}
-        />
-      );
-    }
-  }
-
-  return (
-    <Svg width={width} height={height} style={{ position: "absolute", top: 0, left: 0 }}>
-      {circles}
-    </Svg>
-  );
-}
-
 /* ── Document component ─────────────────────────────────── */
 
-function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, patternSettings, fontFamily: userFontFamily, isPremium }: PDFDocumentProps) {
+function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, fontFamily: userFontFamily, isPremium }: PDFDocumentProps) {
   const {
     personalInfo,
     summary,
@@ -407,6 +383,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
     visibility,
   } = data;
   const sidebarSections = data.sidebarSections ?? DEFAULT_SIDEBAR_SECTIONS;
+  const templateId = data.templateId ?? "classic";
 
   // PrintableCV uses CSS pixels; react-pdf uses PDF points.
   // A4 is the same physical size in both, so we convert: 1px = 0.75pt (96dpi → 72dpi).
@@ -436,25 +413,16 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
   return (
     <Document>
       <Page size="A4" style={[styles.page, { fontFamily }]}>
-        {/* Fixed sidebar background — repeats on every page */}
-        <View
-          style={[styles.sidebarBg, { backgroundColor: colors.sidebarBg }]}
-          fixed
-        />
-
-        {/* Fixed pattern overlays — dots */}
-        {patternSettings && patternSettings.name === "dots" && (patternSettings.scope === "sidebar" || patternSettings.scope === "full") && (
-          <View style={{ position: "absolute", top: 0, left: 0, bottom: 0, width: SIDEBAR_WIDTH }} fixed>
-            <PdfDotsPattern width={SIDEBAR_WIDTH} height={842} color={colors.sidebarText} intensity={patternSettings.sidebarIntensity} />
-          </View>
-        )}
-        {patternSettings && patternSettings.name === "dots" && (patternSettings.scope === "main" || patternSettings.scope === "full") && (
-          <View style={{ position: "absolute", top: 0, left: SIDEBAR_WIDTH, bottom: 0, width: 595 - SIDEBAR_WIDTH }} fixed>
-            <PdfDotsPattern width={595 - SIDEBAR_WIDTH} height={842} color={colors.heading} intensity={patternSettings.mainIntensity} />
-          </View>
+        {/* Fixed sidebar background — classic template only */}
+        {templateId !== "noPhoto" && (
+          <View
+            style={[styles.sidebarBg, { backgroundColor: colors.sidebarBg }]}
+            fixed
+          />
         )}
 
-        {/* Two-column layout */}
+        {/* ===== Classic: two-column layout ===== */}
+        {templateId !== "noPhoto" && (
         <View style={styles.columns}>
           {/* ===== SIDEBAR ===== */}
           <View style={styles.sidebar}>
@@ -953,47 +921,323 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
             )}
           </View>
         </View>
+        )}
 
-        {/* Fixed footer — split across columns */}
+        {/* ===== noPhoto: single-column layout ===== */}
+        {templateId === "noPhoto" && (
+          <>
+            {/* Top accent bar — premium signature */}
+            <View style={{ height: 3, backgroundColor: colors.heading }} />
+
+            <View style={{ paddingHorizontal: NOPHOTO_PAD }}>
+            {/* Header: name + title + contact row */}
+            <View style={{ marginBottom: 16, paddingTop: 22, paddingBottom: 14, borderBottom: 1, borderBottomColor: safePdfColor(colors.heading + "14") }}>
+              <Text style={{ fontSize: fs(24), fontWeight: 600, color: "#111827", letterSpacing: -0.5 }}>
+                {personalInfo.fullName}
+              </Text>
+              {colors.nameAccent !== "transparent" && (
+                <View style={{ height: 2, width: 32, backgroundColor: colors.nameAccent, borderRadius: 1, marginTop: 4, marginBottom: 4 }} />
+              )}
+              <Text style={{ fontSize: fs(12), fontWeight: 500, color: "#4b5563", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 6 }}>
+                {personalInfo.jobTitle}
+              </Text>
+              {hasContact && (
+                <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center" }}>
+                  {[
+                    personalInfo.email ? { key: "email", value: personalInfo.email, IconComp: MailIcon } : null,
+                    personalInfo.phone ? { key: "phone", value: personalInfo.phone, IconComp: PhoneIcon } : null,
+                    (visibility.location && personalInfo.location) ? { key: "loc", value: personalInfo.location, IconComp: MapPinIcon } : null,
+                    (visibility.linkedin && personalInfo.linkedin) ? { key: "li", value: personalInfo.linkedin, IconComp: LinkedinIcon } : null,
+                    (visibility.website && personalInfo.website) ? { key: "web", value: personalInfo.website, IconComp: GlobeIcon } : null,
+                  ]
+                    .filter((x): x is { key: string; value: string; IconComp: typeof MailIcon } => Boolean(x))
+                    .map(({ key, value, IconComp }, idx) => (
+                      <View key={key} style={{ flexDirection: "row", alignItems: "center" }}>
+                        {idx > 0 && (
+                          <Text style={{ fontSize: fs(9), color: safePdfColor(colors.heading + "35"), marginHorizontal: 5 }}>·</Text>
+                        )}
+                        <IconComp size={8} color={colors.heading} />
+                        <Text style={{ fontSize: fs(10), color: "#6b7280", marginLeft: 3 }}>{value}</Text>
+                      </View>
+                    ))}
+                </View>
+              )}
+            </View>
+
+            {/* Summary */}
+            {visibility.summary && summary && (
+              <View style={{ marginBottom: SECTION_GAP }}>
+                <NoPhotoSectionHeading color={colors.heading} fontSize={fs(10)}>
+                  {labels.aboutMe}
+                </NoPhotoSectionHeading>
+                <PdfRichText html={summary} style={{ fontSize: fs(11), color: "#374151", lineHeight: 1.5 }} />
+              </View>
+            )}
+
+            {/* Skills — two-column: category label | chips */}
+            {skillCategories.length > 0 && (
+              <View style={{ marginBottom: SECTION_GAP }}>
+                <NoPhotoSectionHeading color={colors.heading} fontSize={fs(10)}>
+                  {labels.skills}
+                </NoPhotoSectionHeading>
+                <View style={{ gap: 5 }}>
+                  {skillCategories.map((cat) => (
+                    <View key={cat.id} style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                      <Text
+                        style={{
+                          fontSize: fs(9),
+                          fontWeight: 700,
+                          textTransform: "uppercase",
+                          letterSpacing: 0.8,
+                          color: safePdfColor(colors.heading + "70"),
+                          width: 52,
+                          textAlign: "right",
+                          paddingTop: 2,
+                          paddingRight: 8,
+                        }}
+                      >
+                        {cat.category}
+                      </Text>
+                      <View style={{ flex: 1, flexDirection: "row", flexWrap: "wrap", gap: 3 }}>
+                        {cat.items.map((skill, i) => (
+                          <View
+                            key={i}
+                            style={{
+                              backgroundColor: safePdfColor(colors.heading + "12"),
+                              borderRadius: 3,
+                              paddingHorizontal: 5,
+                              paddingVertical: 2,
+                            }}
+                          >
+                            <Text style={{ fontSize: fs(10), color: colors.heading }}>{skill}</Text>
+                          </View>
+                        ))}
+                      </View>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            )}
+
+            {/* Experience */}
+            {experiences.length > 0 && (
+              <View style={{ marginBottom: SECTION_GAP }}>
+                <View wrap={false}>
+                  <NoPhotoSectionHeading color={colors.heading} fontSize={fs(10)}>
+                    {labels.experience}
+                  </NoPhotoSectionHeading>
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
+                    <Text style={{ fontSize: fs(13), fontWeight: 600, color: "#111827", flex: 1, paddingRight: 6 }}>{experiences[0].company}</Text>
+                    <Text style={{ fontSize: fs(10), color: "#6b7280", flexShrink: 0, marginTop: 2 }}>{experiences[0].startDate} — {experiences[0].endDate}</Text>
+                  </View>
+                  <Text style={{ fontSize: fs(10), fontWeight: 500, color: "#6b7280", marginTop: 2 }}>{experiences[0].position}</Text>
+                  {experiences[0].description.length > 0 && (
+                    <View style={{ marginTop: 4 }}>
+                      <PdfRichDocument html={experiences[0].description} fontSize={fs(11)} bulletColor={colors.bullet} />
+                    </View>
+                  )}
+                </View>
+                {experiences.slice(1).map((exp) => (
+                  <View key={exp.id} wrap={false} style={{ marginTop: ITEM_GAP }}>
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
+                      <Text style={{ fontSize: fs(13), fontWeight: 600, color: "#111827", flex: 1, paddingRight: 6 }}>{exp.company}</Text>
+                      <Text style={{ fontSize: fs(10), color: "#6b7280", flexShrink: 0, marginTop: 2 }}>{exp.startDate} — {exp.endDate}</Text>
+                    </View>
+                    <Text style={{ fontSize: fs(10), fontWeight: 500, color: "#6b7280", marginTop: 2 }}>{exp.position}</Text>
+                    {exp.description.length > 0 && (
+                      <View style={{ marginTop: 4 }}>
+                        <PdfRichDocument html={exp.description} fontSize={fs(11)} bulletColor={colors.bullet} />
+                      </View>
+                    )}
+                  </View>
+                ))}
+              </View>
+            )}
+
+            {/* Education */}
+            {education.length > 0 && (
+              <View style={{ marginBottom: SECTION_GAP }}>
+                <View wrap={false}>
+                  <NoPhotoSectionHeading color={colors.heading} fontSize={fs(10)}>
+                    {labels.education}
+                  </NoPhotoSectionHeading>
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
+                    <Text style={{ fontSize: fs(13), fontWeight: 600, color: "#111827", flex: 1, paddingRight: 6 }}>{education[0].institution}</Text>
+                    <Text style={{ fontSize: fs(10), color: "#6b7280", flexShrink: 0, marginTop: 2 }}>{education[0].startDate} — {education[0].endDate}</Text>
+                  </View>
+                  <Text style={{ fontSize: fs(11), fontWeight: 500, color: "#4b5563", marginTop: 2 }}>{education[0].degree}</Text>
+                  {education[0].description && (
+                    <View style={{ marginTop: 4 }}>
+                      <PdfRichDocument html={education[0].description} fontSize={fs(11)} bulletColor={colors.bullet} />
+                    </View>
+                  )}
+                </View>
+                {education.slice(1).map((edu) => (
+                  <View key={edu.id} wrap={false} style={{ marginTop: ITEM_GAP }}>
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
+                      <Text style={{ fontSize: fs(13), fontWeight: 600, color: "#111827", flex: 1, paddingRight: 6 }}>{edu.institution}</Text>
+                      <Text style={{ fontSize: fs(10), color: "#6b7280", flexShrink: 0, marginTop: 2 }}>{edu.startDate} — {edu.endDate}</Text>
+                    </View>
+                    <Text style={{ fontSize: fs(11), fontWeight: 500, color: "#4b5563", marginTop: 2 }}>{edu.degree}</Text>
+                    {edu.description && (
+                      <View style={{ marginTop: 4 }}>
+                        <PdfRichDocument html={edu.description} fontSize={fs(11)} bulletColor={colors.bullet} />
+                      </View>
+                    )}
+                  </View>
+                ))}
+              </View>
+            )}
+
+            {/* Courses */}
+            {visibility.courses && courses.length > 0 && (
+              <View style={{ marginBottom: SECTION_GAP }}>
+                <View wrap={false}>
+                  <NoPhotoSectionHeading color={colors.heading} fontSize={fs(10)}>
+                    {labels.courses}
+                  </NoPhotoSectionHeading>
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
+                    <Text style={{ fontSize: fs(13), fontWeight: 600, color: "#111827", flex: 1, paddingRight: 6 }}>{courses[0].name}</Text>
+                    <Text style={{ fontSize: fs(10), color: "#6b7280", flexShrink: 0, marginTop: 2 }}>{courses[0].date}</Text>
+                  </View>
+                  <Text style={{ fontSize: fs(11), fontWeight: 500, color: "#4b5563", marginTop: 2 }}>{courses[0].institution}</Text>
+                  {courses[0].description && (
+                    <View style={{ marginTop: 4 }}>
+                      <PdfRichDocument html={courses[0].description} fontSize={fs(11)} bulletColor={colors.bullet} />
+                    </View>
+                  )}
+                </View>
+                {courses.slice(1).map((course) => (
+                  <View key={course.id} wrap={false} style={{ marginTop: 8 }}>
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
+                      <Text style={{ fontSize: fs(13), fontWeight: 600, color: "#111827", flex: 1, paddingRight: 6 }}>{course.name}</Text>
+                      <Text style={{ fontSize: fs(10), color: "#6b7280", flexShrink: 0, marginTop: 2 }}>{course.date}</Text>
+                    </View>
+                    <Text style={{ fontSize: fs(11), fontWeight: 500, color: "#4b5563", marginTop: 2 }}>{course.institution}</Text>
+                    {course.description && (
+                      <View style={{ marginTop: 4 }}>
+                        <PdfRichDocument html={course.description} fontSize={fs(11)} bulletColor={colors.bullet} />
+                      </View>
+                    )}
+                  </View>
+                ))}
+              </View>
+            )}
+
+            {/* Certifications */}
+            {visibility.certifications && certifications.length > 0 && (
+              <View style={{ marginBottom: SECTION_GAP }}>
+                <View wrap={false}>
+                  <NoPhotoSectionHeading color={colors.heading} fontSize={fs(10)}>
+                    {labels.certifications}
+                  </NoPhotoSectionHeading>
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
+                    <Text style={{ fontSize: fs(13), fontWeight: 600, color: "#111827", flex: 1, paddingRight: 6 }}>{certifications[0].name}</Text>
+                    <Text style={{ fontSize: fs(10), color: "#6b7280", flexShrink: 0, marginTop: 2 }}>{certifications[0].date}</Text>
+                  </View>
+                  <Text style={{ fontSize: fs(11), fontWeight: 500, color: "#4b5563", marginTop: 2 }}>{certifications[0].issuer}</Text>
+                  {certifications[0].description && (
+                    <View style={{ marginTop: 4 }}>
+                      <PdfRichDocument html={certifications[0].description} fontSize={fs(11)} bulletColor={colors.bullet} />
+                    </View>
+                  )}
+                </View>
+                {certifications.slice(1).map((cert) => (
+                  <View key={cert.id} wrap={false} style={{ marginTop: 8 }}>
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
+                      <Text style={{ fontSize: fs(13), fontWeight: 600, color: "#111827", flex: 1, paddingRight: 6 }}>{cert.name}</Text>
+                      <Text style={{ fontSize: fs(10), color: "#6b7280", flexShrink: 0, marginTop: 2 }}>{cert.date}</Text>
+                    </View>
+                    <Text style={{ fontSize: fs(11), fontWeight: 500, color: "#4b5563", marginTop: 2 }}>{cert.issuer}</Text>
+                    {cert.description && (
+                      <View style={{ marginTop: 4 }}>
+                        <PdfRichDocument html={cert.description} fontSize={fs(11)} bulletColor={colors.bullet} />
+                      </View>
+                    )}
+                  </View>
+                ))}
+              </View>
+            )}
+
+            {/* Awards */}
+            {visibility.awards && awards.length > 0 && (
+              <View style={{ marginBottom: SECTION_GAP }}>
+                <View wrap={false}>
+                  <NoPhotoSectionHeading color={colors.heading} fontSize={fs(10)}>
+                    {labels.awards}
+                  </NoPhotoSectionHeading>
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
+                    <Text style={{ fontSize: fs(13), fontWeight: 600, color: "#111827", flex: 1, paddingRight: 6 }}>{awards[0].name}</Text>
+                    <Text style={{ fontSize: fs(10), color: "#6b7280", flexShrink: 0, marginTop: 2 }}>{awards[0].date}</Text>
+                  </View>
+                  <Text style={{ fontSize: fs(11), fontWeight: 500, color: "#4b5563", marginTop: 2 }}>{awards[0].issuer}</Text>
+                  {awards[0].description && (
+                    <View style={{ marginTop: 4 }}>
+                      <PdfRichDocument html={awards[0].description} fontSize={fs(11)} bulletColor={colors.bullet} />
+                    </View>
+                  )}
+                </View>
+                {awards.slice(1).map((award) => (
+                  <View key={award.id} wrap={false} style={{ marginTop: 8 }}>
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
+                      <Text style={{ fontSize: fs(13), fontWeight: 600, color: "#111827", flex: 1, paddingRight: 6 }}>{award.name}</Text>
+                      <Text style={{ fontSize: fs(10), color: "#6b7280", flexShrink: 0, marginTop: 2 }}>{award.date}</Text>
+                    </View>
+                    <Text style={{ fontSize: fs(11), fontWeight: 500, color: "#4b5563", marginTop: 2 }}>{award.issuer}</Text>
+                    {award.description && (
+                      <View style={{ marginTop: 4 }}>
+                        <PdfRichDocument html={award.description} fontSize={fs(11)} bulletColor={colors.bullet} />
+                      </View>
+                    )}
+                  </View>
+                ))}
+              </View>
+            )}
+            </View>
+          </>
+        )}
+
+        {/* Fixed footer */}
         {(() => {
           const footerDate = new Intl.DateTimeFormat(locale, {
             day: "2-digit",
             month: "2-digit",
             year: "numeric",
           }).format(new Date());
-          const footerColor = blendOver(colors.sidebarMuted, colors.sidebarBg);
+          const isNoPhoto = templateId === "noPhoto";
+          const brandingColor = isNoPhoto ? "#bbbbbb" : blendOver(colors.sidebarMuted, colors.sidebarBg);
           return (
             <>
-              {/* Left: branding on the sidebar (free users only) */}
+              {/* Left: branding (free users only) */}
               {!isPremium && (
                 <View
                   style={{
                     position: "absolute",
                     bottom: 10,
-                    left: 0,
-                    width: SIDEBAR_WIDTH,
+                    left: isNoPhoto ? NOPHOTO_PAD : 0,
+                    width: isNoPhoto ? undefined : SIDEBAR_WIDTH,
                     alignItems: "center",
                   }}
                   fixed
                 >
                   <Link src="https://www.applio.dev/" style={{ textDecoration: "none" }}>
                     <View style={{ flexDirection: "row", alignItems: "center", gap: 2 }}>
-                      <Text style={{ fontSize: 8, color: footerColor, fontFamily }}>
+                      <Text style={{ fontSize: 8, color: brandingColor, fontFamily }}>
                         Applio
                       </Text>
-                      <HeartIcon size={7} color={footerColor} />
+                      <HeartIcon size={7} color={brandingColor} />
                     </View>
                   </Link>
                 </View>
               )}
 
-              {/* Right: name · date · page on the main area */}
+              {/* Right: name · date · page */}
               <View
                 style={{
                   position: "absolute",
                   bottom: 10,
-                  left: SIDEBAR_WIDTH + MAIN_H_PAD,
-                  right: MAIN_H_PAD,
+                  left: isNoPhoto ? NOPHOTO_PAD : SIDEBAR_WIDTH + MAIN_H_PAD,
+                  right: isNoPhoto ? NOPHOTO_PAD : MAIN_H_PAD,
                   alignItems: "flex-end",
                 }}
                 fixed

@@ -6,12 +6,10 @@ import { CVData } from "@/lib/types";
 import { DEFAULT_SIDEBAR_SECTIONS } from "@/lib/default-data";
 import { Separator } from "@/components/ui/separator";
 import { useColorScheme } from "@/lib/color-scheme-context";
-import { useSidebarPattern } from "@/lib/sidebar-pattern-context";
 import { useFontSettings } from "@/lib/font-context";
 import { getFontDefinition, FONT_SIZE_LEVELS } from "@/lib/fonts";
 import { useAppLocale } from "@/lib/locale-context";
 import { type ColorScheme } from "@/lib/color-schemes";
-import { type PatternSettings, getSidebarPattern } from "@/lib/sidebar-patterns";
 import { renderRichDocument } from "@/lib/render-rich-text";
 import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
 
@@ -63,14 +61,13 @@ interface PrintableCVProps {
   colorSchemeOverride?: ColorScheme;
   fontScaleOverride?: number;
   marginScaleOverride?: number;
-  patternOverride?: PatternSettings;
   fontFamilyOverride?: string;
   footer?: React.ReactNode;
 }
 
 export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
   function PrintableCV(
-    { data, forceInitials, photoUrl, colorSchemeOverride, fontScaleOverride, marginScaleOverride, patternOverride, fontFamilyOverride, footer },
+    { data, forceInitials, photoUrl, colorSchemeOverride, fontScaleOverride, marginScaleOverride, fontFamilyOverride, footer },
     ref
   ) {
     const {
@@ -87,17 +84,10 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
     const sidebarSections = data.sidebarSections ?? DEFAULT_SIDEBAR_SECTIONS;
     const t = useTranslations("printable");
     const { colorScheme: contextColors } = useColorScheme();
-    const { pattern: ctxPattern, sidebarIntensity: ctxSidebarIntensity, mainIntensity: ctxMainIntensity, scope: ctxScope } = useSidebarPattern();
     const { fontFamilyId, fontSizeLevel } = useFontSettings();
     useAppLocale();
 
     const colors = colorSchemeOverride ?? contextColors;
-
-    // Use override (shared view) or context values
-    const pattern = patternOverride ? getSidebarPattern(patternOverride.name) : ctxPattern;
-    const sidebarIntensity = patternOverride?.sidebarIntensity ?? ctxSidebarIntensity;
-    const mainIntensity = patternOverride?.mainIntensity ?? ctxMainIntensity;
-    const scope = patternOverride?.scope ?? ctxScope;
 
     // Determine font family: override (shared view) > context > default
     const effectiveFontFamily = fontFamilyOverride ?? getFontDefinition(fontFamilyId).cssStack;
@@ -149,19 +139,6 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
             borderRight: `1px solid ${colors.sidebarSeparator}`,
           }}
         >
-          {pattern.name !== "none" && (scope === "sidebar" || scope === "full") && (
-            <div
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                pointerEvents: "none" as const,
-                ...pattern.getStyle(colors.sidebarText, sidebarIntensity),
-              }}
-            />
-          )}
           <div className="relative space-y-5">
             {/* Photo / Initials */}
             <div
@@ -314,19 +291,6 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
 
         {/* ===== MAIN CONTENT (block flow — page breaks work here) ===== */}
         <div style={{ flex: 1, position: "relative" }}>
-          {pattern.name !== "none" && (scope === "main" || scope === "full") && (
-            <div
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                pointerEvents: "none" as const,
-                ...pattern.getStyle(colors.heading, mainIntensity),
-              }}
-            />
-          )}
           <div className="relative">
             {/* Header — padding matches CVPreview desktop header */}
             <div style={{ padding: `${mg(24)}px ${mg(24)}px 0` }}>
