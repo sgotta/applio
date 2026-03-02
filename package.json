@@ -1,6 +1,6 @@
 {
   "name": "applio",
-  "version": "1.31.8",
+  "version": "1.31.9",
   "private": true,
   "engines": {
     "node": ">=22"
