@@ -14,6 +14,8 @@ const PersonalInfoSchema = new Schema(
     location: String,
     linkedin: String,
     website: String,
+    linkedinUrl: String,
+    websiteUrl: String,
     summary: String,
   },
   { _id: false },
@@ -147,6 +149,8 @@ export interface ICV extends Document {
     location?: string;
     linkedin?: string;
     website?: string;
+    linkedinUrl?: string;
+    websiteUrl?: string;
     summary?: string;
   };
   settings: {

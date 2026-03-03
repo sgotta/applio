@@ -240,6 +240,25 @@ describe("docToCVData", () => {
     expect(cv.visibility.courses).toBe(false);
   });
 
+  it("maps linkedinUrl and websiteUrl from document", () => {
+    const plain = {
+      personalInfo: {
+        fullName: "Ana",
+        linkedinUrl: "https://linkedin.com/in/ana",
+        websiteUrl: "https://ana.dev",
+      },
+    };
+    const cv = docToCVData(plain);
+    expect(cv.personalInfo.linkedinUrl).toBe("https://linkedin.com/in/ana");
+    expect(cv.personalInfo.websiteUrl).toBe("https://ana.dev");
+  });
+
+  it("defaults linkedinUrl and websiteUrl to undefined when missing", () => {
+    const cv = docToCVData({});
+    expect(cv.personalInfo.linkedinUrl).toBeUndefined();
+    expect(cv.personalInfo.websiteUrl).toBeUndefined();
+  });
+
   it("sorts sidebarSections by sortOrder", () => {
     const plain = {
       sidebarSections: [
@@ -308,6 +327,33 @@ describe("cvDataToDoc", () => {
     expect(cvDataToDoc(cvData).title).toBe("Juan Pérez");
     const empty = makeCVData({ personalInfo: { ...makeCVData().personalInfo, fullName: "" } });
     expect(cvDataToDoc(empty).title).toBe("Untitled CV");
+  });
+
+  it("includes linkedinUrl and websiteUrl in personalInfo", () => {
+    const data = makeCVData({
+      personalInfo: {
+        ...makeCVData().personalInfo,
+        linkedinUrl: "https://linkedin.com/in/juan",
+        websiteUrl: "https://juan.dev",
+      },
+    });
+    const doc = cvDataToDoc(data);
+    expect(doc.personalInfo.linkedinUrl).toBe("https://linkedin.com/in/juan");
+    expect(doc.personalInfo.websiteUrl).toBe("https://juan.dev");
+  });
+
+  it("round-trips linkedinUrl and websiteUrl through cvDataToDoc → docToCVData", () => {
+    const original = makeCVData({
+      personalInfo: {
+        ...makeCVData().personalInfo,
+        linkedinUrl: "https://linkedin.com/in/juan",
+        websiteUrl: "https://juan.dev",
+      },
+    });
+    const doc = cvDataToDoc(original);
+    const restored = docToCVData(doc);
+    expect(restored.personalInfo.linkedinUrl).toBe("https://linkedin.com/in/juan");
+    expect(restored.personalInfo.websiteUrl).toBe("https://juan.dev");
   });
 });
 
