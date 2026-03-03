@@ -22,6 +22,7 @@
     "sectionCourses": "Corsi e Workshop",
     "sectionCertifications": "Certificazioni",
     "sectionAwards": "Premi",
+    "sectionLanguages": "Lingue",
     "importFormatError": "Il formato del file non è corretto. Assicurati che sia un JSON esportato da Applio.",
     "importConfirm": "Vuoi caricare questo CV? I dati attuali verranno sovrascritti.",
     "importReadError": "Errore nella lettura del file. Assicurati che sia un file JSON valido.",
@@ -38,14 +39,6 @@
     "colorSchemeEmerald": "Smeraldo",
     "colorSchemeCarrot": "Carota",
     "colorSchemeWetAsphalt": "Asfalto",
-    "sidebarPattern": "Motivo",
-    "patternNone": "Nessuno",
-    "patternDots": "Puntini",
-    "patternIntensity": "Intensità",
-    "patternScope": "Zona",
-    "patternScopeSidebar": "Barra laterale",
-    "patternScopeMain": "Contenuto",
-    "patternScopeFull": "Pagina intera",
     "fontSettings": "Tipografia",
     "fontFamily": "Carattere",
     "fontSize": "Dimensione carattere",
@@ -78,7 +71,10 @@
     "syncProHint": "Con Pro, sync nel cloud.",
     "syncLoginHint": "Accedi per sincronizzare i tuoi dati e accedervi da qualsiasi dispositivo.",
     "syncSyncing": "Sincronizzazione...",
-    "syncError": "Errore di sincronizzazione"
+    "syncError": "Errore di sincronizzazione",
+    "templates": "Modelli",
+    "templateClassic": "Classico",
+    "templateNoPhoto": "Senza foto"
   },
   "cvPreview": {
     "fullNamePlaceholder": "Il Tuo Nome Completo",
@@ -264,7 +260,8 @@
     "education": "Istruzione",
     "courses": "Corsi e Workshop",
     "certifications": "Certificazioni",
-    "awards": "Premi e Riconoscimenti"
+    "awards": "Premi e Riconoscimenti",
+    "languages": "Lingue"
   },
   "defaults": {
     "company": "Azienda",
@@ -280,7 +277,9 @@
     "certificationName": "Certificazione",
     "certificationIssuer": "Ente",
     "awardName": "Premio",
-    "awardIssuer": "Organizzazione"
+    "awardIssuer": "Organizzazione",
+    "languageName": "Italiano",
+    "languageLevel": "Madrelingua"
   },
   "sharedView": {
     "loading": "Caricamento CV...",
@@ -290,6 +289,12 @@
     "sharedOn": "Condiviso il {date}",
     "madeWith": "Fatto in Argentina",
     "generating": "Generazione PDF..."
+  },
+  "cvLanguages": {
+    "title": "Lingue",
+    "languagePlaceholder": "Lingua",
+    "levelPlaceholder": "Livello",
+    "addLanguage": "Aggiungi lingua"
   },
   "languages": {
     "en": "Inglese",
@@ -341,7 +346,7 @@
       "dragHintAfter": "Le voci si riordinano all'istante!"
     },
     "features": {
-      "sectionTitle": "Impara a modificare in\u00a0pochi secondi",
+      "sectionTitle": "Impara a modificare in pochi secondi",
       "sectionSubtitle": "Nessun tutorial lungo o curva di apprendimento. Quattro cose da sapere.",
       "step1Title": "Clicca e modifica",
       "step1Desc": "Ogni testo nel tuo CV è modificabile. Clicca sul nome, sulla posizione, sulle date, sulle descrizioni — qualsiasi cosa. Diventa subito un campo di testo. Niente moduli, niente pop-up.",
@@ -375,8 +380,7 @@
       "subtitle": "Inizia a modificare adesso e scarica il tuo CV come PDF professionale. Senza complicazioni.",
       "button": "Inizia ora"
     },
-    "footer": {
-    }
+    "footer": {}
   },
   "auth": {
     "loginTitle": "Accedi a Applio",
@@ -401,29 +405,14 @@
     "photoUploadFailed": "Foto salvata localmente — caricamento nel cloud non riuscito"
   },
   "premium": {
-    "pro": "PRO",
+    "pro": "Funzionalità Premium",
     "upgradeTitle": "Sblocca Premium",
     "upgradeDescription": "Sfrutta al massimo il tuo CV con tutte le funzionalità premium.",
-    "feature_pdfNoBranding": "Scarica il PDF senza filigrana Applio",
-    "feature_cloudSync": "Sincronizzazione cloud",
-    "feature_multiDevice": "Accedi al tuo CV da qualsiasi dispositivo",
-    "feature_allColors": "Tutti gli schemi di colore",
-    "feature_allFonts": "Tutti i caratteri",
-    "feature_allPatterns": "Pattern decorativi",
-    "feature_allSections": "Tutte le sezioni opzionali",
-    "feature_richText": "Formattazione testo avanzata",
-    "feature_pdfNoBranding_desc": "Scarica il tuo CV senza filigrana. Solo il tuo lavoro, nient'altro.",
-    "feature_cloudSync_desc": "Il tuo CV viene salvato automaticamente. Non perdi mai nulla.",
-    "feature_multiDevice_desc": "Modifica sul telefono, finalizza sul laptop. Il tuo CV ti segue ovunque.",
-    "feature_allColors_desc": "Sblocca tutti gli schemi di colore per personalizzare il tuo stile.",
-    "feature_allFonts_desc": "Scegli tra Inter, Lato, Source Sans 3 o Merriweather.",
-    "feature_allPatterns_desc": "Aggiungi motivi decorativi per far risaltare il tuo CV.",
-    "feature_allSections_desc": "Aggiungi corsi, certificazioni e premi per un profilo completo.",
-    "feature_richText_desc": "Grassetto, corsivo, elenchi — formatta la tua esperienza come vuoi.",
-    "upgradeButton": "Passa a Premium ora",
     "comingSoon": "Prossimamente",
-    "loginFirst": "Accedi per passare a Premium",
-    "watermark": "Creato con Applio"
+    "feature_pdfNoBranding": "Scarica il PDF senza filigrana Applio",
+    "feature_pdfNoBranding_desc": "Scarica il tuo CV senza filigrana. Solo il tuo lavoro, nient'altro.",
+    "feature_premiumTemplates": "Templates premium",
+    "feature_premiumTemplates_desc": "Layout alternativi per il tuo CV: senza foto, colonna singola e altro."
   },
   "syncConflict": {
     "title": "Abbiamo trovato il tuo CV",

@@ -9,7 +9,6 @@ import { useColorScheme } from "@/lib/color-scheme-context";
 import { useFontSettings } from "@/lib/font-context";
 import { useTheme } from "@/lib/theme-context";
 import { useAppLocale } from "@/lib/locale-context";
-import { useSidebarPattern } from "@/lib/sidebar-pattern-context";
 import { useSyncStatus } from "@/lib/sync-status-context";
 import type { CVData, CloudSettings } from "@/lib/types";
 import { cvContentFingerprint } from "@/lib/cv-sync";
@@ -74,7 +73,6 @@ export function CloudSync() {
   const { fontFamilyId, fontSizeLevel, setFontFamily, setFontSizeLevel } = useFontSettings();
   const { theme, setTheme } = useTheme();
   const { locale, setLocale } = useAppLocale();
-  const { patternSettings, setPatternSettings } = useSidebarPattern();
   const { setStatus, setLastError } = useSyncStatus();
   const t = useTranslations("syncConflict");
   const tSync = useTranslations("sync");
@@ -208,7 +206,7 @@ export function CloudSync() {
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, colorSchemeName, fontFamilyId, fontSizeLevel, theme, locale, patternSettings, user, cvLoading, showConflict]);
+  }, [data, colorSchemeName, fontFamilyId, fontSizeLevel, theme, locale, user, cvLoading, showConflict]);
 
   // -----------------------------------------------------------------------
   // Helpers
@@ -242,12 +240,7 @@ export function CloudSync() {
       fontSizeLevel,
       theme,
       locale,
-      pattern: {
-        name: patternSettings.name,
-        sidebarIntensity: patternSettings.sidebarIntensity,
-        mainIntensity: patternSettings.mainIntensity,
-        scope: patternSettings.scope,
-      },
+      templateId: data.templateId,
     };
   }
 
@@ -257,14 +250,6 @@ export function CloudSync() {
     if (settings.fontSizeLevel) setFontSizeLevel(settings.fontSizeLevel as Parameters<typeof setFontSizeLevel>[0]);
     if (settings.theme) setTheme(settings.theme as Parameters<typeof setTheme>[0]);
     if (settings.locale) setLocale(settings.locale as Parameters<typeof setLocale>[0]);
-    if (settings.pattern) {
-      setPatternSettings({
-        name: settings.pattern.name as Parameters<typeof setPatternSettings>[0]["name"],
-        sidebarIntensity: settings.pattern.sidebarIntensity as Parameters<typeof setPatternSettings>[0]["sidebarIntensity"],
-        mainIntensity: settings.pattern.mainIntensity as Parameters<typeof setPatternSettings>[0]["mainIntensity"],
-        scope: settings.pattern.scope as Parameters<typeof setPatternSettings>[0]["scope"],
-      });
-    }
   }
 
   const handleKeepLocal = useCallback(async () => {

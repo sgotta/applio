@@ -6,12 +6,10 @@ import { CVData } from "@/lib/types";
 import { DEFAULT_SIDEBAR_SECTIONS } from "@/lib/default-data";
 import { Separator } from "@/components/ui/separator";
 import { useColorScheme } from "@/lib/color-scheme-context";
-import { useSidebarPattern } from "@/lib/sidebar-pattern-context";
 import { useFontSettings } from "@/lib/font-context";
 import { getFontDefinition, FONT_SIZE_LEVELS } from "@/lib/fonts";
 import { useAppLocale } from "@/lib/locale-context";
 import { type ColorScheme } from "@/lib/color-schemes";
-import { type PatternSettings, getSidebarPattern } from "@/lib/sidebar-patterns";
 import { renderRichDocument } from "@/lib/render-rich-text";
 import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
 
@@ -63,14 +61,13 @@ interface PrintableCVProps {
   colorSchemeOverride?: ColorScheme;
   fontScaleOverride?: number;
   marginScaleOverride?: number;
-  patternOverride?: PatternSettings;
   fontFamilyOverride?: string;
   footer?: React.ReactNode;
 }
 
 export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
   function PrintableCV(
-    { data, forceInitials, photoUrl, colorSchemeOverride, fontScaleOverride, marginScaleOverride, patternOverride, fontFamilyOverride, footer },
+    { data, forceInitials, photoUrl, colorSchemeOverride, fontScaleOverride, marginScaleOverride, fontFamilyOverride, footer },
     ref
   ) {
     const {
@@ -83,21 +80,16 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
       certifications,
       awards,
       visibility,
+      languages,
     } = data;
     const sidebarSections = data.sidebarSections ?? DEFAULT_SIDEBAR_SECTIONS;
+    const templateId = data.templateId;
     const t = useTranslations("printable");
     const { colorScheme: contextColors } = useColorScheme();
-    const { pattern: ctxPattern, sidebarIntensity: ctxSidebarIntensity, mainIntensity: ctxMainIntensity, scope: ctxScope } = useSidebarPattern();
     const { fontFamilyId, fontSizeLevel } = useFontSettings();
-    useAppLocale();
+    const { locale } = useAppLocale();
 
     const colors = colorSchemeOverride ?? contextColors;
-
-    // Use override (shared view) or context values
-    const pattern = patternOverride ? getSidebarPattern(patternOverride.name) : ctxPattern;
-    const sidebarIntensity = patternOverride?.sidebarIntensity ?? ctxSidebarIntensity;
-    const mainIntensity = patternOverride?.mainIntensity ?? ctxMainIntensity;
-    const scope = patternOverride?.scope ?? ctxScope;
 
     // Determine font family: override (shared view) > context > default
     const effectiveFontFamily = fontFamilyOverride ?? getFontDefinition(fontFamilyId).cssStack;
@@ -127,6 +119,264 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
       .join("")
       .slice(0, 2);
 
+    // ===== NO PHOTO TEMPLATE =====
+    if (templateId === "noPhoto") {
+      const flexSectionOrder = sidebarSections.filter(
+        (s): s is "skills" | "languages" => s === "skills" || s === "languages"
+      );
+      const hasContact = personalInfo.email || personalInfo.phone ||
+        (visibility.location && personalInfo.location) ||
+        (visibility.linkedin && personalInfo.linkedin) ||
+        (visibility.website && personalInfo.website);
+
+      const npHeading = (label: string, showLine = true) => (
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12, marginTop: 4 }}>
+          <div style={{ width: 2, height: 14, borderRadius: 9999, backgroundColor: colors.heading, flexShrink: 0 }} />
+          <h3 style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: colors.heading, flexShrink: 0, margin: 0, padding: 0 }}>
+            {label}
+          </h3>
+          {showLine && <div style={{ flex: 1, height: 1, backgroundColor: `${colors.heading}18` }} />}
+        </div>
+      );
+
+      return (
+        <div
+          ref={ref}
+          className="printable-cv cv-preview-content font-sans"
+          style={{ fontFamily: effectiveFontFamily, display: "flex", flexDirection: "column", minHeight: "297mm", ...(fontSizeLevelEm !== 1 ? { fontSize: `${fontSizeLevelEm}em` } : {}) }}
+        >
+          {/* Top accent bar */}
+          <div style={{ height: 3, backgroundColor: colors.heading }} />
+
+          {/* Header */}
+          <div style={{ padding: `${mg(28)}px ${mg(32)}px ${mg(8)}px` }}>
+            <h1 style={{ fontSize: FS.heading, fontWeight: 600, color: "#111827", margin: 0 }}>{personalInfo.fullName}</h1>
+            {colors.nameAccent !== "transparent" && (
+              <div style={{ marginTop: 6, height: 2, width: 56, borderRadius: 9999, backgroundColor: colors.nameAccent }} />
+            )}
+            <div style={{ marginTop: 10 }}>
+              <p style={{ fontSize: FS.subheading, fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.05em", color: `${colors.heading}BF`, margin: 0 }}>
+                {personalInfo.jobTitle}
+              </p>
+            </div>
+            {hasContact && (
+              <div style={{ marginTop: 16, display: "flex", flexWrap: "wrap", gap: "6px 20px", alignItems: "center" }}>
+                {personalInfo.email && (
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <Mail style={{ width: 12, height: 12, color: colors.heading }} />
+                    <a href={`mailto:${personalInfo.email}`} style={{ color: "#64748b", fontSize: FS.small, textDecoration: "none" }}>{personalInfo.email}</a>
+                  </div>
+                )}
+                {personalInfo.phone && (
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <Phone style={{ width: 12, height: 12, color: colors.heading }} />
+                    <a href={`tel:${personalInfo.phone}`} style={{ color: "#64748b", fontSize: FS.small, textDecoration: "none" }}>{personalInfo.phone}</a>
+                  </div>
+                )}
+                {visibility.location && personalInfo.location && (
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <MapPin style={{ width: 12, height: 12, color: colors.heading }} />
+                    <span style={{ color: "#64748b", fontSize: FS.small }}>{personalInfo.location}</span>
+                  </div>
+                )}
+                {visibility.linkedin && personalInfo.linkedin && (
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <Linkedin style={{ width: 12, height: 12, color: colors.heading }} />
+                    {personalInfo.linkedinUrl ? (
+                      <a href={ensureProtocol(personalInfo.linkedinUrl)} target="_blank" rel="noopener noreferrer" style={{ color: "#64748b", fontSize: FS.small, textDecoration: "none" }}>{personalInfo.linkedin}</a>
+                    ) : (
+                      <span style={{ color: "#64748b", fontSize: FS.small }}>{personalInfo.linkedin}</span>
+                    )}
+                  </div>
+                )}
+                {visibility.website && personalInfo.website && (
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <Globe style={{ width: 12, height: 12, color: colors.heading }} />
+                    {personalInfo.websiteUrl ? (
+                      <a href={ensureProtocol(personalInfo.websiteUrl)} target="_blank" rel="noopener noreferrer" style={{ color: "#64748b", fontSize: FS.small, textDecoration: "none" }}>{personalInfo.website}</a>
+                    ) : (
+                      <span style={{ color: "#64748b", fontSize: FS.small }}>{personalInfo.website}</span>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Main content */}
+          <div style={{ flex: 1, padding: `${mg(10)}px ${mg(32)}px ${mg(28)}px` }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+
+              {/* Summary — tinted card */}
+              {visibility.summary && summary && (
+                <div style={{ backgroundColor: `${colors.heading}0F`, border: `1px solid ${colors.heading}1A`, borderRadius: 12, padding: "14px 16px" }}>
+                  {npHeading(t("aboutMe"), false)}
+                  <div style={{ fontSize: FS.body, lineHeight: 1.6 }}>{renderRichDocument(summary)}</div>
+                </div>
+              )}
+
+              {/* Experience */}
+              {experiences.length > 0 && (
+                <div>
+                  {npHeading(t("experience"))}
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    {experiences.map((exp) => (
+                      <div key={exp.id} style={{ pageBreakInside: "avoid" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+                          <h4 style={{ fontWeight: 600, color: "#111827", fontSize: FS.itemTitle, margin: 0 }}>{exp.company}</h4>
+                          <span style={{ color: "#9ca3af", fontSize: FS.tiny, flexShrink: 0 }}>{exp.startDate} — {exp.endDate}</span>
+                        </div>
+                        <p style={{ margin: "2px 0 0 0", fontWeight: 500, color: "#4b5563", fontSize: FS.small }}>{exp.position}</p>
+                        {exp.description && (
+                          <div style={{ marginTop: 6, fontSize: FS.body, ["--bullet-color" as string]: colors.bullet }}>{renderRichDocument(exp.description)}</div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Education */}
+              {education.length > 0 && (
+                <div>
+                  {npHeading(t("education"))}
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    {education.map((edu) => (
+                      <div key={edu.id} style={{ pageBreakInside: "avoid" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+                          <h4 style={{ fontWeight: 600, color: "#111827", fontSize: FS.itemTitle, margin: 0 }}>{edu.institution}</h4>
+                          <span style={{ color: "#9ca3af", fontSize: FS.tiny, flexShrink: 0 }}>{edu.startDate} — {edu.endDate}</span>
+                        </div>
+                        <p style={{ margin: "2px 0 0 0", fontWeight: 500, color: "#4b5563", fontSize: FS.small }}>{edu.degree}</p>
+                        {edu.description && (
+                          <div style={{ marginTop: 6, fontSize: FS.body, ["--bullet-color" as string]: colors.bullet }}>{renderRichDocument(edu.description)}</div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Courses */}
+              {visibility.courses && courses.length > 0 && (
+                <div>
+                  {npHeading(t("courses"))}
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    {courses.map((course) => (
+                      <div key={course.id} style={{ pageBreakInside: "avoid" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+                          <h4 style={{ fontWeight: 600, color: "#111827", fontSize: FS.itemTitle, margin: 0 }}>{course.name}</h4>
+                          <span style={{ color: "#9ca3af", fontSize: FS.tiny, flexShrink: 0 }}>{course.date}</span>
+                        </div>
+                        <p style={{ margin: "2px 0 0 0", fontWeight: 500, color: "#4b5563", fontSize: FS.small }}>{course.institution}</p>
+                        {course.description && (
+                          <div style={{ marginTop: 6, fontSize: FS.body, ["--bullet-color" as string]: colors.bullet }}>{renderRichDocument(course.description)}</div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Certifications */}
+              {visibility.certifications && certifications.length > 0 && (
+                <div>
+                  {npHeading(t("certifications"))}
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    {certifications.map((cert) => (
+                      <div key={cert.id} style={{ pageBreakInside: "avoid" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+                          <h4 style={{ fontWeight: 600, color: "#111827", fontSize: FS.itemTitle, margin: 0 }}>{cert.name}</h4>
+                          <span style={{ color: "#9ca3af", fontSize: FS.tiny, flexShrink: 0 }}>{cert.date}</span>
+                        </div>
+                        <p style={{ margin: "2px 0 0 0", fontWeight: 500, color: "#4b5563", fontSize: FS.small }}>{cert.issuer}</p>
+                        {cert.description && (
+                          <div style={{ marginTop: 6, fontSize: FS.body, ["--bullet-color" as string]: colors.bullet }}>{renderRichDocument(cert.description)}</div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Awards */}
+              {visibility.awards && awards.length > 0 && (
+                <div>
+                  {npHeading(t("awards"))}
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    {awards.map((award) => (
+                      <div key={award.id} style={{ pageBreakInside: "avoid" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+                          <h4 style={{ fontWeight: 600, color: "#111827", fontSize: FS.itemTitle, margin: 0 }}>{award.name}</h4>
+                          <span style={{ color: "#9ca3af", fontSize: FS.tiny, flexShrink: 0 }}>{award.date}</span>
+                        </div>
+                        <p style={{ margin: "2px 0 0 0", fontWeight: 500, color: "#4b5563", fontSize: FS.small }}>{award.issuer}</p>
+                        {award.description && (
+                          <div style={{ marginTop: 6, fontSize: FS.body, ["--bullet-color" as string]: colors.bullet }}>{renderRichDocument(award.description)}</div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Languages + Skills — respects sidebarSections order */}
+              {flexSectionOrder.map((sectionId) => {
+                if (sectionId === "languages" && visibility.languages && languages.length > 0) {
+                  return (
+                    <div key="languages">
+                      {npHeading(t("languages"))}
+                      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                        {languages.map((lang) => (
+                          <div key={lang.id} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                            <span style={{ fontWeight: 600, color: "#111827", fontSize: FS.body }}>{lang.language}</span>
+                            {lang.level && (
+                              <span style={{ backgroundColor: `${colors.heading}12`, color: colors.heading, fontSize: FS.tiny, padding: "2px 8px", borderRadius: 4 }}>{lang.level}</span>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                }
+                if (sectionId === "skills" && skillCategories.length > 0) {
+                  return (
+                    <div key="skills">
+                      {npHeading(t("skills"))}
+                      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                        {skillCategories.map((skillGroup) => (
+                          <div key={skillGroup.id}>
+                            <p style={{ fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: colors.heading, fontSize: FS.tiny, margin: "0 0 4px 0" }}>{skillGroup.category}</p>
+                            <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+                              {skillGroup.items.map((item, i) => (
+                                <span key={i} style={{ backgroundColor: `${colors.heading}15`, color: colors.heading, fontSize: FS.tiny, padding: "2px 8px", borderRadius: 4 }}>{item}</span>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                }
+                return null;
+              })}
+
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: `${mg(8)}px ${mg(32)}px ${mg(12)}px`, color: "#aaaaaa", fontSize: "0.75rem" }}>
+            <a href="https://www.applio.dev/" target="_blank" rel="noopener noreferrer" style={{ color: "#bbbbbb", textDecoration: "none" }}>Applio ♥</a>
+            <span>
+              {personalInfo.fullName}&nbsp;&nbsp;·&nbsp;&nbsp;
+              {new Intl.DateTimeFormat(locale, { day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date())}&nbsp;&nbsp;·&nbsp;&nbsp;1 / 1
+            </span>
+          </div>
+        </div>
+      );
+    }
+    // ===== END NO PHOTO TEMPLATE =====
+
     return (
       <div
         ref={ref}
@@ -149,19 +399,6 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
             borderRight: `1px solid ${colors.sidebarSeparator}`,
           }}
         >
-          {pattern.name !== "none" && (scope === "sidebar" || scope === "full") && (
-            <div
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                pointerEvents: "none" as const,
-                ...pattern.getStyle(colors.sidebarText, sidebarIntensity),
-              }}
-            />
-          )}
           <div className="relative space-y-5">
             {/* Photo / Initials */}
             <div
@@ -314,19 +551,6 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
 
         {/* ===== MAIN CONTENT (block flow — page breaks work here) ===== */}
         <div style={{ flex: 1, position: "relative" }}>
-          {pattern.name !== "none" && (scope === "main" || scope === "full") && (
-            <div
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                pointerEvents: "none" as const,
-                ...pattern.getStyle(colors.heading, mainIntensity),
-              }}
-            />
-          )}
           <div className="relative">
             {/* Header — padding matches CVPreview desktop header */}
             <div style={{ padding: `${mg(24)}px ${mg(24)}px 0` }}>

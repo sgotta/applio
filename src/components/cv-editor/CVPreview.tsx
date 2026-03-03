@@ -1,23 +1,42 @@
 "use client";
 
+import { useCallback } from "react";
 import { useCV } from "@/lib/cv-context";
 import { useTranslations } from "next-intl";
 import { useColorScheme } from "@/lib/color-scheme-context";
-import { useSidebarPattern } from "@/lib/sidebar-pattern-context";
 import { useFontSettings } from "@/lib/font-context";
 import { getFontDefinition, FONT_SIZE_LEVELS } from "@/lib/fonts";
 import { useAppLocale } from "@/lib/locale-context";
 
-import { Heart } from "lucide-react";
+import { Heart, Mail, Phone, MapPin, Linkedin, Globe, GripVertical } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { EditableText } from "./EditableText";
-import { PersonalInfo } from "./PersonalInfo";
+import { PersonalInfo, ContactLine, SortableSkillCategory } from "./PersonalInfo";
 import { ProfilePhotoUpload } from "./ProfilePhotoUpload";
 import { Experience } from "./Experience";
 import { Education } from "./Education";
 import { Courses } from "./Courses";
 import { Certifications } from "./Certifications";
 import { Awards } from "./Awards";
+import { Languages } from "./Languages";
+import {
+  DndContext,
+  closestCenter,
+  MouseSensor,
+  TouchSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import type { SidebarSectionId } from "@/lib/types";
 
 function CVHeader() {
   const {
@@ -74,26 +93,15 @@ function MobileHeader() {
   );
 }
 
-export function CVPreview() {
+function ClassicTemplate() {
   const { data: { visibility, personalInfo } } = useCV();
   const t = useTranslations("cvPreview");
   const { colorScheme } = useColorScheme();
-  const { pattern, sidebarIntensity, mainIntensity, scope } = useSidebarPattern();
-  const { fontFamilyId, fontSizeLevel } = useFontSettings();
   const { locale } = useAppLocale();
-  const fontDef = getFontDefinition(fontFamilyId);
   const mg = (px: number) => Math.round(px * 1.6);
 
   return (
-    <div
-      className="cv-preview-content mx-auto w-full lg:w-[210mm] max-w-[210mm] bg-white md:shadow-[0_2px_20px_-6px_rgba(0,0,0,0.12)] dark:md:shadow-[0_2px_20px_-6px_rgba(0,0,0,0.45)] print:shadow-none"
-      style={{ fontFamily: fontDef.cssStack }}
-    >
-      {/* Font-size scale wrapper — flex column to push footer to bottom */}
-      <div
-        className="md:flex md:flex-col md:min-h-[297mm]"
-        style={fontSizeLevel !== 2 ? { fontSize: `${FONT_SIZE_LEVELS[fontSizeLevel]}em` } : undefined}
-      >
+    <>
       {/* CV Content — two-column layout */}
       <div className="grid grid-cols-1 md:grid-cols-[250px_1fr] md:flex-1">
         {/* ===== MOBILE HEADER: photo + name centered (mobile only) ===== */}
@@ -101,31 +109,19 @@ export function CVPreview() {
           <MobileHeader />
         </div>
 
-        {/* ===== LEFT COLUMN — sidebar on desktop, below header on mobile ===== */}
+        {/* ===== LEFT COLUMN — sidebar ===== */}
         <div
           data-testid="cv-sidebar"
           className={`order-2 md:order-0 md:col-start-1 md:row-start-1 relative${colorScheme.sidebarText === "#ffffff" ? " cv-sidebar-dark" : ""}`}
           style={{ backgroundColor: colorScheme.sidebarBg, padding: mg(24) }}
         >
-          {pattern.name !== "none" && (scope === "sidebar" || scope === "full") && (
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={pattern.getStyle(colorScheme.sidebarText, sidebarIntensity)}
-            />
-          )}
           <div className="relative space-y-5">
             <PersonalInfo />
           </div>
         </div>
 
-        {/* ===== RIGHT COLUMN — single cell so pattern tiles seamlessly ===== */}
+        {/* ===== RIGHT COLUMN ===== */}
         <div className="order-3 md:order-0 md:col-start-2 md:row-start-1 relative">
-          {pattern.name !== "none" && (scope === "main" || scope === "full") && (
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={pattern.getStyle(colorScheme.heading, mainIntensity)}
-            />
-          )}
           <div className="relative">
             {/* Desktop header */}
             <div data-testid="desktop-header" className="hidden md:block" style={{ padding: `${mg(24)}px ${mg(24)}px 0` }}>
@@ -149,20 +145,14 @@ export function CVPreview() {
       <div className="hidden md:grid grid-cols-[250px_1fr] mt-auto">
         {/* Left: Applio branding on sidebar */}
         <div
-          className={`relative flex items-center justify-center${colorScheme.sidebarText === "#ffffff" ? " cv-sidebar-dark" : ""}`}
+          className={`flex items-center justify-center${colorScheme.sidebarText === "#ffffff" ? " cv-sidebar-dark" : ""}`}
           style={{ backgroundColor: colorScheme.sidebarBg, padding: `${mg(8)}px ${mg(24)}px ${mg(12)}px` }}
         >
-          {pattern.name !== "none" && (scope === "sidebar" || scope === "full") && (
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={pattern.getStyle(colorScheme.sidebarText, sidebarIntensity)}
-            />
-          )}
           <a
             href="https://www.applio.dev/"
             target="_blank"
             rel="noopener noreferrer"
-            className="relative inline-flex items-center gap-1 text-xs transition-opacity hover:opacity-70"
+            className="inline-flex items-center gap-1 text-xs transition-opacity hover:opacity-70"
             style={{ color: colorScheme.sidebarMuted }}
           >
             Applio
@@ -171,15 +161,9 @@ export function CVPreview() {
         </div>
         {/* Right: Name · Date · Page */}
         <div
-          className="relative flex items-center justify-end text-xs text-[#aaaaaa]"
+          className="flex items-center justify-end text-xs text-[#aaaaaa]"
           style={{ padding: `${mg(8)}px ${mg(24)}px ${mg(12)}px` }}
         >
-          {pattern.name !== "none" && (scope === "main" || scope === "full") && (
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={pattern.getStyle(colorScheme.heading, mainIntensity)}
-            />
-          )}
           {personalInfo.fullName}
           &nbsp;&nbsp;·&nbsp;&nbsp;
           {new Intl.DateTimeFormat(locale, { day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date())}
@@ -194,6 +178,323 @@ export function CVPreview() {
           </Tooltip>
         </div>
       </div>
+    </>
+  );
+}
+
+// Thin category-level DnD wrapper for skills in NoPhoto template.
+// Uses the shared SortableSkillCategory component with noPhoto variant.
+function NoPhotoSkillsWrapper() {
+  const { data: { skillCategories }, reorderSkillCategory, addSkillCategory } = useCV();
+  const sensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
+  const handleDragEnd = useCallback((event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = skillCategories.findIndex((s) => s.id === active.id);
+      const newIndex = skillCategories.findIndex((s) => s.id === over.id);
+      if (oldIndex !== -1 && newIndex !== -1) reorderSkillCategory(oldIndex, newIndex);
+    }
+  }, [skillCategories, reorderSkillCategory]);
+
+  return (
+    <DndContext
+      id="nophoto-skills-dnd"
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragEnd={handleDragEnd}
+    >
+      <SortableContext items={skillCategories.map((s) => s.id)} strategy={verticalListSortingStrategy}>
+        <div className="space-y-2">
+          {skillCategories.map((cat, i) => (
+            <SortableSkillCategory
+              key={cat.id}
+              skillGroup={cat}
+              index={i}
+              total={skillCategories.length}
+              noPhoto
+              onAddBelow={() => addSkillCategory(i)}
+            />
+          ))}
+        </div>
+      </SortableContext>
+    </DndContext>
+  );
+}
+
+// Thin DnD section wrapper for NoPhoto — enables drag-to-reorder of Languages/Skills blocks
+function SortableNoPhotoSection({ id, children }: { id: "skills" | "languages"; children: React.ReactNode }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+  return (
+    <div
+      ref={setNodeRef}
+      style={{ transform: CSS.Translate.toString(transform), transition, opacity: isDragging ? 0.5 : undefined, zIndex: isDragging ? 10 : undefined }}
+      className="group/np-section relative"
+    >
+      {/* Grab handle — appears in the left padding, vertically centered with the section title text */}
+      <div className="absolute right-full -top-1.5 can-hover:-top-1 pr-1 opacity-40 can-hover:opacity-0 can-hover:group-hover/np-section:opacity-60 transition-opacity duration-150">
+        <button
+          className="p-1.5 can-hover:p-1 rounded transition-colors hover:bg-gray-100 touch-manipulation cursor-grab active:cursor-grabbing"
+          {...attributes}
+          {...listeners}
+        >
+          <GripVertical className="h-4 w-4 text-gray-400" />
+        </button>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function NoPhotoTemplate() {
+  const { data: { visibility, personalInfo, skillCategories, languages, summary, sidebarSections }, updatePersonalInfo, updateSummary, reorderSidebarSection } = useCV();
+  const t = useTranslations("cvPreview");
+  const tpi = useTranslations("personalInfo");
+  const tLang = useTranslations("cvLanguages");
+  const { colorScheme } = useColorScheme();
+  const { locale } = useAppLocale();
+  const mg = (px: number) => Math.round(px * 1.6);
+
+  const hasContact = personalInfo.email || personalInfo.phone ||
+    (visibility.location && personalInfo.location) ||
+    (visibility.linkedin && personalInfo.linkedin) ||
+    (visibility.website && personalInfo.website);
+
+  // Flex sections: Languages + Skills ordered by sidebarSections (same source of truth as Classic sidebar)
+  const flexSectionOrder = sidebarSections.filter(
+    (s): s is "skills" | "languages" => s === "skills" || s === "languages"
+  );
+  const visibleFlexSections = flexSectionOrder.filter(s =>
+    (s === "languages" && visibility.languages && languages.length > 0) ||
+    (s === "skills" && skillCategories.length > 0)
+  );
+
+  const sectionSensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
+  const handleSectionDragEnd = useCallback((event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const fromGlobal = sidebarSections.indexOf(active.id as SidebarSectionId);
+      const toGlobal = sidebarSections.indexOf(over.id as SidebarSectionId);
+      if (fromGlobal !== -1 && toGlobal !== -1) reorderSidebarSection(fromGlobal, toGlobal);
+    }
+  }, [sidebarSections, reorderSidebarSection]);
+
+  // Section title helper: left accent bar + label + optional separator line
+  const sectionTitle = (label: string, showLine = true) => (
+    <div className="flex items-center gap-2 mb-3">
+      <div className="w-0.5 h-3.5 rounded-full shrink-0" style={{ backgroundColor: colorScheme.heading }} />
+      <h3 className="text-xs sm:text-[10px] font-bold tracking-[0.18em] uppercase shrink-0" style={{ color: colorScheme.heading }}>
+        {label}
+      </h3>
+      {showLine && <div className="flex-1 h-px" style={{ backgroundColor: `${colorScheme.heading}18` }} />}
+    </div>
+  );
+
+  return (
+    <>
+      {/* ===== TOP ACCENT BAR — premium signature ===== */}
+      <div style={{ height: 3, backgroundColor: colorScheme.heading }} />
+
+      {/* ===== HEADER ===== */}
+      <div className="px-9.5 sm:px-12.75" style={{ paddingTop: `${mg(28)}px`, paddingBottom: `${mg(5)}px` }}>
+        {/* Name */}
+        <EditableText
+          value={personalInfo.fullName}
+          onChange={(v) => updatePersonalInfo("fullName", v)}
+          as="heading"
+          placeholder={t("fullNamePlaceholder")}
+        />
+        {/* Accent underline — wider for more presence */}
+        {colorScheme.nameAccent !== "transparent" && (
+          <div className="mt-1.5 h-0.5 w-14 rounded-full" style={{ backgroundColor: colorScheme.nameAccent }} />
+        )}
+        {/* Role — uses heading color at 75% so name→role→icons form one accent family */}
+        <div className="mt-2.5">
+          <EditableText
+            value={personalInfo.jobTitle}
+            onChange={(v) => updatePersonalInfo("jobTitle", v)}
+            as="subheading"
+            placeholder={t("titlePlaceholder")}
+            displayStyle={{ color: `${colorScheme.heading}BF` }}
+          />
+        </div>
+
+        {/* Contact row — icon-anchored items, no separators, proper breathing room */}
+        {hasContact && (
+          <div className="mt-4 flex flex-col sm:flex-row sm:flex-wrap gap-x-5 gap-y-1.5">
+            {personalInfo.email && (
+              <span className="inline-flex items-center gap-1.5 text-gray-500">
+                <Mail className="h-3 w-3 shrink-0" style={{ color: colorScheme.heading }} />
+                <EditableText value={personalInfo.email} onChange={(v) => updatePersonalInfo("email", v)} as="small" placeholder="email" />
+              </span>
+            )}
+            {personalInfo.phone && (
+              <span className="inline-flex items-center gap-1.5 text-gray-500">
+                <Phone className="h-3 w-3 shrink-0" style={{ color: colorScheme.heading }} />
+                <EditableText value={personalInfo.phone} onChange={(v) => updatePersonalInfo("phone", v)} as="small" placeholder="phone" />
+              </span>
+            )}
+            {(visibility.location && personalInfo.location) && (
+              <span className="inline-flex items-center gap-1.5 text-gray-500">
+                <MapPin className="h-3 w-3 shrink-0" style={{ color: colorScheme.heading }} />
+                <EditableText value={personalInfo.location} onChange={(v) => updatePersonalInfo("location", v)} as="small" placeholder="location" />
+              </span>
+            )}
+            {(visibility.linkedin && personalInfo.linkedin) && (
+              <ContactLine
+                variant="noPhoto"
+                icon={Linkedin}
+                value={personalInfo.linkedin}
+                field="linkedin"
+                placeholder={tpi("linkedinPlaceholder")}
+                onChange={(f, v) => updatePersonalInfo(f, v)}
+                iconColor={colorScheme.heading}
+                urlField="linkedinUrl"
+                urlValue={personalInfo.linkedinUrl}
+                urlPlaceholder={tpi("urlPlaceholder")}
+              />
+            )}
+            {(visibility.website && personalInfo.website) && (
+              <ContactLine
+                variant="noPhoto"
+                icon={Globe}
+                value={personalInfo.website}
+                field="website"
+                placeholder={tpi("websitePlaceholder")}
+                onChange={(f, v) => updatePersonalInfo(f, v)}
+                iconColor={colorScheme.heading}
+                urlField="websiteUrl"
+                urlValue={personalInfo.websiteUrl}
+                urlPlaceholder={tpi("urlPlaceholder")}
+              />
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* ===== MAIN CONTENT ===== */}
+      <div className="flex-1 px-9.5 sm:px-12.75" style={{ paddingTop: `${mg(10)}px`, paddingBottom: `${mg(28)}px` }}>
+        <div className="space-y-6">
+
+          {/* Summary */}
+          {visibility.summary && summary && (
+            <section
+              className="rounded-xl px-4 py-3.5"
+              style={{
+                backgroundColor: `${colorScheme.heading}0F`,
+                border: `1px solid ${colorScheme.heading}1A`,
+              }}
+            >
+              {sectionTitle(tpi("aboutMe"), false)}
+              <EditableText
+                value={summary}
+                onChange={updateSummary}
+                as="body"
+                multiline
+                richText
+                placeholder={tpi("summaryPlaceholder")}
+              />
+            </section>
+          )}
+
+          <Experience />
+          <Education />
+          {visibility.courses && <Courses />}
+          {visibility.certifications && <Certifications />}
+          {visibility.awards && <Awards />}
+          {/* Languages + Skills — ordered by sidebarSections, drag-to-reorder */}
+          {visibleFlexSections.length > 0 && (
+            <DndContext
+              id="nophoto-section-order-dnd"
+              sensors={sectionSensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleSectionDragEnd}
+            >
+              <SortableContext items={visibleFlexSections} strategy={verticalListSortingStrategy}>
+                <div className="space-y-6">
+                  {visibleFlexSections.map(sectionId => {
+                    if (sectionId === "languages") {
+                      return (
+                        <SortableNoPhotoSection key="languages" id="languages">
+                          <section>
+                            {sectionTitle(tLang("title"))}
+                            <Languages noPhoto />
+                          </section>
+                        </SortableNoPhotoSection>
+                      );
+                    }
+                    return (
+                      <SortableNoPhotoSection key="skills" id="skills">
+                        <section>
+                          {sectionTitle(tpi("skills"))}
+                          <NoPhotoSkillsWrapper />
+                        </section>
+                      </SortableNoPhotoSection>
+                    );
+                  })}
+                </div>
+              </SortableContext>
+            </DndContext>
+          )}
+        </div>
+      </div>
+
+      {/* ===== FOOTER ===== */}
+      <div
+        className="hidden md:flex items-center justify-between text-xs text-[#aaaaaa] mt-auto"
+        style={{ padding: `${mg(8)}px ${mg(32)}px ${mg(12)}px` }}
+      >
+        <a
+          href="https://www.applio.dev/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 transition-opacity hover:opacity-70"
+          style={{ color: "#bbbbbb" }}
+        >
+          Applio
+          <Heart className="h-3 w-3 fill-current" strokeWidth={0} />
+        </a>
+        <span>
+          {personalInfo.fullName}
+          &nbsp;&nbsp;·&nbsp;&nbsp;
+          {new Intl.DateTimeFormat(locale, { day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date())}
+          &nbsp;&nbsp;·&nbsp;&nbsp;
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="cursor-help border-b border-dashed border-[#cccccc]">1 / 1</span>
+            </TooltipTrigger>
+            <TooltipContent side="top" className="max-w-56 text-center">
+              {t("paginationHint")}
+            </TooltipContent>
+          </Tooltip>
+        </span>
+      </div>
+    </>
+  );
+}
+
+export function CVPreview() {
+  const { data: { templateId } } = useCV();
+  const { fontFamilyId, fontSizeLevel } = useFontSettings();
+  const fontDef = getFontDefinition(fontFamilyId);
+
+  return (
+    <div
+      className="cv-preview-content mx-auto w-full lg:w-[210mm] max-w-[210mm] bg-white md:shadow-[0_2px_20px_-6px_rgba(0,0,0,0.12)] dark:md:shadow-[0_2px_20px_-6px_rgba(0,0,0,0.45)] print:shadow-none"
+      style={{ fontFamily: fontDef.cssStack }}
+    >
+      <div
+        className="md:flex md:flex-col md:min-h-[297mm]"
+        style={fontSizeLevel !== 2 ? { fontSize: `${FONT_SIZE_LEVELS[fontSizeLevel]}em` } : undefined}
+      >
+        {templateId === "noPhoto" ? <NoPhotoTemplate /> : <ClassicTemplate />}
       </div>
     </div>
   );

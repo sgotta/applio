@@ -1,13 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Download, Heart, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { LocaleProvider, useAppLocale } from "@/lib/locale-context";
 import { ThemeProvider } from "@/lib/theme-context";
 import { ColorSchemeProvider } from "@/lib/color-scheme-context";
-import { SidebarPatternProvider } from "@/lib/sidebar-pattern-context";
 import { FontSettingsProvider } from "@/lib/font-context";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { PrintableCV } from "@/components/cv-editor/PrintableCV";
@@ -15,7 +14,6 @@ import { MobileCVView } from "@/components/cv-editor/MobileCVView";
 import { downloadPDF } from "@/lib/generate-pdf";
 import { filenameDateStamp } from "@/lib/utils";
 import { getColorScheme, type ColorSchemeName } from "@/lib/color-schemes";
-import type { PatternSettings } from "@/lib/sidebar-patterns";
 import {
   FONT_SIZE_LEVELS,
   FONT_FAMILY_IDS,
@@ -48,15 +46,6 @@ function SharedCVInner({ cvData, settings }: SharedCVContentProps) {
     ? getFontDefinition(fontFamilyId)
     : null;
 
-  const patternSettings: PatternSettings | undefined = useMemo(() => settings.pattern
-    ? {
-        name: settings.pattern.name as PatternSettings["name"],
-        sidebarIntensity: (settings.pattern.sidebarIntensity ?? 3) as PatternSettings["sidebarIntensity"],
-        mainIntensity: (settings.pattern.mainIntensity ?? 2) as PatternSettings["mainIntensity"],
-        scope: settings.pattern.scope as PatternSettings["scope"],
-      }
-    : undefined, [settings.pattern]);
-
   // The photo is already an R2 URL in personalInfo.photoUrl (not base64)
   const photoUrl = cvData.personalInfo.photoUrl;
 
@@ -87,16 +76,17 @@ function SharedCVInner({ cvData, settings }: SharedCVContentProps) {
         courses: tp("courses"),
         certifications: tp("certifications"),
         awards: tp("awards"),
+        languages: tp("languages"),
       };
       const pdfFontFamily = fontDef?.pdfFamilyName;
       const pdfFontScale = (FONT_SIZE_LEVELS[(settings.fontSizeLevel ?? 2) as FontSizeLevel] ?? 1) * PDF_BASE_FONT_SCALE;
-      await downloadPDF(cvData, filename, colorScheme, labels, locale, patternSettings, pdfFontFamily, pdfFontScale);
+      await downloadPDF(cvData, filename, colorScheme, labels, locale, pdfFontFamily, pdfFontScale);
     } catch (err) {
       console.error("PDF generation failed:", err);
     } finally {
       setIsGeneratingPDF(false);
     }
-  }, [isGeneratingPDF, cvData, colorScheme, tp, locale, patternSettings, fontDef, settings.fontSizeLevel]);
+  }, [isGeneratingPDF, cvData, colorScheme, tp, locale, fontDef, settings.fontSizeLevel]);
 
   return (
     <div className="min-h-screen bg-gray-50 lg:bg-gray-100 lg:py-8 lg:px-4 overflow-x-auto">
@@ -129,7 +119,6 @@ function SharedCVInner({ cvData, settings }: SharedCVContentProps) {
             colorSchemeOverride={colorScheme}
             fontScaleOverride={fontScale}
             marginScaleOverride={1.6}
-            patternOverride={patternSettings}
             fontFamilyOverride={fontDef?.cssStack}
           />
         </div>
@@ -141,8 +130,8 @@ function SharedCVInner({ cvData, settings }: SharedCVContentProps) {
           data={cvData}
           colors={colorScheme}
           photoUrl={photoUrl}
-          patternSettings={patternSettings}
           fontFamilyOverride={fontDef?.cssStack}
+          templateId={cvData.templateId}
         />
       </div>
 
@@ -162,7 +151,7 @@ function SharedCVInner({ cvData, settings }: SharedCVContentProps) {
       {/* PDF loading overlay */}
       {isGeneratingPDF && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+          className="fixed inset-0 z-100 flex items-center justify-center bg-black/50 backdrop-blur-sm"
           role="alert"
           aria-busy="true"
         >
@@ -180,15 +169,13 @@ export function SharedCVContent({ cvData, settings }: SharedCVContentProps) {
   return (
     <ThemeProvider>
       <ColorSchemeProvider>
-        <SidebarPatternProvider>
-          <FontSettingsProvider>
-            <LocaleProvider>
-              <TooltipProvider delayDuration={300}>
-                <SharedCVInner cvData={cvData} settings={settings} />
-              </TooltipProvider>
-            </LocaleProvider>
-          </FontSettingsProvider>
-        </SidebarPatternProvider>
+        <FontSettingsProvider>
+          <LocaleProvider>
+            <TooltipProvider delayDuration={300}>
+              <SharedCVInner cvData={cvData} settings={settings} />
+            </TooltipProvider>
+          </LocaleProvider>
+        </FontSettingsProvider>
       </ColorSchemeProvider>
     </ThemeProvider>
   );

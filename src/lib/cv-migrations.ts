@@ -1,5 +1,7 @@
-import type { CVData, SidebarSectionId } from "./types";
-import { defaultVisibility, DEFAULT_SIDEBAR_SECTIONS } from "./default-data";
+import type { CVData, SidebarSectionId, TemplateId } from "./types";
+import { defaultVisibility, DEFAULT_SIDEBAR_SECTIONS, DEFAULT_TEMPLATE_ID } from "./default-data";
+
+const VALID_SIDEBAR_SECTION_IDS: readonly SidebarSectionId[] = ["contact", "summary", "skills", "languages"];
 
 export function moveItem<T>(
   arr: T[],
@@ -13,16 +15,17 @@ export function moveItem<T>(
   return newArr;
 }
 
-/** Ensure sidebarSections is a valid array containing all section IDs */
+/** Ensure sidebarSections is a valid array containing all DEFAULT section IDs.
+ *  Optional sections (e.g. "languages") are preserved if present, but NOT injected. */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function migrateSidebarSections(raw: any): SidebarSectionId[] {
   if (!Array.isArray(raw)) return [...DEFAULT_SIDEBAR_SECTIONS];
   const valid = raw.filter(
     (id: unknown): id is SidebarSectionId =>
       typeof id === "string" &&
-      (DEFAULT_SIDEBAR_SECTIONS as readonly string[]).includes(id)
+      (VALID_SIDEBAR_SECTION_IDS as readonly string[]).includes(id)
   );
-  // Append any missing sections at the end
+  // Append any missing DEFAULT sections at the end (optional sections like "languages" are not added)
   for (const id of DEFAULT_SIDEBAR_SECTIONS) {
     if (!valid.includes(id)) valid.push(id);
   }
@@ -130,8 +133,10 @@ export function migrateCVData(data: any): CVData {
       courses: data.courses || [],
       certifications: data.certifications || [],
       awards: data.awards || [],
+      languages: data.languages || [],
       visibility: { ...defaultVisibility, ...data.visibility },
       sidebarSections: migrateSidebarSections(data.sidebarSections || data.sidebarOrder),
+      templateId: (data.templateId as TemplateId) || DEFAULT_TEMPLATE_ID,
     };
 
     // Migrate bullets to HTML string + roleDescription → paragraph prepended
@@ -182,8 +187,10 @@ export function migrateCVData(data: any): CVData {
     courses: data.courses || [],
     certifications: data.certifications || [],
     awards: data.awards || [],
+    languages: data.languages || [],
     visibility: { ...defaultVisibility, ...data.visibility },
     sidebarSections: migrateSidebarSections(data.sidebarSections || data.sidebarOrder),
+    templateId: (data.templateId as TemplateId) || DEFAULT_TEMPLATE_ID,
   };
 
   // Migrate bullets (BulletItem[] or string[]) to HTML string + roleDescription → paragraph prepended

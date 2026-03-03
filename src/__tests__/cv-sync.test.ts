@@ -33,6 +33,7 @@ function makeCVData(overrides?: Partial<CVData>): CVData {
     courses: [],
     certifications: [],
     awards: [],
+    languages: [],
     visibility: {
       location: true,
       linkedin: true,
@@ -41,6 +42,7 @@ function makeCVData(overrides?: Partial<CVData>): CVData {
       courses: false,
       certifications: false,
       awards: false,
+      languages: false,
     },
     sidebarSections: ["contact", "summary", "skills"],
     ...overrides,
@@ -312,7 +314,6 @@ describe("cvDataToDoc", () => {
       fontSizeLevel: 2,
       theme: "light",
       locale: "es",
-      pattern: { name: "none", sidebarIntensity: 3, mainIntensity: 2, scope: "sidebar" },
     };
     const doc = cvDataToDoc(cvData, settings);
     expect(doc.settings).toEqual(settings);
@@ -370,12 +371,14 @@ describe("toSettings", () => {
         fontSizeLevel: 3,
         theme: "dark",
         locale: "en",
-        pattern: { name: "dots", sidebarIntensity: 5, mainIntensity: 4, scope: "both" },
       },
     };
     const s = toSettings(plain);
     expect(s.colorScheme).toBe("midnight");
-    expect(s.pattern.name).toBe("dots");
+    expect(s.fontFamily).toBe("lato");
+    expect(s.fontSizeLevel).toBe(3);
+    expect(s.theme).toBe("dark");
+    expect(s.locale).toBe("en");
   });
 
   it("provides defaults for missing settings", () => {
@@ -385,15 +388,6 @@ describe("toSettings", () => {
     expect(s.fontSizeLevel).toBe(2);
     expect(s.theme).toBe("light");
     expect(s.locale).toBe("es");
-    expect(s.pattern.name).toBe("none");
-  });
-
-  it("handles partial pattern", () => {
-    const plain = { settings: { pattern: { name: "grid" } } };
-    const s = toSettings(plain);
-    expect(s.pattern.name).toBe("grid");
-    expect(s.pattern.sidebarIntensity).toBe(3);
-    expect(s.pattern.scope).toBe("sidebar");
   });
 });
 
