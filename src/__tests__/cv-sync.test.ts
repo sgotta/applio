@@ -314,7 +314,6 @@ describe("cvDataToDoc", () => {
       fontSizeLevel: 2,
       theme: "light",
       locale: "es",
-      pattern: { name: "none", sidebarIntensity: 3, mainIntensity: 2, scope: "sidebar" },
     };
     const doc = cvDataToDoc(cvData, settings);
     expect(doc.settings).toEqual(settings);

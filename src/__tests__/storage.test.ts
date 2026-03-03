@@ -27,6 +27,7 @@ const mockData: CVData = {
     courses: false,
     certifications: false,
     awards: false,
+    languages: false,
   },
   sidebarSections: ["contact", "summary", "skills"],
 };

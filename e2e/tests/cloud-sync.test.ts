@@ -24,7 +24,6 @@ const defaultSettings: CloudSettings = {
   fontSizeLevel: 2,
   theme: "light",
   locale: "es",
-  pattern: { name: "none", sidebarIntensity: 3, mainIntensity: 2, scope: "sidebar" },
 };
 
 /** CV data that differs from minimalCV */
