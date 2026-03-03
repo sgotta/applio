@@ -59,7 +59,13 @@ export interface AwardItem {
   description?: string;
 }
 
-export type SidebarSectionId = "contact" | "summary" | "skills";
+export interface LanguageItem {
+  id: string;
+  language: string;
+  level: string;
+}
+
+export type SidebarSectionId = "contact" | "summary" | "skills" | "languages";
 
 export type TemplateId = "classic" | "noPhoto";
 
@@ -71,6 +77,7 @@ export interface SectionVisibility {
   courses: boolean;
   certifications: boolean;
   awards: boolean;
+  languages: boolean;
 }
 
 export interface CVData {
@@ -82,6 +89,7 @@ export interface CVData {
   courses: CourseItem[];
   certifications: CertificationItem[];
   awards: AwardItem[];
+  languages: LanguageItem[];
   visibility: SectionVisibility;
   sidebarSections: SidebarSectionId[];
   templateId?: TemplateId;

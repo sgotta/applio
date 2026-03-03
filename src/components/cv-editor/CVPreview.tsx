@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import { useCV } from "@/lib/cv-context";
 import { useTranslations } from "next-intl";
 import { useColorScheme } from "@/lib/color-scheme-context";
@@ -7,16 +8,35 @@ import { useFontSettings } from "@/lib/font-context";
 import { getFontDefinition, FONT_SIZE_LEVELS } from "@/lib/fonts";
 import { useAppLocale } from "@/lib/locale-context";
 
-import { Heart, Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
+import { Heart, Mail, Phone, MapPin, Linkedin, Globe, GripVertical } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { EditableText } from "./EditableText";
-import { PersonalInfo } from "./PersonalInfo";
+import { PersonalInfo, ContactLine, SortableSkillCategory } from "./PersonalInfo";
 import { ProfilePhotoUpload } from "./ProfilePhotoUpload";
 import { Experience } from "./Experience";
 import { Education } from "./Education";
 import { Courses } from "./Courses";
 import { Certifications } from "./Certifications";
 import { Awards } from "./Awards";
+import { Languages } from "./Languages";
+import {
+  DndContext,
+  closestCenter,
+  MouseSensor,
+  TouchSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import type { SidebarSectionId } from "@/lib/types";
 
 function CVHeader() {
   const {
@@ -162,10 +182,78 @@ function ClassicTemplate() {
   );
 }
 
+// Thin category-level DnD wrapper for skills in NoPhoto template.
+// Uses the shared SortableSkillCategory component with noPhoto variant.
+function NoPhotoSkillsWrapper() {
+  const { data: { skillCategories }, reorderSkillCategory, addSkillCategory } = useCV();
+  const sensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
+  const handleDragEnd = useCallback((event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = skillCategories.findIndex((s) => s.id === active.id);
+      const newIndex = skillCategories.findIndex((s) => s.id === over.id);
+      if (oldIndex !== -1 && newIndex !== -1) reorderSkillCategory(oldIndex, newIndex);
+    }
+  }, [skillCategories, reorderSkillCategory]);
+
+  return (
+    <DndContext
+      id="nophoto-skills-dnd"
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragEnd={handleDragEnd}
+    >
+      <SortableContext items={skillCategories.map((s) => s.id)} strategy={verticalListSortingStrategy}>
+        <div className="space-y-2">
+          {skillCategories.map((cat, i) => (
+            <SortableSkillCategory
+              key={cat.id}
+              skillGroup={cat}
+              index={i}
+              total={skillCategories.length}
+              noPhoto
+              onAddBelow={() => addSkillCategory(i)}
+            />
+          ))}
+        </div>
+      </SortableContext>
+    </DndContext>
+  );
+}
+
+// Thin DnD section wrapper for NoPhoto — enables drag-to-reorder of Languages/Skills blocks
+function SortableNoPhotoSection({ id, children }: { id: "skills" | "languages"; children: React.ReactNode }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+  return (
+    <div
+      ref={setNodeRef}
+      style={{ transform: CSS.Translate.toString(transform), transition, opacity: isDragging ? 0.5 : undefined, zIndex: isDragging ? 10 : undefined }}
+      className="group/np-section relative"
+    >
+      {/* Grab handle — appears in the left padding, vertically centered with the section title text */}
+      <div className="absolute right-full -top-1.5 can-hover:-top-1 pr-1 opacity-40 can-hover:opacity-0 can-hover:group-hover/np-section:opacity-60 transition-opacity duration-150">
+        <button
+          className="p-1.5 can-hover:p-1 rounded transition-colors hover:bg-gray-100 touch-manipulation cursor-grab active:cursor-grabbing"
+          {...attributes}
+          {...listeners}
+        >
+          <GripVertical className="h-4 w-4 text-gray-400" />
+        </button>
+      </div>
+      {children}
+    </div>
+  );
+}
+
 function NoPhotoTemplate() {
-  const { data: { visibility, personalInfo, skillCategories, summary }, updatePersonalInfo, updateSummary } = useCV();
+  const { data: { visibility, personalInfo, skillCategories, languages, summary, sidebarSections }, updatePersonalInfo, updateSummary, reorderSidebarSection } = useCV();
   const t = useTranslations("cvPreview");
   const tpi = useTranslations("personalInfo");
+  const tLang = useTranslations("cvLanguages");
   const { colorScheme } = useColorScheme();
   const { locale } = useAppLocale();
   const mg = (px: number) => Math.round(px * 1.6);
@@ -175,14 +263,37 @@ function NoPhotoTemplate() {
     (visibility.linkedin && personalInfo.linkedin) ||
     (visibility.website && personalInfo.website);
 
-  // Section title helper: left accent bar + label + separator line
-  const sectionTitle = (label: string) => (
+  // Flex sections: Languages + Skills ordered by sidebarSections (same source of truth as Classic sidebar)
+  const flexSectionOrder = sidebarSections.filter(
+    (s): s is "skills" | "languages" => s === "skills" || s === "languages"
+  );
+  const visibleFlexSections = flexSectionOrder.filter(s =>
+    (s === "languages" && visibility.languages && languages.length > 0) ||
+    (s === "skills" && skillCategories.length > 0)
+  );
+
+  const sectionSensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
+  const handleSectionDragEnd = useCallback((event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const fromGlobal = sidebarSections.indexOf(active.id as SidebarSectionId);
+      const toGlobal = sidebarSections.indexOf(over.id as SidebarSectionId);
+      if (fromGlobal !== -1 && toGlobal !== -1) reorderSidebarSection(fromGlobal, toGlobal);
+    }
+  }, [sidebarSections, reorderSidebarSection]);
+
+  // Section title helper: left accent bar + label + optional separator line
+  const sectionTitle = (label: string, showLine = true) => (
     <div className="flex items-center gap-2 mb-3">
       <div className="w-0.5 h-3.5 rounded-full shrink-0" style={{ backgroundColor: colorScheme.heading }} />
-      <h3 className="text-[10px] font-bold tracking-[0.18em] uppercase shrink-0" style={{ color: colorScheme.heading }}>
+      <h3 className="text-xs sm:text-[10px] font-bold tracking-[0.18em] uppercase shrink-0" style={{ color: colorScheme.heading }}>
         {label}
       </h3>
-      <div className="flex-1 h-px" style={{ backgroundColor: `${colorScheme.heading}18` }} />
+      {showLine && <div className="flex-1 h-px" style={{ backgroundColor: `${colorScheme.heading}18` }} />}
     </div>
   );
 
@@ -192,64 +303,96 @@ function NoPhotoTemplate() {
       <div style={{ height: 3, backgroundColor: colorScheme.heading }} />
 
       {/* ===== HEADER ===== */}
-      <div style={{ padding: `${mg(26)}px ${mg(32)}px ${mg(18)}px` }}>
+      <div className="px-9.5 sm:px-12.75" style={{ paddingTop: `${mg(28)}px`, paddingBottom: `${mg(5)}px` }}>
+        {/* Name */}
         <EditableText
           value={personalInfo.fullName}
           onChange={(v) => updatePersonalInfo("fullName", v)}
           as="heading"
           placeholder={t("fullNamePlaceholder")}
         />
+        {/* Accent underline — wider for more presence */}
         {colorScheme.nameAccent !== "transparent" && (
-          <div className="mt-1 h-0.5 w-10 rounded-full" style={{ backgroundColor: colorScheme.nameAccent }} />
+          <div className="mt-1.5 h-0.5 w-14 rounded-full" style={{ backgroundColor: colorScheme.nameAccent }} />
         )}
-        <div className="mt-1">
+        {/* Role — uses heading color at 75% so name→role→icons form one accent family */}
+        <div className="mt-2.5">
           <EditableText
             value={personalInfo.jobTitle}
             onChange={(v) => updatePersonalInfo("jobTitle", v)}
             as="subheading"
             placeholder={t("titlePlaceholder")}
+            displayStyle={{ color: `${colorScheme.heading}BF` }}
           />
         </div>
 
-        {/* Contact row — inline with · separators */}
+        {/* Contact row — icon-anchored items, no separators, proper breathing room */}
         {hasContact && (
-          <div className="mt-3 flex flex-wrap items-center gap-y-1">
-            {[
-              personalInfo.email && { icon: Mail, value: personalInfo.email, key: "email", onChange: (v: string) => updatePersonalInfo("email", v), ph: "email" },
-              personalInfo.phone && { icon: Phone, value: personalInfo.phone, key: "phone", onChange: (v: string) => updatePersonalInfo("phone", v), ph: "phone" },
-              (visibility.location && personalInfo.location) && { icon: MapPin, value: personalInfo.location, key: "location", onChange: (v: string) => updatePersonalInfo("location", v), ph: "location" },
-              (visibility.linkedin && personalInfo.linkedin) && { icon: Linkedin, value: personalInfo.linkedin, key: "linkedin", onChange: (v: string) => updatePersonalInfo("linkedin", v), ph: "linkedin" },
-              (visibility.website && personalInfo.website) && { icon: Globe, value: personalInfo.website, key: "website", onChange: (v: string) => updatePersonalInfo("website", v), ph: "website" },
-            ].filter(Boolean).map((item, idx) => {
-              if (!item) return null;
-              const Icon = item.icon;
-              return (
-                <span key={item.key} className="inline-flex items-center">
-                  {idx > 0 && (
-                    <span className="mx-2.5 select-none text-[10px]" style={{ color: `${colorScheme.heading}35` }}>·</span>
-                  )}
-                  <span className="inline-flex items-center gap-1" style={{ color: colorScheme.sidebarMuted }}>
-                    <Icon className="h-2.5 w-2.5 shrink-0" style={{ color: colorScheme.heading }} />
-                    <EditableText value={item.value} onChange={item.onChange} as="small" placeholder={item.ph} />
-                  </span>
-                </span>
-              );
-            })}
+          <div className="mt-4 flex flex-col sm:flex-row sm:flex-wrap gap-x-5 gap-y-1.5">
+            {personalInfo.email && (
+              <span className="inline-flex items-center gap-1.5 text-gray-500">
+                <Mail className="h-3 w-3 shrink-0" style={{ color: colorScheme.heading }} />
+                <EditableText value={personalInfo.email} onChange={(v) => updatePersonalInfo("email", v)} as="small" placeholder="email" />
+              </span>
+            )}
+            {personalInfo.phone && (
+              <span className="inline-flex items-center gap-1.5 text-gray-500">
+                <Phone className="h-3 w-3 shrink-0" style={{ color: colorScheme.heading }} />
+                <EditableText value={personalInfo.phone} onChange={(v) => updatePersonalInfo("phone", v)} as="small" placeholder="phone" />
+              </span>
+            )}
+            {(visibility.location && personalInfo.location) && (
+              <span className="inline-flex items-center gap-1.5 text-gray-500">
+                <MapPin className="h-3 w-3 shrink-0" style={{ color: colorScheme.heading }} />
+                <EditableText value={personalInfo.location} onChange={(v) => updatePersonalInfo("location", v)} as="small" placeholder="location" />
+              </span>
+            )}
+            {(visibility.linkedin && personalInfo.linkedin) && (
+              <ContactLine
+                variant="noPhoto"
+                icon={Linkedin}
+                value={personalInfo.linkedin}
+                field="linkedin"
+                placeholder={tpi("linkedinPlaceholder")}
+                onChange={(f, v) => updatePersonalInfo(f, v)}
+                iconColor={colorScheme.heading}
+                urlField="linkedinUrl"
+                urlValue={personalInfo.linkedinUrl}
+                urlPlaceholder={tpi("urlPlaceholder")}
+              />
+            )}
+            {(visibility.website && personalInfo.website) && (
+              <ContactLine
+                variant="noPhoto"
+                icon={Globe}
+                value={personalInfo.website}
+                field="website"
+                placeholder={tpi("websitePlaceholder")}
+                onChange={(f, v) => updatePersonalInfo(f, v)}
+                iconColor={colorScheme.heading}
+                urlField="websiteUrl"
+                urlValue={personalInfo.websiteUrl}
+                urlPlaceholder={tpi("urlPlaceholder")}
+              />
+            )}
           </div>
         )}
       </div>
 
-      {/* Header bottom divider */}
-      <div style={{ height: 1, backgroundColor: `${colorScheme.heading}14`, marginLeft: mg(32), marginRight: mg(32) }} />
-
       {/* ===== MAIN CONTENT ===== */}
-      <div className="flex-1" style={{ padding: `${mg(22)}px ${mg(32)}px ${mg(28)}px` }}>
+      <div className="flex-1 px-9.5 sm:px-12.75" style={{ paddingTop: `${mg(10)}px`, paddingBottom: `${mg(28)}px` }}>
         <div className="space-y-6">
 
           {/* Summary */}
           {visibility.summary && summary && (
-            <section>
-              {sectionTitle(tpi("aboutMe"))}
+            <section
+              className="rounded-xl px-4 py-3.5"
+              style={{
+                backgroundColor: `${colorScheme.heading}0F`,
+                border: `1px solid ${colorScheme.heading}1A`,
+              }}
+            >
+              {sectionTitle(tpi("aboutMe"), false)}
               <EditableText
                 value={summary}
                 onChange={updateSummary}
@@ -266,35 +409,39 @@ function NoPhotoTemplate() {
           {visibility.courses && <Courses />}
           {visibility.certifications && <Certifications />}
           {visibility.awards && <Awards />}
-
-          {/* Skills — two-column: category label | chips (at end for noPhoto) */}
-          {skillCategories.length > 0 && (
-            <section>
-              {sectionTitle(tpi("skills"))}
-              <div className="space-y-2">
-                {skillCategories.map((cat) => (
-                  <div key={cat.id} className="flex items-start gap-4">
-                    <span
-                      className="text-[9px] font-bold tracking-widest uppercase shrink-0 pt-0.5"
-                      style={{ width: "5.5rem", textAlign: "right", color: `${colorScheme.heading}70` }}
-                    >
-                      {cat.category}
-                    </span>
-                    <div className="flex flex-wrap gap-1.5">
-                      {cat.items.map((skill, i) => (
-                        <span
-                          key={`${cat.id}-${i}`}
-                          className="text-[11px] px-2 py-0.5 rounded"
-                          style={{ backgroundColor: `${colorScheme.heading}12`, color: colorScheme.heading }}
-                        >
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
+          {/* Languages + Skills — ordered by sidebarSections, drag-to-reorder */}
+          {visibleFlexSections.length > 0 && (
+            <DndContext
+              id="nophoto-section-order-dnd"
+              sensors={sectionSensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleSectionDragEnd}
+            >
+              <SortableContext items={visibleFlexSections} strategy={verticalListSortingStrategy}>
+                <div className="space-y-6">
+                  {visibleFlexSections.map(sectionId => {
+                    if (sectionId === "languages") {
+                      return (
+                        <SortableNoPhotoSection key="languages" id="languages">
+                          <section>
+                            {sectionTitle(tLang("title"))}
+                            <Languages noPhoto />
+                          </section>
+                        </SortableNoPhotoSection>
+                      );
+                    }
+                    return (
+                      <SortableNoPhotoSection key="skills" id="skills">
+                        <section>
+                          {sectionTitle(tpi("skills"))}
+                          <NoPhotoSkillsWrapper />
+                        </section>
+                      </SortableNoPhotoSection>
+                    );
+                  })}
+                </div>
+              </SortableContext>
+            </DndContext>
           )}
         </div>
       </div>
@@ -302,7 +449,7 @@ function NoPhotoTemplate() {
       {/* ===== FOOTER ===== */}
       <div
         className="hidden md:flex items-center justify-between text-xs text-[#aaaaaa] mt-auto"
-        style={{ padding: `${mg(8)}px ${mg(32)}px ${mg(12)}px`, borderTop: `1px solid ${colorScheme.heading}12` }}
+        style={{ padding: `${mg(8)}px ${mg(32)}px ${mg(12)}px` }}
       >
         <a
           href="https://www.applio.dev/"

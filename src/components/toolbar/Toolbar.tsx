@@ -478,6 +478,7 @@ function SectionsContent({
             <SectionToggle label={t("sectionCourses")} checked={data.visibility.courses} onToggle={() => toggleSection("courses")} mobile={mobile} />
             <SectionToggle label={t("sectionCertifications")} checked={data.visibility.certifications} onToggle={() => toggleSection("certifications")} mobile={mobile} />
             <SectionToggle label={t("sectionAwards")} checked={data.visibility.awards} onToggle={() => toggleSection("awards")} mobile={mobile} />
+            <SectionToggle label={t("sectionLanguages")} checked={data.visibility.languages} onToggle={() => toggleSection("languages")} mobile={mobile} />
           </>
         ) : (
           <div className="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800">
@@ -488,6 +489,8 @@ function SectionsContent({
             <SectionToggle label={t("sectionCertifications")} checked={data.visibility.certifications} onToggle={() => toggleSection("certifications")} mobile={mobile} />
             <div className="h-px bg-gray-100 dark:bg-white/5" />
             <SectionToggle label={t("sectionAwards")} checked={data.visibility.awards} onToggle={() => toggleSection("awards")} mobile={mobile} />
+            <div className="h-px bg-gray-100 dark:bg-white/5" />
+            <SectionToggle label={t("sectionLanguages")} checked={data.visibility.languages} onToggle={() => toggleSection("languages")} mobile={mobile} />
           </div>
         )}
       </div>

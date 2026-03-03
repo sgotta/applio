@@ -22,6 +22,7 @@
     "sectionCourses": "Kurse & Workshops",
     "sectionCertifications": "Zertifizierungen",
     "sectionAwards": "Auszeichnungen",
+    "sectionLanguages": "Sprachen",
     "importFormatError": "Das Dateiformat ist falsch. Stelle sicher, dass es ein aus Applio exportiertes JSON ist.",
     "importConfirm": "Möchtest du diesen Lebenslauf laden? Die aktuellen Daten werden überschrieben.",
     "importReadError": "Fehler beim Lesen der Datei. Stelle sicher, dass es eine gültige JSON-Datei ist.",
@@ -71,7 +72,7 @@
     "syncLoginHint": "Melden Sie sich an, um Ihre Daten zu synchronisieren und von jedem Gerät darauf zuzugreifen.",
     "syncSyncing": "Synchronisierung...",
     "syncError": "Synchronisierungsfehler",
-    "templates": "Templates",
+    "templates": "Vorlagen",
     "templateClassic": "Klassisch",
     "templateNoPhoto": "Ohne Foto"
   },
@@ -259,7 +260,8 @@
     "education": "Bildung",
     "courses": "Kurse & Workshops",
     "certifications": "Zertifizierungen",
-    "awards": "Auszeichnungen"
+    "awards": "Auszeichnungen",
+    "languages": "Sprachen"
   },
   "defaults": {
     "company": "Unternehmen",
@@ -275,7 +277,9 @@
     "certificationName": "Zertifizierung",
     "certificationIssuer": "Aussteller",
     "awardName": "Auszeichnung",
-    "awardIssuer": "Organisation"
+    "awardIssuer": "Organisation",
+    "languageName": "Deutsch",
+    "languageLevel": "Muttersprache"
   },
   "sharedView": {
     "loading": "Lebenslauf wird geladen...",
@@ -285,6 +289,12 @@
     "sharedOn": "Geteilt am {date}",
     "madeWith": "Hergestellt in Argentinien",
     "generating": "PDF wird erstellt..."
+  },
+  "cvLanguages": {
+    "title": "Sprachen",
+    "languagePlaceholder": "Sprache",
+    "levelPlaceholder": "Niveau",
+    "addLanguage": "Sprache hinzufügen"
   },
   "languages": {
     "en": "Englisch",

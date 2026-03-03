@@ -240,6 +240,7 @@ export function CloudSync() {
       fontSizeLevel,
       theme,
       locale,
+      templateId: data.templateId,
     };
   }
 

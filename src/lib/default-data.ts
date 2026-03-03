@@ -12,6 +12,7 @@ export const defaultVisibility: SectionVisibility = {
   courses: false,
   certifications: false,
   awards: false,
+  languages: false,
 };
 
 const enData: CVData = {
@@ -75,6 +76,7 @@ const enData: CVData = {
   courses: [],
   certifications: [],
   awards: [],
+  languages: [],
   visibility: defaultVisibility,
   sidebarSections: DEFAULT_SIDEBAR_SECTIONS,
   templateId: DEFAULT_TEMPLATE_ID,
@@ -141,6 +143,7 @@ const esData: CVData = {
   courses: [],
   certifications: [],
   awards: [],
+  languages: [],
   visibility: defaultVisibility,
   sidebarSections: DEFAULT_SIDEBAR_SECTIONS,
   templateId: DEFAULT_TEMPLATE_ID,

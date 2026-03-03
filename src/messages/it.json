@@ -22,6 +22,7 @@
     "sectionCourses": "Corsi e Workshop",
     "sectionCertifications": "Certificazioni",
     "sectionAwards": "Premi",
+    "sectionLanguages": "Lingue",
     "importFormatError": "Il formato del file non è corretto. Assicurati che sia un JSON esportato da Applio.",
     "importConfirm": "Vuoi caricare questo CV? I dati attuali verranno sovrascritti.",
     "importReadError": "Errore nella lettura del file. Assicurati che sia un file JSON valido.",
@@ -71,7 +72,7 @@
     "syncLoginHint": "Accedi per sincronizzare i tuoi dati e accedervi da qualsiasi dispositivo.",
     "syncSyncing": "Sincronizzazione...",
     "syncError": "Errore di sincronizzazione",
-    "templates": "Templates",
+    "templates": "Modelli",
     "templateClassic": "Classico",
     "templateNoPhoto": "Senza foto"
   },
@@ -259,7 +260,8 @@
     "education": "Istruzione",
     "courses": "Corsi e Workshop",
     "certifications": "Certificazioni",
-    "awards": "Premi e Riconoscimenti"
+    "awards": "Premi e Riconoscimenti",
+    "languages": "Lingue"
   },
   "defaults": {
     "company": "Azienda",
@@ -275,7 +277,9 @@
     "certificationName": "Certificazione",
     "certificationIssuer": "Ente",
     "awardName": "Premio",
-    "awardIssuer": "Organizzazione"
+    "awardIssuer": "Organizzazione",
+    "languageName": "Italiano",
+    "languageLevel": "Madrelingua"
   },
   "sharedView": {
     "loading": "Caricamento CV...",
@@ -285,6 +289,12 @@
     "sharedOn": "Condiviso il {date}",
     "madeWith": "Fatto in Argentina",
     "generating": "Generazione PDF..."
+  },
+  "cvLanguages": {
+    "title": "Lingue",
+    "languagePlaceholder": "Lingua",
+    "levelPlaceholder": "Livello",
+    "addLanguage": "Aggiungi lingua"
   },
   "languages": {
     "en": "Inglese",

@@ -289,6 +289,7 @@ export interface PDFLabels {
   courses: string;
   certifications: string;
   awards: string;
+  languages: string;
 }
 
 export interface PDFDocumentProps {
@@ -380,6 +381,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
     courses,
     certifications,
     awards,
+    languages,
     visibility,
   } = data;
   const sidebarSections = data.sidebarSections ?? DEFAULT_SIDEBAR_SECTIONS;
@@ -613,6 +615,32 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                               </View>
                             ))}
                           </View>
+                        </View>
+                      ))}
+                    </View>
+                  </View>
+                );
+              }
+              if (sectionId === "languages") {
+                if (!visibility.languages || !languages || languages.length === 0) return null;
+                return (
+                  <View key="languages" style={{ marginBottom: SECTION_GAP }}>
+                    <SidebarSectionHeading
+                      color={colors.sidebarText}
+                      separatorColor={colors.sidebarSeparator}
+                      fontSize={fs(10)}
+                    >
+                      {labels.languages}
+                    </SidebarSectionHeading>
+                    <View style={{ gap: 5 }}>
+                      {languages.map((lang) => (
+                        <View key={lang.id} style={{ flexDirection: "row", gap: 4 }}>
+                          <Text style={{ fontSize: fs(11), fontWeight: 600, color: colors.sidebarText, flex: 1 }}>
+                            {lang.language}
+                          </Text>
+                          <Text style={{ fontSize: fs(11), color: colors.sidebarMuted, flex: 1 }}>
+                            {lang.level}
+                          </Text>
                         </View>
                       ))}
                     </View>
@@ -1148,6 +1176,27 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                     )}
                   </View>
                 ))}
+              </View>
+            )}
+
+            {/* Languages */}
+            {visibility.languages && languages && languages.length > 0 && (
+              <View style={{ marginBottom: SECTION_GAP }}>
+                <NoPhotoSectionHeading color={colors.heading} fontSize={fs(10)}>
+                  {labels.languages}
+                </NoPhotoSectionHeading>
+                <View style={{ gap: 4 }}>
+                  {languages.map((lang) => (
+                    <View key={lang.id} style={{ flexDirection: "row", gap: 8 }}>
+                      <Text style={{ fontSize: fs(12), fontWeight: 600, color: "#111827", flex: 1 }}>
+                        {lang.language}
+                      </Text>
+                      <Text style={{ fontSize: fs(12), color: "#6b7280", flex: 1 }}>
+                        {lang.level}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
               </View>
             )}
 

@@ -10,6 +10,7 @@ import { EditableText } from "./EditableText";
 import { EntryGrip } from "./EntryGrip";
 import { SectionTitle } from "./SectionTitle";
 import { ProfilePhotoUpload } from "./ProfilePhotoUpload";
+import { Languages } from "./Languages";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Plus, GripVertical, ExternalLink, Trash2, Link2 } from "lucide-react";
 import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
@@ -44,6 +45,7 @@ function ContactLine({
   urlField,
   urlValue,
   urlPlaceholder,
+  variant,
 }: {
   icon: React.ElementType;
   value: string;
@@ -54,11 +56,14 @@ function ContactLine({
   urlField?: string;
   urlValue?: string;
   urlPlaceholder?: string;
+  /** "noPhoto" = light popover for use on white main content area */
+  variant?: "noPhoto";
 }) {
   const [linkOpen, setLinkOpen] = useState(false);
   const hasUrl = !!urlValue;
   const linkable = !!urlField;
   const t = useTranslations("personalInfo");
+  const isNoPhoto = variant === "noPhoto";
 
   /* Non-linkable fields (email, phone, location): plain icon + inline editable text */
   if (!linkable) {
@@ -81,14 +86,16 @@ function ContactLine({
     <Popover open={linkOpen} onOpenChange={setLinkOpen}>
       <PopoverTrigger asChild>
         <button
-          className={`flex items-center gap-1 -mx-1.5 px-1.5 py-0.5 rounded-md transition-colors text-left w-full ${
-            linkOpen ? "bg-white/10" : "hover:bg-white/5"
+          className={`flex items-center gap-1 -mx-1.5 px-1.5 py-0.5 rounded-md transition-colors text-left ${isNoPhoto ? "w-auto" : "w-full"} ${
+            isNoPhoto
+              ? linkOpen ? "bg-black/10" : "hover:bg-black/5"
+              : linkOpen ? "bg-white/10" : "hover:bg-white/5"
           }`}
         >
           <span className="relative shrink-0">
             <Icon className="h-3 w-3" style={{ color: iconColor }} />
             {hasUrl && (
-              <span className="absolute -top-px -right-px h-1.5 w-1.5 rounded-full bg-white/80" />
+              <span className={`absolute -top-px -right-px h-1.5 w-1.5 rounded-full ${isNoPhoto ? "bg-gray-900/50" : "bg-white/80"}`} />
             )}
           </span>
           <span
@@ -100,7 +107,7 @@ function ContactLine({
         </button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-72 border-0 bg-gray-900 p-3.5 rounded-xl shadow-xl"
+        className={`w-72 p-3.5 rounded-xl shadow-xl ${isNoPhoto ? "border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900" : "border-0 bg-gray-900"}`}
         align="start"
         side="bottom"
         sideOffset={6}
@@ -108,7 +115,7 @@ function ContactLine({
         <div className="space-y-3">
           {/* Display text field */}
           <div className="space-y-1.5">
-            <label className="block text-[11px] font-semibold uppercase tracking-widest text-white/40">
+            <label className={`block text-[11px] font-semibold uppercase tracking-widest ${isNoPhoto ? "text-gray-400" : "text-white/40"}`}>
               {t("linkTextLabel")}
             </label>
             <input
@@ -116,23 +123,23 @@ function ContactLine({
               value={value}
               onChange={(e) => onChange(field, e.target.value)}
               placeholder={placeholder}
-              className="w-full rounded-lg bg-white/10 px-3 py-2 text-[13px] text-white placeholder:text-white/30 outline-none focus:bg-white/15 transition-colors"
+              className={`w-full rounded-lg px-3 py-2 text-[13px] outline-none transition-colors ${isNoPhoto ? "bg-gray-100 text-gray-800 placeholder:text-gray-400 focus:bg-gray-200 dark:bg-white/10 dark:text-white dark:placeholder:text-white/30 dark:focus:bg-white/15" : "bg-white/10 text-white placeholder:text-white/30 focus:bg-white/15"}`}
               autoFocus
             />
           </div>
           {/* URL field */}
           <div className="space-y-1.5">
-            <label className="block text-[11px] font-semibold uppercase tracking-widest text-white/40">
+            <label className={`block text-[11px] font-semibold uppercase tracking-widest ${isNoPhoto ? "text-gray-400" : "text-white/40"}`}>
               {t("linkUrlLabel")}
             </label>
-            <div className="flex items-center rounded-lg bg-white/10 focus-within:bg-white/15 transition-colors">
-              <Link2 className="h-3.5 w-3.5 text-white/30 ml-3 shrink-0" />
+            <div className={`flex items-center rounded-lg transition-colors ${isNoPhoto ? "bg-gray-100 focus-within:bg-gray-200 dark:bg-white/10 dark:focus-within:bg-white/15" : "bg-white/10 focus-within:bg-white/15"}`}>
+              <Link2 className={`h-3.5 w-3.5 ml-3 shrink-0 ${isNoPhoto ? "text-gray-400" : "text-white/30"}`} />
               <input
                 type="url"
                 value={urlValue || ""}
                 onChange={(e) => onChange(urlField!, e.target.value || undefined)}
                 placeholder={urlPlaceholder}
-                className="flex-1 min-w-0 bg-transparent px-2.5 py-2 text-[13px] text-white/80 placeholder:text-white/30 outline-none"
+                className={`flex-1 min-w-0 bg-transparent px-2.5 py-2 text-[13px] outline-none ${isNoPhoto ? "text-gray-700 placeholder:text-gray-400 dark:text-white/80 dark:placeholder:text-white/30" : "text-white/80 placeholder:text-white/30"}`}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === "Escape") setLinkOpen(false);
                 }}
@@ -142,20 +149,20 @@ function ContactLine({
           {/* Actions */}
           {hasUrl && (
             <>
-              <div className="w-full h-px bg-white/10" />
+              <div className={`w-full h-px ${isNoPhoto ? "bg-gray-200 dark:bg-white/10" : "bg-white/10"}`} />
               <div className="flex items-center gap-0.5">
                 <a
                   href={urlValue}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 rounded-lg px-2.5 py-2 text-[13px] text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+                  className={`flex items-center gap-2 rounded-lg px-2.5 py-2 text-[13px] transition-colors ${isNoPhoto ? "text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-white/60 dark:hover:text-white dark:hover:bg-white/10" : "text-white/60 hover:text-white hover:bg-white/10"}`}
                 >
                   <ExternalLink className="h-3.5 w-3.5 shrink-0" />
                   {t("linkOpen")}
                 </a>
                 <button
                   onClick={() => { onChange(urlField!, undefined); setLinkOpen(false); }}
-                  className="flex items-center gap-2 rounded-lg px-2.5 py-2 text-[13px] text-white/60 hover:text-red-300 hover:bg-white/10 transition-colors"
+                  className={`flex items-center gap-2 rounded-lg px-2.5 py-2 text-[13px] transition-colors ${isNoPhoto ? "text-gray-500 hover:text-red-500 hover:bg-red-50 dark:text-white/60 dark:hover:text-red-300 dark:hover:bg-white/10" : "text-white/60 hover:text-red-300 hover:bg-white/10"}`}
                 >
                   <Trash2 className="h-3.5 w-3.5 shrink-0" />
                   {t("linkRemove")}
@@ -274,26 +281,41 @@ function SortableSkillCategory({
   skillGroup,
   index,
   total,
-  sensors,
-  onSkillDragEnd,
   onAddBelow,
   autoEditTarget,
   setAutoEditTarget,
+  noPhoto,
 }: {
   skillGroup: { id: string; category: string; items: string[] };
   index: number;
   total: number;
-  sensors: ReturnType<typeof useSensors>;
-  onSkillDragEnd: (skillGroupId: string, items: string[]) => (event: DragEndEvent) => void;
   onAddBelow: () => void;
-  autoEditTarget: string | null;
-  setAutoEditTarget: (v: string | null) => void;
+  autoEditTarget?: string | null;
+  setAutoEditTarget?: (v: string | null) => void;
+  /** When true: uses heading colors and non-sidebar EntryGrip (for NoPhoto template) */
+  noPhoto?: boolean;
 }) {
   const { updateSkillCategory, removeSkillCategory, moveSkillCategory } = useCV();
   const t = useTranslations("personalInfo");
   const tc = useTranslations("common");
   const { colorScheme } = useColorScheme();
   const [isDraggingSkills, setIsDraggingSkills] = useState(false);
+
+  // Badge-level sensors (self-contained, no longer a prop)
+  const badgeSensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
+
+  const handleSkillDragEnd = useCallback((items: string[]) => (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      updateSkillCategory(skillGroup.id, {
+        items: arrayMove(items, Number(active.id), Number(over.id)),
+      });
+    }
+  }, [skillGroup.id, updateSkillCategory]);
 
   const {
     attributes,
@@ -318,7 +340,7 @@ function SortableSkillCategory({
       className="group/entry relative"
     >
       <EntryGrip
-        sidebar
+        sidebar={!noPhoto}
         onMoveUp={index > 0 ? () => moveSkillCategory(skillGroup.id, "up") : undefined}
         onMoveDown={index < total - 1 ? () => moveSkillCategory(skillGroup.id, "down") : undefined}
         onDelete={() => removeSkillCategory(skillGroup.id)}
@@ -344,7 +366,7 @@ function SortableSkillCategory({
             as="tiny"
             className="font-semibold! uppercase! tracking-wide!"
             placeholder={t("categoryPlaceholder")}
-            displayStyle={{ color: colorScheme.sidebarText }}
+            displayStyle={{ color: noPhoto ? colorScheme.heading : colorScheme.sidebarText }}
             autoEdit={!!autoEditTarget?.startsWith("newCategory:") && index === total - 1}
           />
         </div>
@@ -352,13 +374,13 @@ function SortableSkillCategory({
         {/* Skill badges — drag to reorder within category */}
         <DndContext
           id={`skills-dnd-${skillGroup.id}`}
-          sensors={sensors}
+          sensors={badgeSensors}
           collisionDetection={closestCenter}
           onDragStart={() => setIsDraggingSkills(true)}
           onDragEnd={(e) => {
             setIsDraggingSkills(false);
             (document.activeElement as HTMLElement)?.blur?.();
-            onSkillDragEnd(skillGroup.id, skillGroup.items)(e);
+            handleSkillDragEnd(skillGroup.items)(e);
           }}
           onDragCancel={() => {
             setIsDraggingSkills(false);
@@ -376,8 +398,8 @@ function SortableSkillCategory({
                     sortableId={String(i)}
                     value={item}
                     skillPlaceholder={t("skillPlaceholder")}
-                    badgeBg={colorScheme.sidebarBadgeBg}
-                    badgeText={colorScheme.sidebarBadgeText}
+                    badgeBg={noPhoto ? `${colorScheme.heading}15` : colorScheme.sidebarBadgeBg}
+                    badgeText={noPhoto ? colorScheme.heading : colorScheme.sidebarBadgeText}
                     autoEdit={!!autoEditTarget?.startsWith(skillGroup.id + ":") && i === skillGroup.items.length - 1}
                     isGroupDragging={isDraggingSkills}
                     onChange={(v) => {
@@ -406,13 +428,17 @@ function SortableSkillCategory({
                 ))}
               <button
                 onClick={() => {
-                  setAutoEditTarget(skillGroup.id + ":" + Date.now());
+                  setAutoEditTarget?.(skillGroup.id + ":" + Date.now());
                   updateSkillCategory(skillGroup.id, {
                     items: [...skillGroup.items, "Skill"],
                   });
                 }}
                 className="inline-flex items-center justify-center rounded border border-dashed px-2.5 py-1.5 md:px-2 md:py-0.5 transition-all duration-200 hover:scale-105 active:scale-95"
-                style={{ borderColor: colorScheme.sidebarMuted, color: colorScheme.sidebarMuted, fontSize: "0.9em" }}
+                style={{
+                  borderColor: noPhoto ? colorScheme.heading : colorScheme.sidebarMuted,
+                  color: noPhoto ? colorScheme.heading : colorScheme.sidebarMuted,
+                  fontSize: "0.9em",
+                }}
               >
                 {"\u200B"}<Plus className="h-[0.75em] w-[0.75em]" strokeWidth={2} />
               </button>
@@ -467,10 +493,9 @@ function SortableSidebarSection({
 
 export const PersonalInfo = memo(function PersonalInfo() {
   const {
-    data: { personalInfo, summary, skillCategories, visibility, sidebarSections },
+    data: { personalInfo, summary, skillCategories, languages, visibility, sidebarSections },
     updatePersonalInfo,
     updateSummary,
-    updateSkillCategory,
     addSkillCategory,
     reorderSkillCategory,
     reorderSidebarSection,
@@ -481,38 +506,11 @@ export const PersonalInfo = memo(function PersonalInfo() {
   // Track which newly added item should auto-enter edit mode.
   const [autoEditTarget, setAutoEditTarget] = useState<string | null>(null);
 
-  // Multi-device sensors for badge reorder
-  const sensors = useSensors(
-    useSensor(MouseSensor, {
-      activationConstraint: { distance: 8 },
-    }),
-    useSensor(TouchSensor, {
-      activationConstraint: { delay: 250, tolerance: 5 },
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
-
   // Category-level DnD sensors
   const categorySensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
     useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
-  );
-
-  const handleSkillDragEnd = useCallback(
-    (skillGroupId: string, items: string[]) => (event: DragEndEvent) => {
-      const { active, over } = event;
-      if (over && active.id !== over.id) {
-        const oldIndex = Number(active.id);
-        const newIndex = Number(over.id);
-        updateSkillCategory(skillGroupId, {
-          items: arrayMove(items, oldIndex, newIndex),
-        });
-      }
-    },
-    [updateSkillCategory]
   );
 
   const handleCategoryDragEnd = useCallback((event: DragEndEvent) => {
@@ -639,8 +637,6 @@ export const PersonalInfo = memo(function PersonalInfo() {
                 skillGroup={skillGroup}
                 index={index}
                 total={skillCategories.length}
-                sensors={sensors}
-                onSkillDragEnd={handleSkillDragEnd}
                 onAddBelow={() => {
                   setAutoEditTarget("newCategory:" + Date.now());
                   addSkillCategory(index);
@@ -659,6 +655,7 @@ export const PersonalInfo = memo(function PersonalInfo() {
     contact: contactSection,
     summary: visibility.summary ? summarySection : null,
     skills: skillsSection,
+    languages: visibility.languages && languages.length > 0 ? <Languages sidebar /> : null,
   };
 
   return (
@@ -698,3 +695,6 @@ export const PersonalInfo = memo(function PersonalInfo() {
     </div>
   );
 });
+
+// Named exports for use in other templates (DRY — one component, multiple variants)
+export { ContactLine, SortableSkillCategory };

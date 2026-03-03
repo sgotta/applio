@@ -76,6 +76,7 @@ function SharedCVInner({ cvData, settings }: SharedCVContentProps) {
         courses: tp("courses"),
         certifications: tp("certifications"),
         awards: tp("awards"),
+        languages: tp("languages"),
       };
       const pdfFontFamily = fontDef?.pdfFamilyName;
       const pdfFontScale = (FONT_SIZE_LEVELS[(settings.fontSizeLevel ?? 2) as FontSizeLevel] ?? 1) * PDF_BASE_FONT_SCALE;
@@ -130,6 +131,7 @@ function SharedCVInner({ cvData, settings }: SharedCVContentProps) {
           colors={colorScheme}
           photoUrl={photoUrl}
           fontFamilyOverride={fontDef?.cssStack}
+          templateId={cvData.templateId}
         />
       </div>
 
@@ -149,7 +151,7 @@ function SharedCVInner({ cvData, settings }: SharedCVContentProps) {
       {/* PDF loading overlay */}
       {isGeneratingPDF && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+          className="fixed inset-0 z-100 flex items-center justify-center bg-black/50 backdrop-blur-sm"
           role="alert"
           aria-busy="true"
         >

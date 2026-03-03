@@ -17,7 +17,9 @@ import type {
   CourseItem,
   CertificationItem,
   AwardItem,
+  LanguageItem,
   SectionVisibility,
+  SidebarSectionId,
   TemplateId,
 } from "./types";
 import { getDefaultCVData, defaultVisibility } from "./default-data";
@@ -62,6 +64,11 @@ interface CVContextValue {
   removeAward: (id: string) => void;
   moveAward: (id: string, direction: "up" | "down") => void;
   reorderAward: (fromIndex: number, toIndex: number) => void;
+  updateLanguage: (id: string, updates: Partial<LanguageItem>) => void;
+  addLanguage: (afterIndex?: number) => void;
+  removeLanguage: (id: string) => void;
+  moveLanguage: (id: string, direction: "up" | "down") => void;
+  reorderLanguage: (fromIndex: number, toIndex: number) => void;
   toggleSection: (key: keyof SectionVisibility) => void;
   reorderSidebarSection: (fromIndex: number, toIndex: number) => void;
   setTemplate: (id: TemplateId) => void;
@@ -449,6 +456,59 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     setData((prev) => ({ ...prev, awards: arrayMove(prev.awards, from, to) }));
   }, []);
 
+  const updateLanguage = useCallback(
+    (id: string, updates: Partial<LanguageItem>) => {
+      setData((prev) => ({
+        ...prev,
+        languages: prev.languages.map((l) =>
+          l.id === id ? { ...l, ...updates } : l
+        ),
+      }));
+    },
+    []
+  );
+
+  const addLanguage = useCallback((afterIndex?: number) => {
+    const newLang: LanguageItem = {
+      id: `lang-${generateId()}`,
+      language: tRef.current("languageName"),
+      level: tRef.current("languageLevel"),
+    };
+    setData((prev) => {
+      if (afterIndex !== undefined) {
+        const arr = [...prev.languages];
+        arr.splice(afterIndex + 1, 0, newLang);
+        return { ...prev, languages: arr };
+      }
+      return { ...prev, languages: [...prev.languages, newLang] };
+    });
+  }, []);
+
+  const removeLanguage = useCallback((id: string) => {
+    setData((prev) => ({
+      ...prev,
+      languages: prev.languages.filter((l) => l.id !== id),
+    }));
+  }, []);
+
+  const moveLanguage = useCallback(
+    (id: string, direction: "up" | "down") => {
+      setData((prev) => {
+        const index = prev.languages.findIndex((l) => l.id === id);
+        if (index === -1) return prev;
+        return {
+          ...prev,
+          languages: moveItem(prev.languages, index, direction),
+        };
+      });
+    },
+    []
+  );
+
+  const reorderLanguage = useCallback((from: number, to: number) => {
+    setData((prev) => ({ ...prev, languages: arrayMove(prev.languages, from, to) }));
+  }, []);
+
   const toggleSection = useCallback((key: keyof SectionVisibility) => {
     setData((prev) => {
       const willBeVisible = !prev.visibility[key];
@@ -464,6 +524,14 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
           next.certifications = [{ id: `cert-${generateId()}`, name: tRef.current("certificationName"), issuer: tRef.current("certificationIssuer"), date: "2024" }];
         } else if (key === "awards" && prev.awards.length === 0) {
           next.awards = [{ id: `award-${generateId()}`, name: tRef.current("awardName"), issuer: tRef.current("awardIssuer"), date: "2024" }];
+        } else if (key === "languages") {
+          if (prev.languages.length === 0) {
+            next.languages = [{ id: `lang-${generateId()}`, language: tRef.current("languageName"), level: tRef.current("languageLevel") }];
+          }
+          // Add "languages" to sidebarSections if not present
+          if (!prev.sidebarSections.includes("languages" as SidebarSectionId)) {
+            next.sidebarSections = [...prev.sidebarSections, "languages" as SidebarSectionId];
+          }
         }
       }
       return next;
@@ -532,6 +600,11 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
         removeAward,
         moveAward,
         reorderAward,
+        updateLanguage,
+        addLanguage,
+        removeLanguage,
+        moveLanguage,
+        reorderLanguage,
         toggleSection,
         reorderSidebarSection,
         setTemplate,

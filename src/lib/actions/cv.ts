@@ -93,6 +93,11 @@ function docToCVData(plain: DocPlain): CVData {
       date: a.date ?? "",
       description: a.description,
     })),
+    languages: sortBySortOrder(plain.languages ?? []).map((l: DocPlain) => ({
+      id: l._id?.toString() ?? "",
+      language: l.language ?? "",
+      level: l.level ?? "",
+    })),
     visibility: {
       location: plain.visibility?.location ?? true,
       linkedin: plain.visibility?.linkedin ?? true,
@@ -101,6 +106,7 @@ function docToCVData(plain: DocPlain): CVData {
       courses: plain.visibility?.courses ?? false,
       certifications: plain.visibility?.certifications ?? false,
       awards: plain.visibility?.awards ?? false,
+      languages: plain.visibility?.languages ?? false,
     },
     sidebarSections: sortBySortOrder(plain.sidebarSections ?? [])
       .map((s: DocPlain) => s.sectionId as SidebarSectionId)
@@ -168,6 +174,11 @@ function cvDataToDoc(cvData: CVData, settings?: CloudSettings) {
       issuer: a.issuer,
       date: a.date,
       description: a.description,
+      sortOrder: i,
+    })),
+    languages: (cvData.languages ?? []).map((l, i) => ({
+      language: l.language,
+      level: l.level,
       sortOrder: i,
     })),
   };
