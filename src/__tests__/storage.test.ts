@@ -19,6 +19,7 @@ const mockData: CVData = {
   courses: [],
   certifications: [],
   awards: [],
+  languages: [],
   visibility: {
     location: true,
     linkedin: true,
