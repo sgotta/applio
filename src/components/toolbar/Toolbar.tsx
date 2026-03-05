@@ -296,6 +296,81 @@ function ColorSection({
   );
 }
 
+function TemplateThumbnail({ id }: { id: TemplateId }) {
+  const line = "h-0.5 bg-gray-200 dark:bg-gray-700 rounded";
+  const heading = "h-1 bg-gray-300 dark:bg-gray-600 rounded";
+  switch (id) {
+    case "classic":
+      return (
+        <div className="absolute inset-0 flex">
+          <div className="w-2/5 h-full bg-gray-200 dark:bg-gray-600" />
+          <div className="flex-1 p-0.5 bg-white dark:bg-gray-800 space-y-0.5">
+            <div className={heading} />
+            <div className={line} />
+            <div className={`${line} w-3/4`} />
+          </div>
+        </div>
+      );
+    case "noPhoto":
+      return (
+        <div className="absolute inset-0 p-1 bg-white dark:bg-gray-800 space-y-0.5">
+          <div className={heading} />
+          <div className={line} />
+          <div className="h-px bg-gray-100 dark:bg-gray-700 mt-0.5" />
+          <div className={`${heading} mt-0.5`} />
+          <div className={line} />
+          <div className={`${line} w-3/4`} />
+        </div>
+      );
+    case "executive":
+      return (
+        <div className="absolute inset-0 p-1 bg-white dark:bg-gray-800 flex flex-col items-center space-y-0.5">
+          <div className={`${heading} w-3/4`} />
+          <div className="h-0.5 w-1/2 bg-gray-200 dark:bg-gray-700 rounded" />
+          <div className="h-px w-full bg-gray-200 dark:bg-gray-700 mt-0.5" />
+          <div className={`${heading} w-full mt-0.5`} />
+          <div className={`${line} w-full`} />
+          <div className={`${line} w-3/4`} />
+        </div>
+      );
+    case "modern":
+      return (
+        <div className="absolute inset-0 flex bg-white dark:bg-gray-800">
+          <div className="flex-1 p-0.5 space-y-0.5">
+            <div className={heading} />
+            <div className={line} />
+            <div className={`${line} w-3/4`} />
+          </div>
+          <div className="w-2/5 h-full bg-gray-100 dark:bg-gray-700/50 p-0.5 space-y-0.5">
+            <div className="h-0.5 bg-gray-300 dark:bg-gray-500 rounded" />
+            <div className={line} />
+          </div>
+        </div>
+      );
+    case "timeline":
+      return (
+        <div className="absolute inset-0 p-1 bg-white dark:bg-gray-800">
+          <div className={`${heading} w-3/4 mb-0.5`} />
+          <div className="flex gap-0.5">
+            <div className="flex flex-col items-center gap-0.5 w-1.5 shrink-0">
+              <div className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-500" />
+              <div className="w-px flex-1 bg-gray-200 dark:bg-gray-600" />
+              <div className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-500" />
+              <div className="w-px flex-1 bg-gray-200 dark:bg-gray-600" />
+            </div>
+            <div className="flex-1 space-y-0.5">
+              <div className={line} />
+              <div className={`${line} w-3/4`} />
+              <div className="h-0.5" />
+              <div className={line} />
+              <div className={`${line} w-3/4`} />
+            </div>
+          </div>
+        </div>
+      );
+  }
+}
+
 function TemplateSection({
   templateId,
   setTemplate,
@@ -312,13 +387,16 @@ function TemplateSection({
   const templates: { id: TemplateId; locked: boolean }[] = [
     { id: "classic", locked: false },
     { id: "noPhoto", locked: !isPremium },
+    { id: "executive", locked: !isPremium },
+    { id: "modern", locked: !isPremium },
+    { id: "timeline", locked: !isPremium },
   ];
   return (
     <div>
       <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-3">
         {t("templates")}
       </p>
-      <div className="flex gap-3">
+      <div className="flex flex-wrap gap-3">
         {templates.map(({ id, locked }) => (
           <div key={id} className="flex flex-col items-center gap-1.5">
             <button
@@ -329,25 +407,7 @@ function TemplateSection({
                   : "border-gray-200 dark:border-gray-700"
               }`}
             >
-              {id === "classic" ? (
-                <div className="absolute inset-0 flex">
-                  <div className="w-2/5 h-full bg-gray-200 dark:bg-gray-600" />
-                  <div className="flex-1 p-0.5 bg-white dark:bg-gray-800 space-y-0.5">
-                    <div className="h-1 bg-gray-300 dark:bg-gray-600 rounded" />
-                    <div className="h-0.5 bg-gray-200 dark:bg-gray-700 rounded" />
-                    <div className="h-0.5 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
-                  </div>
-                </div>
-              ) : (
-                <div className="absolute inset-0 p-1 bg-white dark:bg-gray-800 space-y-0.5">
-                  <div className="h-1 bg-gray-300 dark:bg-gray-600 rounded" />
-                  <div className="h-0.5 bg-gray-200 dark:bg-gray-700 rounded" />
-                  <div className="h-px bg-gray-100 dark:bg-gray-700 mt-0.5" />
-                  <div className="h-0.5 bg-gray-300 dark:bg-gray-600 rounded mt-0.5" />
-                  <div className="h-0.5 bg-gray-200 dark:bg-gray-700 rounded" />
-                  <div className="h-0.5 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
-                </div>
-              )}
+              <TemplateThumbnail id={id} />
               {templateId === id && !locked && (
                 <div className="absolute inset-0 bg-gray-900/5 dark:bg-white/5 flex items-center justify-center">
                   <Check className="h-3 w-3 text-gray-900 dark:text-gray-100 drop-shadow-sm" />
@@ -1005,10 +1065,13 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     {t("templates")}
                   </button>
                   <div className="flex-1 overflow-y-auto overscroll-contain scrollbar-thin px-5 pt-5 pb-4">
-                    <div className="flex gap-4">
+                    <div className="flex flex-wrap gap-4">
                       {([
                         { id: "classic" as TemplateId, locked: false },
                         { id: "noPhoto" as TemplateId, locked: !isPremium },
+                        { id: "executive" as TemplateId, locked: !isPremium },
+                        { id: "modern" as TemplateId, locked: !isPremium },
+                        { id: "timeline" as TemplateId, locked: !isPremium },
                       ]).map(({ id, locked }) => (
                         <button
                           key={id}
@@ -1022,25 +1085,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                                 : "border-gray-200 dark:border-gray-700"
                             }`}
                           >
-                            {id === "classic" ? (
-                              <span className="absolute inset-0 flex">
-                                <span className="w-2/5 h-full bg-gray-200 dark:bg-gray-600" />
-                                <span className="flex-1 p-1 bg-white dark:bg-gray-800 space-y-0.5">
-                                  <span className="block h-1.5 bg-gray-300 dark:bg-gray-600 rounded" />
-                                  <span className="block h-1 bg-gray-200 dark:bg-gray-700 rounded" />
-                                  <span className="block h-1 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
-                                </span>
-                              </span>
-                            ) : (
-                              <span className="absolute inset-0 p-1.5 bg-white dark:bg-gray-800 space-y-1">
-                                <span className="block h-1.5 bg-gray-300 dark:bg-gray-600 rounded" />
-                                <span className="block h-1 bg-gray-200 dark:bg-gray-700 rounded" />
-                                <span className="block h-px bg-gray-100 dark:bg-gray-700 mt-1" />
-                                <span className="block h-1 bg-gray-300 dark:bg-gray-600 rounded mt-0.5" />
-                                <span className="block h-1 bg-gray-200 dark:bg-gray-700 rounded" />
-                                <span className="block h-1 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
-                              </span>
-                            )}
+                            <TemplateThumbnail id={id} />
                             {data.templateId === id && !locked && (
                               <span className="absolute inset-0 bg-gray-900/5 dark:bg-white/5 flex items-center justify-center">
                                 <Check className="h-4 w-4 text-gray-900 dark:text-gray-100" />

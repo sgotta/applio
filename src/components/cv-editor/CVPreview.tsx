@@ -480,6 +480,762 @@ function NoPhotoTemplate() {
   );
 }
 
+function ExecutiveTemplate() {
+  const { data: { visibility, personalInfo, skillCategories, languages, summary, sidebarSections }, updatePersonalInfo, updateSummary, reorderSidebarSection } = useCV();
+  const t = useTranslations("cvPreview");
+  const tpi = useTranslations("personalInfo");
+  const tLang = useTranslations("cvLanguages");
+  const { colorScheme } = useColorScheme();
+  const { locale } = useAppLocale();
+  const mg = (px: number) => Math.round(px * 1.6);
+
+  const hasContact = personalInfo.email || personalInfo.phone ||
+    (visibility.location && personalInfo.location) ||
+    (visibility.linkedin && personalInfo.linkedin) ||
+    (visibility.website && personalInfo.website);
+
+  const flexSectionOrder = sidebarSections.filter(
+    (s): s is "skills" | "languages" => s === "skills" || s === "languages"
+  );
+  const visibleFlexSections = flexSectionOrder.filter(s =>
+    (s === "languages" && visibility.languages && languages.length > 0) ||
+    (s === "skills" && skillCategories.length > 0)
+  );
+
+  const sectionSensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
+  const handleSectionDragEnd = useCallback((event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const fromGlobal = sidebarSections.indexOf(active.id as SidebarSectionId);
+      const toGlobal = sidebarSections.indexOf(over.id as SidebarSectionId);
+      if (fromGlobal !== -1 && toGlobal !== -1) reorderSidebarSection(fromGlobal, toGlobal);
+    }
+  }, [sidebarSections, reorderSidebarSection]);
+
+  // Section title with diamond ornaments
+  const execSectionTitle = (label: string) => (
+    <div className="flex items-center gap-2.5 mb-4 mt-2">
+      <div className="flex-1 h-px" style={{ backgroundColor: colorScheme.separator }} />
+      <div className="w-1.5 h-1.5 rotate-45 shrink-0" style={{ backgroundColor: colorScheme.heading }} />
+      <h3 className="text-[10px] font-bold tracking-[0.22em] uppercase shrink-0" style={{ color: colorScheme.heading }}>
+        {label}
+      </h3>
+      <div className="w-1.5 h-1.5 rotate-45 shrink-0" style={{ backgroundColor: colorScheme.heading }} />
+      <div className="flex-1 h-px" style={{ backgroundColor: colorScheme.separator }} />
+    </div>
+  );
+
+  return (
+    <>
+      {/* ===== TOP ACCENT BAR (thick, premium) ===== */}
+      <div style={{ height: 6, backgroundColor: colorScheme.heading }} />
+
+      {/* ===== HEADER — centered with photo ===== */}
+      <div className="px-9.5 sm:px-12.75 text-center" style={{ paddingTop: `${mg(20)}px`, paddingBottom: `${mg(6)}px` }}>
+
+        {/* Photo circle with accent ring */}
+        <div className="flex justify-center mb-4">
+          <ProfilePhotoUpload
+            currentPhoto={personalInfo.photoUrl}
+            fullName={personalInfo.fullName}
+            onPhotoChange={(photoUrl) => updatePersonalInfo("photoUrl", photoUrl)}
+            placeholderBg={`${colorScheme.heading}12`}
+            placeholderText={colorScheme.heading}
+          />
+        </div>
+
+        <div className="flex justify-center">
+          <EditableText
+            value={personalInfo.fullName}
+            onChange={(v) => updatePersonalInfo("fullName", v)}
+            as="heading"
+            placeholder={t("fullNamePlaceholder")}
+            displayStyle={{ color: colorScheme.heading, textAlign: "center", letterSpacing: "0.03em" }}
+          />
+        </div>
+        {colorScheme.nameAccent !== "transparent" && (
+          <div className="mx-auto mt-2.5" style={{ height: 3, width: 48, borderRadius: 2, backgroundColor: colorScheme.nameAccent }} />
+        )}
+        <div className="mt-2 flex justify-center">
+          <EditableText
+            value={personalInfo.jobTitle}
+            onChange={(v) => updatePersonalInfo("jobTitle", v)}
+            as="subheading"
+            placeholder={t("titlePlaceholder")}
+            displayStyle={{ color: `${colorScheme.heading}BF`, textAlign: "center" }}
+          />
+        </div>
+
+        {/* Contact bar — full width tinted band */}
+        {hasContact && (
+          <div
+            className="mt-5 -mx-9.5 sm:-mx-12.75 py-2.5 flex flex-col sm:flex-row sm:flex-wrap justify-center gap-x-5 gap-y-1.5"
+            style={{ backgroundColor: `${colorScheme.heading}0A` }}
+          >
+            {personalInfo.email && (
+              <span className="inline-flex items-center gap-1.5" style={{ color: "#64748b" }}>
+                <Mail className="h-3 w-3 shrink-0" style={{ color: colorScheme.heading }} />
+                <EditableText value={personalInfo.email} onChange={(v) => updatePersonalInfo("email", v)} as="small" placeholder="email" />
+              </span>
+            )}
+            {personalInfo.phone && (
+              <span className="inline-flex items-center gap-1.5" style={{ color: "#64748b" }}>
+                <Phone className="h-3 w-3 shrink-0" style={{ color: colorScheme.heading }} />
+                <EditableText value={personalInfo.phone} onChange={(v) => updatePersonalInfo("phone", v)} as="small" placeholder="phone" />
+              </span>
+            )}
+            {(visibility.location && personalInfo.location) && (
+              <span className="inline-flex items-center gap-1.5" style={{ color: "#64748b" }}>
+                <MapPin className="h-3 w-3 shrink-0" style={{ color: colorScheme.heading }} />
+                <EditableText value={personalInfo.location} onChange={(v) => updatePersonalInfo("location", v)} as="small" placeholder="location" />
+              </span>
+            )}
+            {(visibility.linkedin && personalInfo.linkedin) && (
+              <ContactLine
+                variant="noPhoto"
+                icon={Linkedin}
+                value={personalInfo.linkedin}
+                field="linkedin"
+                placeholder={tpi("linkedinPlaceholder")}
+                onChange={(f, v) => updatePersonalInfo(f, v)}
+                iconColor={colorScheme.heading}
+                urlField="linkedinUrl"
+                urlValue={personalInfo.linkedinUrl}
+                urlPlaceholder={tpi("urlPlaceholder")}
+              />
+            )}
+            {(visibility.website && personalInfo.website) && (
+              <ContactLine
+                variant="noPhoto"
+                icon={Globe}
+                value={personalInfo.website}
+                field="website"
+                placeholder={tpi("websitePlaceholder")}
+                onChange={(f, v) => updatePersonalInfo(f, v)}
+                iconColor={colorScheme.heading}
+                urlField="websiteUrl"
+                urlValue={personalInfo.websiteUrl}
+                urlPlaceholder={tpi("urlPlaceholder")}
+              />
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Double rule separator */}
+      <div className="mx-9.5 sm:mx-12.75 flex flex-col gap-0.75">
+        <div className="h-px" style={{ backgroundColor: colorScheme.separator }} />
+        <div className="h-px" style={{ backgroundColor: colorScheme.separator }} />
+      </div>
+
+      {/* ===== MAIN CONTENT ===== */}
+      <div className="flex-1 px-9.5 sm:px-12.75" style={{ paddingTop: `${mg(12)}px`, paddingBottom: `${mg(28)}px` }}>
+        <div className="space-y-6">
+          {/* Summary — plain paragraph, no card */}
+          {visibility.summary && summary && (
+            <section>
+              {execSectionTitle(tpi("aboutMe"))}
+              <EditableText
+                value={summary}
+                onChange={updateSummary}
+                as="body"
+                multiline
+                richText
+                placeholder={tpi("summaryPlaceholder")}
+              />
+            </section>
+          )}
+
+          <Experience />
+          <Education />
+          {visibility.courses && <Courses />}
+          {visibility.certifications && <Certifications />}
+          {visibility.awards && <Awards />}
+
+          {/* Languages + Skills — same reorderable pattern */}
+          {visibleFlexSections.length > 0 && (
+            <DndContext
+              id="executive-section-order-dnd"
+              sensors={sectionSensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleSectionDragEnd}
+            >
+              <SortableContext items={visibleFlexSections} strategy={verticalListSortingStrategy}>
+                <div className="space-y-6">
+                  {visibleFlexSections.map(sectionId => {
+                    if (sectionId === "languages") {
+                      return (
+                        <SortableNoPhotoSection key="languages" id="languages">
+                          <section>
+                            {execSectionTitle(tLang("title"))}
+                            <Languages noPhoto />
+                          </section>
+                        </SortableNoPhotoSection>
+                      );
+                    }
+                    return (
+                      <SortableNoPhotoSection key="skills" id="skills">
+                        <section>
+                          {execSectionTitle(tpi("skills"))}
+                          <NoPhotoSkillsWrapper />
+                        </section>
+                      </SortableNoPhotoSection>
+                    );
+                  })}
+                </div>
+              </SortableContext>
+            </DndContext>
+          )}
+        </div>
+      </div>
+
+      {/* ===== FOOTER ===== */}
+      <div
+        className="hidden md:flex items-center justify-between text-xs text-[#aaaaaa] mt-auto"
+        style={{ padding: `${mg(8)}px ${mg(32)}px ${mg(12)}px` }}
+      >
+        <a
+          href="https://www.applio.dev/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 transition-opacity hover:opacity-70"
+          style={{ color: "#bbbbbb" }}
+        >
+          Applio
+          <Heart className="h-3 w-3 fill-current" strokeWidth={0} />
+        </a>
+        <span>
+          {personalInfo.fullName}
+          &nbsp;&nbsp;·&nbsp;&nbsp;
+          {new Intl.DateTimeFormat(locale, { day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date())}
+          &nbsp;&nbsp;·&nbsp;&nbsp;
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="cursor-help border-b border-dashed border-[#cccccc]">1 / 1</span>
+            </TooltipTrigger>
+            <TooltipContent side="top" className="max-w-56 text-center">
+              {t("paginationHint")}
+            </TooltipContent>
+          </Tooltip>
+        </span>
+      </div>
+    </>
+  );
+}
+
+function ModernTemplate() {
+  const { data: { visibility, personalInfo, skillCategories, languages, summary }, updatePersonalInfo, updateSummary, addSkillCategory, reorderSkillCategory } = useCV();
+  const t = useTranslations("cvPreview");
+  const tpi = useTranslations("personalInfo");
+  const tLang = useTranslations("cvLanguages");
+  const { colorScheme } = useColorScheme();
+  const { locale } = useAppLocale();
+  const mg = (px: number) => Math.round(px * 1.6);
+
+  const hasContact = personalInfo.email || personalInfo.phone ||
+    (visibility.location && personalInfo.location) ||
+    (visibility.linkedin && personalInfo.linkedin) ||
+    (visibility.website && personalInfo.website);
+
+  // DnD for skill categories
+  const skillSensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
+  const handleSkillDragEnd = useCallback((event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = skillCategories.findIndex((s) => s.id === active.id);
+      const newIndex = skillCategories.findIndex((s) => s.id === over.id);
+      if (oldIndex !== -1 && newIndex !== -1) reorderSkillCategory(oldIndex, newIndex);
+    }
+  }, [skillCategories, reorderSkillCategory]);
+
+  // Sidebar section title: white accent bar on dark bg
+  const sidebarSectionTitle = (label: string) => (
+    <div className="flex items-center gap-2 mb-3">
+      <div className="w-3 shrink-0" style={{ height: 2, backgroundColor: colorScheme.nameAccent }} />
+      <h3 className="text-xs sm:text-[10px] font-bold tracking-[0.18em] uppercase shrink-0" style={{ color: "#ffffff" }}>
+        {label}
+      </h3>
+    </div>
+  );
+
+  return (
+    <>
+      {/* ===== TOP ACCENT STRIP — nameAccent ===== */}
+      <div style={{ height: 4, backgroundColor: colorScheme.nameAccent }} />
+
+      {/* ===== HEADER — full-width, left-aligned ===== */}
+      <div style={{ padding: `${mg(24)}px ${mg(24)}px ${mg(8)}px` }}>
+        <EditableText
+          value={personalInfo.fullName}
+          onChange={(v) => updatePersonalInfo("fullName", v)}
+          as="heading"
+          placeholder={t("fullNamePlaceholder")}
+          displayStyle={{ color: colorScheme.heading }}
+        />
+        {colorScheme.nameAccent !== "transparent" && (
+          <div className="mt-1.5 h-0.5 w-14 rounded-full" style={{ backgroundColor: colorScheme.nameAccent }} />
+        )}
+        <div className="mt-2">
+          <EditableText
+            value={personalInfo.jobTitle}
+            onChange={(v) => updatePersonalInfo("jobTitle", v)}
+            as="subheading"
+            placeholder={t("titlePlaceholder")}
+            displayStyle={{ color: `${colorScheme.heading}BF` }}
+          />
+        </div>
+      </div>
+
+      {/* ===== TWO COLUMNS — main left + sidebar right (SOLID heading color) ===== */}
+      <div className="grid grid-cols-1 md:grid-cols-[1fr_250px] md:flex-1">
+
+        {/* ===== MAIN CONTENT (left) ===== */}
+        <div className="order-2 md:order-0" style={{ padding: `${mg(10)}px ${mg(24)}px ${mg(24)}px` }}>
+          <div className="space-y-5">
+            <Experience />
+            <Education />
+            {visibility.courses && <Courses />}
+            {visibility.certifications && <Certifications />}
+            {visibility.awards && <Awards />}
+          </div>
+        </div>
+
+        {/* ===== SIDEBAR (right) — SOLID heading color bg, white text ===== */}
+        <div
+          className={`order-1 md:order-0${colorScheme.sidebarText === "#ffffff" ? " cv-sidebar-dark" : ""}`}
+          style={{
+            backgroundColor: colorScheme.heading,
+            padding: `${mg(16)}px ${mg(24)}px ${mg(24)}px`,
+            color: "#ffffff",
+          }}
+        >
+          <div className="space-y-5">
+            {/* Photo — circular with white ring */}
+            <div className="flex justify-center">
+              <ProfilePhotoUpload
+                currentPhoto={personalInfo.photoUrl}
+                fullName={personalInfo.fullName}
+                onPhotoChange={(photoUrl) => updatePersonalInfo("photoUrl", photoUrl)}
+                placeholderBg={`${colorScheme.nameAccent}30`}
+                placeholderText="rgba(255,255,255,0.85)"
+              />
+            </div>
+
+            {/* Contact */}
+            {hasContact && (
+              <div>
+                {sidebarSectionTitle(tpi("contact"))}
+                <div className="space-y-1.5">
+                  {personalInfo.email && (
+                    <span className="flex items-center gap-1.5">
+                      <Mail className="h-3 w-3 shrink-0" style={{ color: "#ffffff" }} />
+                      <EditableText value={personalInfo.email} onChange={(v) => updatePersonalInfo("email", v)} as="small" placeholder="email" displayStyle={{ color: "rgba(255,255,255,0.85)" }} />
+                    </span>
+                  )}
+                  {personalInfo.phone && (
+                    <span className="flex items-center gap-1.5">
+                      <Phone className="h-3 w-3 shrink-0" style={{ color: "#ffffff" }} />
+                      <EditableText value={personalInfo.phone} onChange={(v) => updatePersonalInfo("phone", v)} as="small" placeholder="phone" displayStyle={{ color: "rgba(255,255,255,0.85)" }} />
+                    </span>
+                  )}
+                  {(visibility.location && personalInfo.location) && (
+                    <span className="flex items-center gap-1.5">
+                      <MapPin className="h-3 w-3 shrink-0" style={{ color: "#ffffff" }} />
+                      <EditableText value={personalInfo.location} onChange={(v) => updatePersonalInfo("location", v)} as="small" placeholder="location" displayStyle={{ color: "rgba(255,255,255,0.85)" }} />
+                    </span>
+                  )}
+                  {(visibility.linkedin && personalInfo.linkedin) && (
+                    <ContactLine
+                      icon={Linkedin}
+                      value={personalInfo.linkedin}
+                      field="linkedin"
+                      placeholder={tpi("linkedinPlaceholder")}
+                      onChange={(f, v) => updatePersonalInfo(f, v)}
+                      iconColor="#ffffff"
+                      urlField="linkedinUrl"
+                      urlValue={personalInfo.linkedinUrl}
+                      urlPlaceholder={tpi("urlPlaceholder")}
+                    />
+                  )}
+                  {(visibility.website && personalInfo.website) && (
+                    <ContactLine
+                      icon={Globe}
+                      value={personalInfo.website}
+                      field="website"
+                      placeholder={tpi("websitePlaceholder")}
+                      onChange={(f, v) => updatePersonalInfo(f, v)}
+                      iconColor="#ffffff"
+                      urlField="websiteUrl"
+                      urlValue={personalInfo.websiteUrl}
+                      urlPlaceholder={tpi("urlPlaceholder")}
+                    />
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Summary */}
+            {visibility.summary && summary && (
+              <div>
+                {sidebarSectionTitle(tpi("aboutMe"))}
+                <EditableText
+                  value={summary}
+                  onChange={updateSummary}
+                  as="body"
+                  multiline
+                  richText
+                  placeholder={tpi("summaryPlaceholder")}
+                  displayStyle={{ color: "rgba(255,255,255,0.85)" }}
+                />
+              </div>
+            )}
+
+            {/* Skills */}
+            {skillCategories.length > 0 && (
+              <div>
+                {sidebarSectionTitle(tpi("skills"))}
+                <DndContext
+                  id="modern-skills-dnd"
+                  sensors={skillSensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={handleSkillDragEnd}
+                >
+                  <SortableContext items={skillCategories.map((s) => s.id)} strategy={verticalListSortingStrategy}>
+                    <div className="space-y-2">
+                      {skillCategories.map((cat, i) => (
+                        <SortableSkillCategory
+                          key={cat.id}
+                          skillGroup={cat}
+                          index={i}
+                          total={skillCategories.length}
+                          onAddBelow={() => addSkillCategory(i)}
+                        />
+                      ))}
+                    </div>
+                  </SortableContext>
+                </DndContext>
+              </div>
+            )}
+
+            {/* Languages */}
+            {visibility.languages && languages.length > 0 && (
+              <div>
+                {sidebarSectionTitle(tLang("title"))}
+                <Languages sidebar />
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* ===== FOOTER ===== */}
+      <div className="hidden md:grid grid-cols-[1fr_250px] mt-auto">
+        {/* Left: Name · Date · Page */}
+        <div
+          className="flex items-center justify-end text-xs text-[#aaaaaa]"
+          style={{ padding: `${mg(8)}px ${mg(24)}px ${mg(12)}px` }}
+        >
+          {personalInfo.fullName}
+          &nbsp;&nbsp;·&nbsp;&nbsp;
+          {new Intl.DateTimeFormat(locale, { day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date())}
+          &nbsp;&nbsp;·&nbsp;&nbsp;
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="cursor-help border-b border-dashed border-[#cccccc]">1 / 1</span>
+            </TooltipTrigger>
+            <TooltipContent side="top" className="max-w-56 text-center">
+              {t("paginationHint")}
+            </TooltipContent>
+          </Tooltip>
+        </div>
+        {/* Right: Applio branding on sidebar */}
+        <div
+          className="flex items-center justify-center"
+          style={{ backgroundColor: colorScheme.heading, padding: `${mg(8)}px ${mg(24)}px ${mg(12)}px` }}
+        >
+          <a
+            href="https://www.applio.dev/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-xs transition-opacity hover:opacity-70"
+            style={{ color: "rgba(255,255,255,0.5)" }}
+          >
+            Applio
+            <Heart className="h-3 w-3 fill-current" strokeWidth={0} />
+          </a>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function TimelineTemplate() {
+  const { data: { visibility, personalInfo, skillCategories, languages, summary, sidebarSections }, updatePersonalInfo, updateSummary, reorderSidebarSection } = useCV();
+  const t = useTranslations("cvPreview");
+  const tpi = useTranslations("personalInfo");
+  const tLang = useTranslations("cvLanguages");
+  const { colorScheme } = useColorScheme();
+  const { locale } = useAppLocale();
+  const mg = (px: number) => Math.round(px * 1.6);
+
+  const hasContact = personalInfo.email || personalInfo.phone ||
+    (visibility.location && personalInfo.location) ||
+    (visibility.linkedin && personalInfo.linkedin) ||
+    (visibility.website && personalInfo.website);
+
+  const flexSectionOrder = sidebarSections.filter(
+    (s): s is "skills" | "languages" => s === "skills" || s === "languages"
+  );
+  const visibleFlexSections = flexSectionOrder.filter(s =>
+    (s === "languages" && visibility.languages && languages.length > 0) ||
+    (s === "skills" && skillCategories.length > 0)
+  );
+
+  const sectionSensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
+  const handleSectionDragEnd = useCallback((event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const fromGlobal = sidebarSections.indexOf(active.id as SidebarSectionId);
+      const toGlobal = sidebarSections.indexOf(over.id as SidebarSectionId);
+      if (fromGlobal !== -1 && toGlobal !== -1) reorderSidebarSection(fromGlobal, toGlobal);
+    }
+  }, [sidebarSections, reorderSidebarSection]);
+
+  // Timeline line color (25% of heading — bold enough to be visible)
+  const lineColor = `${colorScheme.heading}40`;
+
+  // Section title for non-timeline bottom sections (skills, languages) — same as noPhoto
+  const bottomSectionTitle = (label: string) => (
+    <div className="flex items-center gap-2 mb-3">
+      <div className="w-0.5 h-3.5 rounded-full shrink-0" style={{ backgroundColor: colorScheme.heading }} />
+      <h3 className="text-xs sm:text-[10px] font-bold tracking-[0.18em] uppercase shrink-0" style={{ color: colorScheme.heading }}>
+        {label}
+      </h3>
+      <div className="flex-1 h-px" style={{ backgroundColor: `${colorScheme.heading}18` }} />
+    </div>
+  );
+
+  return (
+    <>
+      {/* ===== HEADER with photo ===== */}
+      <div className="px-9.5 sm:px-12.75 flex gap-5 items-start" style={{ paddingTop: `${mg(24)}px`, paddingBottom: `${mg(5)}px` }}>
+        {/* Photo — circular with accent ring */}
+        <div className="shrink-0 hidden sm:block">
+          <ProfilePhotoUpload
+            currentPhoto={personalInfo.photoUrl}
+            fullName={personalInfo.fullName}
+            onPhotoChange={(photoUrl) => updatePersonalInfo("photoUrl", photoUrl)}
+            placeholderBg={`${colorScheme.heading}12`}
+            placeholderText={colorScheme.heading}
+          />
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <EditableText
+            value={personalInfo.fullName}
+            onChange={(v) => updatePersonalInfo("fullName", v)}
+            as="heading"
+            placeholder={t("fullNamePlaceholder")}
+            displayStyle={{ color: colorScheme.heading }}
+          />
+          {colorScheme.nameAccent !== "transparent" && (
+            <div className="mt-1.5 h-0.5 w-14 rounded-full" style={{ backgroundColor: colorScheme.nameAccent }} />
+          )}
+          <div className="mt-2">
+            <EditableText
+              value={personalInfo.jobTitle}
+              onChange={(v) => updatePersonalInfo("jobTitle", v)}
+              as="subheading"
+              placeholder={t("titlePlaceholder")}
+              displayStyle={{ color: `${colorScheme.heading}BF` }}
+            />
+          </div>
+
+          {/* Contact row */}
+          {hasContact && (
+            <div className="mt-3 flex flex-col sm:flex-row sm:flex-wrap gap-x-5 gap-y-1.5">
+              {personalInfo.email && (
+                <span className="inline-flex items-center gap-1.5" style={{ color: "#64748b" }}>
+                  <Mail className="h-3 w-3 shrink-0" style={{ color: colorScheme.heading }} />
+                  <EditableText value={personalInfo.email} onChange={(v) => updatePersonalInfo("email", v)} as="small" placeholder="email" />
+                </span>
+              )}
+              {personalInfo.phone && (
+                <span className="inline-flex items-center gap-1.5" style={{ color: "#64748b" }}>
+                  <Phone className="h-3 w-3 shrink-0" style={{ color: colorScheme.heading }} />
+                  <EditableText value={personalInfo.phone} onChange={(v) => updatePersonalInfo("phone", v)} as="small" placeholder="phone" />
+                </span>
+              )}
+              {(visibility.location && personalInfo.location) && (
+                <span className="inline-flex items-center gap-1.5" style={{ color: "#64748b" }}>
+                  <MapPin className="h-3 w-3 shrink-0" style={{ color: colorScheme.heading }} />
+                  <EditableText value={personalInfo.location} onChange={(v) => updatePersonalInfo("location", v)} as="small" placeholder="location" />
+                </span>
+              )}
+              {(visibility.linkedin && personalInfo.linkedin) && (
+                <ContactLine
+                  variant="noPhoto"
+                  icon={Linkedin}
+                  value={personalInfo.linkedin}
+                  field="linkedin"
+                  placeholder={tpi("linkedinPlaceholder")}
+                  onChange={(f, v) => updatePersonalInfo(f, v)}
+                  iconColor={colorScheme.heading}
+                  urlField="linkedinUrl"
+                  urlValue={personalInfo.linkedinUrl}
+                  urlPlaceholder={tpi("urlPlaceholder")}
+                />
+              )}
+              {(visibility.website && personalInfo.website) && (
+                <ContactLine
+                  variant="noPhoto"
+                  icon={Globe}
+                  value={personalInfo.website}
+                  field="website"
+                  placeholder={tpi("websitePlaceholder")}
+                  onChange={(f, v) => updatePersonalInfo(f, v)}
+                  iconColor={colorScheme.heading}
+                  urlField="websiteUrl"
+                  urlValue={personalInfo.websiteUrl}
+                  urlPlaceholder={tpi("urlPlaceholder")}
+                />
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ===== MAIN CONTENT WITH TIMELINE ===== */}
+      <div className="flex-1 px-9.5 sm:px-12.75" style={{ paddingTop: `${mg(10)}px`, paddingBottom: `${mg(28)}px` }}>
+        {/* Summary — card with accent left border (outside timeline) */}
+        {visibility.summary && summary && (
+          <section className="mb-6">
+            {bottomSectionTitle(tpi("aboutMe"))}
+            <div
+              className="rounded-lg"
+              style={{
+                backgroundColor: `${colorScheme.heading}08`,
+                borderLeft: `3px solid ${colorScheme.heading}`,
+                padding: "12px 16px",
+              }}
+            >
+              <EditableText
+                value={summary}
+                onChange={updateSummary}
+                as="body"
+                multiline
+                richText
+                placeholder={tpi("summaryPlaceholder")}
+              />
+            </div>
+          </section>
+        )}
+
+        {/* Timeline sections — 3px bold vertical line */}
+        <div className="ml-6 sm:ml-6 pl-6 sm:pl-6" style={{ borderLeft: `3px solid ${lineColor}` }}>
+          <div className="space-y-6">
+            <Experience />
+            <Education />
+            {visibility.courses && <Courses />}
+            {visibility.certifications && <Certifications />}
+            {visibility.awards && <Awards />}
+          </div>
+        </div>
+
+        {/* Languages + Skills — no timeline, at the bottom */}
+        {visibleFlexSections.length > 0 && (
+          <div className="mt-6">
+            <DndContext
+              id="timeline-section-order-dnd"
+              sensors={sectionSensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleSectionDragEnd}
+            >
+              <SortableContext items={visibleFlexSections} strategy={verticalListSortingStrategy}>
+                <div className="space-y-6">
+                  {visibleFlexSections.map(sectionId => {
+                    if (sectionId === "languages") {
+                      return (
+                        <SortableNoPhotoSection key="languages" id="languages">
+                          <section>
+                            {bottomSectionTitle(tLang("title"))}
+                            <Languages noPhoto />
+                          </section>
+                        </SortableNoPhotoSection>
+                      );
+                    }
+                    return (
+                      <SortableNoPhotoSection key="skills" id="skills">
+                        <section>
+                          {bottomSectionTitle(tpi("skills"))}
+                          <NoPhotoSkillsWrapper />
+                        </section>
+                      </SortableNoPhotoSection>
+                    );
+                  })}
+                </div>
+              </SortableContext>
+            </DndContext>
+          </div>
+        )}
+      </div>
+
+      {/* ===== FOOTER ===== */}
+      <div
+        className="hidden md:flex items-center justify-between text-xs text-[#aaaaaa] mt-auto"
+        style={{ padding: `${mg(8)}px ${mg(32)}px ${mg(12)}px` }}
+      >
+        <a
+          href="https://www.applio.dev/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 transition-opacity hover:opacity-70"
+          style={{ color: "#bbbbbb" }}
+        >
+          Applio
+          <Heart className="h-3 w-3 fill-current" strokeWidth={0} />
+        </a>
+        <span>
+          {personalInfo.fullName}
+          &nbsp;&nbsp;·&nbsp;&nbsp;
+          {new Intl.DateTimeFormat(locale, { day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date())}
+          &nbsp;&nbsp;·&nbsp;&nbsp;
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="cursor-help border-b border-dashed border-[#cccccc]">1 / 1</span>
+            </TooltipTrigger>
+            <TooltipContent side="top" className="max-w-56 text-center">
+              {t("paginationHint")}
+            </TooltipContent>
+          </Tooltip>
+        </span>
+      </div>
+    </>
+  );
+}
+
+function renderTemplate(templateId: string | undefined) {
+  switch (templateId) {
+    case "executive": return <ExecutiveTemplate />;
+    case "modern": return <ModernTemplate />;
+    case "timeline": return <TimelineTemplate />;
+    case "noPhoto": return <NoPhotoTemplate />;
+    default: return <ClassicTemplate />;
+  }
+}
+
 export function CVPreview() {
   const { data: { templateId } } = useCV();
   const { fontFamilyId, fontSizeLevel } = useFontSettings();
@@ -494,7 +1250,7 @@ export function CVPreview() {
         className="md:flex md:flex-col md:min-h-[297mm]"
         style={fontSizeLevel !== 2 ? { fontSize: `${FONT_SIZE_LEVELS[fontSizeLevel]}em` } : undefined}
       >
-        {templateId === "noPhoto" ? <NoPhotoTemplate /> : <ClassicTemplate />}
+        {renderTemplate(templateId)}
       </div>
     </div>
   );

@@ -67,7 +67,7 @@ export interface LanguageItem {
 
 export type SidebarSectionId = "contact" | "summary" | "skills" | "languages";
 
-export type TemplateId = "classic" | "noPhoto";
+export type TemplateId = "classic" | "noPhoto" | "executive" | "modern" | "timeline";
 
 export interface SectionVisibility {
   location: boolean;

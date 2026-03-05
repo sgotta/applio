@@ -377,6 +377,844 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
     }
     // ===== END NO PHOTO TEMPLATE =====
 
+    // ===== EXECUTIVE TEMPLATE =====
+    if (templateId === "executive") {
+      const flexSectionOrder = sidebarSections.filter(
+        (s): s is "skills" | "languages" => s === "skills" || s === "languages"
+      );
+      const contactParts: React.ReactNode[] = [];
+      if (personalInfo.email) {
+        contactParts.push(
+          <a key="email" href={`mailto:${personalInfo.email}`} style={{ color: "#64748b", textDecoration: "none" }}>{personalInfo.email}</a>
+        );
+      }
+      if (personalInfo.phone) {
+        contactParts.push(
+          <a key="phone" href={`tel:${personalInfo.phone}`} style={{ color: "#64748b", textDecoration: "none" }}>{personalInfo.phone}</a>
+        );
+      }
+      if (visibility.location && personalInfo.location) {
+        contactParts.push(<span key="location" style={{ color: "#64748b" }}>{personalInfo.location}</span>);
+      }
+      if (visibility.linkedin && personalInfo.linkedin) {
+        contactParts.push(
+          personalInfo.linkedinUrl ? (
+            <a key="linkedin" href={ensureProtocol(personalInfo.linkedinUrl)} target="_blank" rel="noopener noreferrer" style={{ color: "#64748b", textDecoration: "none" }}>{personalInfo.linkedin}</a>
+          ) : (
+            <span key="linkedin" style={{ color: "#64748b" }}>{personalInfo.linkedin}</span>
+          )
+        );
+      }
+      if (visibility.website && personalInfo.website) {
+        contactParts.push(
+          personalInfo.websiteUrl ? (
+            <a key="website" href={ensureProtocol(personalInfo.websiteUrl)} target="_blank" rel="noopener noreferrer" style={{ color: "#64748b", textDecoration: "none" }}>{personalInfo.website}</a>
+          ) : (
+            <span key="website" style={{ color: "#64748b" }}>{personalInfo.website}</span>
+          )
+        );
+      }
+
+      const execHeading = (label: string) => (
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16, marginTop: 8 }}>
+          <div style={{ flex: 1, height: 1, backgroundColor: colors.separator }} />
+          <div style={{ width: 6, height: 6, transform: "rotate(45deg)", backgroundColor: colors.heading, flexShrink: 0 }} />
+          <h3 style={{ fontSize: "0.625rem", fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: colors.heading, flexShrink: 0, margin: 0 }}>
+            {label}
+          </h3>
+          <div style={{ width: 6, height: 6, transform: "rotate(45deg)", backgroundColor: colors.heading, flexShrink: 0 }} />
+          <div style={{ flex: 1, height: 1, backgroundColor: colors.separator }} />
+        </div>
+      );
+
+      return (
+        <div
+          ref={ref}
+          className="printable-cv cv-preview-content font-sans"
+          style={{ fontFamily: effectiveFontFamily, display: "flex", flexDirection: "column", minHeight: "297mm", ...(fontSizeLevelEm !== 1 ? { fontSize: `${fontSizeLevelEm}em` } : {}) }}
+        >
+          {/* Top accent bar */}
+          <div style={{ height: 6, backgroundColor: colors.heading }} />
+
+          {/* Header — centered */}
+          <div style={{ padding: `${mg(32)}px ${mg(32)}px ${mg(12)}px`, textAlign: "center" }}>
+            {/* Photo */}
+            <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
+              <div style={{
+                width: 120,
+                height: 120,
+                borderRadius: "50%",
+                overflow: "hidden",
+                backgroundColor: `${colors.heading}12`,
+              }}>
+                {data.personalInfo.photoUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={data.personalInfo.photoUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                ) : (
+                  <div style={{
+                    width: "100%",
+                    height: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: colors.heading,
+                    fontSize: 36,
+                    fontWeight: 500,
+                  }}>
+                    {data.personalInfo.fullName.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase()}
+                  </div>
+                )}
+              </div>
+            </div>
+            <h1 style={{ fontSize: FS.heading, fontWeight: 600, color: colors.heading, margin: 0, letterSpacing: "-0.01em" }}>
+              {personalInfo.fullName}
+            </h1>
+            {colors.nameAccent !== "transparent" && (
+              <div style={{ marginTop: 8, height: 3, width: 48, borderRadius: 9999, backgroundColor: colors.nameAccent, marginLeft: "auto", marginRight: "auto" }} />
+            )}
+            <p style={{ fontSize: FS.subheading, fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.05em", color: `${colors.heading}BF`, margin: "10px 0 0 0" }}>
+              {personalInfo.jobTitle}
+            </p>
+            {contactParts.length > 0 && (
+              <div style={{ backgroundColor: `${colors.heading}0A`, padding: "10px 0", margin: `14px -${mg(32)}px 0`, paddingLeft: mg(32), paddingRight: mg(32) }}>
+                <div style={{ fontSize: FS.small, display: "flex", justifyContent: "center", flexWrap: "wrap", gap: "4px 0" }}>
+                  {contactParts.map((part, i) => (
+                    <span key={i} style={{ display: "inline-flex", alignItems: "center" }}>
+                      {i > 0 && <span style={{ margin: "0 10px", color: "#cbd5e1" }}>|</span>}
+                      {part}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Full-width double rule separator */}
+          <div style={{ margin: `0 ${mg(32)}px`, display: "flex", flexDirection: "column", gap: 3 }}>
+            <div style={{ height: 1, backgroundColor: colors.separator }} />
+            <div style={{ height: 1, backgroundColor: colors.separator }} />
+          </div>
+
+          {/* Main content */}
+          <div style={{ flex: 1, padding: `${mg(14)}px ${mg(32)}px ${mg(28)}px` }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+
+              {/* Summary — plain paragraph */}
+              {visibility.summary && summary && (
+                <div>
+                  {execHeading(t("aboutMe"))}
+                  <div style={{ fontSize: FS.body, lineHeight: 1.7, color: "#374151" }}>{renderRichDocument(summary)}</div>
+                </div>
+              )}
+
+              {/* Experience */}
+              {experiences.length > 0 && (
+                <div>
+                  {execHeading(t("experience"))}
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    {experiences.map((exp) => (
+                      <div key={exp.id} style={{ pageBreakInside: "avoid" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+                          <h4 style={{ fontWeight: 600, color: "#111827", fontSize: FS.itemTitle, margin: 0 }}>{exp.company}</h4>
+                          <span style={{ color: "#9ca3af", fontSize: FS.tiny, flexShrink: 0 }}>{exp.startDate} — {exp.endDate}</span>
+                        </div>
+                        <p style={{ margin: "2px 0 0 0", fontWeight: 500, color: "#4b5563", fontSize: FS.small }}>{exp.position}</p>
+                        {exp.description && (
+                          <div style={{ marginTop: 6, fontSize: FS.body, ["--bullet-color" as string]: colors.bullet }}>{renderRichDocument(exp.description)}</div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Education */}
+              {education.length > 0 && (
+                <div>
+                  {execHeading(t("education"))}
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    {education.map((edu) => (
+                      <div key={edu.id} style={{ pageBreakInside: "avoid" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+                          <h4 style={{ fontWeight: 600, color: "#111827", fontSize: FS.itemTitle, margin: 0 }}>{edu.institution}</h4>
+                          <span style={{ color: "#9ca3af", fontSize: FS.tiny, flexShrink: 0 }}>{edu.startDate} — {edu.endDate}</span>
+                        </div>
+                        <p style={{ margin: "2px 0 0 0", fontWeight: 500, color: "#4b5563", fontSize: FS.small }}>{edu.degree}</p>
+                        {edu.description && (
+                          <div style={{ marginTop: 6, fontSize: FS.body, ["--bullet-color" as string]: colors.bullet }}>{renderRichDocument(edu.description)}</div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Courses */}
+              {visibility.courses && courses.length > 0 && (
+                <div>
+                  {execHeading(t("courses"))}
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    {courses.map((course) => (
+                      <div key={course.id} style={{ pageBreakInside: "avoid" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+                          <h4 style={{ fontWeight: 600, color: "#111827", fontSize: FS.itemTitle, margin: 0 }}>{course.name}</h4>
+                          <span style={{ color: "#9ca3af", fontSize: FS.tiny, flexShrink: 0 }}>{course.date}</span>
+                        </div>
+                        <p style={{ margin: "2px 0 0 0", fontWeight: 500, color: "#4b5563", fontSize: FS.small }}>{course.institution}</p>
+                        {course.description && (
+                          <div style={{ marginTop: 6, fontSize: FS.body, ["--bullet-color" as string]: colors.bullet }}>{renderRichDocument(course.description)}</div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Certifications */}
+              {visibility.certifications && certifications.length > 0 && (
+                <div>
+                  {execHeading(t("certifications"))}
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    {certifications.map((cert) => (
+                      <div key={cert.id} style={{ pageBreakInside: "avoid" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+                          <h4 style={{ fontWeight: 600, color: "#111827", fontSize: FS.itemTitle, margin: 0 }}>{cert.name}</h4>
+                          <span style={{ color: "#9ca3af", fontSize: FS.tiny, flexShrink: 0 }}>{cert.date}</span>
+                        </div>
+                        <p style={{ margin: "2px 0 0 0", fontWeight: 500, color: "#4b5563", fontSize: FS.small }}>{cert.issuer}</p>
+                        {cert.description && (
+                          <div style={{ marginTop: 6, fontSize: FS.body, ["--bullet-color" as string]: colors.bullet }}>{renderRichDocument(cert.description)}</div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Awards */}
+              {visibility.awards && awards.length > 0 && (
+                <div>
+                  {execHeading(t("awards"))}
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    {awards.map((award) => (
+                      <div key={award.id} style={{ pageBreakInside: "avoid" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+                          <h4 style={{ fontWeight: 600, color: "#111827", fontSize: FS.itemTitle, margin: 0 }}>{award.name}</h4>
+                          <span style={{ color: "#9ca3af", fontSize: FS.tiny, flexShrink: 0 }}>{award.date}</span>
+                        </div>
+                        <p style={{ margin: "2px 0 0 0", fontWeight: 500, color: "#4b5563", fontSize: FS.small }}>{award.issuer}</p>
+                        {award.description && (
+                          <div style={{ marginTop: 6, fontSize: FS.body, ["--bullet-color" as string]: colors.bullet }}>{renderRichDocument(award.description)}</div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Languages + Skills — respects sidebarSections order */}
+              {flexSectionOrder.map((sectionId) => {
+                if (sectionId === "languages" && visibility.languages && languages.length > 0) {
+                  return (
+                    <div key="languages">
+                      {execHeading(t("languages"))}
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 16px", fontSize: FS.body }}>
+                        {languages.map((lang) => (
+                          <span key={lang.id} style={{ color: "#111827" }}>
+                            {lang.language}{lang.level && <span style={{ color: "#9ca3af", marginLeft: 4 }}>({lang.level})</span>}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                }
+                if (sectionId === "skills" && skillCategories.length > 0) {
+                  return (
+                    <div key="skills">
+                      {execHeading(t("skills"))}
+                      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                        {skillCategories.map((skillGroup) => (
+                          <div key={skillGroup.id}>
+                            <p style={{ fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: colors.heading, fontSize: FS.tiny, margin: "0 0 4px 0" }}>{skillGroup.category}</p>
+                            <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+                              {skillGroup.items.map((item, i) => (
+                                <span key={i} style={{ border: `1.5px solid ${colors.heading}`, backgroundColor: "transparent", color: colors.heading, fontSize: FS.tiny, padding: "2px 8px", borderRadius: 4 }}>{item}</span>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                }
+                return null;
+              })}
+
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: `${mg(8)}px ${mg(32)}px ${mg(12)}px`, color: "#aaaaaa", fontSize: "0.75rem" }}>
+            <a href="https://www.applio.dev/" target="_blank" rel="noopener noreferrer" style={{ color: "#bbbbbb", textDecoration: "none" }}>Applio ♥</a>
+            <span>
+              {personalInfo.fullName}&nbsp;&nbsp;·&nbsp;&nbsp;
+              {new Intl.DateTimeFormat(locale, { day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date())}&nbsp;&nbsp;·&nbsp;&nbsp;1 / 1
+            </span>
+          </div>
+
+        </div>
+      );
+    }
+    // ===== END EXECUTIVE TEMPLATE =====
+
+    // ===== MODERN TEMPLATE =====
+    if (templateId === "modern") {
+      const modernHeading = (label: string) => (
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12, marginTop: 4 }}>
+          <div style={{ width: 2, height: 14, borderRadius: 9999, backgroundColor: colors.heading, flexShrink: 0 }} />
+          <h3 style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: colors.heading, flexShrink: 0, margin: 0 }}>
+            {label}
+          </h3>
+          <div style={{ flex: 1, height: 1, backgroundColor: `${colors.heading}18` }} />
+        </div>
+      );
+
+      const modernSidebarHeading = (label: string) => (
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+          <div style={{ width: 12, height: 2, backgroundColor: colors.nameAccent, flexShrink: 0 }} />
+          <h3 style={{ fontSize: "0.625rem", fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: "#ffffff", flexShrink: 0, margin: 0 }}>{label}</h3>
+        </div>
+      );
+
+      return (
+        <div
+          ref={ref}
+          className="printable-cv cv-preview-content font-sans"
+          style={{ fontFamily: effectiveFontFamily, display: "flex", flexDirection: "column", minHeight: "297mm", ...(fontSizeLevelEm !== 1 ? { fontSize: `${fontSizeLevelEm}em` } : {}) }}
+        >
+          {/* Top accent strip */}
+          <div style={{ height: 4, backgroundColor: colors.nameAccent }} />
+          {/* Header — full-width, left-aligned */}
+          <div style={{ padding: `${mg(28)}px ${mg(24)}px ${mg(8)}px` }}>
+            <h1 style={{ fontSize: FS.heading, fontWeight: 600, color: colors.heading, margin: 0 }}>{personalInfo.fullName}</h1>
+            {colors.nameAccent !== "transparent" && (
+              <div style={{ marginTop: 6, height: 2, width: 56, borderRadius: 9999, backgroundColor: colors.nameAccent }} />
+            )}
+            <p style={{ fontSize: FS.subheading, fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.05em", color: `${colors.heading}BF`, margin: "10px 0 0 0" }}>
+              {personalInfo.jobTitle}
+            </p>
+          </div>
+
+          {/* Two columns — main left (65%) + sidebar right (35%) */}
+          <div style={{ flex: 1, display: "flex" }}>
+            {/* Main content (left) */}
+            <div style={{ flex: 1, padding: `${mg(10)}px ${mg(24)}px ${mg(24)}px` }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+                {/* Experience */}
+                {experiences.length > 0 && (
+                  <div>
+                    {modernHeading(t("experience"))}
+                    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                      {experiences.map((exp) => (
+                        <div key={exp.id} style={{ pageBreakInside: "avoid" }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+                            <h4 style={{ fontWeight: 600, color: "#111827", fontSize: FS.itemTitle, margin: 0 }}>{exp.company}</h4>
+                            <span style={{ color: "#9ca3af", fontSize: FS.tiny, flexShrink: 0 }}>{exp.startDate} — {exp.endDate}</span>
+                          </div>
+                          <p style={{ margin: "2px 0 0 0", fontWeight: 500, color: "#4b5563", fontSize: FS.small }}>{exp.position}</p>
+                          {exp.description && (
+                            <div style={{ marginTop: 6, fontSize: FS.body, ["--bullet-color" as string]: colors.bullet }}>{renderRichDocument(exp.description)}</div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Education */}
+                {education.length > 0 && (
+                  <div>
+                    {modernHeading(t("education"))}
+                    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                      {education.map((edu) => (
+                        <div key={edu.id} style={{ pageBreakInside: "avoid" }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+                            <h4 style={{ fontWeight: 600, color: "#111827", fontSize: FS.itemTitle, margin: 0 }}>{edu.institution}</h4>
+                            <span style={{ color: "#9ca3af", fontSize: FS.tiny, flexShrink: 0 }}>{edu.startDate} — {edu.endDate}</span>
+                          </div>
+                          <p style={{ margin: "2px 0 0 0", fontWeight: 500, color: "#4b5563", fontSize: FS.small }}>{edu.degree}</p>
+                          {edu.description && (
+                            <div style={{ marginTop: 6, fontSize: FS.body, ["--bullet-color" as string]: colors.bullet }}>{renderRichDocument(edu.description)}</div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Courses */}
+                {visibility.courses && courses.length > 0 && (
+                  <div>
+                    {modernHeading(t("courses"))}
+                    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                      {courses.map((course) => (
+                        <div key={course.id} style={{ pageBreakInside: "avoid" }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+                            <h4 style={{ fontWeight: 600, color: "#111827", fontSize: FS.itemTitle, margin: 0 }}>{course.name}</h4>
+                            <span style={{ color: "#9ca3af", fontSize: FS.tiny, flexShrink: 0 }}>{course.date}</span>
+                          </div>
+                          <p style={{ margin: "2px 0 0 0", fontWeight: 500, color: "#4b5563", fontSize: FS.small }}>{course.institution}</p>
+                          {course.description && (
+                            <div style={{ marginTop: 6, fontSize: FS.body, ["--bullet-color" as string]: colors.bullet }}>{renderRichDocument(course.description)}</div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Certifications */}
+                {visibility.certifications && certifications.length > 0 && (
+                  <div>
+                    {modernHeading(t("certifications"))}
+                    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                      {certifications.map((cert) => (
+                        <div key={cert.id} style={{ pageBreakInside: "avoid" }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+                            <h4 style={{ fontWeight: 600, color: "#111827", fontSize: FS.itemTitle, margin: 0 }}>{cert.name}</h4>
+                            <span style={{ color: "#9ca3af", fontSize: FS.tiny, flexShrink: 0 }}>{cert.date}</span>
+                          </div>
+                          <p style={{ margin: "2px 0 0 0", fontWeight: 500, color: "#4b5563", fontSize: FS.small }}>{cert.issuer}</p>
+                          {cert.description && (
+                            <div style={{ marginTop: 6, fontSize: FS.body, ["--bullet-color" as string]: colors.bullet }}>{renderRichDocument(cert.description)}</div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Awards */}
+                {visibility.awards && awards.length > 0 && (
+                  <div>
+                    {modernHeading(t("awards"))}
+                    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                      {awards.map((award) => (
+                        <div key={award.id} style={{ pageBreakInside: "avoid" }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+                            <h4 style={{ fontWeight: 600, color: "#111827", fontSize: FS.itemTitle, margin: 0 }}>{award.name}</h4>
+                            <span style={{ color: "#9ca3af", fontSize: FS.tiny, flexShrink: 0 }}>{award.date}</span>
+                          </div>
+                          <p style={{ margin: "2px 0 0 0", fontWeight: 500, color: "#4b5563", fontSize: FS.small }}>{award.issuer}</p>
+                          {award.description && (
+                            <div style={{ marginTop: 6, fontSize: FS.body, ["--bullet-color" as string]: colors.bullet }}>{renderRichDocument(award.description)}</div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Sidebar (right) — solid heading color background */}
+            <div style={{ width: 250, flexShrink: 0, backgroundColor: colors.heading, padding: `${mg(10)}px ${mg(20)}px ${mg(24)}px` }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+                {/* Photo */}
+                <div style={{ display: "flex", justifyContent: "center", marginBottom: 20 }}>
+                  <div style={{
+                    width: 120,
+                    height: 120,
+                    borderRadius: "50%",
+                    overflow: "hidden",
+                    backgroundColor: `${colors.nameAccent}30`,
+                  }}>
+                    {data.personalInfo.photoUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={data.personalInfo.photoUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    ) : (
+                      <div style={{
+                        width: "100%",
+                        height: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: "rgba(255,255,255,0.85)",
+                        fontSize: 36,
+                        fontWeight: 500,
+                      }}>
+                        {data.personalInfo.fullName.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Contact */}
+                {(personalInfo.email || personalInfo.phone || (visibility.location && personalInfo.location) || (visibility.linkedin && personalInfo.linkedin) || (visibility.website && personalInfo.website)) && (
+                  <div>
+                    {modernSidebarHeading(t("contact"))}
+                    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                      {personalInfo.email && (
+                        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                          <Mail style={{ width: 12, height: 12, color: "#ffffff" }} />
+                          <a href={`mailto:${personalInfo.email}`} style={{ color: "rgba(255,255,255,0.85)", fontSize: FS.small, textDecoration: "none" }}>{personalInfo.email}</a>
+                        </div>
+                      )}
+                      {personalInfo.phone && (
+                        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                          <Phone style={{ width: 12, height: 12, color: "#ffffff" }} />
+                          <a href={`tel:${personalInfo.phone}`} style={{ color: "rgba(255,255,255,0.85)", fontSize: FS.small, textDecoration: "none" }}>{personalInfo.phone}</a>
+                        </div>
+                      )}
+                      {visibility.location && personalInfo.location && (
+                        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                          <MapPin style={{ width: 12, height: 12, color: "#ffffff" }} />
+                          <span style={{ color: "rgba(255,255,255,0.85)", fontSize: FS.small }}>{personalInfo.location}</span>
+                        </div>
+                      )}
+                      {visibility.linkedin && personalInfo.linkedin && (
+                        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                          <Linkedin style={{ width: 12, height: 12, color: "#ffffff" }} />
+                          {personalInfo.linkedinUrl ? (
+                            <a href={ensureProtocol(personalInfo.linkedinUrl)} target="_blank" rel="noopener noreferrer" style={{ color: "rgba(255,255,255,0.85)", fontSize: FS.small, textDecoration: "none" }}>{personalInfo.linkedin}</a>
+                          ) : (
+                            <span style={{ color: "rgba(255,255,255,0.85)", fontSize: FS.small }}>{personalInfo.linkedin}</span>
+                          )}
+                        </div>
+                      )}
+                      {visibility.website && personalInfo.website && (
+                        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                          <Globe style={{ width: 12, height: 12, color: "#ffffff" }} />
+                          {personalInfo.websiteUrl ? (
+                            <a href={ensureProtocol(personalInfo.websiteUrl)} target="_blank" rel="noopener noreferrer" style={{ color: "rgba(255,255,255,0.85)", fontSize: FS.small, textDecoration: "none" }}>{personalInfo.website}</a>
+                          ) : (
+                            <span style={{ color: "rgba(255,255,255,0.85)", fontSize: FS.small }}>{personalInfo.website}</span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Summary */}
+                {visibility.summary && summary && (
+                  <div>
+                    {modernSidebarHeading(t("aboutMe"))}
+                    <div style={{ fontSize: FS.body, lineHeight: 1.6, color: "rgba(255,255,255,0.85)" }}>{renderRichDocument(summary)}</div>
+                  </div>
+                )}
+
+                {/* Skills */}
+                {skillCategories.length > 0 && (
+                  <div>
+                    {modernSidebarHeading(t("skills"))}
+                    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                      {skillCategories.map((skillGroup) => (
+                        <div key={skillGroup.id}>
+                          <p style={{ fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "#ffffff", fontSize: FS.tiny, margin: "0 0 4px 0" }}>{skillGroup.category}</p>
+                          <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+                            {skillGroup.items.map((item, i) => (
+                              <span key={i} style={{ backgroundColor: "rgba(255,255,255,0.15)", color: "#ffffff", fontSize: FS.tiny, padding: "2px 8px", borderRadius: 4 }}>{item}</span>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Languages */}
+                {visibility.languages && languages.length > 0 && (
+                  <div>
+                    {modernSidebarHeading(t("languages"))}
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                      {languages.map((lang) => (
+                        <div key={lang.id} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                          <span style={{ fontWeight: 600, color: "#ffffff", fontSize: FS.body }}>{lang.language}</span>
+                          {lang.level && (
+                            <span style={{ backgroundColor: "rgba(255,255,255,0.15)", color: "#ffffff", fontSize: FS.tiny, padding: "2px 8px", borderRadius: 4 }}>{lang.level}</span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Footer — two columns matching sidebar */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 250px", marginTop: "auto" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", padding: "8px 20px 12px", fontSize: 10, color: "#aaaaaa" }}>
+              {personalInfo.fullName} &nbsp;&middot;&nbsp; {new Intl.DateTimeFormat(locale, { day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date())} &nbsp;&middot;&nbsp; 1 / 1
+            </div>
+            <div style={{ backgroundColor: colors.heading, display: "flex", alignItems: "center", justifyContent: "center", padding: "8px 18px 12px" }}>
+              <a href="https://www.applio.dev/" target="_blank" rel="noopener noreferrer" style={{ fontSize: 10, color: "rgba(255,255,255,0.5)", textDecoration: "none" }}>
+                Applio ♥
+              </a>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    // ===== END MODERN TEMPLATE =====
+
+    // ===== TIMELINE TEMPLATE =====
+    if (templateId === "timeline") {
+      const flexSectionOrder = sidebarSections.filter(
+        (s): s is "skills" | "languages" => s === "skills" || s === "languages"
+      );
+      const hasContact = personalInfo.email || personalInfo.phone ||
+        (visibility.location && personalInfo.location) ||
+        (visibility.linkedin && personalInfo.linkedin) ||
+        (visibility.website && personalInfo.website);
+
+      const lineColor = `${colors.heading}40`;
+      const dotColor = colors.heading;
+
+      // Section heading with large dot + ring effect
+      const tlHeading = (label: string) => (
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12, marginTop: 4, marginLeft: -31 }}>
+          <div style={{ width: 14, height: 14, borderRadius: 9999, backgroundColor: dotColor, flexShrink: 0, border: "2.5px solid white", boxShadow: `0 0 0 2px ${dotColor}` }} />
+          <h3 style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: colors.heading, flexShrink: 0, margin: 0 }}>
+            {label}
+          </h3>
+          <div style={{ flex: 1, height: 1, backgroundColor: `${colors.heading}18` }} />
+        </div>
+      );
+
+      // noPhoto-style heading for bottom sections (outside timeline)
+      const bottomHeading = (label: string) => (
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12, marginTop: 4 }}>
+          <div style={{ width: 2, height: 14, borderRadius: 9999, backgroundColor: colors.heading, flexShrink: 0 }} />
+          <h3 style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: colors.heading, flexShrink: 0, margin: 0 }}>
+            {label}
+          </h3>
+          <div style={{ flex: 1, height: 1, backgroundColor: `${colors.heading}18` }} />
+        </div>
+      );
+
+      // Render an entry list (experience, education, etc.)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const renderEntries = (entries: Array<{ id: string; description?: string } & Record<string, any>>, getTitle: (e: any) => string, getSubtitle: (e: any) => string, getDates: (e: any) => string) => (
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          {entries.map((entry) => (
+            <div key={entry.id} style={{ pageBreakInside: "avoid" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+                <h4 style={{ fontWeight: 600, color: "#111827", fontSize: FS.itemTitle, margin: 0 }}>{getTitle(entry)}</h4>
+                <span style={{ color: "#9ca3af", fontSize: FS.tiny, flexShrink: 0 }}>{getDates(entry)}</span>
+              </div>
+              <p style={{ margin: "2px 0 0 0", fontWeight: 500, color: "#4b5563", fontSize: FS.small }}>{getSubtitle(entry)}</p>
+              {entry.description && (
+                <div style={{ marginTop: 6, fontSize: FS.body, ["--bullet-color" as string]: colors.bullet }}>{renderRichDocument(entry.description)}</div>
+              )}
+            </div>
+          ))}
+        </div>
+      );
+
+      return (
+        <div
+          ref={ref}
+          className="printable-cv cv-preview-content font-sans"
+          style={{ fontFamily: effectiveFontFamily, display: "flex", flexDirection: "column", minHeight: "297mm", ...(fontSizeLevelEm !== 1 ? { fontSize: `${fontSizeLevelEm}em` } : {}) }}
+        >
+          {/* Header */}
+          <div style={{ padding: `${mg(28)}px ${mg(32)}px ${mg(8)}px` }}>
+            <div style={{ display: "flex", gap: 20, alignItems: "flex-start" }}>
+              {/* Photo */}
+              <div style={{
+                width: 120,
+                height: 120,
+                borderRadius: "50%",
+                overflow: "hidden",
+                flexShrink: 0,
+                backgroundColor: `${colors.heading}12`,
+              }}>
+                {data.personalInfo.photoUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={data.personalInfo.photoUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                ) : (
+                  <div style={{
+                    width: "100%",
+                    height: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: colors.heading,
+                    fontSize: 36,
+                    fontWeight: 500,
+                  }}>
+                    {data.personalInfo.fullName.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase()}
+                  </div>
+                )}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <h1 style={{ fontSize: FS.heading, fontWeight: 600, color: colors.heading, margin: 0 }}>{personalInfo.fullName}</h1>
+                {colors.nameAccent !== "transparent" && (
+                  <div style={{ marginTop: 6, height: 2, width: 56, borderRadius: 9999, backgroundColor: colors.nameAccent }} />
+                )}
+                <p style={{ fontSize: FS.subheading, fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.05em", color: `${colors.heading}BF`, margin: "10px 0 0 0" }}>
+                  {personalInfo.jobTitle}
+                </p>
+                {hasContact && (
+                  <div style={{ marginTop: 16, display: "flex", flexWrap: "wrap", gap: "6px 20px", alignItems: "center" }}>
+                    {personalInfo.email && (
+                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                        <Mail style={{ width: 12, height: 12, color: colors.heading }} />
+                        <a href={`mailto:${personalInfo.email}`} style={{ color: "#64748b", fontSize: FS.small, textDecoration: "none" }}>{personalInfo.email}</a>
+                      </div>
+                    )}
+                    {personalInfo.phone && (
+                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                        <Phone style={{ width: 12, height: 12, color: colors.heading }} />
+                        <a href={`tel:${personalInfo.phone}`} style={{ color: "#64748b", fontSize: FS.small, textDecoration: "none" }}>{personalInfo.phone}</a>
+                      </div>
+                    )}
+                    {visibility.location && personalInfo.location && (
+                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                        <MapPin style={{ width: 12, height: 12, color: colors.heading }} />
+                        <span style={{ color: "#64748b", fontSize: FS.small }}>{personalInfo.location}</span>
+                      </div>
+                    )}
+                    {visibility.linkedin && personalInfo.linkedin && (
+                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                        <Linkedin style={{ width: 12, height: 12, color: colors.heading }} />
+                        {personalInfo.linkedinUrl ? (
+                          <a href={ensureProtocol(personalInfo.linkedinUrl)} target="_blank" rel="noopener noreferrer" style={{ color: "#64748b", fontSize: FS.small, textDecoration: "none" }}>{personalInfo.linkedin}</a>
+                        ) : (
+                          <span style={{ color: "#64748b", fontSize: FS.small }}>{personalInfo.linkedin}</span>
+                        )}
+                      </div>
+                    )}
+                    {visibility.website && personalInfo.website && (
+                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                        <Globe style={{ width: 12, height: 12, color: colors.heading }} />
+                        {personalInfo.websiteUrl ? (
+                          <a href={ensureProtocol(personalInfo.websiteUrl)} target="_blank" rel="noopener noreferrer" style={{ color: "#64748b", fontSize: FS.small, textDecoration: "none" }}>{personalInfo.website}</a>
+                        ) : (
+                          <span style={{ color: "#64748b", fontSize: FS.small }}>{personalInfo.website}</span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Main content */}
+          <div style={{ flex: 1, padding: `${mg(10)}px ${mg(32)}px ${mg(28)}px` }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+
+              {/* Summary — no timeline, accent card */}
+              {visibility.summary && summary && (
+                <div>
+                  {bottomHeading(t("aboutMe"))}
+                  <div style={{ backgroundColor: `${colors.heading}08`, borderLeft: `3px solid ${colors.heading}`, borderRadius: 8, padding: "12px 16px" }}>
+                    <div style={{ fontSize: FS.body, lineHeight: 1.6 }}>{renderRichDocument(summary)}</div>
+                  </div>
+                </div>
+              )}
+
+              {/* Timeline sections */}
+              <div style={{ marginLeft: 24, borderLeft: `3px solid ${lineColor}`, paddingLeft: 24 }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+                  {/* Experience */}
+                  {experiences.length > 0 && (
+                    <div>
+                      {tlHeading(t("experience"))}
+                      {renderEntries(experiences, (e) => e.company as string, (e) => e.position as string, (e) => `${e.startDate} — ${e.endDate}`)}
+                    </div>
+                  )}
+
+                  {/* Education */}
+                  {education.length > 0 && (
+                    <div>
+                      {tlHeading(t("education"))}
+                      {renderEntries(education, (e) => e.institution as string, (e) => e.degree as string, (e) => `${e.startDate} — ${e.endDate}`)}
+                    </div>
+                  )}
+
+                  {/* Courses */}
+                  {visibility.courses && courses.length > 0 && (
+                    <div>
+                      {tlHeading(t("courses"))}
+                      {renderEntries(courses, (e) => e.name as string, (e) => e.institution as string, (e) => e.date as string)}
+                    </div>
+                  )}
+
+                  {/* Certifications */}
+                  {visibility.certifications && certifications.length > 0 && (
+                    <div>
+                      {tlHeading(t("certifications"))}
+                      {renderEntries(certifications, (e) => e.name as string, (e) => e.issuer as string, (e) => e.date as string)}
+                    </div>
+                  )}
+
+                  {/* Awards */}
+                  {visibility.awards && awards.length > 0 && (
+                    <div>
+                      {tlHeading(t("awards"))}
+                      {renderEntries(awards, (e) => e.name as string, (e) => e.issuer as string, (e) => e.date as string)}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Languages + Skills — no timeline, at the bottom */}
+              {flexSectionOrder.map((sectionId) => {
+                if (sectionId === "languages" && visibility.languages && languages.length > 0) {
+                  return (
+                    <div key="languages">
+                      {bottomHeading(t("languages"))}
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 16px", fontSize: FS.body }}>
+                        {languages.map((lang) => (
+                          <span key={lang.id} style={{ color: "#111827" }}>
+                            {lang.language}{lang.level && <span style={{ color: "#9ca3af", marginLeft: 4 }}>({lang.level})</span>}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                }
+                if (sectionId === "skills" && skillCategories.length > 0) {
+                  return (
+                    <div key="skills">
+                      {bottomHeading(t("skills"))}
+                      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                        {skillCategories.map((skillGroup) => (
+                          <div key={skillGroup.id}>
+                            <p style={{ fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: colors.heading, fontSize: FS.tiny, margin: "0 0 4px 0" }}>{skillGroup.category}</p>
+                            <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+                              {skillGroup.items.map((item, i) => (
+                                <span key={i} style={{ backgroundColor: `${colors.heading}15`, color: colors.heading, fontSize: FS.tiny, padding: "2px 8px", borderRadius: 4 }}>{item}</span>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                }
+                return null;
+              })}
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: `${mg(8)}px ${mg(32)}px ${mg(12)}px`, color: "#aaaaaa", fontSize: "0.75rem" }}>
+            <a href="https://www.applio.dev/" target="_blank" rel="noopener noreferrer" style={{ color: "#bbbbbb", textDecoration: "none" }}>Applio ♥</a>
+            <span>
+              {personalInfo.fullName}&nbsp;&nbsp;·&nbsp;&nbsp;
+              {new Intl.DateTimeFormat(locale, { day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date())}&nbsp;&nbsp;·&nbsp;&nbsp;1 / 1
+            </span>
+          </div>
+        </div>
+      );
+    }
+    // ===== END TIMELINE TEMPLATE =====
+
     return (
       <div
         ref={ref}

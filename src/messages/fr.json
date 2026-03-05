@@ -74,7 +74,10 @@
     "syncError": "Erreur de synchronisation",
     "templates": "Modèles",
     "templateClassic": "Classique",
-    "templateNoPhoto": "Sans photo"
+    "templateNoPhoto": "Sans photo",
+    "templateExecutive": "Exécutif",
+    "templateModern": "Moderne",
+    "templateTimeline": "Chronologique"
   },
   "cvPreview": {
     "fullNamePlaceholder": "Votre Nom Complet",
