@@ -59,15 +59,7 @@ export interface AwardItem {
   description?: string;
 }
 
-export interface LanguageItem {
-  id: string;
-  language: string;
-  level: string;
-}
-
-export type SidebarSectionId = "contact" | "summary" | "skills" | "languages";
-
-export type TemplateId = "classic" | "noPhoto";
+export type SidebarSectionId = "contact" | "summary" | "skills";
 
 export interface SectionVisibility {
   location: boolean;
@@ -77,7 +69,6 @@ export interface SectionVisibility {
   courses: boolean;
   certifications: boolean;
   awards: boolean;
-  languages: boolean;
 }
 
 export interface CVData {
@@ -89,10 +80,8 @@ export interface CVData {
   courses: CourseItem[];
   certifications: CertificationItem[];
   awards: AwardItem[];
-  languages: LanguageItem[];
   visibility: SectionVisibility;
   sidebarSections: SidebarSectionId[];
-  templateId?: TemplateId;
 }
 
 /** Shape of the settings stored alongside a CV in the cloud */
@@ -102,7 +91,6 @@ export interface CloudSettings {
   fontSizeLevel: number;
   theme: string;
   locale: string;
-  templateId?: TemplateId;
 }
 
 /** Shape of a CV row as returned from the database */

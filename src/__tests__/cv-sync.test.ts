@@ -33,7 +33,6 @@ function makeCVData(overrides?: Partial<CVData>): CVData {
     courses: [],
     certifications: [],
     awards: [],
-    languages: [],
     visibility: {
       location: true,
       linkedin: true,
@@ -42,7 +41,6 @@ function makeCVData(overrides?: Partial<CVData>): CVData {
       courses: false,
       certifications: false,
       awards: false,
-      languages: false,
     },
     sidebarSections: ["contact", "summary", "skills"],
     ...overrides,

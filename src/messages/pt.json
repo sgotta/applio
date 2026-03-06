@@ -22,7 +22,6 @@
     "sectionCourses": "Cursos e Workshops",
     "sectionCertifications": "Certificações",
     "sectionAwards": "Prêmios",
-    "sectionLanguages": "Idiomas",
     "importFormatError": "O formato do arquivo está incorreto. Verifique se é um JSON exportado do Applio.",
     "importConfirm": "Deseja carregar este CV? Os dados atuais serão sobrescritos.",
     "importReadError": "Erro ao ler o arquivo. Verifique se é um arquivo JSON válido.",
@@ -71,10 +70,7 @@
     "syncProHint": "Com Pro, sincroniza na nuvem.",
     "syncLoginHint": "Faça login para sincronizar seus dados e acessá-los de qualquer dispositivo.",
     "syncSyncing": "Sincronizando...",
-    "syncError": "Erro de sincronização",
-    "templates": "Modelos",
-    "templateClassic": "Clássico",
-    "templateNoPhoto": "Sem foto"
+    "syncError": "Erro de sincronização"
   },
   "cvPreview": {
     "fullNamePlaceholder": "Seu Nome Completo",
@@ -260,8 +256,7 @@
     "education": "Educação",
     "courses": "Cursos e Workshops",
     "certifications": "Certificações",
-    "awards": "Prêmios e Honrarias",
-    "languages": "Idiomas"
+    "awards": "Prêmios e Honrarias"
   },
   "defaults": {
     "company": "Empresa",
@@ -277,9 +272,7 @@
     "certificationName": "Certificação",
     "certificationIssuer": "Emissor",
     "awardName": "Prêmio",
-    "awardIssuer": "Organização",
-    "languageName": "Português",
-    "languageLevel": "Nativo"
+    "awardIssuer": "Organização"
   },
   "sharedView": {
     "loading": "Carregando CV...",
@@ -289,12 +282,6 @@
     "sharedOn": "Compartilhado em {date}",
     "madeWith": "Feito na Argentina",
     "generating": "Gerando PDF..."
-  },
-  "cvLanguages": {
-    "title": "Idiomas",
-    "languagePlaceholder": "Idioma",
-    "levelPlaceholder": "Nível",
-    "addLanguage": "Adicionar idioma"
   },
   "languages": {
     "en": "Inglês",
@@ -410,9 +397,7 @@
     "upgradeDescription": "Aproveite ao máximo seu CV com todos os recursos premium.",
     "comingSoon": "Em breve",
     "feature_pdfNoBranding": "Baixar PDF sem marca d'água do Applio",
-    "feature_pdfNoBranding_desc": "Baixe seu CV sem marca d'água. Só o seu trabalho, nada mais.",
-    "feature_premiumTemplates": "Templates premium",
-    "feature_premiumTemplates_desc": "Layouts alternativos para o seu CV: sem foto, uma coluna e mais."
+    "feature_pdfNoBranding_desc": "Baixe seu CV sem marca d'água. Só o seu trabalho, nada mais."
   },
   "syncConflict": {
     "title": "Encontramos seu CV",

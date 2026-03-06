@@ -22,7 +22,6 @@
     "sectionCourses": "Corsi e Workshop",
     "sectionCertifications": "Certificazioni",
     "sectionAwards": "Premi",
-    "sectionLanguages": "Lingue",
     "importFormatError": "Il formato del file non è corretto. Assicurati che sia un JSON esportato da Applio.",
     "importConfirm": "Vuoi caricare questo CV? I dati attuali verranno sovrascritti.",
     "importReadError": "Errore nella lettura del file. Assicurati che sia un file JSON valido.",
@@ -71,10 +70,7 @@
     "syncProHint": "Con Pro, sync nel cloud.",
     "syncLoginHint": "Accedi per sincronizzare i tuoi dati e accedervi da qualsiasi dispositivo.",
     "syncSyncing": "Sincronizzazione...",
-    "syncError": "Errore di sincronizzazione",
-    "templates": "Modelli",
-    "templateClassic": "Classico",
-    "templateNoPhoto": "Senza foto"
+    "syncError": "Errore di sincronizzazione"
   },
   "cvPreview": {
     "fullNamePlaceholder": "Il Tuo Nome Completo",
@@ -260,8 +256,7 @@
     "education": "Istruzione",
     "courses": "Corsi e Workshop",
     "certifications": "Certificazioni",
-    "awards": "Premi e Riconoscimenti",
-    "languages": "Lingue"
+    "awards": "Premi e Riconoscimenti"
   },
   "defaults": {
     "company": "Azienda",
@@ -277,9 +272,7 @@
     "certificationName": "Certificazione",
     "certificationIssuer": "Ente",
     "awardName": "Premio",
-    "awardIssuer": "Organizzazione",
-    "languageName": "Italiano",
-    "languageLevel": "Madrelingua"
+    "awardIssuer": "Organizzazione"
   },
   "sharedView": {
     "loading": "Caricamento CV...",
@@ -289,12 +282,6 @@
     "sharedOn": "Condiviso il {date}",
     "madeWith": "Fatto in Argentina",
     "generating": "Generazione PDF..."
-  },
-  "cvLanguages": {
-    "title": "Lingue",
-    "languagePlaceholder": "Lingua",
-    "levelPlaceholder": "Livello",
-    "addLanguage": "Aggiungi lingua"
   },
   "languages": {
     "en": "Inglese",
@@ -410,9 +397,7 @@
     "upgradeDescription": "Sfrutta al massimo il tuo CV con tutte le funzionalità premium.",
     "comingSoon": "Prossimamente",
     "feature_pdfNoBranding": "Scarica il PDF senza filigrana Applio",
-    "feature_pdfNoBranding_desc": "Scarica il tuo CV senza filigrana. Solo il tuo lavoro, nient'altro.",
-    "feature_premiumTemplates": "Templates premium",
-    "feature_premiumTemplates_desc": "Layout alternativi per il tuo CV: senza foto, colonna singola e altro."
+    "feature_pdfNoBranding_desc": "Scarica il tuo CV senza filigrana. Solo il tuo lavoro, nient'altro."
   },
   "syncConflict": {
     "title": "Abbiamo trovato il tuo CV",

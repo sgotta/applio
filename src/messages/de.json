@@ -22,7 +22,6 @@
     "sectionCourses": "Kurse & Workshops",
     "sectionCertifications": "Zertifizierungen",
     "sectionAwards": "Auszeichnungen",
-    "sectionLanguages": "Sprachen",
     "importFormatError": "Das Dateiformat ist falsch. Stelle sicher, dass es ein aus Applio exportiertes JSON ist.",
     "importConfirm": "Möchtest du diesen Lebenslauf laden? Die aktuellen Daten werden überschrieben.",
     "importReadError": "Fehler beim Lesen der Datei. Stelle sicher, dass es eine gültige JSON-Datei ist.",
@@ -71,10 +70,7 @@
     "syncProHint": "Mit Pro, Sync in der Cloud.",
     "syncLoginHint": "Melden Sie sich an, um Ihre Daten zu synchronisieren und von jedem Gerät darauf zuzugreifen.",
     "syncSyncing": "Synchronisierung...",
-    "syncError": "Synchronisierungsfehler",
-    "templates": "Vorlagen",
-    "templateClassic": "Klassisch",
-    "templateNoPhoto": "Ohne Foto"
+    "syncError": "Synchronisierungsfehler"
   },
   "cvPreview": {
     "fullNamePlaceholder": "Dein vollständiger Name",
@@ -260,8 +256,7 @@
     "education": "Bildung",
     "courses": "Kurse & Workshops",
     "certifications": "Zertifizierungen",
-    "awards": "Auszeichnungen",
-    "languages": "Sprachen"
+    "awards": "Auszeichnungen"
   },
   "defaults": {
     "company": "Unternehmen",
@@ -277,9 +272,7 @@
     "certificationName": "Zertifizierung",
     "certificationIssuer": "Aussteller",
     "awardName": "Auszeichnung",
-    "awardIssuer": "Organisation",
-    "languageName": "Deutsch",
-    "languageLevel": "Muttersprache"
+    "awardIssuer": "Organisation"
   },
   "sharedView": {
     "loading": "Lebenslauf wird geladen...",
@@ -289,12 +282,6 @@
     "sharedOn": "Geteilt am {date}",
     "madeWith": "Hergestellt in Argentinien",
     "generating": "PDF wird erstellt..."
-  },
-  "cvLanguages": {
-    "title": "Sprachen",
-    "languagePlaceholder": "Sprache",
-    "levelPlaceholder": "Niveau",
-    "addLanguage": "Sprache hinzufügen"
   },
   "languages": {
     "en": "Englisch",
@@ -410,9 +397,7 @@
     "upgradeDescription": "Holen Sie das Beste aus Ihrem Lebenslauf mit allen Premium-Funktionen.",
     "comingSoon": "Demnächst verfügbar",
     "feature_pdfNoBranding": "PDF ohne Applio-Wasserzeichen herunterladen",
-    "feature_pdfNoBranding_desc": "Laden Sie Ihren Lebenslauf ohne Wasserzeichen herunter. Nur Ihre Arbeit.",
-    "feature_premiumTemplates": "Premium-Templates",
-    "feature_premiumTemplates_desc": "Alternative Layouts für Ihren Lebenslauf: ohne Foto, einspaltig und mehr."
+    "feature_pdfNoBranding_desc": "Laden Sie Ihren Lebenslauf ohne Wasserzeichen herunter. Nur Ihre Arbeit."
   },
   "syncConflict": {
     "title": "Wir haben Ihren Lebenslauf gefunden",

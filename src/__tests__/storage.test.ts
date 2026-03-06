@@ -19,7 +19,6 @@ const mockData: CVData = {
   courses: [],
   certifications: [],
   awards: [],
-  languages: [],
   visibility: {
     location: true,
     linkedin: true,
@@ -28,7 +27,6 @@ const mockData: CVData = {
     courses: false,
     certifications: false,
     awards: false,
-    languages: false,
   },
   sidebarSections: ["contact", "summary", "skills"],
 };
