@@ -76,7 +76,6 @@ function SharedCVInner({ cvData, settings }: SharedCVContentProps) {
         courses: tp("courses"),
         certifications: tp("certifications"),
         awards: tp("awards"),
-        languages: tp("languages"),
       };
       const pdfFontFamily = fontDef?.pdfFamilyName;
       const pdfFontScale = (FONT_SIZE_LEVELS[(settings.fontSizeLevel ?? 2) as FontSizeLevel] ?? 1) * PDF_BASE_FONT_SCALE;
@@ -131,7 +130,6 @@ function SharedCVInner({ cvData, settings }: SharedCVContentProps) {
           colors={colorScheme}
           photoUrl={photoUrl}
           fontFamilyOverride={fontDef?.cssStack}
-          templateId={cvData.templateId}
         />
       </div>
 

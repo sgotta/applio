@@ -22,7 +22,6 @@
     "sectionCourses": "Cours et Ateliers",
     "sectionCertifications": "Certifications",
     "sectionAwards": "Prix",
-    "sectionLanguages": "Langues",
     "importFormatError": "Le format du fichier est incorrect. Assurez-vous qu'il s'agit d'un JSON exporté depuis Applio.",
     "importConfirm": "Voulez-vous charger ce CV ? Les données actuelles seront écrasées.",
     "importReadError": "Erreur de lecture du fichier. Assurez-vous qu'il s'agit d'un fichier JSON valide.",
@@ -71,10 +70,7 @@
     "syncProHint": "Avec Pro, sync dans le cloud.",
     "syncLoginHint": "Connectez-vous pour synchroniser vos données et y accéder depuis n'importe quel appareil.",
     "syncSyncing": "Synchronisation...",
-    "syncError": "Erreur de synchronisation",
-    "templates": "Modèles",
-    "templateClassic": "Classique",
-    "templateNoPhoto": "Sans photo"
+    "syncError": "Erreur de synchronisation"
   },
   "cvPreview": {
     "fullNamePlaceholder": "Votre Nom Complet",
@@ -260,8 +256,7 @@
     "education": "Formation",
     "courses": "Cours et Ateliers",
     "certifications": "Certifications",
-    "awards": "Prix et Distinctions",
-    "languages": "Langues"
+    "awards": "Prix et Distinctions"
   },
   "defaults": {
     "company": "Entreprise",
@@ -277,9 +272,7 @@
     "certificationName": "Certification",
     "certificationIssuer": "Émetteur",
     "awardName": "Prix",
-    "awardIssuer": "Organisation",
-    "languageName": "Français",
-    "languageLevel": "Natif"
+    "awardIssuer": "Organisation"
   },
   "sharedView": {
     "loading": "Chargement du CV...",
@@ -289,12 +282,6 @@
     "sharedOn": "Partagé le {date}",
     "madeWith": "Fait en Argentine",
     "generating": "Génération du PDF..."
-  },
-  "cvLanguages": {
-    "title": "Langues",
-    "languagePlaceholder": "Langue",
-    "levelPlaceholder": "Niveau",
-    "addLanguage": "Ajouter une langue"
   },
   "languages": {
     "en": "Anglais",
@@ -410,9 +397,7 @@
     "upgradeDescription": "Profitez au maximum de votre CV avec toutes les fonctionnalités premium.",
     "comingSoon": "Bientôt disponible",
     "feature_pdfNoBranding": "Télécharger le PDF sans filigrane Applio",
-    "feature_pdfNoBranding_desc": "Téléchargez votre CV sans filigrane. Rien que votre travail, rien de plus.",
-    "feature_premiumTemplates": "Templates premium",
-    "feature_premiumTemplates_desc": "Mises en page alternatives pour votre CV: sans photo, une colonne, et plus."
+    "feature_pdfNoBranding_desc": "Téléchargez votre CV sans filigrane. Rien que votre travail, rien de plus."
   },
   "syncConflict": {
     "title": "Nous avons trouvé votre CV",

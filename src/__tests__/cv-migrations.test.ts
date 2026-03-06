@@ -224,8 +224,6 @@ describe("migrateCVData", () => {
     expect(result.courses).toEqual([]);
     expect(result.certifications).toEqual([]);
     expect(result.awards).toEqual([]);
-    expect(result.languages).toEqual([]);
-    expect(result.visibility.languages).toBe(false);
     expect(result.visibility).toBeDefined();
     expect(result.sidebarSections).toEqual(["contact", "summary", "skills"]);
   });

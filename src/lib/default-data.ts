@@ -1,6 +1,4 @@
-import type { CVData, SectionVisibility, SidebarSectionId, TemplateId } from "./types";
-
-export const DEFAULT_TEMPLATE_ID: TemplateId = "classic";
+import type { CVData, SectionVisibility, SidebarSectionId } from "./types";
 
 export const DEFAULT_SIDEBAR_SECTIONS: SidebarSectionId[] = ["contact", "summary", "skills"];
 
@@ -12,7 +10,6 @@ export const defaultVisibility: SectionVisibility = {
   courses: false,
   certifications: false,
   awards: false,
-  languages: false,
 };
 
 const enData: CVData = {
@@ -76,10 +73,8 @@ const enData: CVData = {
   courses: [],
   certifications: [],
   awards: [],
-  languages: [],
   visibility: defaultVisibility,
   sidebarSections: DEFAULT_SIDEBAR_SECTIONS,
-  templateId: DEFAULT_TEMPLATE_ID,
 };
 
 const esData: CVData = {
@@ -143,10 +138,8 @@ const esData: CVData = {
   courses: [],
   certifications: [],
   awards: [],
-  languages: [],
   visibility: defaultVisibility,
   sidebarSections: DEFAULT_SIDEBAR_SECTIONS,
-  templateId: DEFAULT_TEMPLATE_ID,
 };
 
 const dataByLocale: Record<string, CVData> = { en: enData, es: esData };

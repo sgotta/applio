@@ -6,7 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
 import { renderRichDocument } from "@/lib/render-rich-text";
 import { DEFAULT_SIDEBAR_SECTIONS } from "@/lib/default-data";
-import type { CVData, TemplateId } from "@/lib/types";
+import type { CVData } from "@/lib/types";
 import type { ColorScheme } from "@/lib/color-schemes";
 
 function ensureProtocol(url: string): string {
@@ -42,16 +42,14 @@ export function MobileCVView({
   colors,
   photoUrl,
   fontFamilyOverride,
-  templateId,
 }: {
   data: CVData;
   colors: ColorScheme;
   photoUrl?: string;
   fontFamilyOverride?: string;
-  templateId?: TemplateId;
 }) {
   const t = useTranslations("printable");
-  const { personalInfo, summary, experiences, education, skillCategories, courses, certifications, awards, languages, visibility } = data;
+  const { personalInfo, summary, experiences, education, skillCategories, courses, certifications, awards, visibility } = data;
   const sidebarSections = data.sidebarSections ?? DEFAULT_SIDEBAR_SECTIONS;
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageFailed, setImageFailed] = useState(false);
@@ -79,271 +77,6 @@ export function MobileCVView({
     tiny: "0.9em",
     section: "0.9em",
   };
-
-  // ---- NoPhoto template: single-column layout without photo or sidebar ----
-  if (templateId === "noPhoto") {
-    const langItems = languages ?? [];
-    const noPhotoContactItems = [
-      personalInfo.email && (
-        <span key="email" className="inline-flex items-center gap-1">
-          <Mail className="h-3 w-3 shrink-0" style={{ color: colors.heading }} />
-          <a href={`mailto:${personalInfo.email}`} style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.email}</a>
-        </span>
-      ),
-      personalInfo.phone && (
-        <span key="phone" className="inline-flex items-center gap-1">
-          <Phone className="h-3 w-3 shrink-0" style={{ color: colors.heading }} />
-          <a href={`tel:${personalInfo.phone}`} style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.phone}</a>
-        </span>
-      ),
-      (visibility.location && personalInfo.location) && (
-        <span key="location" className="inline-flex items-center gap-1">
-          <MapPin className="h-3 w-3 shrink-0" style={{ color: colors.heading }} />
-          <span>{personalInfo.location}</span>
-        </span>
-      ),
-      (visibility.linkedin && personalInfo.linkedin) && (
-        <span key="linkedin" className="inline-flex items-center gap-1">
-          <Linkedin className="h-3 w-3 shrink-0" style={{ color: colors.heading }} />
-          {personalInfo.linkedinUrl ? (
-            <a href={ensureProtocol(personalInfo.linkedinUrl)} target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.linkedin}</a>
-          ) : (
-            <span>{personalInfo.linkedin}</span>
-          )}
-        </span>
-      ),
-      (visibility.website && personalInfo.website) && (
-        <span key="website" className="inline-flex items-center gap-1">
-          <Globe className="h-3 w-3 shrink-0" style={{ color: colors.heading }} />
-          {personalInfo.websiteUrl ? (
-            <a href={ensureProtocol(personalInfo.websiteUrl)} target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.website}</a>
-          ) : (
-            <span>{personalInfo.website}</span>
-          )}
-        </span>
-      ),
-    ].filter(Boolean);
-
-    return (
-      <div
-        className="cv-preview-content bg-white font-sans overflow-x-hidden"
-        style={{ fontFamily: fontFamilyOverride ?? "var(--font-inter), Inter, sans-serif" }}
-      >
-        {/* Top accent bar */}
-        <div style={{ height: 3, backgroundColor: colors.heading }} />
-
-        {/* Header */}
-        <div style={{ padding: `${mg(26)}px ${mg(24)}px ${mg(18)}px` }}>
-          <h1 className="font-semibold tracking-tight text-gray-900" style={{ fontSize: fs.heading }}>
-            {personalInfo.fullName}
-          </h1>
-          {colors.nameAccent !== "transparent" && (
-            <div className="mt-1 h-0.5 w-10 rounded-full" style={{ backgroundColor: colors.nameAccent }} />
-          )}
-          <div className="mt-0.5">
-            <p className="font-medium uppercase tracking-wide" style={{ color: colors.heading, fontSize: fs.subheading }}>
-              {personalInfo.jobTitle}
-            </p>
-          </div>
-          {noPhotoContactItems.length > 0 && (
-            <div className="mt-3 flex flex-wrap items-center gap-y-1.5" style={{ color: "#777", fontSize: fs.tiny }}>
-              {noPhotoContactItems.map((item, idx) => (
-                <span key={idx} className="inline-flex items-center">
-                  {idx > 0 && <span className="mx-2 text-[10px]" style={{ color: `${colors.heading}35` }}>·</span>}
-                  {item}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Divider */}
-        <div style={{ height: 1, backgroundColor: `${colors.heading}14`, marginLeft: mg(24), marginRight: mg(24) }} />
-
-        {/* Content */}
-        <div className="space-y-5" style={{ padding: `${mg(16)}px ${mg(24)}px ${mg(24)}px` }}>
-          {visibility.summary && summary && (
-            <div>
-              <MobileSectionHeading color={colors.heading} separatorColor={colors.separator} fontSize={fs.section}>
-                {t("aboutMe")}
-              </MobileSectionHeading>
-              <div className="leading-relaxed" style={{ color: "#444", fontSize: fs.body }}>
-                {renderRichDocument(summary)}
-              </div>
-            </div>
-          )}
-
-          {experiences.length > 0 && (
-            <div>
-              <MobileSectionHeading color={colors.heading} separatorColor={colors.separator} fontSize={fs.section}>
-                {t("experience")}
-              </MobileSectionHeading>
-              <div className="space-y-2.5">
-                {experiences.map((exp) => (
-                  <div key={exp.id}>
-                    <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0">
-                      <h4 className="font-semibold text-gray-900" style={{ fontSize: fs.itemTitle }}>{exp.company}</h4>
-                      <div className="flex items-baseline gap-1 shrink-0">
-                        <span className="text-gray-400" style={{ fontSize: fs.tiny }}>{exp.startDate}</span>
-                        <span className="text-gray-400" style={{ fontSize: fs.tiny }}>—</span>
-                        <span className="text-gray-400" style={{ fontSize: fs.tiny }}>{exp.endDate}</span>
-                      </div>
-                    </div>
-                    <p className="mt-0.5 font-medium text-gray-600" style={{ fontSize: fs.small }}>{exp.position}</p>
-                    {exp.description && (
-                      <div className="mt-1.5" style={{ fontSize: fs.body, "--bullet-color": colors.bullet } as React.CSSProperties}>
-                        {renderRichDocument(exp.description)}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {education.length > 0 && (
-            <div>
-              <MobileSectionHeading color={colors.heading} separatorColor={colors.separator} fontSize={fs.section}>
-                {t("education")}
-              </MobileSectionHeading>
-              <div className="space-y-2.5">
-                {education.map((edu) => (
-                  <div key={edu.id}>
-                    <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0">
-                      <h4 className="font-semibold text-gray-900" style={{ fontSize: fs.itemTitle }}>{edu.institution}</h4>
-                      <div className="flex items-baseline gap-1 shrink-0">
-                        <span className="text-gray-400" style={{ fontSize: fs.tiny }}>{edu.startDate}</span>
-                        <span className="text-gray-400" style={{ fontSize: fs.tiny }}>—</span>
-                        <span className="text-gray-400" style={{ fontSize: fs.tiny }}>{edu.endDate}</span>
-                      </div>
-                    </div>
-                    <p className="mt-0.5 font-medium text-gray-600" style={{ fontSize: fs.small }}>{edu.degree}</p>
-                    {edu.description && (
-                      <div className="mt-1.5" style={{ fontSize: fs.body, "--bullet-color": colors.bullet } as React.CSSProperties}>
-                        {renderRichDocument(edu.description)}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {visibility.courses && courses.length > 0 && (
-            <div>
-              <MobileSectionHeading color={colors.heading} separatorColor={colors.separator} fontSize={fs.section}>
-                {t("courses")}
-              </MobileSectionHeading>
-              <div className="space-y-2.5">
-                {courses.map((course) => (
-                  <div key={course.id}>
-                    <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0">
-                      <h4 className="font-semibold text-gray-900" style={{ fontSize: fs.itemTitle }}>{course.name}</h4>
-                      <span className="shrink-0 text-gray-400" style={{ fontSize: fs.tiny }}>{course.date}</span>
-                    </div>
-                    <p className="mt-0.5 font-medium text-gray-600" style={{ fontSize: fs.small }}>{course.institution}</p>
-                    {course.description && (
-                      <div className="mt-1.5" style={{ fontSize: fs.body, "--bullet-color": colors.bullet } as React.CSSProperties}>
-                        {renderRichDocument(course.description)}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {visibility.certifications && certifications.length > 0 && (
-            <div>
-              <MobileSectionHeading color={colors.heading} separatorColor={colors.separator} fontSize={fs.section}>
-                {t("certifications")}
-              </MobileSectionHeading>
-              <div className="space-y-2.5">
-                {certifications.map((cert) => (
-                  <div key={cert.id}>
-                    <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0">
-                      <h4 className="font-semibold text-gray-900" style={{ fontSize: fs.itemTitle }}>{cert.name}</h4>
-                      <span className="shrink-0 text-gray-400" style={{ fontSize: fs.tiny }}>{cert.date}</span>
-                    </div>
-                    <p className="mt-0.5 font-medium text-gray-600" style={{ fontSize: fs.small }}>{cert.issuer}</p>
-                    {cert.description && (
-                      <div className="mt-1.5" style={{ fontSize: fs.body, "--bullet-color": colors.bullet } as React.CSSProperties}>
-                        {renderRichDocument(cert.description)}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {visibility.awards && awards.length > 0 && (
-            <div>
-              <MobileSectionHeading color={colors.heading} separatorColor={colors.separator} fontSize={fs.section}>
-                {t("awards")}
-              </MobileSectionHeading>
-              <div className="space-y-2.5">
-                {awards.map((award) => (
-                  <div key={award.id}>
-                    <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0">
-                      <h4 className="font-semibold text-gray-900" style={{ fontSize: fs.itemTitle }}>{award.name}</h4>
-                      <span className="shrink-0 text-gray-400" style={{ fontSize: fs.tiny }}>{award.date}</span>
-                    </div>
-                    <p className="mt-0.5 font-medium text-gray-600" style={{ fontSize: fs.small }}>{award.issuer}</p>
-                    {award.description && (
-                      <div className="mt-1.5" style={{ fontSize: fs.body, "--bullet-color": colors.bullet } as React.CSSProperties}>
-                        {renderRichDocument(award.description)}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {visibility.languages && langItems.length > 0 && (
-            <div>
-              <MobileSectionHeading color={colors.heading} separatorColor={colors.separator} fontSize={fs.section}>
-                {t("languages")}
-              </MobileSectionHeading>
-              <div className="flex flex-wrap gap-2">
-                {langItems.map((lang) => (
-                  <div key={lang.id} className="inline-flex items-baseline gap-1.5">
-                    <span className="font-semibold text-gray-800" style={{ fontSize: fs.small }}>{lang.language}</span>
-                    <span className="inline-flex items-center rounded px-1.5 py-0.5" style={{ backgroundColor: `${colors.heading}12`, color: colors.heading, fontSize: "11px" }}>{lang.level}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {skillCategories.length > 0 && (
-            <div>
-              <MobileSectionHeading color={colors.heading} separatorColor={colors.separator} fontSize={fs.section}>
-                {t("skills")}
-              </MobileSectionHeading>
-              <div className="space-y-2.5">
-                {skillCategories.map((group) => (
-                  <div key={group.id}>
-                    <p className="text-[9px] font-bold tracking-widest uppercase mb-1.5" style={{ color: colors.heading }}>
-                      {group.category}
-                    </p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {group.items.map((item, i) => (
-                        <span key={i} className="inline-flex items-center rounded px-2 py-0.5 text-[11px]" style={{ backgroundColor: `${colors.heading}12`, color: colors.heading }}>
-                          {item}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div

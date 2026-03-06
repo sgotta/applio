@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/dialog";
 import {
   FileText,
-  LayoutTemplate,
   Clock,
 } from "lucide-react";
 
@@ -22,7 +21,6 @@ interface UpgradeDialogProps {
 
 const FEATURES = [
   { icon: FileText, key: "pdfNoBranding", color: "text-red-500", bg: "bg-red-50 dark:bg-red-900/20", hex: "#ef4444" },
-  { icon: LayoutTemplate, key: "premiumTemplates", color: "text-violet-500", bg: "bg-violet-50 dark:bg-violet-900/20", hex: "#8b5cf6" },
 ] as const;
 
 export const UpgradeDialog = memo(function UpgradeDialog({

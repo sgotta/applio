@@ -5,7 +5,7 @@ import { useCV } from "@/lib/cv-context";
 import { useTranslations } from "next-intl";
 import { useAppLocale, LOCALES, LOCALE_NAMES } from "@/lib/locale-context";
 import { filenameDateStamp } from "@/lib/utils";
-import { CVData, type TemplateId } from "@/lib/types";
+import { CVData } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -29,7 +29,7 @@ import {
   SlidersHorizontal, Check, Sun, Moon,
   Menu, X, ChevronRight, ChevronLeft, Palette,
   Loader2, Share2, LogIn, LogOut, User, Copy, ExternalLink,
-  Lock, HardDrive, Cloud, CloudOff, LayoutTemplate, Sparkles,
+  Lock, HardDrive, Cloud, CloudOff, Sparkles,
 } from "lucide-react";
 
 interface ToolbarProps {
@@ -296,82 +296,6 @@ function ColorSection({
   );
 }
 
-function TemplateSection({
-  templateId,
-  setTemplate,
-  isPremium,
-  onUpgrade,
-  t,
-}: {
-  templateId: TemplateId;
-  setTemplate: (id: TemplateId) => void;
-  isPremium: boolean;
-  onUpgrade: () => void;
-  t: (key: string) => string;
-}) {
-  const templates: { id: TemplateId; locked: boolean }[] = [
-    { id: "classic", locked: false },
-    { id: "noPhoto", locked: !isPremium },
-  ];
-  return (
-    <div>
-      <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-3">
-        {t("templates")}
-      </p>
-      <div className="flex gap-3">
-        {templates.map(({ id, locked }) => (
-          <div key={id} className="flex flex-col items-center gap-1.5">
-            <button
-              onClick={() => { if (locked) { onUpgrade(); return; } setTemplate(id); }}
-              className={`relative h-14 w-10 rounded-lg border overflow-hidden transition-all hover:scale-105 focus:outline-none ${
-                templateId === id
-                  ? "border-gray-900 dark:border-gray-100 ring-2 ring-gray-900 dark:ring-gray-100 ring-offset-1"
-                  : "border-gray-200 dark:border-gray-700"
-              }`}
-            >
-              {id === "classic" ? (
-                <div className="absolute inset-0 flex">
-                  <div className="w-2/5 h-full bg-gray-200 dark:bg-gray-600" />
-                  <div className="flex-1 p-0.5 bg-white dark:bg-gray-800 space-y-0.5">
-                    <div className="h-1 bg-gray-300 dark:bg-gray-600 rounded" />
-                    <div className="h-0.5 bg-gray-200 dark:bg-gray-700 rounded" />
-                    <div className="h-0.5 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
-                  </div>
-                </div>
-              ) : (
-                <div className="absolute inset-0 p-1 bg-white dark:bg-gray-800 space-y-0.5">
-                  <div className="h-1 bg-gray-300 dark:bg-gray-600 rounded" />
-                  <div className="h-0.5 bg-gray-200 dark:bg-gray-700 rounded" />
-                  <div className="h-px bg-gray-100 dark:bg-gray-700 mt-0.5" />
-                  <div className="h-0.5 bg-gray-300 dark:bg-gray-600 rounded mt-0.5" />
-                  <div className="h-0.5 bg-gray-200 dark:bg-gray-700 rounded" />
-                  <div className="h-0.5 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
-                </div>
-              )}
-              {templateId === id && !locked && (
-                <div className="absolute inset-0 bg-gray-900/5 dark:bg-white/5 flex items-center justify-center">
-                  <Check className="h-3 w-3 text-gray-900 dark:text-gray-100 drop-shadow-sm" />
-                </div>
-              )}
-              {locked && (
-                <div className="absolute inset-0 bg-white/60 dark:bg-gray-900/60 flex items-end pb-1.5 justify-center">
-                  <Lock className="h-2.5 w-2.5 text-gray-500 dark:text-gray-400" />
-                </div>
-              )}
-            </button>
-            <div className="flex flex-col items-center gap-0.5">
-              <span className="text-[10px] text-gray-400 dark:text-gray-500 leading-tight text-center">
-                {t(`template${id.charAt(0).toUpperCase() + id.slice(1)}`)}
-              </span>
-              {locked && <PremiumBadge />}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 function FontSection({
   fontFamilyId,
   fontSizeLevel,
@@ -478,7 +402,6 @@ function SectionsContent({
             <SectionToggle label={t("sectionCourses")} checked={data.visibility.courses} onToggle={() => toggleSection("courses")} mobile={mobile} />
             <SectionToggle label={t("sectionCertifications")} checked={data.visibility.certifications} onToggle={() => toggleSection("certifications")} mobile={mobile} />
             <SectionToggle label={t("sectionAwards")} checked={data.visibility.awards} onToggle={() => toggleSection("awards")} mobile={mobile} />
-            <SectionToggle label={t("sectionLanguages")} checked={data.visibility.languages} onToggle={() => toggleSection("languages")} mobile={mobile} />
           </>
         ) : (
           <div className="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800">
@@ -489,8 +412,6 @@ function SectionsContent({
             <SectionToggle label={t("sectionCertifications")} checked={data.visibility.certifications} onToggle={() => toggleSection("certifications")} mobile={mobile} />
             <div className="h-px bg-gray-100 dark:bg-white/5" />
             <SectionToggle label={t("sectionAwards")} checked={data.visibility.awards} onToggle={() => toggleSection("awards")} mobile={mobile} />
-            <div className="h-px bg-gray-100 dark:bg-white/5" />
-            <SectionToggle label={t("sectionLanguages")} checked={data.visibility.languages} onToggle={() => toggleSection("languages")} mobile={mobile} />
           </div>
         )}
       </div>
@@ -500,10 +421,10 @@ function SectionsContent({
 
 /* ── Main Toolbar ──────────────────────────────────────── */
 
-type MobileMenuPage = "main" | "color" | "template" | "font" | "sections" | "language";
+type MobileMenuPage = "main" | "color" | "font" | "sections" | "language";
 
 export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
-  const { data, importData, toggleSection, setTemplate } = useCV();
+  const { data, importData, toggleSection } = useCV();
   const { user, signOut } = useAuth();
   const { isPremium, devOverride, setDevOverride } = usePlan();
   const t = useTranslations("toolbar");
@@ -528,8 +449,6 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   const toggleTheme = useCallback(() => {
     setTheme(theme === "dark" ? "light" : "dark");
   }, [theme, setTheme]);
-
-  const openUpgrade = useCallback(() => setUpgradeDialogOpen(true), []);
 
   const exportToJSON = async () => {
     // If photo is an R2 URL, embed it as base64 so the JSON is self-contained
@@ -556,7 +475,6 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
         fontFamily: fontFamilyId,
         fontSizeLevel,
         marginLevel: 2,
-        templateId: data.templateId,
       },
     };
     const dataStr = JSON.stringify(exportData, null, 2);
@@ -739,7 +657,6 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
   /* ── Shared design section props ──────────────────────── */
   const colorProps = { colorSchemeName, setColorScheme, t: t as (key: string) => string };
-  const templateProps = { templateId: data.templateId ?? "classic" as TemplateId, setTemplate, isPremium, onUpgrade: openUpgrade, t: t as (key: string) => string };
   const fontProps = { fontFamilyId, fontSizeLevel, setFontFamily, setFontSizeLevel, t: t as (key: string) => string };
   const sectionsProps = { data, toggleSection, t: t as (key: string) => string };
 
@@ -796,16 +713,6 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                           <Palette className="h-4.5 w-4.5" />
                         </span>
                         {t("colorScheme")}
-                      </span>
-                      <ChevronRight className="h-4 w-4 text-gray-300 dark:text-gray-600 shrink-0" />
-                    </button>
-
-                    <button onClick={() => setMobileMenuPage("template")} className={menuItemClass}>
-                      <span className="flex items-center gap-3">
-                        <span className="h-10 w-10 flex items-center justify-center rounded-xl bg-violet-50 dark:bg-violet-900/20 text-violet-500 shrink-0">
-                          <LayoutTemplate className="h-4.5 w-4.5" />
-                        </span>
-                        {t("templates")}
                       </span>
                       <ChevronRight className="h-4 w-4 text-gray-300 dark:text-gray-600 shrink-0" />
                     </button>
@@ -997,74 +904,6 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                 </div>
               )}
 
-              {/* ── Mobile: Template page ── */}
-              {mobileMenuPage === "template" && (
-                <div className="flex flex-col h-full">
-                  <button onClick={() => setMobileMenuPage("main")} className={backButtonClass}>
-                    <ChevronLeft className="h-5 w-5 text-gray-400 dark:text-gray-500" />
-                    {t("templates")}
-                  </button>
-                  <div className="flex-1 overflow-y-auto overscroll-contain scrollbar-thin px-5 pt-5 pb-4">
-                    <div className="flex gap-4">
-                      {([
-                        { id: "classic" as TemplateId, locked: false },
-                        { id: "noPhoto" as TemplateId, locked: !isPremium },
-                      ]).map(({ id, locked }) => (
-                        <button
-                          key={id}
-                          onClick={() => { if (locked) { setUpgradeDialogOpen(true); return; } setTemplate(id); setMobileMenuPage("main"); }}
-                          className="relative flex flex-col items-center gap-2"
-                        >
-                          <span
-                            className={`relative h-20 w-14 rounded-xl border overflow-hidden transition-transform hover:scale-105 ${
-                              data.templateId === id
-                                ? "border-gray-900 dark:border-gray-100 ring-2 ring-offset-2 ring-gray-900 dark:ring-gray-100"
-                                : "border-gray-200 dark:border-gray-700"
-                            }`}
-                          >
-                            {id === "classic" ? (
-                              <span className="absolute inset-0 flex">
-                                <span className="w-2/5 h-full bg-gray-200 dark:bg-gray-600" />
-                                <span className="flex-1 p-1 bg-white dark:bg-gray-800 space-y-0.5">
-                                  <span className="block h-1.5 bg-gray-300 dark:bg-gray-600 rounded" />
-                                  <span className="block h-1 bg-gray-200 dark:bg-gray-700 rounded" />
-                                  <span className="block h-1 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
-                                </span>
-                              </span>
-                            ) : (
-                              <span className="absolute inset-0 p-1.5 bg-white dark:bg-gray-800 space-y-1">
-                                <span className="block h-1.5 bg-gray-300 dark:bg-gray-600 rounded" />
-                                <span className="block h-1 bg-gray-200 dark:bg-gray-700 rounded" />
-                                <span className="block h-px bg-gray-100 dark:bg-gray-700 mt-1" />
-                                <span className="block h-1 bg-gray-300 dark:bg-gray-600 rounded mt-0.5" />
-                                <span className="block h-1 bg-gray-200 dark:bg-gray-700 rounded" />
-                                <span className="block h-1 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
-                              </span>
-                            )}
-                            {data.templateId === id && !locked && (
-                              <span className="absolute inset-0 bg-gray-900/5 dark:bg-white/5 flex items-center justify-center">
-                                <Check className="h-4 w-4 text-gray-900 dark:text-gray-100" />
-                              </span>
-                            )}
-                            {locked && (
-                              <span className="absolute inset-0 bg-white/60 dark:bg-gray-900/60 flex items-end pb-2 justify-center">
-                                <Lock className="h-3 w-3 text-gray-500 dark:text-gray-400" />
-                              </span>
-                            )}
-                          </span>
-                          <div className="flex flex-col items-center gap-0.5">
-                            <span className="text-[12px] text-gray-600 dark:text-gray-300 font-medium">
-                              {t(`template${id.charAt(0).toUpperCase() + id.slice(1)}` as Parameters<typeof t>[0])}
-                            </span>
-                            {locked && <PremiumBadge />}
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-
               {/* ── Mobile: Font page ── */}
               {mobileMenuPage === "font" && (
                 <div className="flex flex-col h-full">
@@ -1217,31 +1056,6 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
               </Tooltip>
               <PopoverContent className="w-auto p-4" align="end">
                 <ColorSection {...colorProps} />
-              </PopoverContent>
-            </Popover>
-
-            {/* Templates */}
-            <Popover>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      aria-label={t("templates")}
-                      data-testid="btn-template"
-                      className="h-10 w-10"
-                    >
-                      <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-violet-50 dark:bg-violet-900/20 text-violet-500">
-                        <LayoutTemplate className="h-4 w-4" />
-                      </span>
-                    </Button>
-                  </PopoverTrigger>
-                </TooltipTrigger>
-                <TooltipContent>{t("templates")}</TooltipContent>
-              </Tooltip>
-              <PopoverContent className="w-auto p-4" align="end">
-                <TemplateSection {...templateProps} />
               </PopoverContent>
             </Popover>
 

@@ -28,7 +28,6 @@ const SettingsSchema = new Schema(
     theme: String,
     locale: String,
     fontSizeLevel: Number,
-    templateId: String,
     pattern: {
       type: new Schema(
         {
@@ -53,7 +52,6 @@ const VisibilitySchema = new Schema(
     courses: Boolean,
     certifications: Boolean,
     awards: Boolean,
-    languages: Boolean,
   },
   { _id: false },
 );
@@ -119,12 +117,6 @@ const AwardSchema = new Schema({
   sortOrder: Number,
 });
 
-const LanguageSchema = new Schema({
-  language: String,
-  level: String,
-  sortOrder: Number,
-});
-
 const PurchaseSchema = new Schema(
   {
     isPaid: { type: Boolean, default: false },
@@ -167,7 +159,6 @@ export interface ICV extends Document {
     theme?: string;
     locale?: string;
     fontSizeLevel?: number;
-    templateId?: string;
     pattern?: {
       name?: string;
       scope?: string;
@@ -183,7 +174,6 @@ export interface ICV extends Document {
     courses?: boolean;
     certifications?: boolean;
     awards?: boolean;
-    languages?: boolean;
   };
   sidebarSections: Array<{ sectionId: string; sortOrder: number }>;
   experiences: Array<{
@@ -228,11 +218,6 @@ export interface ICV extends Document {
     description?: string;
     sortOrder?: number;
   }>;
-  languages: Array<{
-    language?: string;
-    level?: string;
-    sortOrder?: number;
-  }>;
   purchase: {
     isPaid: boolean;
     provider?: "stripe" | "mercadopago" | "paypal";
@@ -260,7 +245,6 @@ const CVSchema = new Schema<ICV>(
     certifications: [CertificationSchema],
     courses: [CourseSchema],
     awards: [AwardSchema],
-    languages: [LanguageSchema],
     purchase: {
       type: PurchaseSchema,
       default: () => ({ isPaid: false }),

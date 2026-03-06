@@ -22,7 +22,6 @@
     "sectionCourses": "Courses & Workshops",
     "sectionCertifications": "Certifications",
     "sectionAwards": "Awards",
-    "sectionLanguages": "Languages",
     "importFormatError": "The file format is incorrect. Make sure it's a JSON exported from Applio.",
     "importConfirm": "Do you want to load this CV? Current data will be overwritten.",
     "importReadError": "Error reading the file. Make sure it's a valid JSON file.",
@@ -71,10 +70,7 @@
     "syncProHint": "With Pro, syncs to the cloud.",
     "syncLoginHint": "Sign in to sync your data and access it from any device.",
     "syncSyncing": "Syncing...",
-    "syncError": "Sync error",
-    "templates": "Templates",
-    "templateClassic": "Classic",
-    "templateNoPhoto": "No photo"
+    "syncError": "Sync error"
   },
   "cvPreview": {
     "fullNamePlaceholder": "Your Full Name",
@@ -260,8 +256,7 @@
     "education": "Education",
     "courses": "Courses & Workshops",
     "certifications": "Certifications",
-    "awards": "Awards & Honors",
-    "languages": "Languages"
+    "awards": "Awards & Honors"
   },
   "defaults": {
     "company": "Company",
@@ -277,9 +272,7 @@
     "certificationName": "Certification",
     "certificationIssuer": "Issuer",
     "awardName": "Award",
-    "awardIssuer": "Organization",
-    "languageName": "English",
-    "languageLevel": "Native"
+    "awardIssuer": "Organization"
   },
   "sharedView": {
     "loading": "Loading CV...",
@@ -289,12 +282,6 @@
     "sharedOn": "Shared on {date}",
     "madeWith": "Made in Argentina",
     "generating": "Generating PDF..."
-  },
-  "cvLanguages": {
-    "title": "Languages",
-    "languagePlaceholder": "Language",
-    "levelPlaceholder": "Level",
-    "addLanguage": "Add language"
   },
   "languages": {
     "en": "English",
@@ -410,9 +397,7 @@
     "upgradeDescription": "Get the most out of your CV with all premium features.",
     "comingSoon": "Coming soon",
     "feature_pdfNoBranding": "Download PDF without Applio watermark",
-    "feature_pdfNoBranding_desc": "Download your CV as a clean PDF — no Applio branding, just your work.",
-    "feature_premiumTemplates": "Premium templates",
-    "feature_premiumTemplates_desc": "Alternative CV layouts: no photo, single-column, and more."
+    "feature_pdfNoBranding_desc": "Download your CV as a clean PDF — no Applio branding, just your work."
   },
   "syncConflict": {
     "title": "We found your CV",
