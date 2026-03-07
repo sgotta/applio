@@ -302,13 +302,15 @@
   },
   "landing": {
     "nav": {
-      "cta": "Lebenslauf erstellen"
+      "cta": "Lebenslauf erstellen",
+      "ctaReturning": "Zum Editor"
     },
     "hero": {
       "titleLine1": "Erstelle deinen Lebenslauf",
       "titleLine2": "in wenigen Minuten.",
       "subtitle": "Klicke, bearbeite direkt und lade ein professionelles PDF herunter. Keine Formulare, keine zusätzlichen Schritte.",
       "ctaPrimary": "Kostenlos starten",
+      "ctaPrimaryReturning": "Zum Editor",
       "ctaSecondary": "So funktioniert's",
       "mockupHint": "Klicken, um mit dem Bearbeiten zu beginnen →"
     },
@@ -365,7 +367,8 @@
       "titleLine1": "Dein nächster Lebenslauf",
       "titleLine2": "ist nur einen Klick entfernt.",
       "subtitle": "Fang jetzt an zu bearbeiten und lade deinen Lebenslauf als professionelles PDF herunter. Ganz ohne Aufwand.",
-      "button": "Jetzt starten"
+      "button": "Jetzt starten",
+      "buttonReturning": "Zum Editor"
     },
     "footer": {}
   },

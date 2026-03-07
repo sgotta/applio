@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useCallback, useEffect } from "react";
+import Link from "next/link";
 import { useCV } from "@/lib/cv-context";
 import { useTranslations } from "next-intl";
 import { useAppLocale, LOCALES, LOCALE_NAMES } from "@/lib/locale-context";
@@ -1005,13 +1006,23 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
             </SheetContent>
           </Sheet>
+          {/* Desktop: link to landing */}
+          <Link
+            href="/"
+            className="hidden md:flex items-center gap-1.5"
+          >
+            <FileText className="h-5 w-5 text-gray-900 dark:text-gray-100" />
+            <span className="font-display text-base font-bold tracking-tight text-gray-900 dark:text-gray-100">
+              Applio
+            </span>
+          </Link>
+          {/* Mobile: opens menu */}
           <button
-            className="flex items-center gap-1.5 md:pointer-events-none"
+            className="flex md:hidden items-center gap-1.5"
             onClick={() => handleMobileMenuOpen(true)}
             aria-label="Abrir menú"
           >
-            <FileText className="hidden md:block h-5 w-5 text-gray-900 dark:text-gray-100" />
-            <span className="font-display text-lg md:text-base font-bold tracking-tight text-gray-900 dark:text-gray-100">
+            <span className="font-display text-lg font-bold tracking-tight text-gray-900 dark:text-gray-100">
               Applio
             </span>
           </button>
