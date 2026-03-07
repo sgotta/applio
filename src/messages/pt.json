@@ -38,14 +38,6 @@
     "colorSchemeEmerald": "Esmeralda",
     "colorSchemeCarrot": "Cenoura",
     "colorSchemeWetAsphalt": "Asfalto",
-    "sidebarPattern": "Padrão",
-    "patternNone": "Nenhum",
-    "patternDots": "Pontos",
-    "patternIntensity": "Intensidade",
-    "patternScope": "Zona",
-    "patternScopeSidebar": "Barra lateral",
-    "patternScopeMain": "Conteúdo",
-    "patternScopeFull": "Página inteira",
     "fontSettings": "Tipografia",
     "fontFamily": "Fonte",
     "fontSize": "Tamanho da fonte",
@@ -341,7 +333,7 @@
       "dragHintAfter": "As entradas se reordenam instantaneamente!"
     },
     "features": {
-      "sectionTitle": "Aprenda a editar em\u00a0segundos",
+      "sectionTitle": "Aprenda a editar em segundos",
       "sectionSubtitle": "Sem tutoriais longos ou curvas de aprendizado. Quatro coisas que você precisa saber.",
       "step1Title": "Clique e edite",
       "step1Desc": "Todo texto do seu CV é editável. Clique no nome, no cargo, nas datas, nas descrições — qualquer coisa. Vira um campo de texto na hora. Sem formulários, sem pop-ups.",
@@ -375,8 +367,7 @@
       "subtitle": "Comece a editar agora e baixe seu CV como PDF profissional. Sem complicação.",
       "button": "Começar agora"
     },
-    "footer": {
-    }
+    "footer": {}
   },
   "auth": {
     "loginTitle": "Entrar no Applio",
@@ -401,29 +392,12 @@
     "photoUploadFailed": "Foto salva localmente — não foi possível enviá-la para a nuvem"
   },
   "premium": {
-    "pro": "PRO",
+    "pro": "Recurso Premium",
     "upgradeTitle": "Desbloquear Premium",
     "upgradeDescription": "Aproveite ao máximo seu CV com todos os recursos premium.",
-    "feature_pdfNoBranding": "Baixar PDF sem marca d'água do Applio",
-    "feature_cloudSync": "Sincronização na nuvem",
-    "feature_multiDevice": "Acesse seu CV de qualquer dispositivo",
-    "feature_allColors": "Todos os esquemas de cores",
-    "feature_allFonts": "Todas as fontes",
-    "feature_allPatterns": "Padrões decorativos",
-    "feature_allSections": "Todas as seções opcionais",
-    "feature_richText": "Formatação de texto avançada",
-    "feature_pdfNoBranding_desc": "Baixe seu CV sem marca d'água. Só o seu trabalho, nada mais.",
-    "feature_cloudSync_desc": "Seu CV é salvo automaticamente na nuvem. Nunca perca nada.",
-    "feature_multiDevice_desc": "Edite no celular, finalize no laptop. Seu CV te segue em todo lugar.",
-    "feature_allColors_desc": "Desbloqueie todos os esquemas de cores para personalizar seu estilo.",
-    "feature_allFonts_desc": "Escolha entre Inter, Lato, Source Sans 3 ou Merriweather.",
-    "feature_allPatterns_desc": "Adicione padrões decorativos para destacar seu CV.",
-    "feature_allSections_desc": "Adicione cursos, certificações e prêmios para mostrar tudo.",
-    "feature_richText_desc": "Negrito, itálico, listas — formate sua experiência como quiser.",
-    "upgradeButton": "Fazer upgrade agora",
     "comingSoon": "Em breve",
-    "loginFirst": "Entre para fazer upgrade",
-    "watermark": "Criado com Applio"
+    "feature_pdfNoBranding": "Baixar PDF sem marca d'água do Applio",
+    "feature_pdfNoBranding_desc": "Baixe seu CV sem marca d'água. Só o seu trabalho, nada mais."
   },
   "syncConflict": {
     "title": "Encontramos seu CV",

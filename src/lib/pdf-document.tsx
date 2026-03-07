@@ -16,7 +16,6 @@ import {
 import type { CVData } from "@/lib/types";
 import { DEFAULT_SIDEBAR_SECTIONS } from "@/lib/default-data";
 import type { ColorScheme } from "@/lib/color-schemes";
-import type { PatternSettings } from "@/lib/sidebar-patterns";
 import { PdfRichText, PdfRichDocument } from "@/lib/render-rich-text-pdf";
 
 /* ── Font registration ──────────────────────────────────── */
@@ -249,6 +248,7 @@ function MainSectionHeading({
   );
 }
 
+
 /* ── Props ──────────────────────────────────────────────── */
 
 export interface PDFLabels {
@@ -269,7 +269,6 @@ export interface PDFDocumentProps {
   locale?: string;
   fontScale?: number;
   marginScale?: number;
-  patternSettings?: PatternSettings;
   fontFamily?: string;
   isPremium?: boolean;
 }
@@ -340,61 +339,9 @@ function blendOver(fg: string, bg: string): string {
 
 /* ── PDF Dots Pattern ──────────────────────────────────── */
 
-/** Intensity 1–5 → multiplier (matches sidebar-patterns.ts) */
-const INTENSITY_MUL: Record<number, number> = { 1: 0.35, 2: 0.7, 3: 1.2, 4: 2.0, 5: 3.0 };
-function intensityMul(level: number): number {
-  return INTENSITY_MUL[level] ?? 1.2;
-}
-
-/** Renders a fixed SVG grid of dots over a given area (in pt).
- *  Uses `fill` + `fillOpacity` separately because react-pdf's SVG
- *  renderer doesn't reliably interpret `rgba()` strings. */
-function PdfDotsPattern({
-  width,
-  height,
-  color,
-  intensity,
-}: {
-  width: number;
-  height: number;
-  color: string;
-  intensity: number;
-}) {
-  const spacing = 9; // 12px × 0.75
-  const radius = 0.5; // smaller than web (1px) to compensate for solid SVG rendering
-  // PDF SVG circles with fillOpacity render much lighter than CSS radial-gradient,
-  // so we use ~2× the web base (0.18) to match visual weight
-  const fillOpacity = 0.35 * intensityMul(intensity);
-  const fillColor = color.startsWith("#") ? color : "#000000";
-
-  const cols = Math.ceil(width / spacing);
-  const rows = Math.ceil(height / spacing);
-  const circles: React.ReactElement[] = [];
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      circles.push(
-        <Circle
-          key={`${r}-${c}`}
-          cx={c * spacing + spacing / 2}
-          cy={r * spacing + spacing / 2}
-          r={radius}
-          fill={fillColor}
-          fillOpacity={fillOpacity}
-        />
-      );
-    }
-  }
-
-  return (
-    <Svg width={width} height={height} style={{ position: "absolute", top: 0, left: 0 }}>
-      {circles}
-    </Svg>
-  );
-}
-
 /* ── Document component ─────────────────────────────────── */
 
-function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, patternSettings, fontFamily: userFontFamily, isPremium }: PDFDocumentProps) {
+function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, fontFamily: userFontFamily, isPremium }: PDFDocumentProps) {
   const {
     personalInfo,
     summary,
@@ -436,25 +383,13 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
   return (
     <Document>
       <Page size="A4" style={[styles.page, { fontFamily }]}>
-        {/* Fixed sidebar background — repeats on every page */}
+        {/* Fixed sidebar background */}
         <View
           style={[styles.sidebarBg, { backgroundColor: colors.sidebarBg }]}
           fixed
         />
 
-        {/* Fixed pattern overlays — dots */}
-        {patternSettings && patternSettings.name === "dots" && (patternSettings.scope === "sidebar" || patternSettings.scope === "full") && (
-          <View style={{ position: "absolute", top: 0, left: 0, bottom: 0, width: SIDEBAR_WIDTH }} fixed>
-            <PdfDotsPattern width={SIDEBAR_WIDTH} height={842} color={colors.sidebarText} intensity={patternSettings.sidebarIntensity} />
-          </View>
-        )}
-        {patternSettings && patternSettings.name === "dots" && (patternSettings.scope === "main" || patternSettings.scope === "full") && (
-          <View style={{ position: "absolute", top: 0, left: SIDEBAR_WIDTH, bottom: 0, width: 595 - SIDEBAR_WIDTH }} fixed>
-            <PdfDotsPattern width={595 - SIDEBAR_WIDTH} height={842} color={colors.heading} intensity={patternSettings.mainIntensity} />
-          </View>
-        )}
-
-        {/* Two-column layout */}
+        {/* ===== Two-column layout ===== */}
         <View style={styles.columns}>
           {/* ===== SIDEBAR ===== */}
           <View style={styles.sidebar}>
@@ -954,17 +889,19 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
           </View>
         </View>
 
-        {/* Fixed footer — split across columns */}
+
+
+        {/* Fixed footer */}
         {(() => {
           const footerDate = new Intl.DateTimeFormat(locale, {
             day: "2-digit",
             month: "2-digit",
             year: "numeric",
           }).format(new Date());
-          const footerColor = blendOver(colors.sidebarMuted, colors.sidebarBg);
+          const brandingColor = blendOver(colors.sidebarMuted, colors.sidebarBg);
           return (
             <>
-              {/* Left: branding on the sidebar (free users only) */}
+              {/* Left: branding (free users only) */}
               {!isPremium && (
                 <View
                   style={{
@@ -978,16 +915,16 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                 >
                   <Link src="https://www.applio.dev/" style={{ textDecoration: "none" }}>
                     <View style={{ flexDirection: "row", alignItems: "center", gap: 2 }}>
-                      <Text style={{ fontSize: 8, color: footerColor, fontFamily }}>
+                      <Text style={{ fontSize: 8, color: brandingColor, fontFamily }}>
                         Applio
                       </Text>
-                      <HeartIcon size={7} color={footerColor} />
+                      <HeartIcon size={7} color={brandingColor} />
                     </View>
                   </Link>
                 </View>
               )}
 
-              {/* Right: name · date · page on the main area */}
+              {/* Right: name · date · page */}
               <View
                 style={{
                   position: "absolute",

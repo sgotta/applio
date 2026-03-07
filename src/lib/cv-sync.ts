@@ -61,12 +61,6 @@ export function toSettings(plain: DocPlain): CloudSettings {
     fontSizeLevel: s.fontSizeLevel ?? 2,
     theme: s.theme ?? "light",
     locale: s.locale ?? "es",
-    pattern: {
-      name: s.pattern?.name ?? "none",
-      sidebarIntensity: s.pattern?.sidebarIntensity ?? 3,
-      mainIntensity: s.pattern?.mainIntensity ?? 2,
-      scope: s.pattern?.scope ?? "sidebar",
-    },
   };
 }
 

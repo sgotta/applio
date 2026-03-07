@@ -91,12 +91,6 @@ export interface CloudSettings {
   fontSizeLevel: number;
   theme: string;
   locale: string;
-  pattern: {
-    name: string;
-    sidebarIntensity: number;
-    mainIntensity: number;
-    scope: string;
-  };
 }
 
 /** Shape of a CV row as returned from the database */

@@ -1,6 +1,8 @@
 import type { CVData, SidebarSectionId } from "./types";
 import { defaultVisibility, DEFAULT_SIDEBAR_SECTIONS } from "./default-data";
 
+const VALID_SIDEBAR_SECTION_IDS: readonly SidebarSectionId[] = ["contact", "summary", "skills"];
+
 export function moveItem<T>(
   arr: T[],
   index: number,
@@ -13,16 +15,16 @@ export function moveItem<T>(
   return newArr;
 }
 
-/** Ensure sidebarSections is a valid array containing all section IDs */
+/** Ensure sidebarSections is a valid array containing all DEFAULT section IDs. */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function migrateSidebarSections(raw: any): SidebarSectionId[] {
   if (!Array.isArray(raw)) return [...DEFAULT_SIDEBAR_SECTIONS];
   const valid = raw.filter(
     (id: unknown): id is SidebarSectionId =>
       typeof id === "string" &&
-      (DEFAULT_SIDEBAR_SECTIONS as readonly string[]).includes(id)
+      (VALID_SIDEBAR_SECTION_IDS as readonly string[]).includes(id)
   );
-  // Append any missing sections at the end
+  // Append any missing DEFAULT sections at the end
   for (const id of DEFAULT_SIDEBAR_SECTIONS) {
     if (!valid.includes(id)) valid.push(id);
   }

@@ -253,7 +253,13 @@ const CVSchema = new Schema<ICV>(
   { timestamps: true },
 );
 
+// In dev, delete the cached model so HMR schema changes are picked up.
+// In production, fall back to the cached model to avoid OverwriteModelError.
+if (process.env.NODE_ENV === "development") {
+  delete mongoose.models["CV"];
+}
+
 const CV: Model<ICV> =
-  mongoose.models.CV || mongoose.model<ICV>("CV", CVSchema);
+  (mongoose.models["CV"] as Model<ICV>) ?? mongoose.model<ICV>("CV", CVSchema);
 
 export default CV;

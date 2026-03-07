@@ -10,14 +10,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import {
-  Palette,
-  Type,
-  Layers,
   FileText,
-  Sparkles,
-  SlidersHorizontal,
-  Cloud,
-  Monitor,
   Clock,
 } from "lucide-react";
 
@@ -28,13 +21,6 @@ interface UpgradeDialogProps {
 
 const FEATURES = [
   { icon: FileText, key: "pdfNoBranding", color: "text-red-500", bg: "bg-red-50 dark:bg-red-900/20", hex: "#ef4444" },
-  { icon: Cloud, key: "cloudSync", color: "text-emerald-500", bg: "bg-emerald-50 dark:bg-emerald-900/20", hex: "#10b981" },
-  { icon: Monitor, key: "multiDevice", color: "text-sky-500", bg: "bg-sky-50 dark:bg-sky-900/20", hex: "#0ea5e9" },
-  { icon: Palette, key: "allColors", color: "text-pink-500", bg: "bg-pink-50 dark:bg-pink-900/20", hex: "#ec4899" },
-  { icon: Type, key: "allFonts", color: "text-indigo-500", bg: "bg-indigo-50 dark:bg-indigo-900/20", hex: "#6366f1" },
-  { icon: Layers, key: "allPatterns", color: "text-violet-500", bg: "bg-violet-50 dark:bg-violet-900/20", hex: "#8b5cf6" },
-  { icon: SlidersHorizontal, key: "allSections", color: "text-emerald-600", bg: "bg-emerald-50 dark:bg-emerald-900/20", hex: "#059669" },
-  { icon: Sparkles, key: "richText", color: "text-amber-500", bg: "bg-amber-50 dark:bg-amber-900/20", hex: "#f59e0b" },
 ] as const;
 
 export const UpgradeDialog = memo(function UpgradeDialog({

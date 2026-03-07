@@ -38,14 +38,6 @@
     "colorSchemeEmerald": "Smeraldo",
     "colorSchemeCarrot": "Carota",
     "colorSchemeWetAsphalt": "Asfalto",
-    "sidebarPattern": "Motivo",
-    "patternNone": "Nessuno",
-    "patternDots": "Puntini",
-    "patternIntensity": "Intensità",
-    "patternScope": "Zona",
-    "patternScopeSidebar": "Barra laterale",
-    "patternScopeMain": "Contenuto",
-    "patternScopeFull": "Pagina intera",
     "fontSettings": "Tipografia",
     "fontFamily": "Carattere",
     "fontSize": "Dimensione carattere",
@@ -341,7 +333,7 @@
       "dragHintAfter": "Le voci si riordinano all'istante!"
     },
     "features": {
-      "sectionTitle": "Impara a modificare in\u00a0pochi secondi",
+      "sectionTitle": "Impara a modificare in pochi secondi",
       "sectionSubtitle": "Nessun tutorial lungo o curva di apprendimento. Quattro cose da sapere.",
       "step1Title": "Clicca e modifica",
       "step1Desc": "Ogni testo nel tuo CV è modificabile. Clicca sul nome, sulla posizione, sulle date, sulle descrizioni — qualsiasi cosa. Diventa subito un campo di testo. Niente moduli, niente pop-up.",
@@ -375,8 +367,7 @@
       "subtitle": "Inizia a modificare adesso e scarica il tuo CV come PDF professionale. Senza complicazioni.",
       "button": "Inizia ora"
     },
-    "footer": {
-    }
+    "footer": {}
   },
   "auth": {
     "loginTitle": "Accedi a Applio",
@@ -401,29 +392,12 @@
     "photoUploadFailed": "Foto salvata localmente — caricamento nel cloud non riuscito"
   },
   "premium": {
-    "pro": "PRO",
+    "pro": "Funzionalità Premium",
     "upgradeTitle": "Sblocca Premium",
     "upgradeDescription": "Sfrutta al massimo il tuo CV con tutte le funzionalità premium.",
-    "feature_pdfNoBranding": "Scarica il PDF senza filigrana Applio",
-    "feature_cloudSync": "Sincronizzazione cloud",
-    "feature_multiDevice": "Accedi al tuo CV da qualsiasi dispositivo",
-    "feature_allColors": "Tutti gli schemi di colore",
-    "feature_allFonts": "Tutti i caratteri",
-    "feature_allPatterns": "Pattern decorativi",
-    "feature_allSections": "Tutte le sezioni opzionali",
-    "feature_richText": "Formattazione testo avanzata",
-    "feature_pdfNoBranding_desc": "Scarica il tuo CV senza filigrana. Solo il tuo lavoro, nient'altro.",
-    "feature_cloudSync_desc": "Il tuo CV viene salvato automaticamente. Non perdi mai nulla.",
-    "feature_multiDevice_desc": "Modifica sul telefono, finalizza sul laptop. Il tuo CV ti segue ovunque.",
-    "feature_allColors_desc": "Sblocca tutti gli schemi di colore per personalizzare il tuo stile.",
-    "feature_allFonts_desc": "Scegli tra Inter, Lato, Source Sans 3 o Merriweather.",
-    "feature_allPatterns_desc": "Aggiungi motivi decorativi per far risaltare il tuo CV.",
-    "feature_allSections_desc": "Aggiungi corsi, certificazioni e premi per un profilo completo.",
-    "feature_richText_desc": "Grassetto, corsivo, elenchi — formatta la tua esperienza come vuoi.",
-    "upgradeButton": "Passa a Premium ora",
     "comingSoon": "Prossimamente",
-    "loginFirst": "Accedi per passare a Premium",
-    "watermark": "Creato con Applio"
+    "feature_pdfNoBranding": "Scarica il PDF senza filigrana Applio",
+    "feature_pdfNoBranding_desc": "Scarica il tuo CV senza filigrana. Solo il tuo lavoro, nient'altro."
   },
   "syncConflict": {
     "title": "Abbiamo trovato il tuo CV",
