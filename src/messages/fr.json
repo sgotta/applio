@@ -302,13 +302,15 @@
   },
   "landing": {
     "nav": {
-      "cta": "Créez votre CV"
+      "cta": "Créez votre CV",
+      "ctaReturning": "Aller à l'éditeur"
     },
     "hero": {
       "titleLine1": "Créez votre CV",
       "titleLine2": "en quelques minutes.",
       "subtitle": "Cliquez, éditez directement et téléchargez un PDF professionnel. Pas de formulaires, ni d'étapes supplémentaires.",
       "ctaPrimary": "Commencer gratuitement",
+      "ctaPrimaryReturning": "Aller à l'éditeur",
       "ctaSecondary": "Voir comment ça marche",
       "mockupHint": "Cliquez pour commencer à éditer →"
     },
@@ -365,7 +367,8 @@
       "titleLine1": "Votre prochain CV",
       "titleLine2": "est à un clic.",
       "subtitle": "Commencez à éditer maintenant et téléchargez votre CV en PDF professionnel. Sans prise de tête.",
-      "button": "Commencer maintenant"
+      "button": "Commencer maintenant",
+      "buttonReturning": "Aller à l'éditeur"
     },
     "footer": {}
   },

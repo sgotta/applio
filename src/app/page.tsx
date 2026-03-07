@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { ThemeProvider } from "@/lib/theme-context";
@@ -888,8 +888,15 @@ function PhoneMockup() {
 /* ═══════════════════════════════════════════════════════════════
    Main landing page
    ═══════════════════════════════════════════════════════════════ */
+const subscribeNoop = () => () => {};
+function getHasExistingData() {
+  try { return localStorage.getItem("cv-builder-data") !== null; } catch { return false; }
+}
+const getHasExistingDataServer = () => false;
+
 function LandingPageContent() {
   const t = useTranslations("landing");
+  const hasExistingData = useSyncExternalStore(subscribeNoop, getHasExistingData, getHasExistingDataServer);
 
   return (
     <div className="bg-white dark:bg-background text-gray-900 dark:text-white font-sans overflow-x-hidden">
@@ -949,7 +956,7 @@ function LandingPageContent() {
               href="/editor"
               className="inline-flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-medium rounded-full px-8 py-3 sm:py-3.5 text-base hover:bg-gray-800 dark:hover:bg-gray-100 hover:shadow-lg transition-all"
             >
-              {t("hero.ctaPrimary")}
+              {hasExistingData ? t("hero.ctaPrimaryReturning") : t("hero.ctaPrimary")}
               <ArrowRight className="w-4 h-4" />
             </Link>
             <a
@@ -1129,7 +1136,7 @@ function LandingPageContent() {
               href="/editor"
               className="inline-flex items-center gap-2 bg-white text-gray-900 font-medium rounded-full px-10 py-4 text-lg hover:bg-gray-100 transition-colors"
             >
-              {t("cta.button")}
+              {hasExistingData ? t("cta.buttonReturning") : t("cta.button")}
               <ArrowRight className="w-5 h-5" />
             </Link>
           </Reveal>

@@ -302,13 +302,15 @@
   },
   "landing": {
     "nav": {
-      "cta": "Crie seu CV"
+      "cta": "Crie seu CV",
+      "ctaReturning": "Ir ao editor"
     },
     "hero": {
       "titleLine1": "Crie seu CV",
       "titleLine2": "em minutos.",
       "subtitle": "Clique, edite diretamente e baixe um PDF profissional. Sem formulários ou passos extras.",
       "ctaPrimary": "Começar grátis",
+      "ctaPrimaryReturning": "Ir ao editor",
       "ctaSecondary": "Veja como funciona",
       "mockupHint": "Clique para começar a editar →"
     },
@@ -365,7 +367,8 @@
       "titleLine1": "Seu próximo CV",
       "titleLine2": "está a um clique.",
       "subtitle": "Comece a editar agora e baixe seu CV como PDF profissional. Sem complicação.",
-      "button": "Começar agora"
+      "button": "Começar agora",
+      "buttonReturning": "Ir ao editor"
     },
     "footer": {}
   },
