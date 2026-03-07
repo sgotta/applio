@@ -38,14 +38,6 @@
     "colorSchemeEmerald": "Smaragd",
     "colorSchemeCarrot": "Karotte",
     "colorSchemeWetAsphalt": "Asphalt",
-    "sidebarPattern": "Muster",
-    "patternNone": "Keins",
-    "patternDots": "Punkte",
-    "patternIntensity": "Intensität",
-    "patternScope": "Bereich",
-    "patternScopeSidebar": "Seitenleiste",
-    "patternScopeMain": "Hauptinhalt",
-    "patternScopeFull": "Ganze Seite",
     "fontSettings": "Typografie",
     "fontFamily": "Schriftart",
     "fontSize": "Schriftgröße",
@@ -341,7 +333,7 @@
       "dragHintAfter": "Die Einträge ordnen sich sofort um!"
     },
     "features": {
-      "sectionTitle": "Bearbeitung lernen in\u00a0Sekunden",
+      "sectionTitle": "Bearbeitung lernen in Sekunden",
       "sectionSubtitle": "Keine langen Anleitungen oder Lernkurven. Vier Dinge, die du wissen musst.",
       "step1Title": "Klicken und bearbeiten",
       "step1Desc": "Jeder Text in deinem Lebenslauf ist bearbeitbar. Klicke auf den Namen, die Position, die Daten, die Beschreibungen — alles. Es wird sofort zum Textfeld. Keine Formulare, keine Pop-ups.",
@@ -375,8 +367,7 @@
       "subtitle": "Fang jetzt an zu bearbeiten und lade deinen Lebenslauf als professionelles PDF herunter. Ganz ohne Aufwand.",
       "button": "Jetzt starten"
     },
-    "footer": {
-    }
+    "footer": {}
   },
   "auth": {
     "loginTitle": "Bei Applio anmelden",
@@ -401,29 +392,12 @@
     "photoUploadFailed": "Foto lokal gespeichert — Upload in die Cloud fehlgeschlagen"
   },
   "premium": {
-    "pro": "PRO",
+    "pro": "Premium-Funktion",
     "upgradeTitle": "Premium freischalten",
     "upgradeDescription": "Holen Sie das Beste aus Ihrem Lebenslauf mit allen Premium-Funktionen.",
-    "feature_pdfNoBranding": "PDF ohne Applio-Wasserzeichen herunterladen",
-    "feature_cloudSync": "Cloud-Synchronisierung",
-    "feature_multiDevice": "Greifen Sie von jedem Gerät auf Ihren Lebenslauf zu",
-    "feature_allColors": "Alle Farbschemata",
-    "feature_allFonts": "Alle Schriftarten",
-    "feature_allPatterns": "Dekorative Muster",
-    "feature_allSections": "Alle optionalen Abschnitte",
-    "feature_richText": "Erweiterte Textformatierung",
-    "feature_pdfNoBranding_desc": "Laden Sie Ihren Lebenslauf ohne Wasserzeichen herunter. Nur Ihre Arbeit.",
-    "feature_cloudSync_desc": "Ihr Lebenslauf wird automatisch gesichert. Verlieren Sie nie wieder etwas.",
-    "feature_multiDevice_desc": "Bearbeiten Sie auf dem Handy, fertigstellen Sie auf dem Laptop.",
-    "feature_allColors_desc": "Schalten Sie alle Farbschemata frei, um Ihren Stil zu unterstreichen.",
-    "feature_allFonts_desc": "Wählen Sie zwischen Inter, Lato, Source Sans 3 oder Merriweather.",
-    "feature_allPatterns_desc": "Fügen Sie dekorative Muster hinzu, damit Ihr Lebenslauf auffällt.",
-    "feature_allSections_desc": "Fügen Sie Kurse, Zertifikate und Auszeichnungen hinzu.",
-    "feature_richText_desc": "Fett, kursiv, Listen — formatieren Sie Ihre Erfahrung wie gewünscht.",
-    "upgradeButton": "Jetzt upgraden",
     "comingSoon": "Demnächst verfügbar",
-    "loginFirst": "Anmelden um zu upgraden",
-    "watermark": "Erstellt mit Applio"
+    "feature_pdfNoBranding": "PDF ohne Applio-Wasserzeichen herunterladen",
+    "feature_pdfNoBranding_desc": "Laden Sie Ihren Lebenslauf ohne Wasserzeichen herunter. Nur Ihre Arbeit."
   },
   "syncConflict": {
     "title": "Wir haben Ihren Lebenslauf gefunden",

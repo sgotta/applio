@@ -36,6 +36,8 @@ export async function fetchPublishedCVBySlug(slug: string): Promise<{
       location: plain.personalInfo?.location ?? "",
       linkedin: plain.personalInfo?.linkedin ?? "",
       website: plain.personalInfo?.website ?? "",
+      linkedinUrl: plain.personalInfo?.linkedinUrl,
+      websiteUrl: plain.personalInfo?.websiteUrl,
     },
     summary: plain.personalInfo?.summary ?? "",
     experiences: sortBySortOrder(plain.experiences ?? []).map(
@@ -108,12 +110,6 @@ export async function fetchPublishedCVBySlug(slug: string): Promise<{
     fontSizeLevel: plain.settings?.fontSizeLevel ?? 2,
     theme: plain.settings?.theme ?? "light",
     locale: plain.settings?.locale ?? "es",
-    pattern: {
-      name: plain.settings?.pattern?.name ?? "none",
-      sidebarIntensity: plain.settings?.pattern?.sidebarIntensity ?? 3,
-      mainIntensity: plain.settings?.pattern?.mainIntensity ?? 2,
-      scope: plain.settings?.pattern?.scope ?? "sidebar",
-    },
   };
 
   return { cvData, settings };

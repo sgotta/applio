@@ -3,7 +3,6 @@
 import { useCV } from "@/lib/cv-context";
 import { useTranslations } from "next-intl";
 import { useColorScheme } from "@/lib/color-scheme-context";
-import { useSidebarPattern } from "@/lib/sidebar-pattern-context";
 import { useFontSettings } from "@/lib/font-context";
 import { getFontDefinition, FONT_SIZE_LEVELS } from "@/lib/fonts";
 import { useAppLocale } from "@/lib/locale-context";
@@ -74,26 +73,15 @@ function MobileHeader() {
   );
 }
 
-export function CVPreview() {
+function ClassicTemplate() {
   const { data: { visibility, personalInfo } } = useCV();
   const t = useTranslations("cvPreview");
   const { colorScheme } = useColorScheme();
-  const { pattern, sidebarIntensity, mainIntensity, scope } = useSidebarPattern();
-  const { fontFamilyId, fontSizeLevel } = useFontSettings();
   const { locale } = useAppLocale();
-  const fontDef = getFontDefinition(fontFamilyId);
   const mg = (px: number) => Math.round(px * 1.6);
 
   return (
-    <div
-      className="cv-preview-content mx-auto w-full lg:w-[210mm] max-w-[210mm] bg-white md:shadow-[0_2px_20px_-6px_rgba(0,0,0,0.12)] dark:md:shadow-[0_2px_20px_-6px_rgba(0,0,0,0.45)] print:shadow-none"
-      style={{ fontFamily: fontDef.cssStack }}
-    >
-      {/* Font-size scale wrapper — flex column to push footer to bottom */}
-      <div
-        className="md:flex md:flex-col md:min-h-[297mm]"
-        style={fontSizeLevel !== 2 ? { fontSize: `${FONT_SIZE_LEVELS[fontSizeLevel]}em` } : undefined}
-      >
+    <>
       {/* CV Content — two-column layout */}
       <div className="grid grid-cols-1 md:grid-cols-[250px_1fr] md:flex-1">
         {/* ===== MOBILE HEADER: photo + name centered (mobile only) ===== */}
@@ -101,31 +89,19 @@ export function CVPreview() {
           <MobileHeader />
         </div>
 
-        {/* ===== LEFT COLUMN — sidebar on desktop, below header on mobile ===== */}
+        {/* ===== LEFT COLUMN — sidebar ===== */}
         <div
           data-testid="cv-sidebar"
           className={`order-2 md:order-0 md:col-start-1 md:row-start-1 relative${colorScheme.sidebarText === "#ffffff" ? " cv-sidebar-dark" : ""}`}
           style={{ backgroundColor: colorScheme.sidebarBg, padding: mg(24) }}
         >
-          {pattern.name !== "none" && (scope === "sidebar" || scope === "full") && (
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={pattern.getStyle(colorScheme.sidebarText, sidebarIntensity)}
-            />
-          )}
           <div className="relative space-y-5">
             <PersonalInfo />
           </div>
         </div>
 
-        {/* ===== RIGHT COLUMN — single cell so pattern tiles seamlessly ===== */}
+        {/* ===== RIGHT COLUMN ===== */}
         <div className="order-3 md:order-0 md:col-start-2 md:row-start-1 relative">
-          {pattern.name !== "none" && (scope === "main" || scope === "full") && (
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={pattern.getStyle(colorScheme.heading, mainIntensity)}
-            />
-          )}
           <div className="relative">
             {/* Desktop header */}
             <div data-testid="desktop-header" className="hidden md:block" style={{ padding: `${mg(24)}px ${mg(24)}px 0` }}>
@@ -149,20 +125,14 @@ export function CVPreview() {
       <div className="hidden md:grid grid-cols-[250px_1fr] mt-auto">
         {/* Left: Applio branding on sidebar */}
         <div
-          className={`relative flex items-center justify-center${colorScheme.sidebarText === "#ffffff" ? " cv-sidebar-dark" : ""}`}
+          className={`flex items-center justify-center${colorScheme.sidebarText === "#ffffff" ? " cv-sidebar-dark" : ""}`}
           style={{ backgroundColor: colorScheme.sidebarBg, padding: `${mg(8)}px ${mg(24)}px ${mg(12)}px` }}
         >
-          {pattern.name !== "none" && (scope === "sidebar" || scope === "full") && (
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={pattern.getStyle(colorScheme.sidebarText, sidebarIntensity)}
-            />
-          )}
           <a
             href="https://www.applio.dev/"
             target="_blank"
             rel="noopener noreferrer"
-            className="relative inline-flex items-center gap-1 text-xs transition-opacity hover:opacity-70"
+            className="inline-flex items-center gap-1 text-xs transition-opacity hover:opacity-70"
             style={{ color: colorScheme.sidebarMuted }}
           >
             Applio
@@ -171,15 +141,9 @@ export function CVPreview() {
         </div>
         {/* Right: Name · Date · Page */}
         <div
-          className="relative flex items-center justify-end text-xs text-[#aaaaaa]"
+          className="flex items-center justify-end text-xs text-[#aaaaaa]"
           style={{ padding: `${mg(8)}px ${mg(24)}px ${mg(12)}px` }}
         >
-          {pattern.name !== "none" && (scope === "main" || scope === "full") && (
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={pattern.getStyle(colorScheme.heading, mainIntensity)}
-            />
-          )}
           {personalInfo.fullName}
           &nbsp;&nbsp;·&nbsp;&nbsp;
           {new Intl.DateTimeFormat(locale, { day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date())}
@@ -194,6 +158,24 @@ export function CVPreview() {
           </Tooltip>
         </div>
       </div>
+    </>
+  );
+}
+
+export function CVPreview() {
+  const { fontFamilyId, fontSizeLevel } = useFontSettings();
+  const fontDef = getFontDefinition(fontFamilyId);
+
+  return (
+    <div
+      className="cv-preview-content mx-auto w-full lg:w-[210mm] max-w-[210mm] bg-white md:shadow-[0_2px_20px_-6px_rgba(0,0,0,0.12)] dark:md:shadow-[0_2px_20px_-6px_rgba(0,0,0,0.45)] print:shadow-none"
+      style={{ fontFamily: fontDef.cssStack }}
+    >
+      <div
+        className="md:flex md:flex-col md:min-h-[297mm]"
+        style={fontSizeLevel !== 2 ? { fontSize: `${FONT_SIZE_LEVELS[fontSizeLevel]}em` } : undefined}
+      >
+        <ClassicTemplate />
       </div>
     </div>
   );

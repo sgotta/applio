@@ -46,7 +46,9 @@ export function EntryGrip({
   const sep = <div className="my-1 h-px bg-gray-100 dark:bg-gray-700" />;
 
   return (
-    <div className={`absolute right-full ${sidebar ? 'top-0' : 'top-1'} opacity-60 can-hover:opacity-40 can-hover:group-hover/entry:opacity-100 transition-opacity duration-150`}>
+    <div
+      className={`absolute ${sidebar ? '-left-7 can-hover:-left-6' : 'right-full'} top-[calc(0.675em-13px)] can-hover:top-[calc(0.675em-11px)] opacity-60 can-hover:opacity-40 can-hover:group-hover/entry:opacity-100 transition-opacity duration-150`}
+    >
       <Popover open={menuOpen} onOpenChange={setMenuOpen}>
         <PopoverTrigger asChild>
           <button

@@ -4,7 +4,6 @@ import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { Separator } from "@/components/ui/separator";
 import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
-import { getSidebarPattern, type PatternSettings } from "@/lib/sidebar-patterns";
 import { renderRichDocument } from "@/lib/render-rich-text";
 import { DEFAULT_SIDEBAR_SECTIONS } from "@/lib/default-data";
 import type { CVData } from "@/lib/types";
@@ -42,13 +41,11 @@ export function MobileCVView({
   data,
   colors,
   photoUrl,
-  patternSettings,
   fontFamilyOverride,
 }: {
   data: CVData;
   colors: ColorScheme;
   photoUrl?: string;
-  patternSettings?: PatternSettings;
   fontFamilyOverride?: string;
 }) {
   const t = useTranslations("printable");
@@ -139,12 +136,6 @@ export function MobileCVView({
 
       {/* Sidebar content */}
       <div className="relative" style={{ backgroundColor: colors.sidebarBg, padding: mg(24) }}>
-        {patternSettings && patternSettings.name !== "none" && (patternSettings.scope === "sidebar" || patternSettings.scope === "full") && (
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={getSidebarPattern(patternSettings.name).getStyle(colors.sidebarText, patternSettings.sidebarIntensity)}
-          />
-        )}
         <div className="relative space-y-5">
         {sidebarSections.map((sectionId) => {
           if (sectionId === "contact") {
@@ -251,12 +242,6 @@ export function MobileCVView({
 
       {/* Main content */}
       <div className="relative" style={{ padding: `${mg(16)}px ${mg(24)}px ${mg(24)}px` }}>
-        {patternSettings && patternSettings.name !== "none" && (patternSettings.scope === "main" || patternSettings.scope === "full") && (
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={getSidebarPattern(patternSettings.name).getStyle(colors.heading, patternSettings.mainIntensity)}
-          />
-        )}
         <div className="relative space-y-5">
         {experiences.length > 0 && (
           <div>

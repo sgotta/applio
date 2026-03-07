@@ -61,12 +61,6 @@ export function toSettings(plain: DocPlain): CloudSettings {
     fontSizeLevel: s.fontSizeLevel ?? 2,
     theme: s.theme ?? "light",
     locale: s.locale ?? "es",
-    pattern: {
-      name: s.pattern?.name ?? "none",
-      sidebarIntensity: s.pattern?.sidebarIntensity ?? 3,
-      mainIntensity: s.pattern?.mainIntensity ?? 2,
-      scope: s.pattern?.scope ?? "sidebar",
-    },
   };
 }
 
@@ -81,6 +75,8 @@ export function docToCVData(plain: DocPlain): CVData {
       location: plain.personalInfo?.location ?? "",
       linkedin: plain.personalInfo?.linkedin ?? "",
       website: plain.personalInfo?.website ?? "",
+      linkedinUrl: plain.personalInfo?.linkedinUrl,
+      websiteUrl: plain.personalInfo?.websiteUrl,
     },
     summary: plain.personalInfo?.summary ?? "",
     experiences: sortBySortOrder(plain.experiences ?? []).map(
@@ -160,6 +156,8 @@ export function cvDataToDoc(cvData: CVData, settings?: CloudSettings) {
       location: cvData.personalInfo.location,
       linkedin: cvData.personalInfo.linkedin,
       website: cvData.personalInfo.website,
+      linkedinUrl: cvData.personalInfo.linkedinUrl,
+      websiteUrl: cvData.personalInfo.websiteUrl,
       summary: cvData.summary,
     },
     ...(settings ? { settings } : {}),
