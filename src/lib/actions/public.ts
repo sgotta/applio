@@ -105,7 +105,8 @@ export async function fetchPublishedCVBySlug(slug: string): Promise<{
   };
 
   const settings: CloudSettings = {
-    colorScheme: plain.settings?.colorScheme ?? "ivory",
+    colorScheme: plain.settings?.colorScheme ?? "default",
+    accentColor: plain.settings?.accentColor ?? null,
     fontFamily: plain.settings?.fontFamily ?? "inter",
     fontSizeLevel: plain.settings?.fontSizeLevel ?? 2,
     theme: plain.settings?.theme ?? "light",

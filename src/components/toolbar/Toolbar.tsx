@@ -17,7 +17,7 @@ import { useTheme } from "@/lib/theme-context";
 import { useColorScheme } from "@/lib/color-scheme-context";
 import { useFontSettings } from "@/lib/font-context";
 import { FONT_FAMILIES, FONT_SIZE_LEVEL_IDS, type FontFamilyId, type FontSizeLevel } from "@/lib/fonts";
-import { COLOR_SCHEME_NAMES, COLOR_SCHEMES, ACCENT_PRESETS, migrateColorSchemeName, type ColorSchemeName } from "@/lib/color-schemes";
+import { migrateColorSchemeName, type ColorSchemeName } from "@/lib/color-schemes";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth-context";
 import { usePlan } from "@/lib/plan-context";
@@ -28,9 +28,9 @@ import { PremiumBadge } from "@/components/premium/PremiumBadge";
 import {
   Download, FileUp, FileDown, FileText, FolderDown, Globe, Type,
   SlidersHorizontal, Check, Sun, Moon,
-  Menu, X, ChevronRight, ChevronLeft, Palette,
+  Menu, X, ChevronRight, ChevronLeft, Palette, Droplet,
   Loader2, Share2, LogIn, LogOut, User, Copy, ExternalLink,
-  Lock, HardDrive, Cloud, CloudOff, Sparkles, Ban,
+  Lock, HardDrive, Cloud, CloudOff, Sparkles,
 } from "lucide-react";
 import { HexColorPicker } from "react-colorful";
 
@@ -256,15 +256,69 @@ function AccountContent({
 
 /* ── Shared sub-components for Design content ──────────── */
 
-function ColorSection({
-  colorSchemeName,
-  accentColor,
-  setColorScheme,
-  setAccentColor,
-  isPremium,
-  onUpgrade,
-  t,
-}: {
+/** Palette options: curated combinations of scheme + accent */
+/** Palette option: each row sets both scheme + accent */
+interface PaletteOption {
+  id: string;
+  schemeName: ColorSchemeName;
+  accent: string | null;
+  premium: boolean;
+  labelKey: string;
+  /** [sidebarBg, accentColor | null, badgeBg] — null = no accent (Asfalto) */
+  stripColors: [string, string | null, string];
+}
+
+const PALETTE_OPTIONS: PaletteOption[] = [
+  // ── Free ──
+  { id: "default",        schemeName: "default",     accent: null,      premium: false, labelKey: "colorSchemeDefault",       stripColors: ["#f5f5f5", "#1e293b", "#384152"] },
+  // ── Default + accent ──
+  { id: "default-blue",   schemeName: "default",     accent: "#1a7ed6", premium: true,  labelKey: "colorSchemeDefaultBlue",   stripColors: ["#f5f5f5", "#1a7ed6", "#384152"] },
+  { id: "default-green",  schemeName: "default",     accent: "#27ae60", premium: true,  labelKey: "colorSchemeDefaultGreen",  stripColors: ["#f5f5f5", "#27ae60", "#384152"] },
+  { id: "default-orange", schemeName: "default",     accent: "#d35400", premium: true,  labelKey: "colorSchemeDefaultOrange", stripColors: ["#f5f5f5", "#d35400", "#384152"] },
+  // ── Sidebar + accent ──
+  { id: "esmeralda",      schemeName: "esmeralda",   accent: "#27ae60", premium: true,  labelKey: "colorSchemeEsmeralda",     stripColors: ["#e8f5e9", "#27ae60", "#384152"] },
+  { id: "hielo",          schemeName: "hielo",        accent: "#1a7ed6", premium: true,  labelKey: "colorSchemeHielo",         stripColors: ["#e8f0fe", "#1a7ed6", "#384152"] },
+  { id: "floral",         schemeName: "floral",       accent: "#d35400", premium: true,  labelKey: "colorSchemeFloral",        stripColors: ["#fce4ec", "#d35400", "#384152"] },
+  // ── No accent ──
+  { id: "wetAsphalt",     schemeName: "wetAsphalt",  accent: null,      premium: true,  labelKey: "colorSchemeWetAsphalt",    stripColors: ["#2c3e50", null,      "#384152"] },
+];
+
+/** Indices where dividers should be placed (before these indices) */
+const DIVIDER_INDICES = new Set([1, 4, 7]);
+
+interface AccentPickerProps {
+  accentColor: string | null;
+  setAccentColor: (color: string | null) => void;
+  t: (key: string) => string;
+}
+
+function AccentPicker({ accentColor, setAccentColor, t }: AccentPickerProps) {
+  return (
+    <div className="w-[200px]">
+      <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-3">
+        {t("accentColor")}
+      </p>
+      <HexColorPicker
+        color={accentColor ?? "#6366f1"}
+        onChange={setAccentColor}
+        style={{ width: "100%", height: 160 }}
+      />
+      <input
+        type="text"
+        value={accentColor ?? "#6366f1"}
+        onChange={(e) => {
+          const v = e.target.value;
+          if (/^#[0-9a-fA-F]{6}$/.test(v)) setAccentColor(v);
+        }}
+        className="mt-2 w-full px-3 py-1.5 text-xs font-mono text-center rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-400"
+        maxLength={7}
+        placeholder="#6366f1"
+      />
+    </div>
+  );
+}
+
+interface PaletteSectionProps {
   colorSchemeName: ColorSchemeName;
   accentColor: string | null;
   setColorScheme: (name: ColorSchemeName) => void;
@@ -272,137 +326,80 @@ function ColorSection({
   isPremium: boolean;
   onUpgrade: () => void;
   t: (key: string) => string;
-}) {
-  const [showCustomPicker, setShowCustomPicker] = useState(false);
-  const isCustomAccent = accentColor !== null && !ACCENT_PRESETS.some(p => p.color === accentColor);
+}
 
+function PaletteSection({
+  colorSchemeName,
+  accentColor,
+  setColorScheme,
+  setAccentColor,
+  isPremium,
+  onUpgrade,
+  t,
+}: PaletteSectionProps) {
   return (
-    <div className="space-y-4 min-w-[240px]">
-      {/* ── Base style ── */}
-      <div>
-        <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-3">
-          {t("baseStyle")}
-        </p>
-        <div className="flex gap-2.5">
-          {COLOR_SCHEME_NAMES.map((name) => {
-            const scheme = COLOR_SCHEMES[name];
-            const label = t(`colorScheme${name.charAt(0).toUpperCase() + name.slice(1)}`);
-            return (
-              <div key={name} className="flex flex-col items-center gap-1.5">
-                <button
-                  onClick={() => setColorScheme(name)}
-                  aria-label={label}
-                  className={`relative h-10 w-10 rounded-full transition-all hover:scale-105 focus:outline-none border border-gray-200 dark:border-gray-600 ${
-                    colorSchemeName === name ? "ring-2 ring-offset-2 ring-gray-900 dark:ring-gray-100" : ""
-                  }`}
-                  style={{ backgroundColor: scheme.swatch }}
-                >
-                  {colorSchemeName === name && (
-                    <Check className={`absolute inset-0 m-auto h-4 w-4 drop-shadow-sm ${name === "wetAsphalt" ? "text-white" : "text-gray-500"}`} />
-                  )}
-                </button>
-                <span className="text-[10px] text-gray-400 dark:text-gray-500 leading-tight text-center whitespace-nowrap">{label}</span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
+    <div className="w-[260px]">
+      <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-2.5">
+        {t("colorPalette")}
+      </p>
+      <div className="space-y-1">
+        {PALETTE_OPTIONS.map((option, idx) => {
+          const isActive = colorSchemeName === option.schemeName && accentColor === option.accent;
+          const isLocked = option.premium && !isPremium;
+          const label = t(option.labelKey);
 
-      {/* ── Accent color ── */}
-      <div>
-        <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-3">
-          {t("accentColor")}
-        </p>
-        <div className="flex gap-2.5 items-start">
-          {/* No accent */}
-          <div className="flex flex-col items-center gap-1.5">
-            <button
-              onClick={() => { setAccentColor(null); setShowCustomPicker(false); }}
-              aria-label={t("accentNone")}
-              className={`relative h-10 w-10 rounded-full transition-all hover:scale-105 focus:outline-none border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 ${
-                accentColor === null ? "ring-2 ring-offset-2 ring-gray-900 dark:ring-gray-100" : ""
-              }`}
-            >
-              <Ban className="absolute inset-0 m-auto h-4 w-4 text-gray-400 dark:text-gray-500" />
-            </button>
-            <span className="text-[10px] text-gray-400 dark:text-gray-500 leading-tight text-center whitespace-nowrap">{t("accentNone")}</span>
-          </div>
-
-          {/* Preset accents */}
-          {ACCENT_PRESETS.map((preset) => {
-            const isActive = accentColor === preset.color;
-            return (
-              <div key={preset.color} className="flex flex-col items-center gap-1.5">
-                <button
-                  onClick={() => { setAccentColor(preset.color); setShowCustomPicker(false); }}
-                  aria-label={t(`accent${preset.name}`)}
-                  className={`relative h-10 w-10 rounded-full transition-all hover:scale-105 focus:outline-none border border-gray-200 dark:border-gray-600 ${
-                    isActive ? "ring-2 ring-offset-2 ring-gray-900 dark:ring-gray-100" : ""
-                  }`}
-                  style={{ backgroundColor: preset.color }}
-                >
-                  {isActive && (
-                    <Check className="absolute inset-0 m-auto h-4 w-4 text-white drop-shadow-sm" />
-                  )}
-                </button>
-                <span className="text-[10px] text-gray-400 dark:text-gray-500 leading-tight text-center whitespace-nowrap">{t(`accent${preset.name}`)}</span>
-              </div>
-            );
-          })}
-
-          {/* Custom accent */}
-          <div className="flex flex-col items-center gap-1.5">
-            <button
-              onClick={() => {
-                if (!isPremium) { onUpgrade(); return; }
-                setShowCustomPicker(!showCustomPicker);
-                if (!isCustomAccent && !showCustomPicker) setAccentColor("#6366f1");
-              }}
-              aria-label={t("accentCustom")}
-              className={`relative h-10 w-10 rounded-full transition-all hover:scale-105 focus:outline-none border border-gray-200 dark:border-gray-600 overflow-hidden ${
-                isCustomAccent ? "ring-2 ring-offset-2 ring-gray-900 dark:ring-gray-100" : ""
-              }`}
-              style={isCustomAccent ? { backgroundColor: accentColor! } : {
-                background: "conic-gradient(from 0deg, #f87171, #fbbf24, #34d399, #60a5fa, #a78bfa, #f472b6, #f87171)",
-              }}
-            >
-              {!isPremium && (
-                <span className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full">
-                  <Lock className="h-3.5 w-3.5 text-white drop-shadow-sm" />
-                </span>
+          return (
+            <React.Fragment key={option.id}>
+              {/* Group dividers */}
+              {DIVIDER_INDICES.has(idx) && (
+                <div className="h-px bg-gray-200 dark:bg-gray-700 my-1.5" />
               )}
-              {isPremium && isCustomAccent && (
-                <Check className="absolute inset-0 m-auto h-4 w-4 text-white drop-shadow-sm" />
-              )}
-            </button>
-            <span className="text-[10px] text-gray-400 dark:text-gray-500 leading-tight text-center whitespace-nowrap">
-              {t("accentCustom")}
-              {!isPremium && <span className="ml-0.5 text-[9px] text-amber-500 font-semibold">PRO</span>}
-            </span>
-          </div>
-        </div>
-
-        {/* Inline color picker */}
-        {showCustomPicker && isPremium && (
-          <div className="mt-3 flex flex-col items-center gap-2">
-            <HexColorPicker
-              color={accentColor ?? "#6366f1"}
-              onChange={setAccentColor}
-              style={{ width: "100%", height: 140 }}
-            />
-            <input
-              type="text"
-              value={accentColor ?? "#6366f1"}
-              onChange={(e) => {
-                const v = e.target.value;
-                if (/^#[0-9a-fA-F]{6}$/.test(v)) setAccentColor(v);
-              }}
-              className="w-full px-3 py-1.5 text-xs font-mono text-center rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-400"
-              maxLength={7}
-              placeholder="#6366f1"
-            />
-          </div>
-        )}
+              <button
+                onClick={() => {
+                  if (isLocked) { onUpgrade(); return; }
+                  setColorScheme(option.schemeName);
+                  setAccentColor(option.accent);
+                }}
+                aria-label={label}
+                className={`group relative w-full rounded-xl px-2.5 py-1.5 transition-all cursor-pointer ${
+                  isActive
+                    ? "bg-gray-100 dark:bg-gray-800 ring-1 ring-gray-300 dark:ring-gray-600"
+                    : "hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                }`}
+              >
+                {/* Label row */}
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[11px] font-medium text-gray-600 dark:text-gray-300">
+                    {label}
+                  </span>
+                  <div className="flex items-center gap-1">
+                    {isActive && (
+                      <Check className="h-3.5 w-3.5 text-gray-900 dark:text-gray-100 shrink-0" />
+                    )}
+                    {isLocked && (
+                      <Lock className="h-3 w-3 text-amber-500 shrink-0" />
+                    )}
+                  </div>
+                </div>
+                {/* 3-color strip: sidebar | accent | badges */}
+                <div className="flex h-6 w-full rounded-lg overflow-hidden border border-gray-200/60 dark:border-gray-600/60">
+                  <div className="flex-1" style={{ backgroundColor: option.stripColors[0] }} />
+                  {option.stripColors[1] !== null ? (
+                    <div className="flex-1" style={{ backgroundColor: option.stripColors[1] }} />
+                  ) : (
+                    /* "No accent" indicator: white with red diagonal */
+                    <div className="flex-1 relative bg-white dark:bg-gray-200">
+                      <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                        <line x1="0" y1="100" x2="100" y2="0" stroke="#ef4444" strokeWidth="3" />
+                      </svg>
+                    </div>
+                  )}
+                  <div className="flex-1" style={{ backgroundColor: option.stripColors[2]! }} />
+                </div>
+              </button>
+            </React.Fragment>
+          );
+        })}
       </div>
     </div>
   );
@@ -533,7 +530,7 @@ function SectionsContent({
 
 /* ── Main Toolbar ──────────────────────────────────────── */
 
-type MobileMenuPage = "main" | "color" | "font" | "sections" | "language";
+type MobileMenuPage = "main" | "accent" | "palette" | "font" | "sections" | "language";
 
 export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   const { data, importData, toggleSection } = useCV();
@@ -627,7 +624,8 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
           if (settings) {
             if (settings.colorScheme) {
               // Migrate old 5-scheme names (peterRiver, emerald, carrot)
-              if (!["default", "wetAsphalt"].includes(settings.colorScheme)) {
+              const validNames = ["default", "wetAsphalt", "esmeralda", "hielo", "floral"];
+              if (!validNames.includes(settings.colorScheme)) {
                 const migrated = migrateColorSchemeName(settings.colorScheme);
                 setColorScheme(migrated.baseName);
                 setAccentColor(migrated.accentColor);
@@ -779,7 +777,10 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
     "w-full flex items-center gap-2 px-4 h-14 border-b border-gray-100 dark:border-border text-[17px] font-bold text-gray-900 dark:text-gray-100 tracking-tight hover:bg-gray-50 dark:hover:bg-accent/40 transition-colors cursor-pointer shrink-0";
 
   /* ── Shared design section props ──────────────────────── */
-  const colorProps = { colorSchemeName, accentColor, setColorScheme, setAccentColor, isPremium, onUpgrade: () => setUpgradeDialogOpen(true), t: t as (key: string) => string };
+  const onUpgrade = () => setUpgradeDialogOpen(true);
+  const accentPickerProps: AccentPickerProps = { accentColor, setAccentColor, t: t as (key: string) => string };
+  const paletteProps: PaletteSectionProps = { colorSchemeName, accentColor, setColorScheme, setAccentColor, isPremium, onUpgrade, t: t as (key: string) => string };
+  const isPaletteActive = colorSchemeName === "wetAsphalt";
   const fontProps = { fontFamilyId, fontSizeLevel, setFontFamily, setFontSizeLevel, t: t as (key: string) => string };
   const sectionsProps = { data, toggleSection, t: t as (key: string) => string };
 
@@ -830,15 +831,34 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       {t("design")}
                     </p>
 
-                    <button onClick={() => setMobileMenuPage("color")} className={menuItemClass}>
+                    <button onClick={() => setMobileMenuPage("palette")} className={menuItemClass}>
                       <span className="flex items-center gap-3">
                         <span className="h-10 w-10 flex items-center justify-center rounded-xl bg-pink-50 dark:bg-pink-900/20 text-pink-500 shrink-0">
                           <Palette className="h-4.5 w-4.5" />
                         </span>
-                        {t("colorScheme")}
+                        {t("colorPalette")}
                       </span>
                       <ChevronRight className="h-4 w-4 text-gray-300 dark:text-gray-600 shrink-0" />
                     </button>
+
+                    <div className={isPaletteActive ? "opacity-40 pointer-events-none" : ""}>
+                      <button
+                        onClick={() => {
+                          if (!isPremium) { setMobileMenuOpen(false); onUpgrade(); return; }
+                          setMobileMenuPage("accent");
+                        }}
+                        className={menuItemClass}
+                      >
+                        <span className="flex items-center gap-3">
+                          <span className="h-10 w-10 flex items-center justify-center rounded-xl bg-violet-50 dark:bg-violet-900/20 text-violet-500 shrink-0">
+                            <Droplet className="h-4.5 w-4.5" />
+                          </span>
+                          {t("accentColor")}
+                          {!isPremium && <PremiumBadge />}
+                        </span>
+                        <ChevronRight className="h-4 w-4 text-gray-300 dark:text-gray-600 shrink-0" />
+                      </button>
+                    </div>
 
                     <button onClick={() => setMobileMenuPage("font")} className={menuItemClass}>
                       <span className="flex items-center gap-3">
@@ -990,15 +1010,28 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                 </>
               )}
 
-              {/* ── Mobile: Color page ── */}
-              {mobileMenuPage === "color" && (
+              {/* ── Mobile: Accent color picker page ── */}
+              {mobileMenuPage === "accent" && (
                 <div className="flex flex-col h-full">
                   <button onClick={() => setMobileMenuPage("main")} className={backButtonClass}>
                     <ChevronLeft className="h-5 w-5 text-gray-400 dark:text-gray-500" />
-                    {t("colorScheme")}
+                    {t("accentColor")}
                   </button>
                   <div className="flex-1 overflow-y-auto overscroll-contain scrollbar-thin px-5 pt-5 pb-4">
-                    <ColorSection {...colorProps} />
+                    <AccentPicker {...accentPickerProps} />
+                  </div>
+                </div>
+              )}
+
+              {/* ── Mobile: Palette page ── */}
+              {mobileMenuPage === "palette" && (
+                <div className="flex flex-col h-full">
+                  <button onClick={() => setMobileMenuPage("main")} className={backButtonClass}>
+                    <ChevronLeft className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+                    {t("colorPalette")}
+                  </button>
+                  <div className="flex-1 overflow-y-auto overscroll-contain scrollbar-thin px-5 pt-5 pb-4">
+                    <PaletteSection {...paletteProps} />
                   </div>
                 </div>
               )}
@@ -1143,7 +1176,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
             {/* ── CV style (visual impact order) ── */}
 
-            {/* Color scheme */}
+            {/* Color palette */}
             <Popover>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -1151,8 +1184,8 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <Button
                       variant="ghost"
                       size="icon"
-                      aria-label={t("colorScheme")}
-                      data-testid="btn-color-scheme"
+                      aria-label={t("colorPalette")}
+                      data-testid="btn-color-palette"
                       className="h-10 w-10"
                     >
                       <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-pink-50 dark:bg-pink-900/20 text-pink-500">
@@ -1161,12 +1194,42 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     </Button>
                   </PopoverTrigger>
                 </TooltipTrigger>
-                <TooltipContent>{t("colorScheme")}</TooltipContent>
+                <TooltipContent>{t("colorPalette")}</TooltipContent>
               </Tooltip>
               <PopoverContent className="w-auto p-4" align="end">
-                <ColorSection {...colorProps} />
+                <PaletteSection {...paletteProps} />
               </PopoverContent>
             </Popover>
+
+            {/* Accent color picker (premium, disabled when Asfalto active) */}
+            <div className={isPaletteActive ? "opacity-40 pointer-events-none" : ""}>
+              <Popover>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label={t("accentColor")}
+                        data-testid="btn-accent-color"
+                        className="h-10 w-10"
+                        onClick={(e) => {
+                          if (!isPremium) { e.preventDefault(); onUpgrade(); }
+                        }}
+                      >
+                        <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-violet-50 dark:bg-violet-900/20 text-violet-500">
+                          <Droplet className="h-4 w-4" />
+                        </span>
+                      </Button>
+                    </PopoverTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent>{isPaletteActive ? t("accentDisabledHint") : t("accentColor")}</TooltipContent>
+                </Tooltip>
+                <PopoverContent className="w-auto p-4" align="end">
+                  <AccentPicker {...accentPickerProps} />
+                </PopoverContent>
+              </Popover>
+            </div>
 
             {/* Font */}
             <Popover>
