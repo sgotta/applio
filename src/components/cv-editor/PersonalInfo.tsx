@@ -41,6 +41,7 @@ function ContactLine({
   placeholder,
   onChange,
   iconColor,
+  textColor,
   urlField,
   urlValue,
   urlPlaceholder,
@@ -51,6 +52,7 @@ function ContactLine({
   placeholder: string;
   onChange: (field: string, value: string | undefined) => void;
   iconColor: string;
+  textColor?: string;
   urlField?: string;
   urlValue?: string;
   urlPlaceholder?: string;
@@ -59,6 +61,7 @@ function ContactLine({
   const hasUrl = !!urlValue;
   const linkable = !!urlField;
   const t = useTranslations("personalInfo");
+  const effectiveTextColor = textColor || iconColor;
 
   /* Non-linkable fields (email, phone, location): plain icon + inline editable text */
   if (!linkable) {
@@ -70,28 +73,32 @@ function ContactLine({
           onChange={(v) => onChange(field, v)}
           as="small"
           placeholder={placeholder}
-          displayStyle={{ color: iconColor }}
+          displayStyle={{ color: effectiveTextColor }}
         />
       </div>
     );
   }
 
   /* Linkable fields (linkedin, website): entire row opens popover */
+  const isLightSidebar = effectiveTextColor !== "#ffffff";
   return (
     <Popover open={linkOpen} onOpenChange={setLinkOpen}>
       <PopoverTrigger asChild>
         <button
-          className={`flex items-center gap-1 -mx-1.5 px-1.5 py-0.5 rounded-md transition-colors text-left w-full ${linkOpen ? "bg-white/10" : "hover:bg-white/5"}`}
+          className={`flex items-center gap-1 -mx-1.5 px-1.5 py-0.5 rounded-md transition-colors text-left w-full ${linkOpen ? (isLightSidebar ? "bg-black/5" : "bg-white/10") : (isLightSidebar ? "hover:bg-black/5" : "hover:bg-white/5")}`}
         >
           <span className="relative shrink-0">
             <Icon className="h-3 w-3" style={{ color: iconColor }} />
             {hasUrl && (
-              <span className="absolute -top-px -right-px h-1.5 w-1.5 rounded-full bg-white/80" />
+              <span
+                className="absolute -top-px -right-px h-1.5 w-1.5 rounded-full"
+                style={{ backgroundColor: isLightSidebar ? iconColor : "rgba(255,255,255,0.8)" }}
+              />
             )}
           </span>
           <span
             className={value ? "" : "italic opacity-50"}
-            style={{ color: iconColor, fontSize: "1em" }}
+            style={{ color: effectiveTextColor, fontSize: "1em" }}
           >
             {value || placeholder}
           </span>
@@ -445,6 +452,7 @@ function SortableSidebarSection({
   id: SidebarSectionId;
   children: React.ReactNode;
 }) {
+  const { colorScheme } = useColorScheme();
   const {
     attributes,
     listeners,
@@ -454,6 +462,7 @@ function SortableSidebarSection({
     isDragging,
   } = useSortable({ id });
 
+  const isLightSidebar = colorScheme.sidebarText !== "#ffffff";
   const style: React.CSSProperties = {
     transform: CSS.Translate.toString(transform),
     transition,
@@ -467,7 +476,7 @@ function SortableSidebarSection({
         className="absolute -left-7 can-hover:-left-6 top-[calc(0.675em-14px)] can-hover:top-[calc(0.675em-12px)] opacity-60 can-hover:opacity-40 can-hover:group-hover/sidebar-section:opacity-100 transition-opacity duration-150"
       >
         <button
-          className="p-1.5 can-hover:p-1 rounded cursor-grab active:cursor-grabbing touch-manipulation hover:bg-white/10"
+          className={`p-1.5 can-hover:p-1 rounded cursor-grab active:cursor-grabbing touch-manipulation ${isLightSidebar ? "hover:bg-black/5" : "hover:bg-white/10"}`}
           {...attributes}
           {...listeners}
         >
@@ -540,7 +549,8 @@ export const PersonalInfo = memo(function PersonalInfo() {
           field="email"
           placeholder={t("emailPlaceholder")}
           onChange={(f, v) => updatePersonalInfo(f, v)}
-          iconColor={colorScheme.sidebarText}
+          iconColor={colorScheme.sidebarAccent}
+          textColor={colorScheme.sidebarText}
         />
         <ContactLine
           icon={Phone}
@@ -548,7 +558,8 @@ export const PersonalInfo = memo(function PersonalInfo() {
           field="phone"
           placeholder={t("phonePlaceholder")}
           onChange={(f, v) => updatePersonalInfo(f, v)}
-          iconColor={colorScheme.sidebarText}
+          iconColor={colorScheme.sidebarAccent}
+          textColor={colorScheme.sidebarText}
         />
         {visibility.location && (
           <ContactLine
@@ -557,7 +568,8 @@ export const PersonalInfo = memo(function PersonalInfo() {
             field="location"
             placeholder={t("locationPlaceholder")}
             onChange={(f, v) => updatePersonalInfo(f, v)}
-            iconColor={colorScheme.sidebarText}
+            iconColor={colorScheme.sidebarAccent}
+          textColor={colorScheme.sidebarText}
           />
         )}
         {visibility.linkedin && (
@@ -567,7 +579,8 @@ export const PersonalInfo = memo(function PersonalInfo() {
             field="linkedin"
             placeholder={t("linkedinPlaceholder")}
             onChange={(f, v) => updatePersonalInfo(f, v)}
-            iconColor={colorScheme.sidebarText}
+            iconColor={colorScheme.sidebarAccent}
+          textColor={colorScheme.sidebarText}
             urlField="linkedinUrl"
             urlValue={personalInfo.linkedinUrl}
             urlPlaceholder={t("urlPlaceholder")}
@@ -580,7 +593,8 @@ export const PersonalInfo = memo(function PersonalInfo() {
             field="website"
             placeholder={t("websitePlaceholder")}
             onChange={(f, v) => updatePersonalInfo(f, v)}
-            iconColor={colorScheme.sidebarText}
+            iconColor={colorScheme.sidebarAccent}
+          textColor={colorScheme.sidebarText}
             urlField="websiteUrl"
             urlValue={personalInfo.websiteUrl}
             urlPlaceholder={t("urlPlaceholder")}
@@ -653,7 +667,7 @@ export const PersonalInfo = memo(function PersonalInfo() {
           currentPhoto={personalInfo.photoUrl}
           fullName={personalInfo.fullName}
           onPhotoChange={(photoUrl) => updatePersonalInfo("photoUrl", photoUrl)}
-          placeholderBg={colorScheme.sidebarText + "28"}
+          placeholderBg={colorScheme.sidebarText + "18"}
           placeholderText={colorScheme.sidebarMuted}
         />
       </div>

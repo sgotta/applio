@@ -375,9 +375,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
     (visibility.linkedin && personalInfo.linkedin) ||
     (visibility.website && personalInfo.website);
 
-  // Use sidebarText for icons — sidebarMuted may contain 8-digit hex (#ffffff66)
-  // which React-PDF doesn't render correctly in SVG strokes
-  const iconColor = colors.sidebarText;
+  const iconColor = colors.sidebarAccent;
   const fontFamily = getFontFamily(locale, userFontFamily);
 
   return (
@@ -392,11 +390,11 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
         {/* ===== Two-column layout ===== */}
         <View style={styles.columns}>
           {/* ===== SIDEBAR ===== */}
-          <View style={styles.sidebar}>
+          <View style={[styles.sidebar, { gap: SECTION_GAP }]}>
             {/* Photo / Initials — always render initials as base layer;
                 photo overlays on top (mirrors PrintableCV pattern so
                 silent Image failures still show initials) */}
-            <View style={{ alignItems: "center", marginBottom: SECTION_GAP }}>
+            <View style={{ alignItems: "center" }}>
               <View style={{ width: PHOTO_SIZE, height: PHOTO_SIZE }}>
                 {/* Base layer: initials circle (always rendered)
                     Uses sidebarText at low opacity for subtle contrast on any sidebar color */}
@@ -408,7 +406,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                     width: PHOTO_SIZE,
                     height: PHOTO_SIZE,
                     borderRadius: PHOTO_SIZE / 2,
-                    backgroundColor: safePdfColor(colors.sidebarText + "33"),
+                    backgroundColor: safePdfColor(colors.sidebarText + "18"),
                     justifyContent: "center",
                     alignItems: "center",
                   }}
@@ -457,7 +455,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
               if (sectionId === "contact") {
                 if (!hasContact) return null;
                 return (
-                  <View key="contact" style={{ marginBottom: SECTION_GAP }}>
+                  <View key="contact">
                     <SidebarSectionHeading
                       color={colors.sidebarText}
                       separatorColor={colors.sidebarSeparator}
@@ -525,7 +523,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
               if (sectionId === "summary") {
                 if (!visibility.summary || !summary) return null;
                 return (
-                  <View key="summary" style={{ marginBottom: SECTION_GAP }}>
+                  <View key="summary">
                     <SidebarSectionHeading
                       color={colors.sidebarText}
                       separatorColor={colors.sidebarSeparator}
@@ -548,7 +546,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                     >
                       {labels.skills}
                     </SidebarSectionHeading>
-                    <View style={{ gap: 8 }}>
+                    <View style={{ gap: ITEM_GAP }}>
                       {skillCategories.map((skillGroup) => (
                         <View key={skillGroup.id} wrap={false}>
                           <Text
@@ -596,9 +594,9 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
             <View style={{ marginBottom: 20 }}>
               <Text
                 style={{
-                  fontSize: fs(24),
+                  fontSize: fs(31),
                   fontWeight: 600,
-                  color: "#111827",
+                  color: colors.nameColor,
                   letterSpacing: -0.5,
                 }}
               >
@@ -632,7 +630,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
 
             {/* Experience */}
             {experiences.length > 0 && (
-              <View style={{ marginBottom: SECTION_GAP }}>
+              <View style={{ marginBottom: SECTION_GAP, gap: ITEM_GAP }}>
                 {/* Heading + first entry kept together */}
                 <View wrap={false}>
                   <MainSectionHeading
@@ -643,7 +641,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                     {labels.experience}
                   </MainSectionHeading>
                   <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
-                    <Text style={{ fontSize: fs(13), fontWeight: 600, color: "#111827", flex: 1, paddingRight: 6 }}>
+                    <Text style={{ fontSize: fs(13), fontWeight: 600, color: colors.entryTitle, flex: 1, paddingRight: 6 }}>
                       {experiences[0].company}
                     </Text>
                     <Text style={{ fontSize: fs(10), color: "#6b7280", flexShrink: 0, marginTop: 2 }}>
@@ -661,9 +659,9 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                 </View>
                 {/* Remaining entries */}
                 {experiences.slice(1).map((exp) => (
-                  <View key={exp.id} wrap={false} style={{ marginTop: ITEM_GAP }}>
+                  <View key={exp.id} wrap={false}>
                     <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
-                      <Text style={{ fontSize: fs(13), fontWeight: 600, color: "#111827", flex: 1, paddingRight: 6 }}>
+                      <Text style={{ fontSize: fs(13), fontWeight: 600, color: colors.entryTitle, flex: 1, paddingRight: 6 }}>
                         {exp.company}
                       </Text>
                       <Text style={{ fontSize: fs(10), color: "#6b7280", flexShrink: 0, marginTop: 2 }}>
@@ -685,7 +683,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
 
             {/* Education */}
             {education.length > 0 && (
-              <View style={{ marginBottom: SECTION_GAP }}>
+              <View style={{ marginBottom: SECTION_GAP, gap: ITEM_GAP }}>
                 <View wrap={false}>
                   <MainSectionHeading
                     color={colors.heading}
@@ -695,7 +693,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                     {labels.education}
                   </MainSectionHeading>
                   <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
-                    <Text style={{ fontSize: fs(13), fontWeight: 600, color: "#111827", flex: 1, paddingRight: 6 }}>
+                    <Text style={{ fontSize: fs(13), fontWeight: 600, color: colors.entryTitle, flex: 1, paddingRight: 6 }}>
                       {education[0].institution}
                     </Text>
                     <Text style={{ fontSize: fs(10), color: "#6b7280", flexShrink: 0, marginTop: 2 }}>
@@ -712,9 +710,9 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                   )}
                 </View>
                 {education.slice(1).map((edu) => (
-                  <View key={edu.id} wrap={false} style={{ marginTop: ITEM_GAP }}>
+                  <View key={edu.id} wrap={false}>
                     <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
-                      <Text style={{ fontSize: fs(13), fontWeight: 600, color: "#111827", flex: 1, paddingRight: 6 }}>
+                      <Text style={{ fontSize: fs(13), fontWeight: 600, color: colors.entryTitle, flex: 1, paddingRight: 6 }}>
                         {edu.institution}
                       </Text>
                       <Text style={{ fontSize: fs(10), color: "#6b7280", flexShrink: 0, marginTop: 2 }}>
@@ -736,7 +734,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
 
             {/* Courses */}
             {visibility.courses && courses.length > 0 && (
-              <View style={{ marginBottom: SECTION_GAP }}>
+              <View style={{ marginBottom: SECTION_GAP, gap: ITEM_GAP }}>
                 <View wrap={false}>
                   <MainSectionHeading
                     color={colors.heading}
@@ -746,7 +744,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                     {labels.courses}
                   </MainSectionHeading>
                   <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
-                    <Text style={{ fontSize: fs(13), fontWeight: 600, color: "#111827", flex: 1, paddingRight: 6 }}>
+                    <Text style={{ fontSize: fs(13), fontWeight: 600, color: colors.entryTitle, flex: 1, paddingRight: 6 }}>
                       {courses[0].name}
                     </Text>
                     <Text style={{ fontSize: fs(10), color: "#6b7280", flexShrink: 0, marginTop: 2 }}>
@@ -763,9 +761,9 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                   )}
                 </View>
                 {courses.slice(1).map((course) => (
-                  <View key={course.id} wrap={false} style={{ marginTop: 8 }}>
+                  <View key={course.id} wrap={false}>
                     <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
-                      <Text style={{ fontSize: fs(13), fontWeight: 600, color: "#111827", flex: 1, paddingRight: 6 }}>
+                      <Text style={{ fontSize: fs(13), fontWeight: 600, color: colors.entryTitle, flex: 1, paddingRight: 6 }}>
                         {course.name}
                       </Text>
                       <Text style={{ fontSize: fs(10), color: "#6b7280", flexShrink: 0, marginTop: 2 }}>
@@ -787,7 +785,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
 
             {/* Certifications */}
             {visibility.certifications && certifications.length > 0 && (
-              <View style={{ marginBottom: SECTION_GAP }}>
+              <View style={{ marginBottom: SECTION_GAP, gap: ITEM_GAP }}>
                 <View wrap={false}>
                   <MainSectionHeading
                     color={colors.heading}
@@ -797,7 +795,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                     {labels.certifications}
                   </MainSectionHeading>
                   <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
-                    <Text style={{ fontSize: fs(13), fontWeight: 600, color: "#111827", flex: 1, paddingRight: 6 }}>
+                    <Text style={{ fontSize: fs(13), fontWeight: 600, color: colors.entryTitle, flex: 1, paddingRight: 6 }}>
                       {certifications[0].name}
                     </Text>
                     <Text style={{ fontSize: fs(10), color: "#6b7280", flexShrink: 0, marginTop: 2 }}>
@@ -814,9 +812,9 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                   )}
                 </View>
                 {certifications.slice(1).map((cert) => (
-                  <View key={cert.id} wrap={false} style={{ marginTop: 8 }}>
+                  <View key={cert.id} wrap={false}>
                     <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
-                      <Text style={{ fontSize: fs(13), fontWeight: 600, color: "#111827", flex: 1, paddingRight: 6 }}>
+                      <Text style={{ fontSize: fs(13), fontWeight: 600, color: colors.entryTitle, flex: 1, paddingRight: 6 }}>
                         {cert.name}
                       </Text>
                       <Text style={{ fontSize: fs(10), color: "#6b7280", flexShrink: 0, marginTop: 2 }}>
@@ -838,7 +836,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
 
             {/* Awards */}
             {visibility.awards && awards.length > 0 && (
-              <View style={{ marginBottom: SECTION_GAP }}>
+              <View style={{ marginBottom: SECTION_GAP, gap: ITEM_GAP }}>
                 <View wrap={false}>
                   <MainSectionHeading
                     color={colors.heading}
@@ -848,7 +846,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                     {labels.awards}
                   </MainSectionHeading>
                   <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
-                    <Text style={{ fontSize: fs(13), fontWeight: 600, color: "#111827", flex: 1, paddingRight: 6 }}>
+                    <Text style={{ fontSize: fs(13), fontWeight: 600, color: colors.entryTitle, flex: 1, paddingRight: 6 }}>
                       {awards[0].name}
                     </Text>
                     <Text style={{ fontSize: fs(10), color: "#6b7280", flexShrink: 0, marginTop: 2 }}>
@@ -865,9 +863,9 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                   )}
                 </View>
                 {awards.slice(1).map((award) => (
-                  <View key={award.id} wrap={false} style={{ marginTop: 8 }}>
+                  <View key={award.id} wrap={false}>
                     <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
-                      <Text style={{ fontSize: fs(13), fontWeight: 600, color: "#111827", flex: 1, paddingRight: 6 }}>
+                      <Text style={{ fontSize: fs(13), fontWeight: 600, color: colors.entryTitle, flex: 1, paddingRight: 6 }}>
                         {award.name}
                       </Text>
                       <Text style={{ fontSize: fs(10), color: "#6b7280", flexShrink: 0, marginTop: 2 }}>

@@ -18,7 +18,7 @@ function ensureProtocol(url: string): string {
 
 /** Font sizes in em — matches EditableText fontSizeMap + SectionTitle exactly */
 const FS = {
-  heading: "2.16em",
+  heading: "2.8em",
   subheading: "1.26em",
   itemTitle: "1.17em",
   body: "1em",
@@ -134,14 +134,13 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
             flexShrink: 0,
             padding: `${mg(24)}px`,
             backgroundColor: colors.sidebarBg,
-            borderRight: `1px solid ${colors.sidebarSeparator}`,
           }}
         >
           <div className="relative space-y-5">
             {/* Photo / Initials */}
             <div
               className="mx-auto h-36 w-36 rounded-full grid place-items-center overflow-hidden relative"
-              style={{ backgroundColor: colors.sidebarText + "28" }}
+              style={{ backgroundColor: colors.sidebarText + "18" }}
             >
               {/* Initials always visible as base layer */}
               <span
@@ -189,25 +188,25 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
                     <div className="space-y-1.5">
                       {personalInfo.email && (
                         <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: FS.small }}>
-                          <Mail className="h-3 w-3 shrink-0" />
+                          <Mail className="h-3 w-3 shrink-0" style={{ color: colors.sidebarAccent }} />
                           <a href={`mailto:${personalInfo.email}`} className="truncate" style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.email}</a>
                         </div>
                       )}
                       {personalInfo.phone && (
                         <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: FS.small }}>
-                          <Phone className="h-3 w-3 shrink-0" />
+                          <Phone className="h-3 w-3 shrink-0" style={{ color: colors.sidebarAccent }} />
                           <a href={`tel:${personalInfo.phone}`} className="truncate" style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.phone}</a>
                         </div>
                       )}
                       {visibility.location && personalInfo.location && (
                         <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: FS.small }}>
-                          <MapPin className="h-3 w-3 shrink-0" />
+                          <MapPin className="h-3 w-3 shrink-0" style={{ color: colors.sidebarAccent }} />
                           <span className="truncate">{personalInfo.location}</span>
                         </div>
                       )}
                       {visibility.linkedin && personalInfo.linkedin && (
                         <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: FS.small }}>
-                          <Linkedin className="h-3 w-3 shrink-0" />
+                          <Linkedin className="h-3 w-3 shrink-0" style={{ color: colors.sidebarAccent }} />
                           {personalInfo.linkedinUrl ? (
                             <a href={ensureProtocol(personalInfo.linkedinUrl)} target="_blank" rel="noopener noreferrer" className="truncate" style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.linkedin}</a>
                           ) : (
@@ -217,7 +216,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
                       )}
                       {visibility.website && personalInfo.website && (
                         <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: FS.small }}>
-                          <Globe className="h-3 w-3 shrink-0" />
+                          <Globe className="h-3 w-3 shrink-0" style={{ color: colors.sidebarAccent }} />
                           {personalInfo.websiteUrl ? (
                             <a href={ensureProtocol(personalInfo.websiteUrl)} target="_blank" rel="noopener noreferrer" className="truncate" style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.website}</a>
                           ) : (
@@ -294,8 +293,8 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
             <div style={{ padding: `${mg(24)}px ${mg(24)}px 0` }}>
               <div className="mb-4">
                 <h1
-                  className="font-semibold tracking-tight text-gray-900"
-                  style={{ fontSize: FS.heading }}
+                  className="font-semibold tracking-tight"
+                  style={{ fontSize: FS.heading, color: colors.nameColor }}
                 >
                   {personalInfo.fullName}
                 </h1>
@@ -330,8 +329,8 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
                         <div key={exp.id} style={{ pageBreakInside: "avoid" }}>
                           <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0">
                             <h4
-                              className="font-semibold text-gray-900"
-                              style={{ fontSize: FS.itemTitle }}
+                              className="font-semibold"
+                              style={{ fontSize: FS.itemTitle, color: colors.entryTitle }}
                             >
                               {exp.company}
                             </h4>
@@ -370,8 +369,8 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
                         <div key={edu.id} style={{ pageBreakInside: "avoid" }}>
                           <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0">
                             <h4
-                              className="font-semibold text-gray-900"
-                              style={{ fontSize: FS.itemTitle }}
+                              className="font-semibold"
+                              style={{ fontSize: FS.itemTitle, color: colors.entryTitle }}
                             >
                               {edu.institution}
                             </h4>
@@ -410,8 +409,8 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
                         <div key={course.id} style={{ pageBreakInside: "avoid" }}>
                           <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0">
                             <h4
-                              className="font-semibold text-gray-900"
-                              style={{ fontSize: FS.itemTitle }}
+                              className="font-semibold"
+                              style={{ fontSize: FS.itemTitle, color: colors.entryTitle }}
                             >
                               {course.name}
                             </h4>
@@ -450,8 +449,8 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
                         <div key={cert.id} style={{ pageBreakInside: "avoid" }}>
                           <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0">
                             <h4
-                              className="font-semibold text-gray-900"
-                              style={{ fontSize: FS.itemTitle }}
+                              className="font-semibold"
+                              style={{ fontSize: FS.itemTitle, color: colors.entryTitle }}
                             >
                               {cert.name}
                             </h4>
@@ -490,8 +489,8 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
                         <div key={award.id} style={{ pageBreakInside: "avoid" }}>
                           <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0">
                             <h4
-                              className="font-semibold text-gray-900"
-                              style={{ fontSize: FS.itemTitle }}
+                              className="font-semibold"
+                              style={{ fontSize: FS.itemTitle, color: colors.entryTitle }}
                             >
                               {award.name}
                             </h4>
