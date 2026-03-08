@@ -46,6 +46,7 @@ export const minimalCV: CVData = {
   certifications: [],
   awards: [],
   visibility: {
+    photo: true,
     location: true,
     linkedin: true,
     website: true,

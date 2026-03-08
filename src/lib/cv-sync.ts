@@ -132,6 +132,7 @@ export function docToCVData(plain: DocPlain): CVData {
       description: a.description,
     })),
     visibility: {
+      photo: plain.visibility?.photo ?? true,
       location: plain.visibility?.location ?? true,
       linkedin: plain.visibility?.linkedin ?? true,
       website: plain.visibility?.website ?? true,

@@ -20,6 +20,7 @@ const mockData: CVData = {
   certifications: [],
   awards: [],
   visibility: {
+    photo: true,
     location: true,
     linkedin: true,
     website: true,

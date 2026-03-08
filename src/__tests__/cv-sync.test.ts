@@ -34,6 +34,7 @@ function makeCVData(overrides?: Partial<CVData>): CVData {
     certifications: [],
     awards: [],
     visibility: {
+      photo: true,
       location: true,
       linkedin: true,
       website: true,

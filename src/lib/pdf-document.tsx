@@ -391,41 +391,10 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
         <View style={styles.columns}>
           {/* ===== SIDEBAR ===== */}
           <View style={[styles.sidebar, { gap: SECTION_GAP }]}>
-            {/* Photo / Initials — always render initials as base layer;
-                photo overlays on top (mirrors PrintableCV pattern so
-                silent Image failures still show initials) */}
-            <View style={{ alignItems: "center" }}>
-              <View style={{ width: PHOTO_SIZE, height: PHOTO_SIZE }}>
-                {/* Base layer: initials circle (always rendered)
-                    Uses sidebarText at low opacity for subtle contrast on any sidebar color */}
-                <View
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: PHOTO_SIZE,
-                    height: PHOTO_SIZE,
-                    borderRadius: PHOTO_SIZE / 2,
-                    backgroundColor: safePdfColor(colors.sidebarText + "18"),
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontSize: fs(22),
-                      fontWeight: 500,
-                      color: safePdfColor(colors.sidebarMuted),
-                      letterSpacing: 1,
-                    }}
-                  >
-                    {initials}
-                  </Text>
-                </View>
-                {/* Overlay: photo on top (if available).
-                    Wrap in a clipping View because react-pdf doesn't clip
-                    borderRadius on <Image> directly. */}
-                {personalInfo.photoUrl && (
+            {/* Photo / Initials OR Name+Title in sidebar */}
+            {visibility.photo ? (
+              <View style={{ alignItems: "center" }}>
+                <View style={{ width: PHOTO_SIZE, height: PHOTO_SIZE }}>
                   <View
                     style={{
                       position: "absolute",
@@ -434,22 +403,74 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                       width: PHOTO_SIZE,
                       height: PHOTO_SIZE,
                       borderRadius: PHOTO_SIZE / 2,
-                      overflow: "hidden",
+                      backgroundColor: safePdfColor(colors.sidebarText + "18"),
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
                   >
-                    {/* eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image is PDF-only, not an HTML <img> */}
-                    <Image
-                      src={personalInfo.photoUrl}
+                    <Text
                       style={{
+                        fontSize: fs(22),
+                        fontWeight: 500,
+                        color: safePdfColor(colors.sidebarMuted),
+                        letterSpacing: 1,
+                      }}
+                    >
+                      {initials}
+                    </Text>
+                  </View>
+                  {personalInfo.photoUrl && (
+                    <View
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
                         width: PHOTO_SIZE,
                         height: PHOTO_SIZE,
-                        objectFit: "cover",
+                        borderRadius: PHOTO_SIZE / 2,
+                        overflow: "hidden",
                       }}
-                    />
-                  </View>
-                )}
+                    >
+                      {/* eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image is PDF-only, not an HTML <img> */}
+                      <Image
+                        src={personalInfo.photoUrl}
+                        style={{
+                          width: PHOTO_SIZE,
+                          height: PHOTO_SIZE,
+                          objectFit: "cover",
+                        }}
+                      />
+                    </View>
+                  )}
+                </View>
               </View>
-            </View>
+            ) : (
+              <View>
+                <Text
+                  style={{
+                    fontSize: fs(28),
+                    fontWeight: 600,
+                    color: colors.sidebarText,
+                    lineHeight: 1.15,
+                    letterSpacing: -0.3,
+                  }}
+                >
+                  {personalInfo.fullName}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: fs(11),
+                    fontWeight: 500,
+                    color: safePdfColor(colors.sidebarMuted),
+                    marginTop: 4,
+                    textTransform: "uppercase",
+                    letterSpacing: 0.5,
+                  }}
+                >
+                  {personalInfo.jobTitle}
+                </Text>
+              </View>
+            )}
 
             {sidebarSections.map((sectionId) => {
               if (sectionId === "contact") {
@@ -589,44 +610,46 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
           </View>
 
           {/* ===== MAIN CONTENT ===== */}
-          <View style={styles.main}>
-            {/* Header: Name + Title */}
-            <View style={{ marginBottom: 20 }}>
-              <Text
-                style={{
-                  fontSize: fs(31),
-                  fontWeight: 600,
-                  color: colors.nameColor,
-                  letterSpacing: -0.5,
-                }}
-              >
-                {personalInfo.fullName}
-              </Text>
-              {colors.nameAccent !== "transparent" && (
-                <View
+          <View style={[styles.main, !visibility.photo ? { paddingTop: 16 } : {}]}>
+            {/* Header: Name + Title — hidden when photo is off (name in sidebar) */}
+            {visibility.photo && (
+              <View style={{ marginBottom: 20 }}>
+                <Text
                   style={{
-                    height: 2,
-                    width: 36,
-                    backgroundColor: colors.nameAccent,
-                    borderRadius: 1,
-                    marginTop: 5,
-                    marginBottom: 5,
+                    fontSize: fs(31),
+                    fontWeight: 600,
+                    color: colors.nameColor,
+                    letterSpacing: -0.5,
                   }}
-                />
-              )}
-              <Text
-                style={{
-                  fontSize: fs(14),
-                  fontWeight: 500,
-                  color: "#4b5563",
-                  textTransform: "uppercase",
-                  letterSpacing: 0.5,
-                  marginTop: 0,
-                }}
-              >
-                {personalInfo.jobTitle}
-              </Text>
-            </View>
+                >
+                  {personalInfo.fullName}
+                </Text>
+                {colors.nameAccent !== "transparent" && (
+                  <View
+                    style={{
+                      height: 2,
+                      width: 36,
+                      backgroundColor: colors.nameAccent,
+                      borderRadius: 1,
+                      marginTop: 5,
+                      marginBottom: 5,
+                    }}
+                  />
+                )}
+                <Text
+                  style={{
+                    fontSize: fs(14),
+                    fontWeight: 500,
+                    color: "#4b5563",
+                    textTransform: "uppercase",
+                    letterSpacing: 0.5,
+                    marginTop: 0,
+                  }}
+                >
+                  {personalInfo.jobTitle}
+                </Text>
+              </View>
+            )}
 
             {/* Experience */}
             {experiences.length > 0 && (

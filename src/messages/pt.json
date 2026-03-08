@@ -6,6 +6,7 @@
     "sectionsTitle": "Campos de contato",
     "sectionEmail": "E-mail",
     "sectionPhone": "Telefone",
+    "sectionPhoto": "Foto de perfil",
     "sectionLocation": "Localização",
     "sectionLinkedin": "LinkedIn",
     "sectionWebsite": "Site",
@@ -120,7 +121,9 @@
     "confirmDeleteCategory": "Excluir categoria \"{category}\"?",
     "confirmDeleteCategoryEmpty": "Excluir esta categoria?",
     "moveUp": "Mover para cima",
-    "moveDown": "Mover para baixo"
+    "moveDown": "Mover para baixo",
+    "namePlaceholder": "Seu Nome Completo",
+    "titlePlaceholder": "Seu Título Profissional"
   },
   "experience": {
     "title": "Experiência",

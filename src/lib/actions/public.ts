@@ -92,6 +92,7 @@ export async function fetchPublishedCVBySlug(slug: string): Promise<{
       description: a.description,
     })),
     visibility: {
+      photo: plain.visibility?.photo ?? true,
       location: plain.visibility?.location ?? true,
       linkedin: plain.visibility?.linkedin ?? true,
       website: plain.visibility?.website ?? true,
