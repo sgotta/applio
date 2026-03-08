@@ -502,7 +502,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
         const parsed = JSON.parse(result);
 
         if (!isValidCVData(parsed)) {
-          alert(t("importFormatError"));
+          toast.error(t("importFormatError"));
           return;
         }
 
@@ -518,7 +518,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
           }
         }
       } catch {
-        alert(t("importReadError"));
+        toast.error(t("importReadError"));
       }
     };
     reader.readAsText(file);
