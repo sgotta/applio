@@ -48,6 +48,7 @@ const SettingsSchema = new Schema(
 
 const VisibilitySchema = new Schema(
   {
+    photo: Boolean,
     location: Boolean,
     linkedin: Boolean,
     website: Boolean,
@@ -173,6 +174,7 @@ export interface ICV extends Document {
     };
   };
   visibility: {
+    photo?: boolean;
     location?: boolean;
     linkedin?: boolean;
     website?: boolean;

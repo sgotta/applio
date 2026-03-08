@@ -6,6 +6,7 @@
     "sectionsTitle": "Champs de contact",
     "sectionEmail": "E-mail",
     "sectionPhone": "Téléphone",
+    "sectionPhoto": "Photo de profil",
     "sectionLocation": "Localisation",
     "sectionLinkedin": "LinkedIn",
     "sectionWebsite": "Site web",
@@ -120,7 +121,9 @@
     "confirmDeleteCategory": "Supprimer la catégorie \"{category}\" ?",
     "confirmDeleteCategoryEmpty": "Supprimer cette catégorie ?",
     "moveUp": "Déplacer vers le haut",
-    "moveDown": "Déplacer vers le bas"
+    "moveDown": "Déplacer vers le bas",
+    "namePlaceholder": "Votre Nom Complet",
+    "titlePlaceholder": "Votre Titre Professionnel"
   },
   "experience": {
     "title": "Expérience",

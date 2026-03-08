@@ -65,6 +65,7 @@ export interface AwardItem {
 export type SidebarSectionId = "contact" | "summary" | "skills";
 
 export interface SectionVisibility {
+  photo: boolean;
   location: boolean;
   linkedin: boolean;
   website: boolean;

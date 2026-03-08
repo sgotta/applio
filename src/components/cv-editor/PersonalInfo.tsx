@@ -661,17 +661,46 @@ export const PersonalInfo = memo(function PersonalInfo() {
 
   return (
     <div className="space-y-5">
-      {/* Profile photo upload — hidden on mobile (shown separately in CVPreview) */}
+      {/* Photo or Name+Title — hidden on mobile (shown separately in CVPreview) */}
       <div className="hidden md:block">
-        <ProfilePhotoUpload
-          currentPhoto={personalInfo.photoUrl}
-          fullName={personalInfo.fullName}
-          onPhotoChange={(photoUrl) => updatePersonalInfo("photoUrl", photoUrl)}
-          photoFilter={personalInfo.photoFilter}
-          onPhotoFilterChange={(filter) => updatePersonalInfo("photoFilter", filter)}
-          placeholderBg={colorScheme.sidebarText + "18"}
-          placeholderText={colorScheme.sidebarMuted}
-        />
+        {visibility.photo ? (
+          <ProfilePhotoUpload
+            currentPhoto={personalInfo.photoUrl}
+            fullName={personalInfo.fullName}
+            onPhotoChange={(photoUrl) => updatePersonalInfo("photoUrl", photoUrl)}
+            photoFilter={personalInfo.photoFilter}
+            onPhotoFilterChange={(filter) => updatePersonalInfo("photoFilter", filter)}
+            placeholderBg={colorScheme.sidebarText + "18"}
+            placeholderText={colorScheme.sidebarMuted}
+          />
+        ) : (() => {
+            const darkSidebar = colorScheme.sidebarText === "#ffffff";
+            const nameClr = darkSidebar ? colorScheme.sidebarText : colorScheme.nameColor;
+            const titleClr = darkSidebar ? colorScheme.sidebarText : colorScheme.nameColor + "99";
+            return (
+              <div>
+                <EditableText
+                  value={personalInfo.fullName}
+                  onChange={(v) => updatePersonalInfo("fullName", v)}
+                  as="heading"
+                  className="leading-[1.1]!"
+                  placeholder={t("namePlaceholder")}
+                  displayStyle={{ color: nameClr }}
+                />
+                <div className="mt-3">
+                  <EditableText
+                    value={personalInfo.jobTitle}
+                    onChange={(v) => updatePersonalInfo("jobTitle", v)}
+                    as="small"
+                    className="uppercase! tracking-wide!"
+                    placeholder={t("titlePlaceholder")}
+                    displayStyle={{ color: titleClr }}
+                  />
+                </div>
+              </div>
+            );
+          })()
+        }
       </div>
 
       {/* Sortable sidebar sections */}

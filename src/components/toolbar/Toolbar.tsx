@@ -493,12 +493,15 @@ function SectionsContent({
         <p className={`font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 ${mobile ? "text-[11px] pb-1" : "text-[10px] tracking-widest mb-3"}`}>{t("sectionsTitle")}</p>
         {mobile ? (
           <>
+            <SectionToggle label={t("sectionPhoto")} checked={data.visibility.photo} onToggle={() => toggleSection("photo")} mobile={mobile} />
             <SectionToggle label={t("sectionLocation")} checked={data.visibility.location} onToggle={() => toggleSection("location")} mobile={mobile} />
             <SectionToggle label={t("sectionLinkedin")} checked={data.visibility.linkedin} onToggle={() => toggleSection("linkedin")} mobile={mobile} />
             <SectionToggle label={t("sectionWebsite")} checked={data.visibility.website} onToggle={() => toggleSection("website")} mobile={mobile} />
           </>
         ) : (
           <div className="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800">
+            <SectionToggle label={t("sectionPhoto")} checked={data.visibility.photo} onToggle={() => toggleSection("photo")} mobile={mobile} />
+            <div className="h-px bg-gray-100 dark:bg-white/5" />
             <SectionToggle label={t("sectionLocation")} checked={data.visibility.location} onToggle={() => toggleSection("location")} mobile={mobile} />
             <div className="h-px bg-gray-100 dark:bg-white/5" />
             <SectionToggle label={t("sectionLinkedin")} checked={data.visibility.linkedin} onToggle={() => toggleSection("linkedin")} mobile={mobile} />

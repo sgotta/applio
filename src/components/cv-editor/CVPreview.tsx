@@ -55,21 +55,23 @@ function CVHeader() {
 
 function MobileHeader() {
   const {
-    data: { personalInfo },
+    data: { personalInfo, visibility },
     updatePersonalInfo,
   } = useCV();
 
   return (
-    <div className="flex flex-col items-center px-6 pt-6">
-      <ProfilePhotoUpload
-        currentPhoto={personalInfo.photoUrl}
-        fullName={personalInfo.fullName}
-        onPhotoChange={(photoUrl) => updatePersonalInfo("photoUrl", photoUrl)}
-        photoFilter={personalInfo.photoFilter}
-        onPhotoFilterChange={(filter) => updatePersonalInfo("photoFilter", filter)}
-        sizeClass="w-44 h-44"
-        initialsClass="text-4xl"
-      />
+    <div className={`flex flex-col items-center px-6 ${visibility.photo ? "pt-6" : "pt-10 pb-2"}`}>
+      {visibility.photo && (
+        <ProfilePhotoUpload
+          currentPhoto={personalInfo.photoUrl}
+          fullName={personalInfo.fullName}
+          onPhotoChange={(photoUrl) => updatePersonalInfo("photoUrl", photoUrl)}
+          photoFilter={personalInfo.photoFilter}
+          onPhotoFilterChange={(filter) => updatePersonalInfo("photoFilter", filter)}
+          sizeClass="w-44 h-44"
+          initialsClass="text-4xl"
+        />
+      )}
       <CVHeader />
     </div>
   );
@@ -105,12 +107,14 @@ function ClassicTemplate() {
         {/* ===== RIGHT COLUMN ===== */}
         <div className="order-3 md:order-0 md:col-start-2 md:row-start-1 relative">
           <div className="relative">
-            {/* Desktop header */}
-            <div data-testid="desktop-header" className="hidden md:block" style={{ padding: `${mg(24)}px ${mg(24)}px 0` }}>
-              <CVHeader />
-            </div>
+            {/* Desktop header — hidden when photo is off (name moves to sidebar) */}
+            {visibility.photo && (
+              <div data-testid="desktop-header" className="hidden md:block" style={{ padding: `${mg(24)}px ${mg(24)}px 0` }}>
+                <CVHeader />
+              </div>
+            )}
             {/* Content */}
-            <div style={{ padding: `${mg(16)}px ${mg(24)}px ${mg(24)}px` }}>
+            <div style={{ padding: `${visibility.photo ? mg(16) : mg(44)}px ${mg(24)}px ${mg(24)}px` }}>
               <div className="space-y-5">
                 <Experience />
                 <Education />
