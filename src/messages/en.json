@@ -424,7 +424,12 @@
     "upgradeDescription": "Get the most out of your CV with all premium features.",
     "comingSoon": "Coming soon",
     "feature_pdfNoBranding": "Download PDF without Applio watermark",
-    "feature_pdfNoBranding_desc": "Download your CV as a clean PDF — no Applio branding, just your work."
+    "feature_pdfNoBranding_desc": "Download your CV as a clean PDF — no Applio branding, just your work.",
+    "plan3moLabel": "3 months",
+    "plan6moLabel": "6 months",
+    "planSaveTag": "-13%",
+    "checkout": "Pay with Mercado Pago",
+    "loginRequired": "Sign in first"
   },
   "syncConflict": {
     "title": "We found your CV",

@@ -8,7 +8,7 @@ Always use Context7 MCP when you need library/API documentation, code generation
 
 ## Project Overview
 
-**Applio** is a CV builder with a minimalist Notion-style inline editing experience. Built with Next.js 16 App Router, React 19, and Tailwind CSS v4. Features a marketing landing page at `/`, an interactive editor at `/editor`, OAuth authentication (Google/GitHub) via Auth.js v5, cloud sync (MongoDB), shareable CV links, and a Stripe-based premium plan.
+**Applio** is a CV builder with a minimalist Notion-style inline editing experience. Built with Next.js 16 App Router, React 19, and Tailwind CSS v4. Features a marketing landing page at `/`, an interactive editor at `/editor`, OAuth authentication (Google/GitHub) via Auth.js v5, cloud sync (MongoDB), shareable CV links, and a Mercado Pago-based premium plan.
 
 ## Version Bumping
 
@@ -57,8 +57,8 @@ vercel               # Deploy to production (requires Vercel CLI)
 | `/checkout/success` | `src/app/checkout/success/page.tsx` | Post-payment confirmation, redirects to editor |
 | `/api/upload-photo` | API route | Uploads profile photo to Cloudflare R2 (sharp resize + WebP) |
 | `/api/photo-proxy` | API route | Proxies R2 photo fetches server-side (CORS fallback for PDF generation) |
-| `/api/stripe/checkout` | API route | Creates Stripe Checkout Session |
-| `/api/stripe/webhook` | API route | Handles Stripe webhook (payment → premium upgrade) |
+| `/api/mercadopago/checkout` | API route | Creates Mercado Pago Checkout Pro preference |
+| `/api/mercadopago/webhook` | API route | Handles Mercado Pago payment notification → premium upgrade |
 
 ### Provider Nesting (Editor: `/editor`)
 
@@ -220,13 +220,15 @@ The CVContext exposes `reorder*` methods (using `arrayMove`) in addition to the 
 **API routes:** `src/app/api/cv/route.ts` (GET/POST). Uses `cv-sync.ts` pure functions (`docToCVData`, `cvDataToDoc`) for MongoDB↔CVData mapping.
 **Error handling:** Uses `sonner` toasts + `useSyncStatus()` for visual feedback (4 states: idle/syncing/synced/error).
 
-### Premium Plan: Stripe
+### Premium Plan: Mercado Pago
 
-**Files:** `src/lib/plan-context.tsx`, `src/components/premium/UpgradeDialog.tsx`, `src/components/premium/PremiumBadge.tsx`
+**Files:** `src/lib/plan-context.tsx`, `src/components/premium/UpgradeDialog.tsx`, `src/components/premium/PremiumBadge.tsx`, `src/app/api/mercadopago/checkout/route.ts`, `src/app/api/mercadopago/webhook/route.ts`
 
 - `PlanProvider` fetches plan via `GET /api/cv/plan` which reads `users.subscription` from MongoDB
 - `usePlan()` exposes `plan`, `isPremium`, `devOverride`/`setDevOverride` (for testing)
-- Stripe checkout: `POST /api/stripe/checkout` → creates session → redirect to Stripe → webhook updates user subscription in MongoDB
+- **Two plans:** 3 months ($19.000 ARS) and 6 months ($33.000 ARS). Manual renewal, no auto-subscription
+- Mercado Pago Checkout Pro: `POST /api/mercadopago/checkout` → creates preference → redirect to MP → webhook updates user subscription in MongoDB
+- Webhook extends `currentPeriodEnd` if user already has active pro (stacks time)
 - **Currently gated features:** extra color palettes (wetAsphalt, esmeralda, hielo, floral), accent colors, extra fonts (SourceSans3, Merriweather), sidebar patterns, photo filters (grayscale/studio/warm/cool), optional sections (courses, certifications, awards), PDF without branding
 
 **MongoDB `users` collection (subscription subdocument):**
@@ -384,9 +386,9 @@ src/
 │       │   └── publish/route.ts      # CV publish/unpublish API
 │       ├── auth/
 │       │   └── [...nextauth]/route.ts # Auth.js route handler
-│       └── stripe/
-│           ├── checkout/route.ts    # Create Stripe session
-│           └── webhook/route.ts     # Handle Stripe events
+│       └── mercadopago/
+│           ├── checkout/route.ts    # Create Mercado Pago preference
+│           └── webhook/route.ts     # Handle Mercado Pago payment notifications
 ├── __tests__/                       # Unit tests (Vitest)
 │   ├── cv-migrations.test.ts        # Migration functions (28 tests)
 │   ├── render-rich-text.test.ts     # Rich text rendering (21 tests)
@@ -496,11 +498,8 @@ AUTH_GOOGLE_SECRET
 AUTH_GITHUB_ID
 AUTH_GITHUB_SECRET
 
-# Stripe
-STRIPE_SECRET_KEY
-STRIPE_PUBLISHABLE_KEY
-STRIPE_WEBHOOK_SECRET
-STRIPE_PRICE_ID
+# Mercado Pago
+MP_ACCESS_TOKEN
 
 # Site
 NEXT_PUBLIC_SITE_URL
@@ -572,7 +571,7 @@ When implementing new features, these files almost always need updates:
 | `@dnd-kit/core` + `@dnd-kit/sortable` | Drag-and-drop reordering for all sections |
 | `@react-pdf/renderer` | PDF generation |
 | `@aws-sdk/client-s3` | Photo upload to Cloudflare R2 |
-| `stripe` | Payment processing (server-side) |
+| `mercadopago` | Mercado Pago Checkout Pro (server-side) |
 | `sharp` | Image optimization (server-side, resize + WebP) |
 | `react-easy-crop` | Circular photo cropping |
 | `motion/react` | Animations (UpgradeDialog carousel) |
