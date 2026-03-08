@@ -72,6 +72,7 @@
     "shareError": "Lebenslauf konnte nicht geteilt werden. Bitte versuchen Sie es erneut.",
     "shareOverlayMessage": "Ihr Lebenslauf wird zum Teilen vorbereitet...",
     "shareNameRequired": "Geben Sie Ihren Namen ein, um den Lebenslauf zu teilen.",
+    "shareLoginRequired": "Melden Sie sich an, um Ihren Lebenslauf zu teilen.",
     "free": "Kostenlos",
     "copyright": "Alle Rechte vorbehalten.",
     "pdfNoBranding": "Applio-Logo entfernen",

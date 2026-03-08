@@ -18,6 +18,7 @@ import { useAuth } from "@/lib/auth-context";
 interface UpgradeDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onLogin?: () => void;
 }
 
 const FEATURES = [
@@ -29,6 +30,7 @@ type PlanId = "3mo" | "6mo";
 export const UpgradeDialog = memo(function UpgradeDialog({
   open,
   onOpenChange,
+  onLogin,
 }: UpgradeDialogProps) {
   const t = useTranslations("premium");
   const { user } = useAuth();
@@ -190,8 +192,8 @@ export const UpgradeDialog = memo(function UpgradeDialog({
         {/* CTA */}
         <div className="px-5 pb-5">
           <button
-            disabled={!user || loading}
-            onClick={handleCheckout}
+            disabled={loading}
+            onClick={!user && onLogin ? () => { onOpenChange(false); onLogin(); } : handleCheckout}
             className="w-full h-10 rounded-md flex items-center justify-center gap-2 text-sm font-semibold text-white bg-gray-900 dark:bg-gray-100 dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-60 disabled:cursor-default"
           >
             {loading ? (
