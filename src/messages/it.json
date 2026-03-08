@@ -424,7 +424,12 @@
     "upgradeDescription": "Sfrutta al massimo il tuo CV con tutte le funzionalità premium.",
     "comingSoon": "Prossimamente",
     "feature_pdfNoBranding": "Scarica il PDF senza filigrana Applio",
-    "feature_pdfNoBranding_desc": "Scarica il tuo CV senza filigrana. Solo il tuo lavoro, nient'altro."
+    "feature_pdfNoBranding_desc": "Scarica il tuo CV senza filigrana. Solo il tuo lavoro, nient'altro.",
+    "plan3moLabel": "3 mesi",
+    "plan6moLabel": "6 mesi",
+    "planSaveTag": "-13%",
+    "checkout": "Paga con Mercado Pago",
+    "loginRequired": "Accedi prima"
   },
   "syncConflict": {
     "title": "Abbiamo trovato il tuo CV",
