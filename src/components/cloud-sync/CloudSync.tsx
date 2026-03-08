@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { useAuth } from "@/lib/auth-context";
 import { useCV } from "@/lib/cv-context";
 import { useColorScheme } from "@/lib/color-scheme-context";
+import { migrateColorSchemeName } from "@/lib/color-schemes";
 import { useFontSettings } from "@/lib/font-context";
 import { useTheme } from "@/lib/theme-context";
 import { useAppLocale } from "@/lib/locale-context";
@@ -69,7 +70,7 @@ async function uploadBase64ToR2(base64: string): Promise<string | null> {
 export function CloudSync() {
   const { user } = useAuth();
   const { data, loading: cvLoading, importData, updatePersonalInfo } = useCV();
-  const { colorSchemeName, setColorScheme } = useColorScheme();
+  const { colorSchemeName, accentColor, setColorScheme, setAccentColor } = useColorScheme();
   const { fontFamilyId, fontSizeLevel, setFontFamily, setFontSizeLevel } = useFontSettings();
   const { theme, setTheme } = useTheme();
   const { locale, setLocale } = useAppLocale();
@@ -206,7 +207,7 @@ export function CloudSync() {
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, colorSchemeName, fontFamilyId, fontSizeLevel, theme, locale, user, cvLoading, showConflict]);
+  }, [data, colorSchemeName, accentColor, fontFamilyId, fontSizeLevel, theme, locale, user, cvLoading, showConflict]);
 
   // -----------------------------------------------------------------------
   // Helpers
@@ -236,6 +237,7 @@ export function CloudSync() {
   function buildSettings(): CloudSettings {
     return {
       colorScheme: colorSchemeName,
+      accentColor,
       fontFamily: fontFamilyId,
       fontSizeLevel,
       theme,
@@ -244,7 +246,15 @@ export function CloudSync() {
   }
 
   function applyCloudSettings(settings: CloudSettings) {
-    if (settings.colorScheme) setColorScheme(settings.colorScheme as Parameters<typeof setColorScheme>[0]);
+    // Migrate old 5-scheme names from cloud (peterRiver, emerald, carrot)
+    if (settings.colorScheme && !["default", "wetAsphalt"].includes(settings.colorScheme)) {
+      const migrated = migrateColorSchemeName(settings.colorScheme);
+      setColorScheme(migrated.baseName);
+      setAccentColor(migrated.accentColor);
+    } else {
+      if (settings.colorScheme) setColorScheme(settings.colorScheme as Parameters<typeof setColorScheme>[0]);
+      setAccentColor(settings.accentColor ?? null);
+    }
     if (settings.fontFamily) setFontFamily(settings.fontFamily as Parameters<typeof setFontFamily>[0]);
     if (settings.fontSizeLevel) setFontSizeLevel(settings.fontSizeLevel as Parameters<typeof setFontSizeLevel>[0]);
     if (settings.theme) setTheme(settings.theme as Parameters<typeof setTheme>[0]);

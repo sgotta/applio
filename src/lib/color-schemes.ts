@@ -1,9 +1,4 @@
-export type ColorSchemeName =
-  | "default"
-  | "peterRiver"
-  | "emerald"
-  | "carrot"
-  | "wetAsphalt";
+export type ColorSchemeName = "default" | "wetAsphalt";
 
 export interface ColorScheme {
   name: ColorSchemeName;
@@ -59,66 +54,6 @@ export const COLOR_SCHEMES: Record<ColorSchemeName, ColorScheme> = {
     pageBg: "#ebebeb",
     pageBgDark: "#1a1c20",
   },
-  /* Clear Child · Dodger Blue #1e90ff — light sidebar, accent on icons & name */
-  peterRiver: {
-    name: "peterRiver",
-    swatch: "#1e90ff",
-    sidebarBg: "#f5f5f5",
-    sidebarText: "#1e293b",
-    sidebarMuted: "#64748b",
-    sidebarSeparator: "#e2e8f0",
-    sidebarBadgeBg: "#384152",
-    sidebarBadgeText: "#ffffff",
-    heading: "#1e293b",
-    separator: "#e2e8f0",
-    bullet: "#334155",
-    nameAccent: "transparent",
-    nameColor: "#1a7ed6",
-    entryTitle: "#1a7ed6",
-    sidebarAccent: "#1a7ed6",
-    pageBg: "#e8f2fb",
-    pageBgDark: "#181d22",
-  },
-  /* Emerald · Nephritis #27ae60 — light sidebar, accent on icons & name */
-  emerald: {
-    name: "emerald",
-    swatch: "#2ecc71",
-    sidebarBg: "#f5f5f5",
-    sidebarText: "#1e293b",
-    sidebarMuted: "#64748b",
-    sidebarSeparator: "#e2e8f0",
-    sidebarBadgeBg: "#384152",
-    sidebarBadgeText: "#ffffff",
-    heading: "#1e293b",
-    separator: "#e2e8f0",
-    bullet: "#334155",
-    nameAccent: "transparent",
-    nameColor: "#27ae60",
-    entryTitle: "#27ae60",
-    sidebarAccent: "#27ae60",
-    pageBg: "#e9f7ef",
-    pageBgDark: "#181e1a",
-  },
-  /* Carrot · Pumpkin #d35400 — light sidebar, accent on icons & name */
-  carrot: {
-    name: "carrot",
-    swatch: "#e67e22",
-    sidebarBg: "#f5f5f5",
-    sidebarText: "#1e293b",
-    sidebarMuted: "#64748b",
-    sidebarSeparator: "#e2e8f0",
-    sidebarBadgeBg: "#384152",
-    sidebarBadgeText: "#ffffff",
-    heading: "#1e293b",
-    separator: "#e2e8f0",
-    bullet: "#334155",
-    nameAccent: "transparent",
-    nameColor: "#d35400",
-    entryTitle: "#d35400",
-    sidebarAccent: "#d35400",
-    pageBg: "#fbeee6",
-    pageBgDark: "#1e1b18",
-  },
   /* Wet Asphalt · Midnight Blue #2c3e50 */
   wetAsphalt: {
     name: "wetAsphalt",
@@ -143,13 +78,124 @@ export const COLOR_SCHEMES: Record<ColorSchemeName, ColorScheme> = {
 
 export const COLOR_SCHEME_NAMES: ColorSchemeName[] = [
   "default",
-  "peterRiver",
-  "emerald",
-  "carrot",
   "wetAsphalt",
 ];
 
 export const DEFAULT_COLOR_SCHEME: ColorSchemeName = "default";
+
+/* ── Accent color presets ──────────────────────────────── */
+
+export interface AccentPreset {
+  /** i18n key suffix: "Blue", "Green", "Orange" */
+  name: string;
+  color: string;
+}
+
+export const ACCENT_PRESETS: AccentPreset[] = [
+  { name: "Blue", color: "#1a7ed6" },
+  { name: "Green", color: "#27ae60" },
+  { name: "Orange", color: "#d35400" },
+];
+
+/* ── Color helpers ─────────────────────────────────────── */
+
+function hexToRgb(hex: string): [number, number, number] {
+  const h = hex.replace("#", "");
+  return [
+    parseInt(h.substring(0, 2), 16),
+    parseInt(h.substring(2, 4), 16),
+    parseInt(h.substring(4, 6), 16),
+  ];
+}
+
+function rgbToHex(r: number, g: number, b: number): string {
+  return (
+    "#" +
+    [r, g, b].map((v) => v.toString(16).padStart(2, "0")).join("")
+  );
+}
+
+/** Light mode page bg: mix accent at ~8% opacity over #ebebeb */
+export function hexToTintedPageBg(hex: string): string {
+  const [r, g, b] = hexToRgb(hex);
+  const base = 0xeb; // 235
+  const mix = 0.08;
+  return rgbToHex(
+    Math.round(base + (r - base) * mix),
+    Math.round(base + (g - base) * mix),
+    Math.round(base + (b - base) * mix),
+  );
+}
+
+/** Dark mode page bg: mix accent at ~5% opacity over #1a1c20 */
+export function hexToTintedPageBgDark(hex: string): string {
+  const [r, g, b] = hexToRgb(hex);
+  const baseR = 0x1a,
+    baseG = 0x1c,
+    baseB = 0x20;
+  const mix = 0.05;
+  return rgbToHex(
+    Math.round(baseR + (r - baseR) * mix),
+    Math.round(baseG + (g - baseG) * mix),
+    Math.round(baseB + (b - baseB) * mix),
+  );
+}
+
+/* ── Resolve final scheme from base + accent ───────────── */
+
+/**
+ * Compute the full ColorScheme from a base style and optional accent color.
+ * - "default" base: accent applies to nameColor, entryTitle, sidebarAccent, pageBg, pageBgDark
+ * - "wetAsphalt" base: accent ONLY applies to nameColor and entryTitle (right column)
+ */
+export function resolveColorScheme(
+  baseName: ColorSchemeName,
+  accentColor: string | null,
+): ColorScheme {
+  const base = COLOR_SCHEMES[baseName] ?? COLOR_SCHEMES.default;
+  if (!accentColor) return base;
+
+  if (baseName === "wetAsphalt") {
+    return {
+      ...base,
+      nameColor: accentColor,
+      entryTitle: accentColor,
+    };
+  }
+
+  return {
+    ...base,
+    nameColor: accentColor,
+    entryTitle: accentColor,
+    sidebarAccent: accentColor,
+    pageBg: hexToTintedPageBg(accentColor),
+    pageBgDark: hexToTintedPageBgDark(accentColor),
+  };
+}
+
+/* ── Migration from old 5-scheme system ────────────────── */
+
+export function migrateColorSchemeName(name: string): {
+  baseName: ColorSchemeName;
+  accentColor: string | null;
+} {
+  switch (name) {
+    case "peterRiver":
+      return { baseName: "default", accentColor: "#1a7ed6" };
+    case "emerald":
+      return { baseName: "default", accentColor: "#27ae60" };
+    case "carrot":
+      return { baseName: "default", accentColor: "#d35400" };
+    case "wetAsphalt":
+      return { baseName: "wetAsphalt", accentColor: null };
+    case "default":
+      return { baseName: "default", accentColor: null };
+    default:
+      return { baseName: "default", accentColor: null };
+  }
+}
+
+/* ── Legacy helper (kept for backward compat) ──────────── */
 
 export function getColorScheme(name: ColorSchemeName): ColorScheme {
   return COLOR_SCHEMES[name] || COLOR_SCHEMES.default;
