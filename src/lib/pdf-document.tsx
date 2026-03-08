@@ -620,7 +620,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
           <View style={[styles.main, !visibility.photo ? { paddingTop: 24 } : {}]}>
             {/* Header: Name + Title — hidden when photo is off (name in sidebar) */}
             {visibility.photo && (
-              <View style={{ marginBottom: 20 }}>
+              <View style={{ marginBottom: 30 }}>
                 <Text
                   style={{
                     fontSize: fs(31),
@@ -638,8 +638,8 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                       width: 36,
                       backgroundColor: colors.nameAccent,
                       borderRadius: 1,
-                      marginTop: 5,
-                      marginBottom: 5,
+                      marginTop: 4,
+                      marginBottom: 4,
                     }}
                   />
                 )}
@@ -650,7 +650,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                     color: "#4b5563",
                     textTransform: "uppercase",
                     letterSpacing: 0.5,
-                    marginTop: 0,
+                    marginTop: 10,
                   }}
                 >
                   {personalInfo.jobTitle}
