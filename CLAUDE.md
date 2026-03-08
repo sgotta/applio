@@ -52,6 +52,7 @@ vercel               # Deploy to production (requires Vercel CLI)
 | `/api/auth/*` | `src/app/api/auth/[...nextauth]/route.ts` | Auth.js v5 route handlers (OAuth callbacks, session) |
 | `/checkout/success` | `src/app/checkout/success/page.tsx` | Post-payment confirmation, redirects to editor |
 | `/api/upload-photo` | API route | Uploads profile photo to Cloudflare R2 (sharp resize + WebP) |
+| `/api/photo-proxy` | API route | Proxies R2 photo fetches server-side (CORS fallback for PDF generation) |
 | `/api/stripe/checkout` | API route | Creates Stripe Checkout Session |
 | `/api/stripe/webhook` | API route | Handles Stripe webhook (payment → premium upgrade) |
 
