@@ -166,7 +166,13 @@
     "zoom": "Zoom",
     "cancel": "Cancel",
     "apply": "Apply",
-    "adjust": "Adjust"
+    "adjust": "Adjust",
+    "filters": "Filters",
+    "filterNone": "Original",
+    "filterGrayscale": "B&W",
+    "filterStudio": "Studio",
+    "filterWarm": "Warm",
+    "filterCool": "Cool"
   },
   "editableText": {
     "defaultPlaceholder": "Click to edit...",

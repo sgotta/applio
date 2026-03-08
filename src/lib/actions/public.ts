@@ -2,7 +2,7 @@
 
 import { connectDB } from "@/lib/mongoose";
 import CV from "@/lib/models/cv";
-import type { CVData, CloudSettings, SidebarSectionId } from "@/lib/types";
+import type { CVData, CloudSettings, SidebarSectionId, PhotoFilter } from "@/lib/types";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DocPlain = Record<string, any>;
@@ -31,6 +31,7 @@ export async function fetchPublishedCVBySlug(slug: string): Promise<{
       fullName: plain.personalInfo?.fullName ?? "",
       jobTitle: plain.personalInfo?.jobTitle ?? "",
       photoUrl: plain.personalInfo?.photoUrl,
+      photoFilter: plain.personalInfo?.photoFilter as PhotoFilter | undefined,
       email: plain.personalInfo?.email ?? "",
       phone: plain.personalInfo?.phone ?? "",
       location: plain.personalInfo?.location ?? "",
