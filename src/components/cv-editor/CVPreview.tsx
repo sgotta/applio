@@ -33,6 +33,7 @@ function CVHeader() {
         onChange={(v) => updatePersonalInfo("fullName", v)}
         as="heading"
         placeholder={t("fullNamePlaceholder")}
+        displayStyle={{ color: colorScheme.nameColor }}
       />
       {colorScheme.nameAccent !== "transparent" && (
         <div

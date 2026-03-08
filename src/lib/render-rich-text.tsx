@@ -234,14 +234,14 @@ function parseBlocks(html: string): React.ReactNode[] {
     switch (tagName) {
       case "ul":
         nodes.push(
-          <ul key={key} className="list-disc pl-[1.2em] space-y-0.5" style={{ color: "var(--bullet-color, currentColor)" }}>
+          <ul key={key} className="cv-list list-disc pl-[1.2em] space-y-0.5">
             {parseListItems(inner)}
           </ul>
         );
         break;
       case "ol":
         nodes.push(
-          <ol key={key} className="list-decimal pl-[1.2em] space-y-0.5" style={{ color: "var(--bullet-color, currentColor)" }}>
+          <ol key={key} className="cv-list list-decimal pl-[1.2em] space-y-0.5">
             {parseListItems(inner)}
           </ol>
         );

@@ -272,7 +272,6 @@ function ColorSection({
       <div className="flex gap-2.5">
         {COLOR_SCHEME_NAMES.map((name) => {
           const scheme = COLOR_SCHEMES[name];
-          const isLight = scheme.sidebarText !== "#ffffff";
           const label = t(`colorScheme${name.charAt(0).toUpperCase() + name.slice(1)}`);
           return (
             <div key={name} className="flex flex-col items-center gap-1.5">
@@ -281,11 +280,11 @@ function ColorSection({
                 aria-label={label}
                 className={`relative h-10 w-10 rounded-full transition-all hover:scale-105 focus:outline-none ${
                   colorSchemeName === name ? "ring-2 ring-offset-2 ring-gray-900 dark:ring-gray-100" : ""
-                } ${isLight ? "ring-1 ring-inset ring-black/10" : ""}`}
-                style={{ backgroundColor: scheme.sidebarBg }}
+                }`}
+                style={{ backgroundColor: scheme.swatch }}
               >
                 {colorSchemeName === name && (
-                  <Check className={`absolute inset-0 m-auto h-4 w-4 drop-shadow-sm ${isLight ? "text-gray-800" : "text-white"}`} />
+                  <Check className="absolute inset-0 m-auto h-4 w-4 drop-shadow-sm text-white" />
                 )}
               </button>
               <span className="text-[10px] text-gray-400 dark:text-gray-500 leading-tight text-center truncate max-w-10">{label}</span>
@@ -879,7 +878,6 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <div className="flex flex-wrap gap-4">
                       {COLOR_SCHEME_NAMES.map((name) => {
                         const scheme = COLOR_SCHEMES[name];
-                        const isLight = scheme.sidebarText !== "#ffffff";
                         return (
                           <button
                             key={name}
@@ -887,11 +885,11 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                             className="relative flex flex-col items-center gap-2"
                           >
                             <span
-                              className={`relative h-13 w-13 rounded-full transition-transform hover:scale-105 ${isLight ? "ring-1 ring-inset ring-black/10" : ""} ${colorSchemeName === name ? "ring-2 ring-offset-2 ring-gray-900 dark:ring-gray-100" : ""}`}
-                              style={{ backgroundColor: scheme.sidebarBg }}
+                              className={`relative h-13 w-13 rounded-full transition-transform hover:scale-105 ${colorSchemeName === name ? "ring-2 ring-offset-2 ring-gray-900 dark:ring-gray-100" : ""}`}
+                              style={{ backgroundColor: scheme.swatch }}
                             >
                               {colorSchemeName === name && (
-                                <Check className={`absolute inset-0 m-auto h-4.5 w-4.5 drop-shadow-sm ${isLight ? "text-gray-800" : "text-white"}`} />
+                                <Check className="absolute inset-0 m-auto h-4.5 w-4.5 drop-shadow-sm text-white" />
                               )}
                             </span>
                             <span className="text-[12px] text-gray-500 dark:text-gray-300">

@@ -52,7 +52,7 @@ const styleMap: Record<EditableStyle, string> = {
 
 /** Font sizes in em — scale automatically via container's responsive font-size */
 const fontSizeMap: Record<EditableStyle, string> = {
-  heading: "2.16em",
+  heading: "2.8em",
   subheading: "1.26em",
   itemTitle: "1.17em",
   body: "1em",
