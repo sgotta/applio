@@ -50,6 +50,9 @@ describe("COLOR_SCHEMES integrity", () => {
     "separator",
     "bullet",
     "nameAccent",
+    "nameColor",
+    "entryTitle",
+    "sidebarAccent",
     "pageBg",
     "pageBgDark",
   ] as const;

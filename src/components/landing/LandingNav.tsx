@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useCallback, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import {
@@ -24,8 +24,15 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
+const subscribeNoop = () => () => {};
+function getHasExistingData() {
+  try { return localStorage.getItem("cv-builder-data") !== null; } catch { return false; }
+}
+const getHasExistingDataServer = () => false;
+
 export const LandingNav = memo(function LandingNav() {
   const [scrolled, setScrolled] = useState(false);
+  const hasExistingData = useSyncExternalStore(subscribeNoop, getHasExistingData, getHasExistingDataServer);
   const { theme, setTheme } = useTheme();
   const { locale, setLocale } = useAppLocale();
   const t = useTranslations("landing");
@@ -117,7 +124,7 @@ export const LandingNav = memo(function LandingNav() {
             href="/editor"
             className="hidden sm:inline-flex items-center gap-1.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-medium rounded-full px-5 py-2.5 hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors ml-2"
           >
-            {t("nav.cta")}
+            {hasExistingData ? t("nav.ctaReturning") : t("nav.cta")}
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>

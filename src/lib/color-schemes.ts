@@ -23,6 +23,14 @@ export interface ColorScheme {
   separator: string;
   bullet: string;
   nameAccent: string;
+  /** Color of the full name text in the header */
+  nameColor: string;
+  /** Color for entry titles: company names, institutions, cert/award names */
+  entryTitle: string;
+
+  /* ── Sidebar accent ── */
+  /** Accent color for sidebar icons, section headings, and decorative touches */
+  sidebarAccent: string;
 
   /* ── Page background (behind the CV sheet) ── */
   pageBg: string;
@@ -31,71 +39,83 @@ export interface ColorScheme {
 }
 
 export const COLOR_SCHEMES: Record<ColorSchemeName, ColorScheme> = {
-  /* Default — blue-gray, optimised for B&W print (~12% density) */
+  /* Default — neutral light gray, optimised for B&W print */
   default: {
     name: "default",
-    swatch: "#64748b",
-    sidebarBg: "#dfe4ec",
+    swatch: "#f5f5f5",
+    sidebarBg: "#f5f5f5",
     sidebarText: "#1e293b",
     sidebarMuted: "#64748b",
-    sidebarSeparator: "#c4cad5",
+    sidebarSeparator: "#e2e8f0",
     sidebarBadgeBg: "#384152",
     sidebarBadgeText: "#ffffff",
     heading: "#1e293b",
-    separator: "#cbd5e1",
+    separator: "#e2e8f0",
     bullet: "#334155",
-    nameAccent: "#94a3b8",
-    pageBg: "#e8ebf0",
+    nameAccent: "transparent",
+    nameColor: "#111827",
+    entryTitle: "#111827",
+    sidebarAccent: "#1e293b",
+    pageBg: "#ebebeb",
     pageBgDark: "#1a1c20",
   },
-  /* Clear Child · Dodger Blue #1e90ff */
+  /* Clear Child · Dodger Blue #1e90ff — light sidebar, accent on icons & name */
   peterRiver: {
     name: "peterRiver",
     swatch: "#1e90ff",
-    sidebarBg: "#1a7ed6",
-    sidebarText: "#ffffff",
-    sidebarMuted: "#ffffff66",
-    sidebarSeparator: "#ffffff33",
-    sidebarBadgeBg: "#ffffff33",
+    sidebarBg: "#f5f5f5",
+    sidebarText: "#1e293b",
+    sidebarMuted: "#64748b",
+    sidebarSeparator: "#e2e8f0",
+    sidebarBadgeBg: "#384152",
     sidebarBadgeText: "#ffffff",
-    heading: "#1a7ed6",
-    separator: "#1e90ff40",
-    bullet: "#1e90ff",
-    nameAccent: "#1e90ff",
+    heading: "#1e293b",
+    separator: "#e2e8f0",
+    bullet: "#334155",
+    nameAccent: "transparent",
+    nameColor: "#1a7ed6",
+    entryTitle: "#1a7ed6",
+    sidebarAccent: "#1a7ed6",
     pageBg: "#e8f2fb",
     pageBgDark: "#181d22",
   },
-  /* Emerald · Nephritis #27ae60 */
+  /* Emerald · Nephritis #27ae60 — light sidebar, accent on icons & name */
   emerald: {
     name: "emerald",
     swatch: "#2ecc71",
-    sidebarBg: "#27ae60",
-    sidebarText: "#ffffff",
-    sidebarMuted: "#ffffff66",
-    sidebarSeparator: "#ffffff33",
-    sidebarBadgeBg: "#ffffff33",
+    sidebarBg: "#f5f5f5",
+    sidebarText: "#1e293b",
+    sidebarMuted: "#64748b",
+    sidebarSeparator: "#e2e8f0",
+    sidebarBadgeBg: "#384152",
     sidebarBadgeText: "#ffffff",
-    heading: "#27ae60",
-    separator: "#2ecc7140",
-    bullet: "#27ae60",
-    nameAccent: "#2ecc71",
+    heading: "#1e293b",
+    separator: "#e2e8f0",
+    bullet: "#334155",
+    nameAccent: "transparent",
+    nameColor: "#27ae60",
+    entryTitle: "#27ae60",
+    sidebarAccent: "#27ae60",
     pageBg: "#e9f7ef",
     pageBgDark: "#181e1a",
   },
-  /* Carrot · Pumpkin #d35400 */
+  /* Carrot · Pumpkin #d35400 — light sidebar, accent on icons & name */
   carrot: {
     name: "carrot",
     swatch: "#e67e22",
-    sidebarBg: "#d35400",
-    sidebarText: "#ffffff",
-    sidebarMuted: "#ffffff66",
-    sidebarSeparator: "#ffffff33",
-    sidebarBadgeBg: "#ffffff33",
+    sidebarBg: "#f5f5f5",
+    sidebarText: "#1e293b",
+    sidebarMuted: "#64748b",
+    sidebarSeparator: "#e2e8f0",
+    sidebarBadgeBg: "#384152",
     sidebarBadgeText: "#ffffff",
-    heading: "#d35400",
-    separator: "#e67e2240",
-    bullet: "#d35400",
-    nameAccent: "#e67e22",
+    heading: "#1e293b",
+    separator: "#e2e8f0",
+    bullet: "#334155",
+    nameAccent: "transparent",
+    nameColor: "#d35400",
+    entryTitle: "#d35400",
+    sidebarAccent: "#d35400",
     pageBg: "#fbeee6",
     pageBgDark: "#1e1b18",
   },
@@ -112,7 +132,10 @@ export const COLOR_SCHEMES: Record<ColorSchemeName, ColorScheme> = {
     heading: "#2c3e50",
     separator: "#34495e40",
     bullet: "#34495e",
-    nameAccent: "#34495e",
+    nameAccent: "transparent",
+    nameColor: "#111827",
+    entryTitle: "#111827",
+    sidebarAccent: "#ffffff",
     pageBg: "#eaecee",
     pageBgDark: "#191b1d",
   },

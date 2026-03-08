@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useCallback, useEffect } from "react";
+import Link from "next/link";
 import { useCV } from "@/lib/cv-context";
 import { useTranslations } from "next-intl";
 import { useAppLocale, LOCALES, LOCALE_NAMES } from "@/lib/locale-context";
@@ -271,23 +272,22 @@ function ColorSection({
       <div className="flex gap-2.5">
         {COLOR_SCHEME_NAMES.map((name) => {
           const scheme = COLOR_SCHEMES[name];
-          const isLight = scheme.sidebarText !== "#ffffff";
           const label = t(`colorScheme${name.charAt(0).toUpperCase() + name.slice(1)}`);
           return (
             <div key={name} className="flex flex-col items-center gap-1.5">
               <button
                 onClick={() => setColorScheme(name)}
                 aria-label={label}
-                className={`relative h-10 w-10 rounded-full transition-all hover:scale-105 focus:outline-none ${
+                className={`relative h-10 w-10 rounded-full transition-all hover:scale-105 focus:outline-none border border-gray-200 dark:border-gray-600 ${
                   colorSchemeName === name ? "ring-2 ring-offset-2 ring-gray-900 dark:ring-gray-100" : ""
-                } ${isLight ? "ring-1 ring-inset ring-black/10" : ""}`}
-                style={{ backgroundColor: scheme.sidebarBg }}
+                }`}
+                style={{ backgroundColor: scheme.swatch }}
               >
                 {colorSchemeName === name && (
-                  <Check className={`absolute inset-0 m-auto h-4 w-4 drop-shadow-sm ${isLight ? "text-gray-800" : "text-white"}`} />
+                  <Check className="absolute inset-0 m-auto h-4 w-4 drop-shadow-sm text-white" />
                 )}
               </button>
-              <span className="text-[10px] text-gray-400 dark:text-gray-500 leading-tight text-center truncate max-w-10">{label}</span>
+              <span className="text-[10px] text-gray-400 dark:text-gray-500 leading-tight text-center whitespace-nowrap">{label}</span>
             </div>
           );
         })}
@@ -502,7 +502,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
         const parsed = JSON.parse(result);
 
         if (!isValidCVData(parsed)) {
-          alert(t("importFormatError"));
+          toast.error(t("importFormatError"));
           return;
         }
 
@@ -518,7 +518,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
           }
         }
       } catch {
-        alert(t("importReadError"));
+        toast.error(t("importReadError"));
       }
     };
     reader.readAsText(file);
@@ -878,7 +878,6 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <div className="flex flex-wrap gap-4">
                       {COLOR_SCHEME_NAMES.map((name) => {
                         const scheme = COLOR_SCHEMES[name];
-                        const isLight = scheme.sidebarText !== "#ffffff";
                         return (
                           <button
                             key={name}
@@ -886,11 +885,11 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                             className="relative flex flex-col items-center gap-2"
                           >
                             <span
-                              className={`relative h-13 w-13 rounded-full transition-transform hover:scale-105 ${isLight ? "ring-1 ring-inset ring-black/10" : ""} ${colorSchemeName === name ? "ring-2 ring-offset-2 ring-gray-900 dark:ring-gray-100" : ""}`}
-                              style={{ backgroundColor: scheme.sidebarBg }}
+                              className={`relative h-13 w-13 rounded-full transition-transform hover:scale-105 border border-gray-200 dark:border-gray-600 ${colorSchemeName === name ? "ring-2 ring-offset-2 ring-gray-900 dark:ring-gray-100" : ""}`}
+                              style={{ backgroundColor: scheme.swatch }}
                             >
                               {colorSchemeName === name && (
-                                <Check className={`absolute inset-0 m-auto h-4.5 w-4.5 drop-shadow-sm ${isLight ? "text-gray-800" : "text-white"}`} />
+                                <Check className="absolute inset-0 m-auto h-4.5 w-4.5 drop-shadow-sm text-white" />
                               )}
                             </span>
                             <span className="text-[12px] text-gray-500 dark:text-gray-300">
@@ -1005,13 +1004,23 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
             </SheetContent>
           </Sheet>
+          {/* Desktop: link to landing */}
+          <Link
+            href="/"
+            className="hidden md:flex items-center gap-1.5"
+          >
+            <FileText className="h-5 w-5 text-gray-900 dark:text-gray-100" />
+            <span className="font-display text-base font-bold tracking-tight text-gray-900 dark:text-gray-100">
+              Applio
+            </span>
+          </Link>
+          {/* Mobile: opens menu */}
           <button
-            className="flex items-center gap-1.5 md:pointer-events-none"
+            className="flex md:hidden items-center gap-1.5"
             onClick={() => handleMobileMenuOpen(true)}
             aria-label="Abrir menú"
           >
-            <FileText className="hidden md:block h-5 w-5 text-gray-900 dark:text-gray-100" />
-            <span className="font-display text-lg md:text-base font-bold tracking-tight text-gray-900 dark:text-gray-100">
+            <span className="font-display text-lg font-bold tracking-tight text-gray-900 dark:text-gray-100">
               Applio
             </span>
           </button>

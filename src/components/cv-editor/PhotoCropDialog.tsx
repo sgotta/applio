@@ -4,6 +4,7 @@ import { memo, useState, useCallback, useRef } from "react";
 import Cropper, { type Area } from "react-easy-crop";
 import { useTranslations } from "next-intl";
 import { Upload, Trash2, ImagePlus, Crop, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { useAuth } from "@/lib/auth-context";
 import {
   Dialog,
@@ -91,12 +92,12 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
       if (!file) return;
 
       if (!file.type.startsWith("image/")) {
-        alert(t("invalidImage"));
+        toast.error(t("invalidImage"));
         return;
       }
 
       if (file.size > 2 * 1024 * 1024) {
-        alert(t("imageTooLarge"));
+        toast.error(t("imageTooLarge"));
         return;
       }
 
@@ -243,7 +244,11 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
 
             {currentPhoto ? (
               <div className="flex flex-col items-center gap-6">
-                <div className="w-36 h-36 rounded-full overflow-hidden shrink-0 bg-gray-100 dark:bg-gray-800 grid place-items-center shadow-sm">
+                <button
+                  type="button"
+                  onClick={triggerFileInput}
+                  className="w-36 h-36 rounded-full overflow-hidden shrink-0 bg-gray-100 dark:bg-gray-800 grid place-items-center shadow-sm cursor-pointer hover:opacity-80 transition-opacity"
+                >
                   {previewError ? (
                     <ImagePlus className="w-8 h-8 text-gray-400" />
                   ) : (
@@ -255,7 +260,7 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
                       onError={() => setPreviewError(true)}
                     />
                   )}
-                </div>
+                </button>
 
                 <div className="w-full flex flex-col gap-2.5">
                   {/* Acciones principales */}

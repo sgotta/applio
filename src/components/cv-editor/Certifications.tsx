@@ -93,6 +93,7 @@ function CertificationCard({
           as="itemTitle"
           className="min-w-[60%]"
           placeholder={t("namePlaceholder")}
+          displayStyle={{ color: colorScheme.entryTitle }}
         />
         <EditableText
           value={cert.date}

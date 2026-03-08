@@ -46,7 +46,6 @@ function AppContent() {
         courses: tp("courses"),
         certifications: tp("certifications"),
         awards: tp("awards"),
-        languages: tp("languages"),
       };
       const pdfFontFamily = getFontDefinition(fontFamilyId).pdfFamilyName;
       const pdfFontScale = FONT_SIZE_LEVELS[fontSizeLevel] * PDF_BASE_FONT_SCALE;

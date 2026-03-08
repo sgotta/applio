@@ -33,6 +33,7 @@ function CVHeader() {
         onChange={(v) => updatePersonalInfo("fullName", v)}
         as="heading"
         placeholder={t("fullNamePlaceholder")}
+        displayStyle={{ color: colorScheme.nameColor }}
       />
       {colorScheme.nameAccent !== "transparent" && (
         <div
@@ -57,7 +58,6 @@ function MobileHeader() {
     data: { personalInfo },
     updatePersonalInfo,
   } = useCV();
-  const { colorScheme } = useColorScheme();
 
   return (
     <div className="flex flex-col items-center px-6 pt-6">
@@ -65,8 +65,8 @@ function MobileHeader() {
         currentPhoto={personalInfo.photoUrl}
         fullName={personalInfo.fullName}
         onPhotoChange={(photoUrl) => updatePersonalInfo("photoUrl", photoUrl)}
-        placeholderBg={`${colorScheme.nameAccent}18`}
-        placeholderText={`${colorScheme.nameAccent}90`}
+        sizeClass="w-44 h-44"
+        initialsClass="text-4xl"
       />
       <CVHeader />
     </div>

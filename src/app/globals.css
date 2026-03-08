@@ -268,7 +268,8 @@
   margin: 0;
 }
 .tiptap ul ::marker,
-.tiptap ol ::marker {
+.tiptap ol ::marker,
+.cv-list ::marker {
   color: var(--bullet-color, currentColor);
 }
 .tiptap h2 {
