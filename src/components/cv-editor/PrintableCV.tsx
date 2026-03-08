@@ -184,20 +184,27 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
               </div>
             ) : (
               /* Name + Title in sidebar when photo is hidden */
-              <div>
-                <h2
-                  className="font-semibold leading-tight tracking-tight"
-                  style={{ fontSize: FS.heading, color: colors.nameColor }}
-                >
-                  {personalInfo.fullName}
-                </h2>
-                <p
-                  className="mt-1.5 font-medium uppercase tracking-wide"
-                  style={{ fontSize: FS.small, color: colors.nameColor + "99" }}
-                >
-                  {personalInfo.jobTitle}
-                </p>
-              </div>
+              (() => {
+                const darkSidebar = colors.sidebarText === "#ffffff";
+                const nameClr = darkSidebar ? colors.sidebarText : colors.nameColor;
+                const titleClr = darkSidebar ? colors.sidebarMuted : colors.nameColor + "99";
+                return (
+                  <div>
+                    <h2
+                      className="font-semibold leading-tight tracking-tight"
+                      style={{ fontSize: FS.heading, color: nameClr }}
+                    >
+                      {personalInfo.fullName}
+                    </h2>
+                    <p
+                      className="mt-1.5 font-medium uppercase tracking-wide"
+                      style={{ fontSize: FS.small, color: titleClr }}
+                    >
+                      {personalInfo.jobTitle}
+                    </p>
+                  </div>
+                );
+              })()
             )}
 
             {sidebarSections.map((sectionId) => {

@@ -675,22 +675,31 @@ export const PersonalInfo = memo(function PersonalInfo() {
           />
         ) : (
           <div className="space-y-1.5">
-            <EditableText
-              value={personalInfo.fullName}
-              onChange={(v) => updatePersonalInfo("fullName", v)}
-              as="heading"
-              className="leading-[1.1]!"
-              placeholder={t("namePlaceholder")}
-              displayStyle={{ color: colorScheme.nameColor }}
-            />
-            <EditableText
-              value={personalInfo.jobTitle}
-              onChange={(v) => updatePersonalInfo("jobTitle", v)}
-              as="small"
-              className="uppercase! tracking-wide!"
-              placeholder={t("titlePlaceholder")}
-              displayStyle={{ color: colorScheme.nameColor + "99" }}
-            />
+            {(() => {
+              const darkSidebar = colorScheme.sidebarText === "#ffffff";
+              const nameClr = darkSidebar ? colorScheme.sidebarText : colorScheme.nameColor;
+              const titleClr = darkSidebar ? colorScheme.sidebarMuted : colorScheme.nameColor + "99";
+              return (
+                <>
+                  <EditableText
+                    value={personalInfo.fullName}
+                    onChange={(v) => updatePersonalInfo("fullName", v)}
+                    as="heading"
+                    className="leading-[1.1]!"
+                    placeholder={t("namePlaceholder")}
+                    displayStyle={{ color: nameClr }}
+                  />
+                  <EditableText
+                    value={personalInfo.jobTitle}
+                    onChange={(v) => updatePersonalInfo("jobTitle", v)}
+                    as="small"
+                    className="uppercase! tracking-wide!"
+                    placeholder={t("titlePlaceholder")}
+                    displayStyle={{ color: titleClr }}
+                  />
+                </>
+              );
+            })()}
           </div>
         )}
       </div>

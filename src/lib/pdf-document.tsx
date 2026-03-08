@@ -445,31 +445,38 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                 </View>
               </View>
             ) : (
-              <View>
-                <Text
-                  style={{
-                    fontSize: fs(28),
-                    fontWeight: 600,
-                    color: colors.nameColor,
-                    lineHeight: 1.15,
-                    letterSpacing: -0.3,
-                  }}
-                >
-                  {personalInfo.fullName}
-                </Text>
-                <Text
-                  style={{
-                    fontSize: fs(11),
-                    fontWeight: 500,
-                    color: safePdfColor(colors.nameColor + "99"),
-                    marginTop: 4,
-                    textTransform: "uppercase",
-                    letterSpacing: 0.5,
-                  }}
-                >
-                  {personalInfo.jobTitle}
-                </Text>
-              </View>
+              (() => {
+                const darkSidebar = colors.sidebarText === "#ffffff";
+                const nameClr = darkSidebar ? colors.sidebarText : colors.nameColor;
+                const titleClr = darkSidebar ? colors.sidebarMuted : colors.nameColor + "99";
+                return (
+                  <View>
+                    <Text
+                      style={{
+                        fontSize: fs(28),
+                        fontWeight: 600,
+                        color: nameClr,
+                        lineHeight: 1.15,
+                        letterSpacing: -0.3,
+                      }}
+                    >
+                      {personalInfo.fullName}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: fs(11),
+                        fontWeight: 500,
+                        color: safePdfColor(titleClr),
+                        marginTop: 4,
+                        textTransform: "uppercase",
+                        letterSpacing: 0.5,
+                      }}
+                    >
+                      {personalInfo.jobTitle}
+                    </Text>
+                  </View>
+                );
+              })()
             )}
 
             {sidebarSections.map((sectionId) => {
