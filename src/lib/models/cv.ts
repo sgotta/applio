@@ -24,6 +24,8 @@ const PersonalInfoSchema = new Schema(
 const SettingsSchema = new Schema(
   {
     colorScheme: String,
+    accentColor: String,
+    sidebarColor: String,
     fontFamily: String,
     theme: String,
     locale: String,
@@ -155,6 +157,8 @@ export interface ICV extends Document {
   };
   settings: {
     colorScheme?: string;
+    accentColor?: string;
+    sidebarColor?: string;
     fontFamily?: string;
     theme?: string;
     locale?: string;

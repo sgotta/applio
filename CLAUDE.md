@@ -222,7 +222,7 @@ The CVContext exposes `reorder*` methods (using `arrayMove`) in addition to the 
 - `PlanProvider` fetches plan via `GET /api/cv/plan` which reads `users.subscription` from MongoDB
 - `usePlan()` exposes `plan`, `isPremium`, `devOverride`/`setDevOverride` (for testing)
 - Stripe checkout: `POST /api/stripe/checkout` → creates session → redirect to Stripe → webhook updates user subscription in MongoDB
-- **Currently gated features:** extra color schemes, extra fonts (SourceSans3, Merriweather), sidebar patterns, optional sections (courses, certifications, awards), PDF without branding
+- **Currently gated features:** extra color palettes (wetAsphalt, esmeralda, hielo, floral), accent colors, extra fonts (SourceSans3, Merriweather), sidebar patterns, optional sections (courses, certifications, awards), PDF without branding
 
 **MongoDB `users` collection (subscription subdocument):**
 - Fields: `plan` ("free" | "pro"), `billingInterval`, `provider` (stripe/mercadopago/paypal), `customerId`, `subscriptionId`, `currentPeriodEnd`
@@ -276,7 +276,7 @@ Other localStorage keys:
 - Add new components: `npx shadcn@latest add [name]`
 - Icons: lucide-react only
 
-**Color schemes:** 5 schemes defined in `src/lib/color-schemes.ts` (ivory default). Premium schemes gated behind plan.
+**Color schemes:** 5 palettes in `src/lib/color-schemes.ts`: Default (free, customizable accent), wetAsphalt/esmeralda/hielo/floral (premium). `resolveColorScheme(baseName, accentColor)` applies accent to all except wetAsphalt. Tinted sidebar separators via `hexToTintedSeparator()`. Premium palettes gated behind plan.
 
 **Sidebar patterns:** Decorative patterns for the sidebar, defined in `src/lib/sidebar-patterns.ts`. Settings managed by `SidebarPatternProvider`. All patterns except `"none"` are premium.
 
@@ -386,7 +386,7 @@ src/
 │   ├── cv-migrations.test.ts        # Migration functions (28 tests)
 │   ├── render-rich-text.test.ts     # Rich text rendering (21 tests)
 │   ├── fonts.test.ts                # Font definitions (10 tests)
-│   ├── color-schemes.test.ts        # Color schemes (6 tests)
+│   ├── color-schemes.test.ts        # Color schemes (44 tests)
 │   ├── default-data.test.ts         # Default data (6 tests)
 │   ├── utils.test.ts                # Utility functions (3 tests)
 │   ├── storage.test.ts              # localStorage operations (4 tests)
@@ -404,7 +404,7 @@ src/
 │   ├── render-rich-text-pdf.tsx     # Rich text → PDF elements
 │   ├── fonts.ts                     # Font definitions and helpers
 │   ├── font-context.tsx             # FontSettingsProvider
-│   ├── color-schemes.ts             # 5 color scheme definitions
+│   ├── color-schemes.ts             # 5 color palettes + resolveColorScheme + tinting helpers
 │   ├── color-scheme-context.tsx     # ColorSchemeProvider
 │   ├── theme-context.tsx            # ThemeProvider (dark/light)
 │   ├── locale-context.tsx           # LocaleProvider (i18n)
@@ -584,14 +584,14 @@ When implementing new features, these files almost always need updates:
 
 ### Unit Tests (Vitest)
 
-**114 tests** across 8 files in `src/__tests__/`. Run in ~2s.
+**156 tests** across 8 files in `src/__tests__/`. Run in ~2s.
 
 | File | Tests | Covers |
 |---|---|---|
 | `cv-migrations.test.ts` | 28 | `moveItem`, `migrateSidebarOrder`, `migrateMarkdownBold`, `migrateBulletsToHtml`, `migrateCVData` |
 | `render-rich-text.test.ts` | 21 | `renderRichText`, `renderRichDocument` (HTML → React nodes) |
 | `fonts.test.ts` | 10 | `getFontDefinition`, `FONT_FAMILIES` integrity |
-| `color-schemes.test.ts` | 6 | `getColorScheme`, `COLOR_SCHEMES` integrity |
+| `color-schemes.test.ts` | 44 | `getColorScheme`, `COLOR_SCHEMES`, `resolveColorScheme`, `computeSidebarColors`, `relativeLuminance`, `hexToTinted*`, `SCHEME_METADATA`, `migrateColorSchemeName` |
 | `default-data.test.ts` | 6 | `getDefaultCVData`, `defaultVisibility`, `DEFAULT_SIDEBAR_ORDER` |
 | `utils.test.ts` | 3 | `filenameDateStamp` (with fake timers) |
 | `storage.test.ts` | 4 | `saveCVData`/`loadCVData`/`clearCVData` round-trips |

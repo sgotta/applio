@@ -1,4 +1,4 @@
-export type ColorSchemeName = "default" | "wetAsphalt";
+export type ColorSchemeName = "default" | "wetAsphalt" | "esmeralda" | "hielo" | "floral";
 
 export interface ColorScheme {
   name: ColorSchemeName;
@@ -74,14 +74,98 @@ export const COLOR_SCHEMES: Record<ColorSchemeName, ColorScheme> = {
     pageBg: "#eaecee",
     pageBgDark: "#191b1d",
   },
+  /* Esmeralda · Green accent #27ae60 + sage sidebar #e8f5e9 */
+  esmeralda: {
+    name: "esmeralda",
+    swatch: "#e8f5e9",
+    sidebarBg: "#e8f5e9",
+    sidebarText: "#1e293b",
+    sidebarMuted: "#64748b",
+    sidebarSeparator: "#bddcd3", // 20% #27ae60 over #e2e8f0
+    sidebarBadgeBg: "#384152",
+    sidebarBadgeText: "#ffffff",
+    heading: "#1e293b",
+    separator: "#e2e8f0",
+    bullet: "#334155",
+    nameAccent: "transparent",
+    nameColor: "#27ae60",
+    entryTitle: "#27ae60",
+    sidebarAccent: "#27ae60",
+    pageBg: "#dbe6e0",
+    pageBgDark: "#1b2323",
+  },
+  /* Hielo · Blue accent #1a7ed6 + ice blue sidebar #e8f0fe */
+  hielo: {
+    name: "hielo",
+    swatch: "#e8f0fe",
+    sidebarBg: "#e8f0fe",
+    sidebarText: "#1e293b",
+    sidebarMuted: "#64748b",
+    sidebarSeparator: "#bad3eb", // 20% #1a7ed6 over #e2e8f0
+    sidebarBadgeBg: "#384152",
+    sidebarBadgeText: "#ffffff",
+    heading: "#1e293b",
+    separator: "#e2e8f0",
+    bullet: "#334155",
+    nameAccent: "transparent",
+    nameColor: "#1a7ed6",
+    entryTitle: "#1a7ed6",
+    sidebarAccent: "#1a7ed6",
+    pageBg: "#dae2e9",
+    pageBgDark: "#1a2129",
+  },
+  /* Floral · Orange accent #d35400 + pale pink sidebar #fce4ec */
+  floral: {
+    name: "floral",
+    swatch: "#fce4ec",
+    sidebarBg: "#fce4ec",
+    sidebarText: "#1e293b",
+    sidebarMuted: "#64748b",
+    sidebarSeparator: "#dfcac0", // 20% #d35400 over #e2e8f0
+    sidebarBadgeBg: "#384152",
+    sidebarBadgeText: "#ffffff",
+    heading: "#1e293b",
+    separator: "#e2e8f0",
+    bullet: "#334155",
+    nameAccent: "transparent",
+    nameColor: "#d35400",
+    entryTitle: "#d35400",
+    sidebarAccent: "#d35400",
+    pageBg: "#e9dfd8",
+    pageBgDark: "#231f1e",
+  },
 };
 
 export const COLOR_SCHEME_NAMES: ColorSchemeName[] = [
   "default",
   "wetAsphalt",
+  "esmeralda",
+  "hielo",
+  "floral",
 ];
 
 export const DEFAULT_COLOR_SCHEME: ColorSchemeName = "default";
+
+/* ── Scheme metadata (customizable vs template) ────────── */
+
+export type SchemeCategory = "customizable" | "palette";
+
+export interface SchemeMetadata {
+  name: ColorSchemeName;
+  category: SchemeCategory;
+  /** i18n key suffix for the label */
+  labelKey: string;
+  /** Whether this scheme requires premium */
+  premium: boolean;
+}
+
+export const SCHEME_METADATA: SchemeMetadata[] = [
+  { name: "default", category: "customizable", labelKey: "Default", premium: false },
+  { name: "wetAsphalt", category: "palette", labelKey: "WetAsphalt", premium: true },
+  { name: "esmeralda", category: "palette", labelKey: "Esmeralda", premium: true },
+  { name: "hielo", category: "palette", labelKey: "Hielo", premium: true },
+  { name: "floral", category: "palette", labelKey: "Floral", premium: true },
+];
 
 /* ── Accent color presets ──────────────────────────────── */
 
@@ -141,33 +225,94 @@ export function hexToTintedPageBgDark(hex: string): string {
   );
 }
 
+/** Sidebar separator: mix accent at ~20% over #e2e8f0 base */
+export function hexToTintedSeparator(hex: string): string {
+  const [r, g, b] = hexToRgb(hex);
+  const base = [0xe2, 0xe8, 0xf0];
+  const mix = 0.2;
+  return rgbToHex(
+    Math.round(base[0] + (r - base[0]) * mix),
+    Math.round(base[1] + (g - base[1]) * mix),
+    Math.round(base[2] + (b - base[2]) * mix),
+  );
+}
+
+/* ── Luminance & auto-computed sidebar colors ──────────── */
+
+/**
+ * Compute relative luminance (WCAG 2.1 sRGB formula).
+ * Returns 0 (black) to 1 (white).
+ */
+export function relativeLuminance(hex: string): number {
+  const [r, g, b] = hexToRgb(hex).map((c) => {
+    const s = c / 255;
+    return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+export interface SidebarDerivedColors {
+  sidebarBg: string;
+  sidebarText: string;
+  sidebarMuted: string;
+  sidebarSeparator: string;
+  sidebarBadgeBg: string;
+  sidebarBadgeText: string;
+}
+
+/**
+ * Auto-compute all sidebar text/muted/separator/badge colors from a background hex.
+ * Uses luminance threshold: dark bg → white text system, light bg → dark text system.
+ */
+export function computeSidebarColors(bgHex: string): SidebarDerivedColors {
+  const isDark = relativeLuminance(bgHex) < 0.4;
+
+  if (isDark) {
+    return {
+      sidebarBg: bgHex,
+      sidebarText: "#ffffff",
+      sidebarMuted: "#ffffff66",
+      sidebarSeparator: "#ffffff33",
+      sidebarBadgeBg: "#ffffff33",
+      sidebarBadgeText: "#ffffff",
+    };
+  }
+
+  return {
+    sidebarBg: bgHex,
+    sidebarText: "#1e293b",
+    sidebarMuted: "#64748b",
+    sidebarSeparator: "#e2e8f0",
+    sidebarBadgeBg: "#384152",
+    sidebarBadgeText: "#ffffff",
+  };
+}
+
 /* ── Resolve final scheme from base + accent ───────────── */
 
 /**
- * Compute the full ColorScheme from a base style and optional accent color.
- * - "default" base: accent applies to nameColor, entryTitle, sidebarAccent, pageBg, pageBgDark
- * - "wetAsphalt" base: accent ONLY applies to nameColor and entryTitle (right column)
+ * Compute the full ColorScheme from a base style + optional accent color.
+ * - wetAsphalt: return base as-is (dark sidebar, no accent).
+ * - All others: apply accent overrides if provided.
  */
 export function resolveColorScheme(
   baseName: ColorSchemeName,
   accentColor: string | null,
 ): ColorScheme {
   const base = COLOR_SCHEMES[baseName] ?? COLOR_SCHEMES.default;
-  if (!accentColor) return base;
 
-  if (baseName === "wetAsphalt") {
-    return {
-      ...base,
-      nameColor: accentColor,
-      entryTitle: accentColor,
-    };
-  }
+  // wetAsphalt: always return base unchanged (no accent support)
+  if (baseName === "wetAsphalt") return base;
+
+  // No accent provided: return base as-is
+  if (!accentColor) return base;
 
   return {
     ...base,
     nameColor: accentColor,
     entryTitle: accentColor,
     sidebarAccent: accentColor,
+    sidebarSeparator: hexToTintedSeparator(accentColor),
     pageBg: hexToTintedPageBg(accentColor),
     pageBgDark: hexToTintedPageBgDark(accentColor),
   };
@@ -181,11 +326,11 @@ export function migrateColorSchemeName(name: string): {
 } {
   switch (name) {
     case "peterRiver":
-      return { baseName: "default", accentColor: "#1a7ed6" };
+      return { baseName: "hielo", accentColor: null };
     case "emerald":
-      return { baseName: "default", accentColor: "#27ae60" };
+      return { baseName: "esmeralda", accentColor: null };
     case "carrot":
-      return { baseName: "default", accentColor: "#d35400" };
+      return { baseName: "floral", accentColor: null };
     case "wetAsphalt":
       return { baseName: "wetAsphalt", accentColor: null };
     case "default":

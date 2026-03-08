@@ -247,7 +247,8 @@ export function CloudSync() {
 
   function applyCloudSettings(settings: CloudSettings) {
     // Migrate old 5-scheme names from cloud (peterRiver, emerald, carrot)
-    if (settings.colorScheme && !["default", "wetAsphalt"].includes(settings.colorScheme)) {
+    const validNames = ["default", "wetAsphalt", "esmeralda", "hielo", "floral"];
+    if (settings.colorScheme && !validNames.includes(settings.colorScheme)) {
       const migrated = migrateColorSchemeName(settings.colorScheme);
       setColorScheme(migrated.baseName);
       setAccentColor(migrated.accentColor);
