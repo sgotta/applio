@@ -381,7 +381,7 @@ describe("toSettings", () => {
 
   it("provides defaults for missing settings", () => {
     const s = toSettings({});
-    expect(s.colorScheme).toBe("ivory");
+    expect(s.colorScheme).toBe("default");
     expect(s.fontFamily).toBe("inter");
     expect(s.fontSizeLevel).toBe(2);
     expect(s.theme).toBe("light");
