@@ -23,7 +23,7 @@ import { useAuth } from "@/lib/auth-context";
 import { usePlan } from "@/lib/plan-context";
 import { useSyncStatus, type SyncStatus } from "@/lib/sync-status-context";
 import { LoginDialog } from "@/components/auth/LoginDialog";
-import { UpgradeDialog } from "@/components/premium/UpgradeDialog";
+import { UpgradeDialog, type UpgradeFeatureKey } from "@/components/premium/UpgradeDialog";
 import { PremiumBadge } from "@/components/premium/PremiumBadge";
 import {
   Download, FileUp, FileDown, FileText, FolderDown, Globe, Type,
@@ -329,7 +329,7 @@ interface PaletteSectionProps {
   setColorScheme: (name: ColorSchemeName) => void;
   setAccentColor: (color: string | null) => void;
   isPremium: boolean;
-  onUpgrade: () => void;
+  onUpgrade: (feature?: UpgradeFeatureKey) => void;
   t: (key: string) => string;
 }
 
@@ -361,7 +361,7 @@ function PaletteSection({
               )}
               <button
                 onClick={() => {
-                  if (isLocked) { onUpgrade(); return; }
+                  if (isLocked) { onUpgrade("palettes"); return; }
                   setColorScheme(option.schemeName);
                   setAccentColor(option.accent);
                 }}
@@ -547,6 +547,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   const tauth = useTranslations("auth");
   const tl = useTranslations("languages");
   const tsync = useTranslations("sync");
+  const tpremium = useTranslations("premium");
   const { status: syncStatus } = useSyncStatus();
   const { locale, setLocale } = useAppLocale();
   const { theme, setTheme } = useTheme();
@@ -558,6 +559,8 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   const [mobileMenuPage, setMobileMenuPage] = useState<MobileMenuPage>("main");
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
   const [upgradeDialogOpen, setUpgradeDialogOpen] = useState(false);
+  const [upgradeFeature, setUpgradeFeature] = useState<UpgradeFeatureKey | undefined>();
+  const [pdfUpsellOpen, setPdfUpsellOpen] = useState(false);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
   const [shareCopied, setShareCopied] = useState(false);
@@ -836,8 +839,14 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   const backButtonClass =
     "w-full flex items-center gap-2 px-4 h-14 border-b border-gray-100 dark:border-border text-[17px] font-bold text-gray-900 dark:text-gray-100 tracking-tight hover:bg-gray-50 dark:hover:bg-accent/40 transition-colors cursor-pointer shrink-0";
 
+  /* ── PDF upsell gate ────────────────────────────────── */
+  const handlePDF = () => {
+    if (isPremium) { onPrintPDF(); return; }
+    setPdfUpsellOpen(true);
+  };
+
   /* ── Shared design section props ──────────────────────── */
-  const onUpgrade = () => setUpgradeDialogOpen(true);
+  const onUpgrade = (feature?: UpgradeFeatureKey) => { setUpgradeFeature(feature); setUpgradeDialogOpen(true); };
   const accentPickerProps: AccentPickerProps = { accentColor, setAccentColor, t: t as (key: string) => string };
   const paletteProps: PaletteSectionProps = { colorSchemeName, accentColor, setColorScheme, setAccentColor, isPremium, onUpgrade, t: t as (key: string) => string };
   const isPaletteActive = colorSchemeName === "wetAsphalt";
@@ -904,7 +913,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     <div className={isPaletteActive ? "opacity-40 pointer-events-none" : ""}>
                       <button
                         onClick={() => {
-                          if (!isPremium) { setMobileMenuOpen(false); onUpgrade(); return; }
+                          if (!isPremium) { setMobileMenuOpen(false); onUpgrade("accentColor"); return; }
                           setMobileMenuPage("accent");
                         }}
                         className={menuItemClass}
@@ -978,7 +987,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       {t("fileMenu")}
                     </p>
 
-                    <button onClick={() => { setMobileMenuOpen(false); onPrintPDF(); }} disabled={isGeneratingPDF} className={`${menuItemClass} disabled:opacity-50`}>
+                    <button onClick={() => { setMobileMenuOpen(false); handlePDF(); }} disabled={isGeneratingPDF} className={`${menuItemClass} disabled:opacity-50`}>
                       <span className="flex items-center gap-3">
                         <span className="h-10 w-10 flex items-center justify-center rounded-xl bg-red-50 dark:bg-red-900/20 text-red-500 shrink-0">
                           {isGeneratingPDF ? <Loader2 className="h-4.5 w-4.5 animate-spin" /> : <Download className="h-4.5 w-4.5" />}
@@ -1274,7 +1283,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                         data-testid="btn-accent-color"
                         className="h-10 w-10"
                         onClick={(e) => {
-                          if (!isPremium) { e.preventDefault(); onUpgrade(); }
+                          if (!isPremium) { e.preventDefault(); onUpgrade("accentColor"); }
                         }}
                       >
                         <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-violet-50 dark:bg-violet-900/20 text-violet-500">
@@ -1364,7 +1373,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
               <PopoverContent className="w-52 p-3 space-y-2" align="end">
                 <div className="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800">
                   <button
-                    onClick={() => { setFileMenuOpen(false); onPrintPDF(); }}
+                    onClick={() => { setFileMenuOpen(false); handlePDF(); }}
                     disabled={isGeneratingPDF}
                     className="flex w-full items-center gap-3 h-10 px-4 text-[13px] font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors disabled:opacity-50"
                   >
@@ -1527,7 +1536,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                   isPremium={isPremium}
                   syncStatus={syncStatus}
                   onSignOut={signOut}
-                  onUpgrade={() => setUpgradeDialogOpen(true)}
+                  onUpgrade={() => onUpgrade()}
                   onLogin={() => setLoginDialogOpen(true)}
                   onClose={() => setAccountDesktopOpen(false)}
                   t={t as (key: string) => string}
@@ -1578,7 +1587,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                 isPremium={isPremium}
                 syncStatus={syncStatus}
                 onSignOut={signOut}
-                onUpgrade={() => setUpgradeDialogOpen(true)}
+                onUpgrade={() => onUpgrade()}
                 onLogin={() => setLoginDialogOpen(true)}
                 onClose={() => setAccountMobileOpen(false)}
                 t={t as (key: string) => string}
@@ -1597,7 +1606,37 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
     <LoginDialog open={loginDialogOpen} onOpenChange={setLoginDialogOpen} />
 
     {/* Upgrade dialog */}
-    <UpgradeDialog open={upgradeDialogOpen} onOpenChange={setUpgradeDialogOpen} onLogin={() => setLoginDialogOpen(true)} />
+    <UpgradeDialog open={upgradeDialogOpen} onOpenChange={setUpgradeDialogOpen} onLogin={() => setLoginDialogOpen(true)} initialFeature={upgradeFeature} />
+
+    {/* PDF upsell dialog */}
+    <Dialog open={pdfUpsellOpen} onOpenChange={setPdfUpsellOpen}>
+      <DialogContent className="sm:max-w-xs p-0 gap-0 overflow-hidden">
+        <DialogDescription className="sr-only">{tpremium("pdfUpsellBody")}</DialogDescription>
+        <div className="pt-6 px-6 pb-2 text-center">
+          <div className="h-16 w-16 rounded-2xl flex items-center justify-center bg-red-50 dark:bg-red-900/20 mx-auto mb-4">
+            <FolderDown className="h-8 w-8 text-red-500" />
+          </div>
+          <DialogTitle className="text-lg font-bold tracking-tight">{tpremium("pdfUpsellTitle")}</DialogTitle>
+        </div>
+        <p className="px-6 pb-4 text-center text-sm text-muted-foreground leading-relaxed">
+          {tpremium("pdfUpsellBody")}
+        </p>
+        <div className="px-5 pb-5 space-y-2">
+          <button
+            onClick={() => { setPdfUpsellOpen(false); onUpgrade("pdfNoBranding"); }}
+            className="w-full h-10 rounded-md flex items-center justify-center text-sm font-semibold text-white bg-gray-900 dark:bg-gray-100 dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+          >
+            {tpremium("pdfUpsellUpgrade")}
+          </button>
+          <button
+            onClick={() => { setPdfUpsellOpen(false); onPrintPDF(); }}
+            className="w-full h-10 rounded-md flex items-center justify-center text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+          >
+            {tpremium("pdfUpsellContinue")}
+          </button>
+        </div>
+      </DialogContent>
+    </Dialog>
 
     {/* Share dialog */}
     <Dialog open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
@@ -1656,7 +1695,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
         </span>
       </button>
       <button
-        onClick={() => onPrintPDF()}
+        onClick={handlePDF}
         disabled={isGeneratingPDF}
         className="flex items-center gap-2 rounded-full border border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-card/90 backdrop-blur-sm pl-2 pr-3.5 py-2 shadow-lg transition-all hover:shadow-xl hover:scale-105 active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
       >

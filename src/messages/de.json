@@ -424,13 +424,20 @@
     "upgradeTitle": "Premium freischalten",
     "upgradeDescription": "Holen Sie das Beste aus Ihrem Lebenslauf mit allen Premium-Funktionen.",
     "comingSoon": "Demnächst verfügbar",
-    "feature_pdfNoBranding": "PDF ohne Applio-Wasserzeichen herunterladen",
-    "feature_pdfNoBranding_desc": "Laden Sie Ihren Lebenslauf ohne Wasserzeichen herunter. Nur Ihre Arbeit.",
+    "feature_palettes": "Heben Sie Ihren Lebenslauf mit professionellen Farbpaletten hervor",
+    "feature_accentColor": "Wählen Sie die Akzentfarbe, die Ihren Stil widerspiegelt",
+    "feature_pdfNoBranding": "PDF ohne Applio-Branding herunterladen",
+    "feature_photoFilters": "Verleihen Sie Ihrem Profilfoto eine einzigartige Note",
+    "feature_earlyAccess": "Frühzeitiger Zugang zu neuen Funktionen",
     "plan3moLabel": "3 Monate",
     "plan6moLabel": "6 Monate",
     "planSaveTag": "-13%",
     "checkout": "Mit Mercado Pago bezahlen",
-    "loginRequired": "Bitte zuerst anmelden"
+    "loginRequired": "Bitte zuerst anmelden",
+    "pdfUpsellTitle": "Ihr Lebenslauf ist fertig",
+    "pdfUpsellBody": "Heben Sie ihn hervor: Laden Sie ohne Applio-Branding herunter und hinterlassen Sie einen stärkeren ersten Eindruck. Für weniger als eine Pizza.",
+    "pdfUpsellUpgrade": "Premium testen",
+    "pdfUpsellContinue": "Kostenlos fortfahren"
   },
   "syncConflict": {
     "title": "Wir haben Ihren Lebenslauf gefunden",

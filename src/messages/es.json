@@ -424,13 +424,20 @@
     "upgradeTitle": "Desbloqueá Premium",
     "upgradeDescription": "Sacale el máximo jugo a tu CV con todas las funciones premium.",
     "comingSoon": "Próximamente",
-    "feature_pdfNoBranding": "Descargá el PDF sin marca de agua de Applio",
-    "feature_pdfNoBranding_desc": "Descargá tu CV sin marcas de agua. Solo tu trabajo, nada más.",
+    "feature_palettes": "Destacá tu CV con paletas de colores profesionales",
+    "feature_accentColor": "Elegí el color de acento que mejor represente tu estilo",
+    "feature_pdfNoBranding": "Descargá el PDF sin la marca de Applio",
+    "feature_photoFilters": "Dale un toque único a tu foto de perfil con filtros",
+    "feature_earlyAccess": "Acceso anticipado a nuevas funciones",
     "plan3moLabel": "3 meses",
     "plan6moLabel": "6 meses",
     "planSaveTag": "-13%",
     "checkout": "Pagar con Mercado Pago",
-    "loginRequired": "Iniciá sesión primero"
+    "loginRequired": "Iniciá sesión primero",
+    "pdfUpsellTitle": "Tu CV está listo",
+    "pdfUpsellBody": "Llevalo al siguiente nivel: descargá sin la marca de Applio y causá una mejor primera impresión. Por menos de lo que sale una pizza.",
+    "pdfUpsellUpgrade": "Probá Premium",
+    "pdfUpsellContinue": "Continuar gratis"
   },
   "syncConflict": {
     "title": "Encontramos tu CV",
