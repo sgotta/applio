@@ -542,7 +542,7 @@ type MobileMenuPage = "main" | "accent" | "palette" | "font" | "sections" | "lan
 export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   const { data, importData, toggleSection } = useCV();
   const { user, signOut } = useAuth();
-  const { isPremium, devOverride, setDevOverride } = usePlan();
+  const { isPremium } = usePlan();
   const t = useTranslations("toolbar");
   const tauth = useTranslations("auth");
   const tl = useTranslations("languages");
@@ -776,6 +776,60 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
     }
   }, [shareUrl]);
 
+  const handleFloatingShare = useCallback(async () => {
+    if (isSharing) return;
+
+    if (!user) {
+      toast(t("shareLoginRequired"));
+      return;
+    }
+
+    if (!canShare) {
+      toast(t("shareNameRequired"));
+      return;
+    }
+
+    setIsSharing(true);
+
+    try {
+      const res = await fetch("/api/cv/publish", { method: "POST" });
+      const result = res.ok ? await res.json() : null;
+      const slug: string | null = result?.slug ?? null;
+
+      if (!slug) {
+        toast.error(t("shareError"));
+        return;
+      }
+
+      const url = `${window.location.origin}/cv/${slug}`;
+
+      // Use native Web Share API on mobile (coarse pointer = touch device)
+      const isMobile = window.matchMedia("(pointer: coarse)").matches;
+      if (isMobile && navigator.share) {
+        try {
+          await navigator.share({
+            title: data.personalInfo.fullName,
+            text: t("shareDescription"),
+            url,
+          });
+          return;
+        } catch (err) {
+          // User cancelled or share failed — fall back to dialog
+          if (err instanceof Error && err.name === "AbortError") return;
+        }
+      }
+
+      // Desktop fallback: open share dialog
+      setShareUrl(url);
+      setShareCopied(false);
+      setShareDialogOpen(true);
+    } catch {
+      toast.error(t("shareError"));
+    } finally {
+      setIsSharing(false);
+    }
+  }, [user, canShare, isSharing, t, data.personalInfo.fullName]);
+
   const menuItemClass =
     "flex w-full items-center justify-between px-4 py-2.5 text-[15px] font-medium text-gray-800 hover:bg-gray-50 dark:text-gray-100 dark:hover:bg-accent/60 transition-colors cursor-pointer";
 
@@ -962,7 +1016,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       </button>
                     ) : (
                       <button
-                        onClick={() => { setMobileMenuOpen(false); setLoginDialogOpen(true); }}
+                        onClick={() => { setMobileMenuOpen(false); toast(t("shareLoginRequired")); }}
                         className={`${menuItemClass} opacity-50`}
                       >
                         <span className="flex items-center gap-3">
@@ -1338,26 +1392,26 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
               </PopoverContent>
             </Popover>
 
-            {/* Share button (only for logged-in users) */}
-            {user && (
-              <Tooltip>
-                <TooltipTrigger asChild>
+            {/* Share button (always visible) */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="inline-flex">
                   <Button
                     variant="ghost"
                     size="icon"
                     aria-label={t("share")}
-                    onClick={handleShare}
-                    disabled={isSharing || !canShare}
-                    className={`h-10 w-10 ${!canShare ? "opacity-50" : ""}`}
+                    onClick={user ? handleShare : undefined}
+                    disabled={!user || isSharing || !canShare}
+                    className={`h-10 w-10 ${!user || !canShare ? "opacity-50" : ""}`}
                   >
                     <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-green-50 dark:bg-green-900/20 text-green-500">
                       {isSharing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Share2 className="h-4 w-4" />}
                     </span>
                   </Button>
-                </TooltipTrigger>
-                <TooltipContent>{t("share")}</TooltipContent>
-              </Tooltip>
-            )}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>{!user ? t("shareLoginRequired") : t("share")}</TooltipContent>
+            </Tooltip>
 
             {/* Divider: CV tools | App settings */}
             <div className="h-5 w-px bg-gray-200 dark:bg-gray-700 mx-1" />
@@ -1543,7 +1597,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
     <LoginDialog open={loginDialogOpen} onOpenChange={setLoginDialogOpen} />
 
     {/* Upgrade dialog */}
-    <UpgradeDialog open={upgradeDialogOpen} onOpenChange={setUpgradeDialogOpen} />
+    <UpgradeDialog open={upgradeDialogOpen} onOpenChange={setUpgradeDialogOpen} onLogin={() => setLoginDialogOpen(true)} />
 
     {/* Share dialog */}
     <Dialog open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
@@ -1588,21 +1642,32 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
     </Dialog>
 
 
-    {/* Floating plan toggle (visible while Stripe is not integrated) */}
-    {(
+    {/* Floating action buttons */}
+    <div className="fixed bottom-5 right-4 md:bottom-6 md:right-6 z-50 flex flex-col gap-2.5">
       <button
-        onClick={() => setDevOverride(devOverride === "premium" ? "free" : "premium")}
-        className="fixed bottom-5 right-4 md:bottom-6 md:right-6 z-50 flex items-center gap-2 rounded-full border border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-card/90 backdrop-blur-sm pl-2 pr-3.5 py-2 shadow-lg transition-all hover:shadow-xl hover:scale-105 active:scale-95"
+        onClick={handleFloatingShare}
+        className={`flex items-center gap-2 rounded-full border border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-card/90 backdrop-blur-sm pl-2 pr-3.5 py-2 shadow-lg transition-all hover:shadow-xl hover:scale-105 active:scale-95 ${!user || isSharing ? "opacity-50" : ""} ${isSharing ? "pointer-events-none" : ""}`}
       >
-        <span className="h-7 w-7 flex items-center justify-center rounded-full bg-amber-50 dark:bg-amber-900/20 text-amber-500 shrink-0">
-          <Sparkles className="h-3.5 w-3.5" />
+        <span className="h-7 w-7 flex items-center justify-center rounded-full bg-green-50 dark:bg-green-900/20 text-green-500 shrink-0">
+          {isSharing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Share2 className="h-3.5 w-3.5" />}
         </span>
-        <span className={`text-xs font-semibold tracking-wide ${isPremium ? "text-emerald-600 dark:text-emerald-400" : "text-gray-500 dark:text-gray-400"}`}>
-          {isPremium ? "PRO" : "FREE"}
+        <span className="text-xs font-semibold tracking-wide text-gray-600 dark:text-gray-300 flex-1 text-center">
+          {t("share")}
         </span>
-        <span className={`h-2 w-2 rounded-full shrink-0 ${isPremium ? "bg-emerald-500 shadow-[0_0_6px_1px_rgba(16,185,129,0.4)]" : "bg-gray-300 dark:bg-gray-600"}`} />
       </button>
-    )}
+      <button
+        onClick={() => onPrintPDF()}
+        disabled={isGeneratingPDF}
+        className="flex items-center gap-2 rounded-full border border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-card/90 backdrop-blur-sm pl-2 pr-3.5 py-2 shadow-lg transition-all hover:shadow-xl hover:scale-105 active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
+      >
+        <span className="h-7 w-7 flex items-center justify-center rounded-full bg-red-50 dark:bg-red-900/20 text-red-500 shrink-0">
+          {isGeneratingPDF ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Download className="h-3.5 w-3.5" />}
+        </span>
+        <span className="text-xs font-semibold tracking-wide text-gray-600 dark:text-gray-300 flex-1 text-center">
+          PDF
+        </span>
+      </button>
+    </div>
     </>
   );
 }

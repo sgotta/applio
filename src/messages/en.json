@@ -72,6 +72,7 @@
     "shareError": "Could not share your CV. Please try again.",
     "shareOverlayMessage": "Preparing your CV for sharing...",
     "shareNameRequired": "Enter your name to share your CV.",
+    "shareLoginRequired": "Sign in to share your CV.",
     "free": "Free",
     "copyright": "All rights reserved.",
     "pdfNoBranding": "Remove Applio branding",
