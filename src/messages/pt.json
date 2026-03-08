@@ -424,7 +424,12 @@
     "upgradeDescription": "Aproveite ao máximo seu CV com todos os recursos premium.",
     "comingSoon": "Em breve",
     "feature_pdfNoBranding": "Baixar PDF sem marca d'água do Applio",
-    "feature_pdfNoBranding_desc": "Baixe seu CV sem marca d'água. Só o seu trabalho, nada mais."
+    "feature_pdfNoBranding_desc": "Baixe seu CV sem marca d'água. Só o seu trabalho, nada mais.",
+    "plan3moLabel": "3 meses",
+    "plan6moLabel": "6 meses",
+    "planSaveTag": "-13%",
+    "checkout": "Pagar com Mercado Pago",
+    "loginRequired": "Faça login primeiro"
   },
   "syncConflict": {
     "title": "Encontramos seu CV",

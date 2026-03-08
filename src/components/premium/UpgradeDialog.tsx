@@ -11,8 +11,9 @@ import {
 } from "@/components/ui/dialog";
 import {
   FileText,
-  Clock,
+  Loader2,
 } from "lucide-react";
+import { useAuth } from "@/lib/auth-context";
 
 interface UpgradeDialogProps {
   open: boolean;
@@ -23,19 +24,23 @@ const FEATURES = [
   { icon: FileText, key: "pdfNoBranding", color: "text-red-500", bg: "bg-red-50 dark:bg-red-900/20", hex: "#ef4444" },
 ] as const;
 
+type PlanId = "3mo" | "6mo";
+
 export const UpgradeDialog = memo(function UpgradeDialog({
   open,
   onOpenChange,
 }: UpgradeDialogProps) {
   const t = useTranslations("premium");
+  const { user } = useAuth();
   const [current, setCurrent] = useState(0);
+  const [selectedPlan, setSelectedPlan] = useState<PlanId>("3mo");
+  const [loading, setLoading] = useState(false);
   const touchStartX = useRef<number | null>(null);
 
   const goPrev = useCallback(() => setCurrent((c) => Math.max(0, c - 1)), []);
   const goNext = useCallback(() => setCurrent((c) => Math.min(FEATURES.length - 1, c + 1)), []);
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect -- reset carousel on open
-  useEffect(() => { if (open) setCurrent(0); }, [open]);
+  useEffect(() => { if (open) { setCurrent(0); setSelectedPlan("3mo"); setLoading(false); } }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -64,6 +69,26 @@ export const UpgradeDialog = memo(function UpgradeDialog({
     [goNext, goPrev]
   );
 
+  const handleCheckout = useCallback(async () => {
+    if (loading) return;
+    setLoading(true);
+    try {
+      const res = await fetch("/api/mercadopago/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ planId: selectedPlan }),
+      });
+      if (!res.ok) throw new Error(`Checkout failed: ${res.status}`);
+      const { initPoint } = await res.json();
+      if (initPoint) {
+        window.location.href = initPoint;
+      }
+    } catch (error) {
+      console.error("Checkout error:", error);
+      setLoading(false);
+    }
+  }, [loading, selectedPlan]);
+
   const feature = FEATURES[current];
 
   return (
@@ -87,7 +112,7 @@ export const UpgradeDialog = memo(function UpgradeDialog({
 
         {/* Hero section — fixed height to prevent layout shifts */}
         <div
-          className="h-52 flex flex-col items-center justify-center px-8 text-center overflow-hidden"
+          className="h-44 flex flex-col items-center justify-center px-8 text-center overflow-hidden"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
@@ -114,7 +139,7 @@ export const UpgradeDialog = memo(function UpgradeDialog({
         </div>
 
         {/* Animated dot navigation */}
-        <div className="flex items-center justify-center gap-1.5 pb-4">
+        <div className="flex items-center justify-center gap-1.5 pb-3">
           {FEATURES.map(({ hex }, i) => (
             <motion.button
               key={i}
@@ -131,14 +156,51 @@ export const UpgradeDialog = memo(function UpgradeDialog({
           ))}
         </div>
 
+        {/* Plan selector */}
+        <div className="px-5 pb-3 grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => setSelectedPlan("3mo")}
+            className={`rounded-lg border-2 px-3 py-2.5 text-left transition-colors ${
+              selectedPlan === "3mo"
+                ? "border-gray-900 dark:border-gray-100 bg-gray-50 dark:bg-gray-800"
+                : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
+            }`}
+          >
+            <p className="text-xs font-medium text-muted-foreground">{t("plan3moLabel")}</p>
+            <p className="text-base font-bold">$19.000</p>
+          </button>
+          <button
+            type="button"
+            onClick={() => setSelectedPlan("6mo")}
+            className={`relative rounded-lg border-2 px-3 py-2.5 text-left transition-colors ${
+              selectedPlan === "6mo"
+                ? "border-gray-900 dark:border-gray-100 bg-gray-50 dark:bg-gray-800"
+                : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
+            }`}
+          >
+            <span className="absolute -top-2.5 right-2 text-[9px] font-bold text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30 px-1.5 py-0.5 rounded tracking-wide">
+              {t("planSaveTag")}
+            </span>
+            <p className="text-xs font-medium text-muted-foreground">{t("plan6moLabel")}</p>
+            <p className="text-base font-bold">$33.000</p>
+          </button>
+        </div>
+
         {/* CTA */}
         <div className="px-5 pb-5">
           <button
-            disabled
-            className="w-full h-10 rounded-md flex items-center justify-center gap-2 text-sm font-semibold text-white bg-gray-900 dark:bg-gray-100 dark:text-gray-900 opacity-60 cursor-default select-none"
+            disabled={!user || loading}
+            onClick={handleCheckout}
+            className="w-full h-10 rounded-md flex items-center justify-center gap-2 text-sm font-semibold text-white bg-gray-900 dark:bg-gray-100 dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-60 disabled:cursor-default"
           >
-            <Clock className="h-4 w-4" />
-            {t("comingSoon")}
+            {loading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : !user ? (
+              t("loginRequired")
+            ) : (
+              t("checkout")
+            )}
           </button>
         </div>
 

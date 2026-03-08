@@ -424,7 +424,12 @@
     "upgradeDescription": "Holen Sie das Beste aus Ihrem Lebenslauf mit allen Premium-Funktionen.",
     "comingSoon": "Demnächst verfügbar",
     "feature_pdfNoBranding": "PDF ohne Applio-Wasserzeichen herunterladen",
-    "feature_pdfNoBranding_desc": "Laden Sie Ihren Lebenslauf ohne Wasserzeichen herunter. Nur Ihre Arbeit."
+    "feature_pdfNoBranding_desc": "Laden Sie Ihren Lebenslauf ohne Wasserzeichen herunter. Nur Ihre Arbeit.",
+    "plan3moLabel": "3 Monate",
+    "plan6moLabel": "6 Monate",
+    "planSaveTag": "-13%",
+    "checkout": "Mit Mercado Pago bezahlen",
+    "loginRequired": "Bitte zuerst anmelden"
   },
   "syncConflict": {
     "title": "Wir haben Ihren Lebenslauf gefunden",
