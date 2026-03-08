@@ -25,7 +25,7 @@ const FS = {
   small: "1em",
   tiny: "0.9em",
   section: "0.9em",
-  initials: "2em",
+  initials: "2.25em",
 } as const;
 
 function SectionHeading({
