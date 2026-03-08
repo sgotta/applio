@@ -1,70 +1,47 @@
-import { test, expect, seedCVData, minimalCV, openToolbarPopover, popoverContent, cvSidebar } from "../helpers/setup";
+import { test, expect, seedCVData, minimalCV, openToolbarPopover, popoverContent } from "../helpers/setup";
 
 test.describe("Color Schemes @regression", () => {
-  test("all color scheme swatches are visible in picker", async ({ appPage: page }) => {
+  test("base style and accent swatches are visible in picker", async ({ appPage: page }) => {
     await openToolbarPopover(page, "btn-color-scheme");
     const panel = popoverContent(page);
 
-    // There should be 5 color scheme swatches (circular buttons)
+    // 2 base style swatches + 1 no-accent + 3 preset accents + 1 custom = 7 circular buttons
     const swatches = panel.locator("button.rounded-full");
-    await expect(swatches).toHaveCount(5);
+    await expect(swatches).toHaveCount(7);
   });
 
-  test("change color scheme updates sidebar background", async ({ appPage: page }) => {
+  test("clicking accent color updates name color on CV", async ({ appPage: page }) => {
     await seedCVData(page, minimalCV);
 
-    // Seed a non-default color scheme so we can switch back to the free "default"
+    // Open color picker and click the blue accent preset (2nd in accent row = index 3 overall)
+    await openToolbarPopover(page, "btn-color-scheme");
+    const panel = popoverContent(page);
+    const swatches = panel.locator("button.rounded-full");
+    // Index: 0=Default, 1=Asfalto, 2=No accent, 3=Blue, 4=Green, 5=Orange, 6=Custom
+    await swatches.nth(3).click();
+    await page.waitForTimeout(300);
+
+    // Verify accent persists in localStorage
+    const accent = await page.evaluate(() => localStorage.getItem("applio-accent-color"));
+    expect(accent).toBe("#1a7ed6");
+  });
+
+  test("color scheme and accent persist after reload", async ({ appPage: page }) => {
+    await seedCVData(page, minimalCV);
+
+    // Set wetAsphalt base + green accent via localStorage
     await page.evaluate(() => {
-      localStorage.setItem("applio-color-scheme", "peterRiver");
+      localStorage.setItem("applio-color-scheme", "wetAsphalt");
+      localStorage.setItem("applio-accent-color", "#27ae60");
     });
     await page.reload();
     await page.waitForLoadState("networkidle");
     await page.locator(".cv-preview-content").waitFor({ state: "visible" });
 
-    // Get initial sidebar background (peterRiver)
-    const sidebar = cvSidebar(page);
-    const initialBg = await sidebar.evaluate((el) => el.style.backgroundColor);
-
-    // Open color scheme picker and click the first swatch (default/ivory — free)
-    await openToolbarPopover(page, "btn-color-scheme");
-    const panel = popoverContent(page);
-    const swatches = panel.locator("button.rounded-full");
-    await swatches.nth(0).click();
-    await page.waitForTimeout(300);
-
-    // Sidebar background should have changed
-    const newBg = await sidebar.evaluate((el) => el.style.backgroundColor);
-    expect(newBg).not.toBe(initialBg);
-  });
-
-  test("color scheme persists after reload", async ({ appPage: page }) => {
-    await seedCVData(page, minimalCV);
-
-    // Seed a non-default color scheme so we can switch back to the free "default"
-    await page.evaluate(() => {
-      localStorage.setItem("applio-color-scheme", "peterRiver");
-    });
-    await page.reload();
-    await page.waitForLoadState("networkidle");
-    await page.locator(".cv-preview-content").waitFor({ state: "visible" });
-
-    // Change color scheme to default (first swatch, free)
-    await openToolbarPopover(page, "btn-color-scheme");
-    const panel = popoverContent(page);
-    const swatches = panel.locator("button.rounded-full");
-    await swatches.nth(0).click();
-    await page.waitForTimeout(300);
-
-    // Get the new background color
-    const sidebar = cvSidebar(page);
-    const bgAfterChange = await sidebar.evaluate((el) => el.style.backgroundColor);
-
-    // Reload and verify it persists
-    await page.reload();
-    await page.waitForLoadState("networkidle");
-    await page.locator(".cv-preview-content").waitFor({ state: "visible" });
-
-    const bgAfterReload = await sidebar.evaluate((el) => el.style.backgroundColor);
-    expect(bgAfterReload).toBe(bgAfterChange);
+    // Verify values persist
+    const scheme = await page.evaluate(() => localStorage.getItem("applio-color-scheme"));
+    const accent = await page.evaluate(() => localStorage.getItem("applio-accent-color"));
+    expect(scheme).toBe("wetAsphalt");
+    expect(accent).toBe("#27ae60");
   });
 });

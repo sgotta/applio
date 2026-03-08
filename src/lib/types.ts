@@ -87,6 +87,7 @@ export interface CVData {
 /** Shape of the settings stored alongside a CV in the cloud */
 export interface CloudSettings {
   colorScheme: string;
+  accentColor?: string | null;
   fontFamily: string;
   fontSizeLevel: number;
   theme: string;

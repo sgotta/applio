@@ -17,7 +17,7 @@ import { useTheme } from "@/lib/theme-context";
 import { useColorScheme } from "@/lib/color-scheme-context";
 import { useFontSettings } from "@/lib/font-context";
 import { FONT_FAMILIES, FONT_SIZE_LEVEL_IDS, type FontFamilyId, type FontSizeLevel } from "@/lib/fonts";
-import { COLOR_SCHEME_NAMES, COLOR_SCHEMES, type ColorSchemeName } from "@/lib/color-schemes";
+import { COLOR_SCHEME_NAMES, COLOR_SCHEMES, ACCENT_PRESETS, migrateColorSchemeName, type ColorSchemeName } from "@/lib/color-schemes";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth-context";
 import { usePlan } from "@/lib/plan-context";
@@ -30,8 +30,9 @@ import {
   SlidersHorizontal, Check, Sun, Moon,
   Menu, X, ChevronRight, ChevronLeft, Palette,
   Loader2, Share2, LogIn, LogOut, User, Copy, ExternalLink,
-  Lock, HardDrive, Cloud, CloudOff, Sparkles,
+  Lock, HardDrive, Cloud, CloudOff, Sparkles, Ban,
 } from "lucide-react";
+import { HexColorPicker } from "react-colorful";
 
 interface ToolbarProps {
   onPrintPDF: () => void | Promise<void>;
@@ -257,40 +258,151 @@ function AccountContent({
 
 function ColorSection({
   colorSchemeName,
+  accentColor,
   setColorScheme,
+  setAccentColor,
+  isPremium,
+  onUpgrade,
   t,
 }: {
   colorSchemeName: ColorSchemeName;
+  accentColor: string | null;
   setColorScheme: (name: ColorSchemeName) => void;
+  setAccentColor: (color: string | null) => void;
+  isPremium: boolean;
+  onUpgrade: () => void;
   t: (key: string) => string;
 }) {
+  const [showCustomPicker, setShowCustomPicker] = useState(false);
+  const isCustomAccent = accentColor !== null && !ACCENT_PRESETS.some(p => p.color === accentColor);
+
   return (
-    <div>
-      <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-3">
-        {t("colorScheme")}
-      </p>
-      <div className="flex gap-2.5">
-        {COLOR_SCHEME_NAMES.map((name) => {
-          const scheme = COLOR_SCHEMES[name];
-          const label = t(`colorScheme${name.charAt(0).toUpperCase() + name.slice(1)}`);
-          return (
-            <div key={name} className="flex flex-col items-center gap-1.5">
-              <button
-                onClick={() => setColorScheme(name)}
-                aria-label={label}
-                className={`relative h-10 w-10 rounded-full transition-all hover:scale-105 focus:outline-none border border-gray-200 dark:border-gray-600 ${
-                  colorSchemeName === name ? "ring-2 ring-offset-2 ring-gray-900 dark:ring-gray-100" : ""
-                }`}
-                style={{ backgroundColor: scheme.swatch }}
-              >
-                {colorSchemeName === name && (
-                  <Check className="absolute inset-0 m-auto h-4 w-4 drop-shadow-sm text-white" />
-                )}
-              </button>
-              <span className="text-[10px] text-gray-400 dark:text-gray-500 leading-tight text-center whitespace-nowrap">{label}</span>
-            </div>
-          );
-        })}
+    <div className="space-y-4 min-w-[240px]">
+      {/* ── Base style ── */}
+      <div>
+        <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-3">
+          {t("baseStyle")}
+        </p>
+        <div className="flex gap-2.5">
+          {COLOR_SCHEME_NAMES.map((name) => {
+            const scheme = COLOR_SCHEMES[name];
+            const label = t(`colorScheme${name.charAt(0).toUpperCase() + name.slice(1)}`);
+            return (
+              <div key={name} className="flex flex-col items-center gap-1.5">
+                <button
+                  onClick={() => setColorScheme(name)}
+                  aria-label={label}
+                  className={`relative h-10 w-10 rounded-full transition-all hover:scale-105 focus:outline-none border border-gray-200 dark:border-gray-600 ${
+                    colorSchemeName === name ? "ring-2 ring-offset-2 ring-gray-900 dark:ring-gray-100" : ""
+                  }`}
+                  style={{ backgroundColor: scheme.swatch }}
+                >
+                  {colorSchemeName === name && (
+                    <Check className={`absolute inset-0 m-auto h-4 w-4 drop-shadow-sm ${name === "wetAsphalt" ? "text-white" : "text-gray-500"}`} />
+                  )}
+                </button>
+                <span className="text-[10px] text-gray-400 dark:text-gray-500 leading-tight text-center whitespace-nowrap">{label}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ── Accent color ── */}
+      <div>
+        <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-3">
+          {t("accentColor")}
+        </p>
+        <div className="flex gap-2.5 items-start">
+          {/* No accent */}
+          <div className="flex flex-col items-center gap-1.5">
+            <button
+              onClick={() => { setAccentColor(null); setShowCustomPicker(false); }}
+              aria-label={t("accentNone")}
+              className={`relative h-10 w-10 rounded-full transition-all hover:scale-105 focus:outline-none border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 ${
+                accentColor === null ? "ring-2 ring-offset-2 ring-gray-900 dark:ring-gray-100" : ""
+              }`}
+            >
+              <Ban className="absolute inset-0 m-auto h-4 w-4 text-gray-400 dark:text-gray-500" />
+            </button>
+            <span className="text-[10px] text-gray-400 dark:text-gray-500 leading-tight text-center whitespace-nowrap">{t("accentNone")}</span>
+          </div>
+
+          {/* Preset accents */}
+          {ACCENT_PRESETS.map((preset) => {
+            const isActive = accentColor === preset.color;
+            return (
+              <div key={preset.color} className="flex flex-col items-center gap-1.5">
+                <button
+                  onClick={() => { setAccentColor(preset.color); setShowCustomPicker(false); }}
+                  aria-label={t(`accent${preset.name}`)}
+                  className={`relative h-10 w-10 rounded-full transition-all hover:scale-105 focus:outline-none border border-gray-200 dark:border-gray-600 ${
+                    isActive ? "ring-2 ring-offset-2 ring-gray-900 dark:ring-gray-100" : ""
+                  }`}
+                  style={{ backgroundColor: preset.color }}
+                >
+                  {isActive && (
+                    <Check className="absolute inset-0 m-auto h-4 w-4 text-white drop-shadow-sm" />
+                  )}
+                </button>
+                <span className="text-[10px] text-gray-400 dark:text-gray-500 leading-tight text-center whitespace-nowrap">{t(`accent${preset.name}`)}</span>
+              </div>
+            );
+          })}
+
+          {/* Custom accent */}
+          <div className="flex flex-col items-center gap-1.5">
+            <button
+              onClick={() => {
+                if (!isPremium) { onUpgrade(); return; }
+                setShowCustomPicker(!showCustomPicker);
+                if (!isCustomAccent && !showCustomPicker) setAccentColor("#6366f1");
+              }}
+              aria-label={t("accentCustom")}
+              className={`relative h-10 w-10 rounded-full transition-all hover:scale-105 focus:outline-none border border-gray-200 dark:border-gray-600 overflow-hidden ${
+                isCustomAccent ? "ring-2 ring-offset-2 ring-gray-900 dark:ring-gray-100" : ""
+              }`}
+              style={isCustomAccent ? { backgroundColor: accentColor! } : {
+                background: "conic-gradient(from 0deg, #f87171, #fbbf24, #34d399, #60a5fa, #a78bfa, #f472b6, #f87171)",
+              }}
+            >
+              {!isPremium && (
+                <span className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full">
+                  <Lock className="h-3.5 w-3.5 text-white drop-shadow-sm" />
+                </span>
+              )}
+              {isPremium && isCustomAccent && (
+                <Check className="absolute inset-0 m-auto h-4 w-4 text-white drop-shadow-sm" />
+              )}
+            </button>
+            <span className="text-[10px] text-gray-400 dark:text-gray-500 leading-tight text-center whitespace-nowrap">
+              {t("accentCustom")}
+              {!isPremium && <span className="ml-0.5 text-[9px] text-amber-500 font-semibold">PRO</span>}
+            </span>
+          </div>
+        </div>
+
+        {/* Inline color picker */}
+        {showCustomPicker && isPremium && (
+          <div className="mt-3 flex flex-col items-center gap-2">
+            <HexColorPicker
+              color={accentColor ?? "#6366f1"}
+              onChange={setAccentColor}
+              style={{ width: "100%", height: 140 }}
+            />
+            <input
+              type="text"
+              value={accentColor ?? "#6366f1"}
+              onChange={(e) => {
+                const v = e.target.value;
+                if (/^#[0-9a-fA-F]{6}$/.test(v)) setAccentColor(v);
+              }}
+              className="w-full px-3 py-1.5 text-xs font-mono text-center rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-400"
+              maxLength={7}
+              placeholder="#6366f1"
+            />
+          </div>
+        )}
       </div>
     </div>
   );
@@ -434,7 +546,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   const { status: syncStatus } = useSyncStatus();
   const { locale, setLocale } = useAppLocale();
   const { theme, setTheme } = useTheme();
-  const { colorSchemeName, setColorScheme } = useColorScheme();
+  const { colorSchemeName, accentColor, setColorScheme, setAccentColor } = useColorScheme();
   const { fontFamilyId, fontSizeLevel, setFontFamily, setFontSizeLevel } = useFontSettings();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -472,6 +584,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
       personalInfo: { ...data.personalInfo, photoUrl },
       settings: {
         colorScheme: colorSchemeName,
+        accentColor,
         fontFamily: fontFamilyId,
         fontSizeLevel,
         marginLevel: 2,
@@ -509,10 +622,20 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
         if (confirm(t("importConfirm"))) {
           importData(parsed);
           const settings = (parsed as unknown as Record<string, unknown>).settings as
-            | { colorScheme?: string; fontFamily?: string; fontSizeLevel?: number }
+            | { colorScheme?: string; accentColor?: string | null; fontFamily?: string; fontSizeLevel?: number }
             | undefined;
           if (settings) {
-            if (settings.colorScheme) setColorScheme(settings.colorScheme as ColorSchemeName);
+            if (settings.colorScheme) {
+              // Migrate old 5-scheme names (peterRiver, emerald, carrot)
+              if (!["default", "wetAsphalt"].includes(settings.colorScheme)) {
+                const migrated = migrateColorSchemeName(settings.colorScheme);
+                setColorScheme(migrated.baseName);
+                setAccentColor(migrated.accentColor);
+              } else {
+                setColorScheme(settings.colorScheme as ColorSchemeName);
+                setAccentColor(settings.accentColor ?? null);
+              }
+            }
             if (settings.fontFamily) setFontFamily(settings.fontFamily as FontFamilyId);
             if (settings.fontSizeLevel) setFontSizeLevel(settings.fontSizeLevel as FontSizeLevel);
           }
@@ -656,7 +779,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
     "w-full flex items-center gap-2 px-4 h-14 border-b border-gray-100 dark:border-border text-[17px] font-bold text-gray-900 dark:text-gray-100 tracking-tight hover:bg-gray-50 dark:hover:bg-accent/40 transition-colors cursor-pointer shrink-0";
 
   /* ── Shared design section props ──────────────────────── */
-  const colorProps = { colorSchemeName, setColorScheme, t: t as (key: string) => string };
+  const colorProps = { colorSchemeName, accentColor, setColorScheme, setAccentColor, isPremium, onUpgrade: () => setUpgradeDialogOpen(true), t: t as (key: string) => string };
   const fontProps = { fontFamilyId, fontSizeLevel, setFontFamily, setFontSizeLevel, t: t as (key: string) => string };
   const sectionsProps = { data, toggleSection, t: t as (key: string) => string };
 
@@ -875,30 +998,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     {t("colorScheme")}
                   </button>
                   <div className="flex-1 overflow-y-auto overscroll-contain scrollbar-thin px-5 pt-5 pb-4">
-                    <div className="flex flex-wrap gap-4">
-                      {COLOR_SCHEME_NAMES.map((name) => {
-                        const scheme = COLOR_SCHEMES[name];
-                        return (
-                          <button
-                            key={name}
-                            onClick={() => setColorScheme(name)}
-                            className="relative flex flex-col items-center gap-2"
-                          >
-                            <span
-                              className={`relative h-13 w-13 rounded-full transition-transform hover:scale-105 border border-gray-200 dark:border-gray-600 ${colorSchemeName === name ? "ring-2 ring-offset-2 ring-gray-900 dark:ring-gray-100" : ""}`}
-                              style={{ backgroundColor: scheme.swatch }}
-                            >
-                              {colorSchemeName === name && (
-                                <Check className="absolute inset-0 m-auto h-4.5 w-4.5 drop-shadow-sm text-white" />
-                              )}
-                            </span>
-                            <span className="text-[12px] text-gray-500 dark:text-gray-300">
-                              {t(`colorScheme${name.charAt(0).toUpperCase() + name.slice(1)}` as Parameters<typeof t>[0])}
-                            </span>
-                          </button>
-                        );
-                      })}
-                    </div>
+                    <ColorSection {...colorProps} />
                   </div>
                 </div>
               )}

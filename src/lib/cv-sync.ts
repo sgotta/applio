@@ -57,6 +57,7 @@ export function toSettings(plain: DocPlain): CloudSettings {
   const s = plain.settings ?? {};
   return {
     colorScheme: s.colorScheme ?? "default",
+    accentColor: s.accentColor ?? null,
     fontFamily: s.fontFamily ?? "inter",
     fontSizeLevel: s.fontSizeLevel ?? 2,
     theme: s.theme ?? "light",
