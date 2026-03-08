@@ -39,24 +39,24 @@ export interface ColorScheme {
 }
 
 export const COLOR_SCHEMES: Record<ColorSchemeName, ColorScheme> = {
-  /* Default — blue-gray, optimised for B&W print (~12% density) */
+  /* Default — neutral light gray, optimised for B&W print */
   default: {
     name: "default",
-    swatch: "#64748b",
-    sidebarBg: "#dfe4ec",
+    swatch: "#f5f5f5",
+    sidebarBg: "#f5f5f5",
     sidebarText: "#1e293b",
     sidebarMuted: "#64748b",
-    sidebarSeparator: "#c4cad5",
+    sidebarSeparator: "#e2e8f0",
     sidebarBadgeBg: "#384152",
     sidebarBadgeText: "#ffffff",
     heading: "#1e293b",
-    separator: "#cbd5e1",
+    separator: "#e2e8f0",
     bullet: "#334155",
     nameAccent: "transparent",
     nameColor: "#111827",
     entryTitle: "#111827",
     sidebarAccent: "#1e293b",
-    pageBg: "#e8ebf0",
+    pageBg: "#ebebeb",
     pageBgDark: "#1a1c20",
   },
   /* Clear Child · Dodger Blue #1e90ff — light sidebar, accent on icons & name */

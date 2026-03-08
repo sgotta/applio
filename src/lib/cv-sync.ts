@@ -56,7 +56,7 @@ export function sortBySortOrder<T extends { sortOrder?: number }>(arr: T[]): T[]
 export function toSettings(plain: DocPlain): CloudSettings {
   const s = plain.settings ?? {};
   return {
-    colorScheme: s.colorScheme ?? "ivory",
+    colorScheme: s.colorScheme ?? "default",
     fontFamily: s.fontFamily ?? "inter",
     fontSizeLevel: s.fontSizeLevel ?? 2,
     theme: s.theme ?? "light",

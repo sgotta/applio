@@ -278,7 +278,7 @@ function ColorSection({
               <button
                 onClick={() => setColorScheme(name)}
                 aria-label={label}
-                className={`relative h-10 w-10 rounded-full transition-all hover:scale-105 focus:outline-none ${
+                className={`relative h-10 w-10 rounded-full transition-all hover:scale-105 focus:outline-none border border-gray-200 dark:border-gray-600 ${
                   colorSchemeName === name ? "ring-2 ring-offset-2 ring-gray-900 dark:ring-gray-100" : ""
                 }`}
                 style={{ backgroundColor: scheme.swatch }}
@@ -287,7 +287,7 @@ function ColorSection({
                   <Check className="absolute inset-0 m-auto h-4 w-4 drop-shadow-sm text-white" />
                 )}
               </button>
-              <span className="text-[10px] text-gray-400 dark:text-gray-500 leading-tight text-center truncate max-w-10">{label}</span>
+              <span className="text-[10px] text-gray-400 dark:text-gray-500 leading-tight text-center whitespace-nowrap">{label}</span>
             </div>
           );
         })}
@@ -885,7 +885,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                             className="relative flex flex-col items-center gap-2"
                           >
                             <span
-                              className={`relative h-13 w-13 rounded-full transition-transform hover:scale-105 ${colorSchemeName === name ? "ring-2 ring-offset-2 ring-gray-900 dark:ring-gray-100" : ""}`}
+                              className={`relative h-13 w-13 rounded-full transition-transform hover:scale-105 border border-gray-200 dark:border-gray-600 ${colorSchemeName === name ? "ring-2 ring-offset-2 ring-gray-900 dark:ring-gray-100" : ""}`}
                               style={{ backgroundColor: scheme.swatch }}
                             >
                               {colorSchemeName === name && (
