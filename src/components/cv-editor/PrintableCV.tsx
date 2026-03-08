@@ -10,6 +10,7 @@ import { useFontSettings } from "@/lib/font-context";
 import { getFontDefinition, FONT_SIZE_LEVELS } from "@/lib/fonts";
 import { type ColorScheme } from "@/lib/color-schemes";
 import { renderRichDocument } from "@/lib/render-rich-text";
+import { getPhotoFilter } from "@/lib/photo-filters";
 import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
 
 function ensureProtocol(url: string): string {
@@ -100,6 +101,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
     const [localPhotoError, setLocalPhotoError] = useState(false);
     const [localPhotoLoaded, setLocalPhotoLoaded] = useState(false);
     const hasLocalPhoto = !forceInitials && !!personalInfo.photoUrl && !localPhotoError;
+    const photoFilterStyle = { filter: getPhotoFilter(personalInfo.photoFilter).cssFilter };
 
     // SSR hydration fix: if the image loaded before React hydrated, onLoad won't fire.
     // The ref callback checks img.complete to catch already-loaded images.
@@ -137,46 +139,73 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
           }}
         >
           <div className="relative space-y-5">
-            {/* Photo / Initials */}
-            <div
-              className="mx-auto h-36 w-36 rounded-full grid place-items-center overflow-hidden relative"
-              style={{ backgroundColor: colors.sidebarText + "18" }}
-            >
-              {/* Initials always visible as base layer */}
-              <span
-                className={`font-medium select-none leading-none tracking-wide ${photoUrlLoaded ? "opacity-0 transition-opacity duration-300" : ""}`}
-                style={{
-                  fontSize: FS.initials,
-                  color: colors.sidebarMuted,
-                }}
+            {/* Photo / Initials OR Name+Title in sidebar */}
+            {visibility.photo ? (
+              <div
+                className="mx-auto h-36 w-36 rounded-full grid place-items-center overflow-hidden relative"
+                style={{ backgroundColor: colors.sidebarText + "18" }}
               >
-                {initials}
-              </span>
-              {/* Local photo overlay — starts invisible, shown only on successful load */}
-              {hasLocalPhoto && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  ref={localPhotoRef}
-                  src={personalInfo.photoUrl}
-                  alt={t("profilePhotoAlt")}
-                  className={`absolute inset-0 w-full h-full object-cover ${localPhotoLoaded ? "" : "invisible"}`}
-                  onLoad={() => setLocalPhotoLoaded(true)}
-                  onError={() => setLocalPhotoError(true)}
-                />
-              )}
-              {/* Remote photo overlay (shared view) */}
-              {!hasLocalPhoto && photoUrl && !photoUrlError && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  ref={remotePhotoRef}
-                  src={photoUrl}
-                  alt={t("profilePhotoAlt")}
-                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${photoUrlLoaded ? "opacity-100" : "opacity-0"}`}
-                  onLoad={() => setPhotoUrlLoaded(true)}
-                  onError={() => setPhotoUrlError(true)}
-                />
-              )}
-            </div>
+                {/* Initials always visible as base layer */}
+                <span
+                  className={`font-medium select-none leading-none tracking-wide ${photoUrlLoaded ? "opacity-0 transition-opacity duration-300" : ""}`}
+                  style={{
+                    fontSize: FS.initials,
+                    color: colors.sidebarMuted,
+                  }}
+                >
+                  {initials}
+                </span>
+                {/* Local photo overlay — starts invisible, shown only on successful load */}
+                {hasLocalPhoto && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    ref={localPhotoRef}
+                    src={personalInfo.photoUrl}
+                    alt={t("profilePhotoAlt")}
+                    className={`absolute inset-0 w-full h-full object-cover ${localPhotoLoaded ? "" : "invisible"}`}
+                    style={photoFilterStyle}
+                    onLoad={() => setLocalPhotoLoaded(true)}
+                    onError={() => setLocalPhotoError(true)}
+                  />
+                )}
+                {/* Remote photo overlay (shared view) */}
+                {!hasLocalPhoto && photoUrl && !photoUrlError && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    ref={remotePhotoRef}
+                    src={photoUrl}
+                    alt={t("profilePhotoAlt")}
+                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${photoUrlLoaded ? "opacity-100" : "opacity-0"}`}
+                    style={photoFilterStyle}
+                    onLoad={() => setPhotoUrlLoaded(true)}
+                    onError={() => setPhotoUrlError(true)}
+                  />
+                )}
+              </div>
+            ) : (
+              /* Name + Title in sidebar when photo is hidden */
+              (() => {
+                const darkSidebar = colors.sidebarText === "#ffffff";
+                const nameClr = darkSidebar ? colors.sidebarText : colors.sidebarBadgeBg;
+                const titleClr = darkSidebar ? colors.sidebarText : colors.sidebarBadgeBg;
+                return (
+                  <div className="mb-8">
+                    <h2
+                      className="font-semibold leading-tight tracking-tight wrap-break-word"
+                      style={{ fontSize: "2.4em", color: nameClr }}
+                    >
+                      {personalInfo.fullName}
+                    </h2>
+                    <p
+                      className="mt-3 font-medium uppercase tracking-wide"
+                      style={{ fontSize: FS.small, color: titleClr }}
+                    >
+                      {personalInfo.jobTitle}
+                    </p>
+                  </div>
+                );
+              })()
+            )}
 
             {sidebarSections.map((sectionId) => {
               if (sectionId === "contact") {
@@ -289,34 +318,36 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
         {/* ===== MAIN CONTENT (block flow — page breaks work here) ===== */}
         <div style={{ flex: 1, position: "relative" }}>
           <div className="relative">
-            {/* Header — padding matches CVPreview desktop header */}
-            <div style={{ padding: `${mg(24)}px ${mg(24)}px 0` }}>
-              <div className="mb-4">
-                <h1
-                  className="font-semibold tracking-tight"
-                  style={{ fontSize: FS.heading, color: colors.nameColor }}
-                >
-                  {personalInfo.fullName}
-                </h1>
-                {colors.nameAccent !== "transparent" && (
-                  <div
-                    className="mt-1 h-0.5 w-12 rounded-full"
-                    style={{ backgroundColor: colors.nameAccent }}
-                  />
-                )}
-                <div className="mt-0.5">
-                  <p
-                    className="font-medium uppercase tracking-wide text-gray-500"
-                    style={{ fontSize: FS.subheading }}
+            {/* Header — hidden when photo is off (name moves to sidebar) */}
+            {visibility.photo && (
+              <div style={{ padding: `${mg(24)}px ${mg(24)}px 0` }}>
+                <div className="mb-4">
+                  <h1
+                    className="font-semibold tracking-tight"
+                    style={{ fontSize: FS.heading, color: colors.nameColor }}
                   >
-                    {personalInfo.jobTitle}
-                  </p>
+                    {personalInfo.fullName}
+                  </h1>
+                  {colors.nameAccent !== "transparent" && (
+                    <div
+                      className="mt-1 h-0.5 w-12 rounded-full"
+                      style={{ backgroundColor: colors.nameAccent }}
+                    />
+                  )}
+                  <div className="mt-0.5">
+                    <p
+                      className="font-medium uppercase tracking-wide text-gray-500"
+                      style={{ fontSize: FS.subheading }}
+                    >
+                      {personalInfo.jobTitle}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
             {/* Content — padding matches CVPreview content area */}
-            <div style={{ padding: `${mg(16)}px ${mg(24)}px ${mg(24)}px` }}>
+            <div style={{ padding: `${visibility.photo ? mg(16) : mg(44)}px ${mg(24)}px ${mg(24)}px` }}>
               <div className="space-y-5">
                 {/* Experience */}
                 {experiences.length > 0 && (

@@ -2,7 +2,7 @@
 
 import { connectDB } from "@/lib/mongoose";
 import CV from "@/lib/models/cv";
-import type { CVData, CloudSettings, SidebarSectionId } from "@/lib/types";
+import type { CVData, CloudSettings, SidebarSectionId, PhotoFilter } from "@/lib/types";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DocPlain = Record<string, any>;
@@ -31,6 +31,7 @@ export async function fetchPublishedCVBySlug(slug: string): Promise<{
       fullName: plain.personalInfo?.fullName ?? "",
       jobTitle: plain.personalInfo?.jobTitle ?? "",
       photoUrl: plain.personalInfo?.photoUrl,
+      photoFilter: plain.personalInfo?.photoFilter as PhotoFilter | undefined,
       email: plain.personalInfo?.email ?? "",
       phone: plain.personalInfo?.phone ?? "",
       location: plain.personalInfo?.location ?? "",
@@ -91,6 +92,7 @@ export async function fetchPublishedCVBySlug(slug: string): Promise<{
       description: a.description,
     })),
     visibility: {
+      photo: plain.visibility?.photo ?? true,
       location: plain.visibility?.location ?? true,
       linkedin: plain.visibility?.linkedin ?? true,
       website: plain.visibility?.website ?? true,
@@ -105,7 +107,8 @@ export async function fetchPublishedCVBySlug(slug: string): Promise<{
   };
 
   const settings: CloudSettings = {
-    colorScheme: plain.settings?.colorScheme ?? "ivory",
+    colorScheme: plain.settings?.colorScheme ?? "default",
+    accentColor: plain.settings?.accentColor ?? null,
     fontFamily: plain.settings?.fontFamily ?? "inter",
     fontSizeLevel: plain.settings?.fontSizeLevel ?? 2,
     theme: plain.settings?.theme ?? "light",

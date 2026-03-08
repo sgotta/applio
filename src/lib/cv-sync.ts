@@ -57,6 +57,7 @@ export function toSettings(plain: DocPlain): CloudSettings {
   const s = plain.settings ?? {};
   return {
     colorScheme: s.colorScheme ?? "default",
+    accentColor: s.accentColor ?? null,
     fontFamily: s.fontFamily ?? "inter",
     fontSizeLevel: s.fontSizeLevel ?? 2,
     theme: s.theme ?? "light",
@@ -70,6 +71,7 @@ export function docToCVData(plain: DocPlain): CVData {
       fullName: plain.personalInfo?.fullName ?? "",
       jobTitle: plain.personalInfo?.jobTitle ?? "",
       photoUrl: plain.personalInfo?.photoUrl,
+      photoFilter: plain.personalInfo?.photoFilter,
       email: plain.personalInfo?.email ?? "",
       phone: plain.personalInfo?.phone ?? "",
       location: plain.personalInfo?.location ?? "",
@@ -130,6 +132,7 @@ export function docToCVData(plain: DocPlain): CVData {
       description: a.description,
     })),
     visibility: {
+      photo: plain.visibility?.photo ?? true,
       location: plain.visibility?.location ?? true,
       linkedin: plain.visibility?.linkedin ?? true,
       website: plain.visibility?.website ?? true,
@@ -151,6 +154,7 @@ export function cvDataToDoc(cvData: CVData, settings?: CloudSettings) {
       fullName: cvData.personalInfo.fullName,
       jobTitle: cvData.personalInfo.jobTitle,
       photoUrl: cvData.personalInfo.photoUrl,
+      photoFilter: cvData.personalInfo.photoFilter,
       email: cvData.personalInfo.email,
       phone: cvData.personalInfo.phone,
       location: cvData.personalInfo.location,

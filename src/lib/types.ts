@@ -1,7 +1,10 @@
+export type PhotoFilter = "none" | "grayscale" | "studio" | "warm" | "cool";
+
 export interface PersonalInfo {
   fullName: string;
   jobTitle: string;
   photoUrl?: string;
+  photoFilter?: PhotoFilter;
   email: string;
   phone: string;
   location: string;
@@ -62,6 +65,7 @@ export interface AwardItem {
 export type SidebarSectionId = "contact" | "summary" | "skills";
 
 export interface SectionVisibility {
+  photo: boolean;
   location: boolean;
   linkedin: boolean;
   website: boolean;
@@ -87,6 +91,7 @@ export interface CVData {
 /** Shape of the settings stored alongside a CV in the cloud */
 export interface CloudSettings {
   colorScheme: string;
+  accentColor?: string | null;
   fontFamily: string;
   fontSizeLevel: number;
   theme: string;

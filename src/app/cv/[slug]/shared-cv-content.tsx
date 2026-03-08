@@ -13,7 +13,7 @@ import { PrintableCV } from "@/components/cv-editor/PrintableCV";
 import { MobileCVView } from "@/components/cv-editor/MobileCVView";
 import { downloadPDF } from "@/lib/generate-pdf";
 import { filenameDateStamp } from "@/lib/utils";
-import { getColorScheme, type ColorSchemeName } from "@/lib/color-schemes";
+import { migrateColorSchemeName, resolveColorScheme } from "@/lib/color-schemes";
 import {
   FONT_SIZE_LEVELS,
   FONT_FAMILY_IDS,
@@ -38,8 +38,9 @@ function SharedCVInner({ cvData, settings }: SharedCVContentProps) {
   const { locale } = useAppLocale();
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
-  // Resolve visual settings
-  const colorScheme = getColorScheme(settings.colorScheme as ColorSchemeName);
+  // Resolve visual settings (migrate old 5-scheme names if needed)
+  const migrated = migrateColorSchemeName(settings.colorScheme || "default");
+  const colorScheme = resolveColorScheme(migrated.baseName, settings.accentColor ?? migrated.accentColor);
   const fontScale = FONT_SIZE_SCALES[settings.fontSizeLevel] ?? 1.0;
   const fontFamilyId = settings.fontFamily as FontFamilyId | undefined;
   const fontDef = fontFamilyId && FONT_FAMILY_IDS.includes(fontFamilyId)
