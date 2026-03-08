@@ -27,7 +27,7 @@ npm run lint         # Run ESLint
 npx shadcn@latest add [component-name]
 
 # Unit Testing (Vitest)
-npm run test:unit         # Run all unit tests (163 tests, ~2s)
+npm run test:unit         # Run all unit tests (170 tests, ~2s)
 npm run test:unit:watch   # Run in watch mode
 
 # E2E Testing (Playwright)
@@ -276,7 +276,7 @@ Other localStorage keys:
 - Add new components: `npx shadcn@latest add [name]`
 - Icons: lucide-react only
 
-**Color schemes:** 5 palettes in `src/lib/color-schemes.ts`: Default (free, customizable accent), wetAsphalt/esmeralda/hielo/floral (premium). `resolveColorScheme(baseName, accentColor)` applies accent to all except wetAsphalt. Tinted sidebar separators via `hexToTintedSeparator()`. Premium palettes gated behind plan.
+**Color schemes:** 9 palettes in `src/lib/color-schemes.ts`: Default (free, customizable accent), wetAsphalt/esmeralda/hielo/floral/rosa/violeta/rojo/amarillo (premium). `resolveColorScheme(baseName, accentColor)` applies accent to all except wetAsphalt. Tinted sidebar separators via `hexToTintedSeparator()`. Premium palettes gated behind plan.
 
 **Sidebar patterns:** Decorative patterns for the sidebar, defined in `src/lib/sidebar-patterns.ts`. Settings managed by `SidebarPatternProvider`. All patterns except `"none"` are premium.
 
@@ -406,7 +406,7 @@ src/
 │   ├── fonts.ts                     # Font definitions and helpers
 │   ├── font-context.tsx             # FontSettingsProvider
 │   ├── photo-filters.ts             # Photo filter presets (CSS/canvas filter strings)
-│   ├── color-schemes.ts             # 5 color palettes + resolveColorScheme + tinting helpers
+│   ├── color-schemes.ts             # 9 color palettes + resolveColorScheme + tinting helpers
 │   ├── color-scheme-context.tsx     # ColorSchemeProvider
 │   ├── theme-context.tsx            # ThemeProvider (dark/light)
 │   ├── locale-context.tsx           # LocaleProvider (i18n)
@@ -577,7 +577,7 @@ When implementing new features, these files almost always need updates:
 | `lucide-react` | Icons (only icon library used) |
 | `mongoose` | MongoDB ODM for data models |
 | `next-auth` | Authentication (Auth.js v5, Google + GitHub OAuth) |
-| `vitest` | Unit testing framework (163 tests) |
+| `vitest` | Unit testing framework (170 tests) |
 | `husky` | Git hooks manager (pre-commit, commit-msg, pre-push) |
 | `@commitlint/cli` + `config-conventional` | Commit message linting (conventional commits) |
 | `lint-staged` | Run ESLint on staged files only (pre-commit) |
@@ -586,14 +586,14 @@ When implementing new features, these files almost always need updates:
 
 ### Unit Tests (Vitest)
 
-**163 tests** across 9 files in `src/__tests__/`. Run in ~2s.
+**170 tests** across 9 files in `src/__tests__/`. Run in ~2s.
 
 | File | Tests | Covers |
 |---|---|---|
 | `cv-migrations.test.ts` | 28 | `moveItem`, `migrateSidebarOrder`, `migrateMarkdownBold`, `migrateBulletsToHtml`, `migrateCVData` |
 | `render-rich-text.test.ts` | 21 | `renderRichText`, `renderRichDocument` (HTML → React nodes) |
 | `fonts.test.ts` | 10 | `getFontDefinition`, `FONT_FAMILIES` integrity |
-| `color-schemes.test.ts` | 44 | `getColorScheme`, `COLOR_SCHEMES`, `resolveColorScheme`, `computeSidebarColors`, `relativeLuminance`, `hexToTinted*`, `SCHEME_METADATA`, `migrateColorSchemeName` |
+| `color-schemes.test.ts` | 51 | `getColorScheme`, `COLOR_SCHEMES`, `resolveColorScheme`, `computeSidebarColors`, `relativeLuminance`, `hexToTinted*`, `SCHEME_METADATA`, `migrateColorSchemeName` |
 | `default-data.test.ts` | 6 | `getDefaultCVData`, `defaultVisibility`, `DEFAULT_SIDEBAR_ORDER` |
 | `utils.test.ts` | 3 | `filenameDateStamp` (with fake timers) |
 | `storage.test.ts` | 4 | `saveCVData`/`loadCVData`/`clearCVData` round-trips |

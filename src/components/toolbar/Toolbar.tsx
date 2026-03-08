@@ -17,7 +17,7 @@ import { useTheme } from "@/lib/theme-context";
 import { useColorScheme } from "@/lib/color-scheme-context";
 import { useFontSettings } from "@/lib/font-context";
 import { FONT_FAMILIES, FONT_SIZE_LEVEL_IDS, type FontFamilyId, type FontSizeLevel } from "@/lib/fonts";
-import { migrateColorSchemeName, type ColorSchemeName } from "@/lib/color-schemes";
+import { migrateColorSchemeName, COLOR_SCHEME_NAMES, type ColorSchemeName } from "@/lib/color-schemes";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth-context";
 import { usePlan } from "@/lib/plan-context";
@@ -264,27 +264,32 @@ interface PaletteOption {
   accent: string | null;
   premium: boolean;
   labelKey: string;
-  /** [sidebarBg, accentColor | null, badgeBg] — null = no accent (Asfalto) */
-  stripColors: [string, string | null, string];
+  /** [sidebarBg, accentColor | null] — null = no accent (Asfalto) */
+  stripColors: [string, string | null];
 }
 
 const PALETTE_OPTIONS: PaletteOption[] = [
   // ── Free ──
-  { id: "default",        schemeName: "default",     accent: null,      premium: false, labelKey: "colorSchemeDefault",       stripColors: ["#f5f5f5", "#1e293b", "#384152"] },
+  { id: "default",        schemeName: "default",     accent: null,      premium: false, labelKey: "colorSchemeDefault",       stripColors: ["#f5f5f5", "#1e293b"] },
   // ── Default + accent ──
-  { id: "default-blue",   schemeName: "default",     accent: "#1a7ed6", premium: true,  labelKey: "colorSchemeDefaultBlue",   stripColors: ["#f5f5f5", "#1a7ed6", "#384152"] },
-  { id: "default-green",  schemeName: "default",     accent: "#27ae60", premium: true,  labelKey: "colorSchemeDefaultGreen",  stripColors: ["#f5f5f5", "#27ae60", "#384152"] },
-  { id: "default-orange", schemeName: "default",     accent: "#d35400", premium: true,  labelKey: "colorSchemeDefaultOrange", stripColors: ["#f5f5f5", "#d35400", "#384152"] },
-  // ── Sidebar + accent ──
-  { id: "esmeralda",      schemeName: "esmeralda",   accent: "#27ae60", premium: true,  labelKey: "colorSchemeEsmeralda",     stripColors: ["#e8f5e9", "#27ae60", "#384152"] },
-  { id: "hielo",          schemeName: "hielo",        accent: "#1a7ed6", premium: true,  labelKey: "colorSchemeHielo",         stripColors: ["#e8f0fe", "#1a7ed6", "#384152"] },
-  { id: "floral",         schemeName: "floral",       accent: "#d35400", premium: true,  labelKey: "colorSchemeFloral",        stripColors: ["#fce4ec", "#d35400", "#384152"] },
+  { id: "default-blue",   schemeName: "default",     accent: "#1a7ed6", premium: true,  labelKey: "colorSchemeDefaultBlue",   stripColors: ["#f5f5f5", "#1a7ed6"] },
+  { id: "default-green",  schemeName: "default",     accent: "#27ae60", premium: true,  labelKey: "colorSchemeDefaultGreen",  stripColors: ["#f5f5f5", "#27ae60"] },
+  { id: "default-orange", schemeName: "default",     accent: "#d35400", premium: true,  labelKey: "colorSchemeDefaultOrange", stripColors: ["#f5f5f5", "#d35400"] },
+  // ── Sidebar + accent (original) ──
+  { id: "esmeralda",      schemeName: "esmeralda",   accent: "#27ae60", premium: true,  labelKey: "colorSchemeEsmeralda",     stripColors: ["#e8f5e9", "#27ae60"] },
+  { id: "hielo",          schemeName: "hielo",        accent: "#1a7ed6", premium: true,  labelKey: "colorSchemeHielo",         stripColors: ["#e8f0fe", "#1a7ed6"] },
+  { id: "floral",         schemeName: "floral",       accent: "#ff4040", premium: true,  labelKey: "colorSchemeFloral",        stripColors: ["#fce4ec", "#ff4040"] },
+  // ── Sidebar + accent (shadcn) ──
+  { id: "rosa",           schemeName: "rosa",         accent: "#db2777", premium: true,  labelKey: "colorSchemeRosa",          stripColors: ["#fdf2f8", "#db2777"] },
+  { id: "violeta",        schemeName: "violeta",      accent: "#7c3aed", premium: true,  labelKey: "colorSchemeVioleta",       stripColors: ["#f5f3ff", "#7c3aed"] },
+  { id: "rojo",           schemeName: "rojo",          accent: "#dc2626", premium: true,  labelKey: "colorSchemeRojo",          stripColors: ["#fef2f2", "#dc2626"] },
+  { id: "amarillo",       schemeName: "amarillo",     accent: "#f59e0b", premium: true,  labelKey: "colorSchemeAmarillo",      stripColors: ["#fffbeb", "#f59e0b"] },
   // ── No accent ──
-  { id: "wetAsphalt",     schemeName: "wetAsphalt",  accent: null,      premium: true,  labelKey: "colorSchemeWetAsphalt",    stripColors: ["#2c3e50", null,      "#384152"] },
+  { id: "wetAsphalt",     schemeName: "wetAsphalt",  accent: null,      premium: true,  labelKey: "colorSchemeWetAsphalt",    stripColors: ["#2c3e50", null] },
 ];
 
 /** Indices where dividers should be placed (before these indices) */
-const DIVIDER_INDICES = new Set([1, 4, 7]);
+const DIVIDER_INDICES = new Set([1, 4, 7, 11]);
 
 interface AccentPickerProps {
   accentColor: string | null;
@@ -299,7 +304,7 @@ function AccentPicker({ accentColor, setAccentColor, t }: AccentPickerProps) {
         {t("accentColor")}
       </p>
       <HexColorPicker
-        color={accentColor ?? "#6366f1"}
+        color={accentColor ?? "#111827"}
         onChange={setAccentColor}
         style={{ width: "100%", height: 160 }}
       />
@@ -342,7 +347,7 @@ function PaletteSection({
       <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-2.5">
         {t("colorPalette")}
       </p>
-      <div className="space-y-1">
+      <div className="space-y-1 max-h-[60vh] overflow-y-auto overscroll-contain scrollbar-thin -m-1 p-1">
         {PALETTE_OPTIONS.map((option, idx) => {
           const isActive = colorSchemeName === option.schemeName && accentColor === option.accent;
           const isLocked = option.premium && !isPremium;
@@ -381,7 +386,7 @@ function PaletteSection({
                     )}
                   </div>
                 </div>
-                {/* 3-color strip: sidebar | accent | badges */}
+                {/* 2-color strip: sidebar | accent */}
                 <div className="flex h-6 w-full rounded-lg overflow-hidden border border-gray-200/60 dark:border-gray-600/60">
                   <div className="flex-1" style={{ backgroundColor: option.stripColors[0] }} />
                   {option.stripColors[1] !== null ? (
@@ -394,7 +399,6 @@ function PaletteSection({
                       </svg>
                     </div>
                   )}
-                  <div className="flex-1" style={{ backgroundColor: option.stripColors[2]! }} />
                 </div>
               </button>
             </React.Fragment>
@@ -623,9 +627,8 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
             | undefined;
           if (settings) {
             if (settings.colorScheme) {
-              // Migrate old 5-scheme names (peterRiver, emerald, carrot)
-              const validNames = ["default", "wetAsphalt", "esmeralda", "hielo", "floral"];
-              if (!validNames.includes(settings.colorScheme)) {
+              // Migrate old scheme names (peterRiver, emerald, carrot)
+              if (!COLOR_SCHEME_NAMES.includes(settings.colorScheme as never)) {
                 const migrated = migrateColorSchemeName(settings.colorScheme);
                 setColorScheme(migrated.baseName);
                 setAccentColor(migrated.accentColor);
@@ -1196,7 +1199,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                 </TooltipTrigger>
                 <TooltipContent>{t("colorPalette")}</TooltipContent>
               </Tooltip>
-              <PopoverContent className="w-auto p-4" align="end">
+              <PopoverContent className="w-auto p-4" align="end" collisionPadding={12}>
                 <PaletteSection {...paletteProps} />
               </PopoverContent>
             </Popover>
