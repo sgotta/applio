@@ -27,7 +27,7 @@ npm run lint         # Run ESLint
 npx shadcn@latest add [component-name]
 
 # Unit Testing (Vitest)
-npm run test:unit         # Run all unit tests (114 tests, ~2s)
+npm run test:unit         # Run all unit tests (163 tests, ~2s)
 npm run test:unit:watch   # Run in watch mode
 
 # E2E Testing (Playwright)
@@ -97,7 +97,7 @@ CVProvider (context)
 ### Data Model: src/lib/types.ts
 
 Central data structure: `CVData` interface containing:
-- `personalInfo` — Name, title, photo (base64 or R2 URL), email, phone, location, linkedin, website, linkedinUrl, websiteUrl
+- `personalInfo` — Name, title, photo (base64 or R2 URL), photoFilter (none/grayscale/studio/warm/cool), email, phone, location, linkedin, website, linkedinUrl, websiteUrl
 - `summary` — About me text
 - `experience[]` — Work history with bullet points
 - `education[]` — Academic background
@@ -222,7 +222,7 @@ The CVContext exposes `reorder*` methods (using `arrayMove`) in addition to the 
 - `PlanProvider` fetches plan via `GET /api/cv/plan` which reads `users.subscription` from MongoDB
 - `usePlan()` exposes `plan`, `isPremium`, `devOverride`/`setDevOverride` (for testing)
 - Stripe checkout: `POST /api/stripe/checkout` → creates session → redirect to Stripe → webhook updates user subscription in MongoDB
-- **Currently gated features:** extra color palettes (wetAsphalt, esmeralda, hielo, floral), accent colors, extra fonts (SourceSans3, Merriweather), sidebar patterns, optional sections (courses, certifications, awards), PDF without branding
+- **Currently gated features:** extra color palettes (wetAsphalt, esmeralda, hielo, floral), accent colors, extra fonts (SourceSans3, Merriweather), sidebar patterns, photo filters (grayscale/studio/warm/cool), optional sections (courses, certifications, awards), PDF without branding
 
 **MongoDB `users` collection (subscription subdocument):**
 - Fields: `plan` ("free" | "pro"), `billingInterval`, `provider` (stripe/mercadopago/paypal), `customerId`, `subscriptionId`, `currentPeriodEnd`
@@ -390,7 +390,8 @@ src/
 │   ├── default-data.test.ts         # Default data (6 tests)
 │   ├── utils.test.ts                # Utility functions (3 tests)
 │   ├── storage.test.ts              # localStorage operations (4 tests)
-│   └── cv-sync.test.ts               # CV sync functions (36 tests)
+│   ├── cv-sync.test.ts               # CV sync functions (36 tests)
+│   └── photo-filters.test.ts        # Photo filter utility (7 tests)
 ├── lib/
 │   ├── types.ts                     # All TypeScript interfaces
 │   ├── cv-context.tsx               # CV state management (~32 methods)
@@ -404,6 +405,7 @@ src/
 │   ├── render-rich-text-pdf.tsx     # Rich text → PDF elements
 │   ├── fonts.ts                     # Font definitions and helpers
 │   ├── font-context.tsx             # FontSettingsProvider
+│   ├── photo-filters.ts             # Photo filter presets (CSS/canvas filter strings)
 │   ├── color-schemes.ts             # 5 color palettes + resolveColorScheme + tinting helpers
 │   ├── color-scheme-context.tsx     # ColorSchemeProvider
 │   ├── theme-context.tsx            # ThemeProvider (dark/light)
@@ -575,7 +577,7 @@ When implementing new features, these files almost always need updates:
 | `lucide-react` | Icons (only icon library used) |
 | `mongoose` | MongoDB ODM for data models |
 | `next-auth` | Authentication (Auth.js v5, Google + GitHub OAuth) |
-| `vitest` | Unit testing framework (114 tests) |
+| `vitest` | Unit testing framework (163 tests) |
 | `husky` | Git hooks manager (pre-commit, commit-msg, pre-push) |
 | `@commitlint/cli` + `config-conventional` | Commit message linting (conventional commits) |
 | `lint-staged` | Run ESLint on staged files only (pre-commit) |
@@ -584,7 +586,7 @@ When implementing new features, these files almost always need updates:
 
 ### Unit Tests (Vitest)
 
-**156 tests** across 8 files in `src/__tests__/`. Run in ~2s.
+**163 tests** across 9 files in `src/__tests__/`. Run in ~2s.
 
 | File | Tests | Covers |
 |---|---|---|
@@ -596,6 +598,7 @@ When implementing new features, these files almost always need updates:
 | `utils.test.ts` | 3 | `filenameDateStamp` (with fake timers) |
 | `storage.test.ts` | 4 | `saveCVData`/`loadCVData`/`clearCVData` round-trips |
 | `cv-sync.test.ts` | 36 | `stableStringify`, `cvContentFingerprint`, `sortBySortOrder`, `docToCVData`, `cvDataToDoc`, `toSettings` |
+| `photo-filters.test.ts` | 7 | `getPhotoFilter`, `PHOTO_FILTERS` integrity, premium flags |
 
 **Config:** `vitest.config.ts` — jsdom environment, `@vitejs/plugin-react`, `@/` alias.
 
