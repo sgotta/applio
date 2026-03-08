@@ -424,7 +424,12 @@
     "upgradeDescription": "Profitez au maximum de votre CV avec toutes les fonctionnalités premium.",
     "comingSoon": "Bientôt disponible",
     "feature_pdfNoBranding": "Télécharger le PDF sans filigrane Applio",
-    "feature_pdfNoBranding_desc": "Téléchargez votre CV sans filigrane. Rien que votre travail, rien de plus."
+    "feature_pdfNoBranding_desc": "Téléchargez votre CV sans filigrane. Rien que votre travail, rien de plus.",
+    "plan3moLabel": "3 mois",
+    "plan6moLabel": "6 mois",
+    "planSaveTag": "-13%",
+    "checkout": "Payer avec Mercado Pago",
+    "loginRequired": "Connectez-vous d'abord"
   },
   "syncConflict": {
     "title": "Nous avons trouvé votre CV",
