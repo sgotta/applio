@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Context7 MCP
+
+Always use Context7 MCP when you need library/API documentation, code generation, setup or configuration steps without the user having to explicitly ask.
+
 ## Project Overview
 
 **Applio** is a CV builder with a minimalist Notion-style inline editing experience. Built with Next.js 16 App Router, React 19, and Tailwind CSS v4. Features a marketing landing page at `/`, an interactive editor at `/editor`, OAuth authentication (Google/GitHub) via Auth.js v5, cloud sync (MongoDB), shareable CV links, and a Stripe-based premium plan.
