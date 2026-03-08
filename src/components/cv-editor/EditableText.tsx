@@ -42,7 +42,7 @@ interface EditableTextProps {
 
 /** Tailwind classes WITHOUT font-size (font-size is applied via inline style) */
 const styleMap: Record<EditableStyle, string> = {
-  heading: "font-semibold tracking-tight text-gray-900",
+  heading: "font-semibold tracking-tight leading-tight text-gray-900",
   subheading: "font-medium uppercase tracking-wide text-gray-500",
   itemTitle: "font-semibold text-gray-900",
   body: "leading-relaxed text-gray-600",

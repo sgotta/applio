@@ -84,53 +84,66 @@ export function MobileCVView({
       style={{ fontFamily: fontFamilyOverride ?? "var(--font-inter), Inter, sans-serif" }}
     >
       {/* Mobile Header */}
-      <div className="flex flex-col items-center px-6 pt-16">
-        <div className="flex flex-col items-center mb-6">
-          <div
-            className="w-44 h-44 rounded-full grid place-items-center overflow-hidden relative"
-            style={{ backgroundColor: "#e5e7eb" }}
-          >
-            <span
-              className={`text-4xl font-medium leading-none tracking-wide select-none transition-opacity duration-300 ${imageLoaded ? "opacity-0" : "opacity-100"}`}
-              style={{ color: "#9ca3af" }}
-            >
-              {initials}
-            </span>
-            {photoUrl && !imageFailed && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                ref={photoRef}
-                src={photoUrl}
-                alt={personalInfo.fullName}
-                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
-                onLoad={() => setImageLoaded(true)}
-                onError={() => setImageFailed(true)}
-              />
-            )}
-          </div>
-        </div>
-
-        <div className="mb-4">
-          <h1
-            className="font-semibold tracking-tight"
-            style={{ fontSize: fs.heading, color: colors.nameColor }}
-          >
-            {personalInfo.fullName}
-          </h1>
-          {colors.nameAccent !== "transparent" && (
+      <div className={`flex flex-col items-center px-6 ${visibility.photo ? "pt-16" : "pt-16 pb-12"}`}>
+        {visibility.photo ? (
+          <div className="flex flex-col items-center mb-6">
             <div
-              className="mt-1 h-0.5 w-12 rounded-full"
-              style={{ backgroundColor: colors.nameAccent }}
-            />
-          )}
-          <div className="mt-0.5">
-            <p
-              className="font-medium uppercase tracking-wide text-gray-500"
-              style={{ fontSize: fs.subheading }}
+              className="w-44 h-44 rounded-full grid place-items-center overflow-hidden relative"
+              style={{ backgroundColor: "#e5e7eb" }}
             >
-              {personalInfo.jobTitle}
-            </p>
+              <span
+                className={`text-4xl font-medium leading-none tracking-wide select-none transition-opacity duration-300 ${imageLoaded ? "opacity-0" : "opacity-100"}`}
+                style={{ color: "#9ca3af" }}
+              >
+                {initials}
+              </span>
+              {photoUrl && !imageFailed && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  ref={photoRef}
+                  src={photoUrl}
+                  alt={personalInfo.fullName}
+                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
+                  onLoad={() => setImageLoaded(true)}
+                  onError={() => setImageFailed(true)}
+                />
+              )}
+            </div>
           </div>
+        ) : null}
+
+        <div className={visibility.photo ? "mb-4" : ""}>
+          {(() => {
+            // Mobile header is always on white background — use a color visible on white.
+            // sidebarBadgeBg may contain alpha (e.g. wetAsphalt "#ffffff33"), fall back to heading color.
+            const noPhotoBg = colors.sidebarBadgeBg.length <= 7 ? colors.sidebarBadgeBg : colors.heading;
+            const nameClr = visibility.photo ? colors.nameColor : noPhotoBg;
+            const titleClr = visibility.photo ? undefined : noPhotoBg;
+            return (
+              <>
+                <h1
+                  className="font-semibold tracking-tight leading-tight"
+                  style={{ fontSize: fs.heading, color: nameClr }}
+                >
+                  {personalInfo.fullName}
+                </h1>
+                {visibility.photo && colors.nameAccent !== "transparent" && (
+                  <div
+                    className="mt-1 h-0.5 w-12 rounded-full"
+                    style={{ backgroundColor: colors.nameAccent }}
+                  />
+                )}
+                <div className="mt-3">
+                  <p
+                    className="font-medium uppercase tracking-wide"
+                    style={{ fontSize: fs.small, color: titleClr ?? undefined }}
+                  >
+                    {personalInfo.jobTitle}
+                  </p>
+                </div>
+              </>
+            );
+          })()}
         </div>
       </div>
 

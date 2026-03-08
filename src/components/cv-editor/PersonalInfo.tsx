@@ -675,17 +675,17 @@ export const PersonalInfo = memo(function PersonalInfo() {
           />
         ) : (() => {
             const darkSidebar = colorScheme.sidebarText === "#ffffff";
-            const nameClr = darkSidebar ? colorScheme.sidebarText : colorScheme.nameColor;
-            const titleClr = darkSidebar ? colorScheme.sidebarText : colorScheme.nameColor + "99";
+            const nameClr = darkSidebar ? colorScheme.sidebarText : colorScheme.sidebarBadgeBg;
+            const titleClr = darkSidebar ? colorScheme.sidebarText : colorScheme.sidebarBadgeBg;
             return (
-              <div>
+              <div className="mb-10">
                 <EditableText
                   value={personalInfo.fullName}
                   onChange={(v) => updatePersonalInfo("fullName", v)}
                   as="heading"
                   className="leading-[1.1]!"
                   placeholder={t("namePlaceholder")}
-                  displayStyle={{ color: nameClr }}
+                  displayStyle={{ color: nameClr, fontSize: "2.4em", overflowWrap: "break-word", wordBreak: "break-word" }}
                 />
                 <div className="mt-3">
                   <EditableText
