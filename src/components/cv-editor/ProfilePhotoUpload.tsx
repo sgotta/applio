@@ -4,23 +4,35 @@ import { useState, useCallback, useEffect } from "react";
 import { Camera } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { PhotoCropDialog } from "./PhotoCropDialog";
+import { getPhotoFilter } from "@/lib/photo-filters";
+import type { PhotoFilter } from "@/lib/types";
 
 interface ProfilePhotoUploadProps {
   currentPhoto?: string;
   fullName: string;
   onPhotoChange: (photoBase64: string | undefined) => void;
+  photoFilter?: PhotoFilter;
+  onPhotoFilterChange?: (filter: PhotoFilter) => void;
   /** Background color for the initials circle (from color scheme) */
   placeholderBg?: string;
   /** Text color for the initials (from color scheme) */
   placeholderText?: string;
+  /** Size class for the circle (default: "w-36 h-36") */
+  sizeClass?: string;
+  /** Text size class for the initials (default: "text-3xl") */
+  initialsClass?: string;
 }
 
 export function ProfilePhotoUpload({
   currentPhoto,
   fullName,
   onPhotoChange,
+  photoFilter,
+  onPhotoFilterChange,
   placeholderBg,
   placeholderText,
+  sizeClass = "w-36 h-36",
+  initialsClass = "text-3xl",
 }: ProfilePhotoUploadProps) {
   const t = useTranslations("photo");
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -50,16 +62,18 @@ export function ProfilePhotoUpload({
 
   const photoContent = showInitials ? (
     <span
-      className="text-3xl font-medium leading-none tracking-wide select-none"
+      className={`${initialsClass} font-medium leading-none tracking-wide select-none`}
       style={{ color: placeholderText ?? "#9ca3af" }}
     >
       {getInitials(fullName)}
     </span>
   ) : (
+    // eslint-disable-next-line @next/next/no-img-element
     <img
       src={currentPhoto}
       alt={t("altText")}
       className="w-full h-full object-cover"
+      style={{ filter: getPhotoFilter(photoFilter).cssFilter }}
       onError={() => setPhotoError(true)}
     />
   );
@@ -69,7 +83,7 @@ export function ProfilePhotoUpload({
       <button
         type="button"
         onClick={() => setDialogOpen(true)}
-        className="relative w-36 h-36 rounded-full overflow-hidden grid place-items-center group cursor-pointer"
+        className={`relative ${sizeClass} rounded-full overflow-hidden grid place-items-center group cursor-pointer`}
         style={{ backgroundColor: placeholderBg ?? "#e5e7eb" }}
       >
         {photoContent}
@@ -83,6 +97,8 @@ export function ProfilePhotoUpload({
         onOpenChange={setDialogOpen}
         currentPhoto={currentPhoto}
         onPhotoChange={handlePhotoChange}
+        photoFilter={photoFilter}
+        onPhotoFilterChange={onPhotoFilterChange}
       />
     </div>
   );

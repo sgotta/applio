@@ -9,6 +9,7 @@ const PersonalInfoSchema = new Schema(
     fullName: String,
     jobTitle: String,
     photoUrl: String,
+    photoFilter: String,
     email: String,
     phone: String,
     location: String,
@@ -24,6 +25,8 @@ const PersonalInfoSchema = new Schema(
 const SettingsSchema = new Schema(
   {
     colorScheme: String,
+    accentColor: String,
+    sidebarColor: String,
     fontFamily: String,
     theme: String,
     locale: String,
@@ -45,6 +48,7 @@ const SettingsSchema = new Schema(
 
 const VisibilitySchema = new Schema(
   {
+    photo: Boolean,
     location: Boolean,
     linkedin: Boolean,
     website: Boolean,
@@ -144,6 +148,7 @@ export interface ICV extends Document {
     fullName?: string;
     jobTitle?: string;
     photoUrl?: string;
+    photoFilter?: string;
     email?: string;
     phone?: string;
     location?: string;
@@ -155,6 +160,8 @@ export interface ICV extends Document {
   };
   settings: {
     colorScheme?: string;
+    accentColor?: string;
+    sidebarColor?: string;
     fontFamily?: string;
     theme?: string;
     locale?: string;
@@ -167,6 +174,7 @@ export interface ICV extends Document {
     };
   };
   visibility: {
+    photo?: boolean;
     location?: boolean;
     linkedin?: boolean;
     website?: boolean;

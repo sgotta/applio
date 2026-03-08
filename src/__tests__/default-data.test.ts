@@ -35,6 +35,7 @@ describe("getDefaultCVData", () => {
 
 describe("defaultVisibility", () => {
   it("has expected defaults", () => {
+    expect(defaultVisibility.photo).toBe(true);
     expect(defaultVisibility.location).toBe(true);
     expect(defaultVisibility.linkedin).toBe(true);
     expect(defaultVisibility.website).toBe(true);

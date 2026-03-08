@@ -6,6 +6,7 @@
     "sectionsTitle": "Champs de contact",
     "sectionEmail": "E-mail",
     "sectionPhone": "Téléphone",
+    "sectionPhoto": "Photo de profil",
     "sectionLocation": "Localisation",
     "sectionLinkedin": "LinkedIn",
     "sectionWebsite": "Site web",
@@ -33,11 +34,26 @@
     "overflowDescription": "Réduisez le contenu pour que le PDF soit généré correctement.",
     "overflowContinue": "Continuer quand même",
     "colorScheme": "Couleur du CV",
+    "colorPalette": "Palette de couleurs",
     "colorSchemeDefault": "Défaut",
-    "colorSchemePeterRiver": "Clear Child",
-    "colorSchemeEmerald": "Émeraude",
-    "colorSchemeCarrot": "Carotte",
     "colorSchemeWetAsphalt": "Asphalte",
+    "colorSchemeEsmeralda": "Émeraude",
+    "colorSchemeHielo": "Glace",
+    "colorSchemeFloral": "Floral",
+    "colorSchemeRosa": "Rose",
+    "colorSchemeVioleta": "Violet",
+    "colorSchemeRojo": "Rouge",
+    "colorSchemeAmarillo": "Jaune",
+    "colorSchemeDefaultBlue": "Défaut Bleu",
+    "colorSchemeDefaultGreen": "Défaut Vert",
+    "colorSchemeDefaultOrange": "Défaut Orange",
+    "accentColor": "Couleur d'accent",
+    "accentNone": "Sans accent",
+    "accentBlue": "Bleu",
+    "accentGreen": "Vert",
+    "accentOrange": "Orange",
+    "accentCustom": "Personnalisé",
+    "accentDisabledHint": "Passez à Défaut pour personnaliser l'accent",
     "fontSettings": "Typographie",
     "fontFamily": "Police",
     "fontSize": "Taille de police",
@@ -105,7 +121,9 @@
     "confirmDeleteCategory": "Supprimer la catégorie \"{category}\" ?",
     "confirmDeleteCategoryEmpty": "Supprimer cette catégorie ?",
     "moveUp": "Déplacer vers le haut",
-    "moveDown": "Déplacer vers le bas"
+    "moveDown": "Déplacer vers le bas",
+    "namePlaceholder": "Votre Nom Complet",
+    "titlePlaceholder": "Votre Titre Professionnel"
   },
   "experience": {
     "title": "Expérience",
@@ -155,7 +173,13 @@
     "zoom": "Zoom",
     "cancel": "Annuler",
     "apply": "Appliquer",
-    "adjust": "Ajuster"
+    "adjust": "Ajuster",
+    "filters": "Filtres",
+    "filterNone": "Original",
+    "filterGrayscale": "N&B",
+    "filterStudio": "Studio",
+    "filterWarm": "Chaud",
+    "filterCool": "Froid"
   },
   "editableText": {
     "defaultPlaceholder": "Cliquez pour modifier...",
@@ -302,13 +326,15 @@
   },
   "landing": {
     "nav": {
-      "cta": "Créez votre CV"
+      "cta": "Créez votre CV",
+      "ctaReturning": "Aller à l'éditeur"
     },
     "hero": {
       "titleLine1": "Créez votre CV",
       "titleLine2": "en quelques minutes.",
       "subtitle": "Cliquez, éditez directement et téléchargez un PDF professionnel. Pas de formulaires, ni d'étapes supplémentaires.",
       "ctaPrimary": "Commencer gratuitement",
+      "ctaPrimaryReturning": "Aller à l'éditeur",
       "ctaSecondary": "Voir comment ça marche",
       "mockupHint": "Cliquez pour commencer à éditer →"
     },
@@ -365,7 +391,8 @@
       "titleLine1": "Votre prochain CV",
       "titleLine2": "est à un clic.",
       "subtitle": "Commencez à éditer maintenant et téléchargez votre CV en PDF professionnel. Sans prise de tête.",
-      "button": "Commencer maintenant"
+      "button": "Commencer maintenant",
+      "buttonReturning": "Aller à l'éditeur"
     },
     "footer": {}
   },

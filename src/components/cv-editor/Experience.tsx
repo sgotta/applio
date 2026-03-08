@@ -96,6 +96,7 @@ function ExperienceCard({
           as="itemTitle"
           className="min-w-[60%]"
           placeholder={t("companyPlaceholder")}
+          displayStyle={{ color: colorScheme.entryTitle }}
         />
         <div className="flex items-baseline gap-1 shrink-0">
           <EditableText

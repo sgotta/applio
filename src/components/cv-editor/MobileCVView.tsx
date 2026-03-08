@@ -69,7 +69,7 @@ export function MobileCVView({
   const mg = (px: number) => Math.round(px * 1.6);
 
   const fs = {
-    heading: "2.16em",
+    heading: "2.8em",
     subheading: "1.26em",
     itemTitle: "1.17em",
     body: "1em",
@@ -84,53 +84,66 @@ export function MobileCVView({
       style={{ fontFamily: fontFamilyOverride ?? "var(--font-inter), Inter, sans-serif" }}
     >
       {/* Mobile Header */}
-      <div className="flex flex-col items-center px-6 pt-16">
-        <div className="flex flex-col items-center mb-6">
-          <div
-            className="w-36 h-36 rounded-full grid place-items-center overflow-hidden relative"
-            style={{ backgroundColor: `${colors.nameAccent}18` }}
-          >
-            <span
-              className={`text-3xl font-medium leading-none tracking-wide select-none transition-opacity duration-300 ${imageLoaded ? "opacity-0" : "opacity-100"}`}
-              style={{ color: `${colors.nameAccent}90` }}
-            >
-              {initials}
-            </span>
-            {photoUrl && !imageFailed && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                ref={photoRef}
-                src={photoUrl}
-                alt={personalInfo.fullName}
-                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
-                onLoad={() => setImageLoaded(true)}
-                onError={() => setImageFailed(true)}
-              />
-            )}
-          </div>
-        </div>
-
-        <div className="mb-4">
-          <h1
-            className="font-semibold tracking-tight text-gray-900"
-            style={{ fontSize: fs.heading }}
-          >
-            {personalInfo.fullName}
-          </h1>
-          {colors.nameAccent !== "transparent" && (
+      <div className={`flex flex-col items-center px-6 ${visibility.photo ? "pt-16" : "pt-16 pb-12"}`}>
+        {visibility.photo ? (
+          <div className="flex flex-col items-center mb-6">
             <div
-              className="mt-1 h-0.5 w-12 rounded-full"
-              style={{ backgroundColor: colors.nameAccent }}
-            />
-          )}
-          <div className="mt-0.5">
-            <p
-              className="font-medium uppercase tracking-wide text-gray-500"
-              style={{ fontSize: fs.subheading }}
+              className="w-44 h-44 rounded-full grid place-items-center overflow-hidden relative"
+              style={{ backgroundColor: "#e5e7eb" }}
             >
-              {personalInfo.jobTitle}
-            </p>
+              <span
+                className={`text-4xl font-medium leading-none tracking-wide select-none transition-opacity duration-300 ${imageLoaded ? "opacity-0" : "opacity-100"}`}
+                style={{ color: "#9ca3af" }}
+              >
+                {initials}
+              </span>
+              {photoUrl && !imageFailed && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  ref={photoRef}
+                  src={photoUrl}
+                  alt={personalInfo.fullName}
+                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
+                  onLoad={() => setImageLoaded(true)}
+                  onError={() => setImageFailed(true)}
+                />
+              )}
+            </div>
           </div>
+        ) : null}
+
+        <div className={visibility.photo ? "mb-4" : ""}>
+          {(() => {
+            // Mobile header is always on white background — use a color visible on white.
+            // sidebarBadgeBg may contain alpha (e.g. wetAsphalt "#ffffff33"), fall back to heading color.
+            const noPhotoBg = colors.sidebarBadgeBg.length <= 7 ? colors.sidebarBadgeBg : colors.heading;
+            const nameClr = visibility.photo ? colors.nameColor : noPhotoBg;
+            const titleClr = visibility.photo ? undefined : noPhotoBg;
+            return (
+              <>
+                <h1
+                  className="font-semibold tracking-tight leading-tight"
+                  style={{ fontSize: fs.heading, color: nameClr }}
+                >
+                  {personalInfo.fullName}
+                </h1>
+                {visibility.photo && colors.nameAccent !== "transparent" && (
+                  <div
+                    className="mt-1 h-0.5 w-12 rounded-full"
+                    style={{ backgroundColor: colors.nameAccent }}
+                  />
+                )}
+                <div className="mt-3">
+                  <p
+                    className="font-medium uppercase tracking-wide"
+                    style={{ fontSize: fs.small, color: titleClr ?? undefined }}
+                  >
+                    {personalInfo.jobTitle}
+                  </p>
+                </div>
+              </>
+            );
+          })()}
         </div>
       </div>
 
@@ -149,25 +162,25 @@ export function MobileCVView({
                 <div className="space-y-1.5">
                   {personalInfo.email && (
                     <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: fs.small }}>
-                      <Mail className="h-3 w-3 shrink-0" />
+                      <Mail className="h-3 w-3 shrink-0" style={{ color: colors.sidebarAccent }} />
                       <a href={`mailto:${personalInfo.email}`} style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.email}</a>
                     </div>
                   )}
                   {personalInfo.phone && (
                     <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: fs.small }}>
-                      <Phone className="h-3 w-3 shrink-0" />
+                      <Phone className="h-3 w-3 shrink-0" style={{ color: colors.sidebarAccent }} />
                       <a href={`tel:${personalInfo.phone}`} style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.phone}</a>
                     </div>
                   )}
                   {visibility.location && personalInfo.location && (
                     <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: fs.small }}>
-                      <MapPin className="h-3 w-3 shrink-0" />
+                      <MapPin className="h-3 w-3 shrink-0" style={{ color: colors.sidebarAccent }} />
                       <span>{personalInfo.location}</span>
                     </div>
                   )}
                   {visibility.linkedin && personalInfo.linkedin && (
                     <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: fs.small }}>
-                      <Linkedin className="h-3 w-3 shrink-0" />
+                      <Linkedin className="h-3 w-3 shrink-0" style={{ color: colors.sidebarAccent }} />
                       {personalInfo.linkedinUrl ? (
                         <a href={ensureProtocol(personalInfo.linkedinUrl)} target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.linkedin}</a>
                       ) : (
@@ -177,7 +190,7 @@ export function MobileCVView({
                   )}
                   {visibility.website && personalInfo.website && (
                     <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: fs.small }}>
-                      <Globe className="h-3 w-3 shrink-0" />
+                      <Globe className="h-3 w-3 shrink-0" style={{ color: colors.sidebarAccent }} />
                       {personalInfo.websiteUrl ? (
                         <a href={ensureProtocol(personalInfo.websiteUrl)} target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.website}</a>
                       ) : (
@@ -252,7 +265,7 @@ export function MobileCVView({
               {experiences.map((exp) => (
                 <div key={exp.id}>
                   <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0">
-                    <h4 className="font-semibold text-gray-900" style={{ fontSize: fs.itemTitle }}>{exp.company}</h4>
+                    <h4 className="font-semibold" style={{ fontSize: fs.itemTitle, color: colors.entryTitle }}>{exp.company}</h4>
                     <div className="flex items-baseline gap-1 shrink-0">
                       <span className="text-gray-400" style={{ fontSize: fs.tiny }}>{exp.startDate}</span>
                       <span className="text-gray-400" style={{ fontSize: fs.tiny }}>—</span>
@@ -280,7 +293,7 @@ export function MobileCVView({
               {education.map((edu) => (
                 <div key={edu.id}>
                   <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0">
-                    <h4 className="font-semibold text-gray-900" style={{ fontSize: fs.itemTitle }}>{edu.institution}</h4>
+                    <h4 className="font-semibold" style={{ fontSize: fs.itemTitle, color: colors.entryTitle }}>{edu.institution}</h4>
                     <div className="flex items-baseline gap-1 shrink-0">
                       <span className="text-gray-400" style={{ fontSize: fs.tiny }}>{edu.startDate}</span>
                       <span className="text-gray-400" style={{ fontSize: fs.tiny }}>—</span>
@@ -308,7 +321,7 @@ export function MobileCVView({
               {courses.map((course) => (
                 <div key={course.id}>
                   <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0">
-                    <h4 className="font-semibold text-gray-900" style={{ fontSize: fs.itemTitle }}>{course.name}</h4>
+                    <h4 className="font-semibold" style={{ fontSize: fs.itemTitle, color: colors.entryTitle }}>{course.name}</h4>
                     <span className="shrink-0 text-gray-400" style={{ fontSize: fs.tiny }}>{course.date}</span>
                   </div>
                   <p className="mt-0.5 font-medium text-gray-600" style={{ fontSize: fs.small }}>{course.institution}</p>
@@ -332,7 +345,7 @@ export function MobileCVView({
               {certifications.map((cert) => (
                 <div key={cert.id}>
                   <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0">
-                    <h4 className="font-semibold text-gray-900" style={{ fontSize: fs.itemTitle }}>{cert.name}</h4>
+                    <h4 className="font-semibold" style={{ fontSize: fs.itemTitle, color: colors.entryTitle }}>{cert.name}</h4>
                     <span className="shrink-0 text-gray-400" style={{ fontSize: fs.tiny }}>{cert.date}</span>
                   </div>
                   <p className="mt-0.5 font-medium text-gray-600" style={{ fontSize: fs.small }}>{cert.issuer}</p>
@@ -356,7 +369,7 @@ export function MobileCVView({
               {awards.map((award) => (
                 <div key={award.id}>
                   <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0">
-                    <h4 className="font-semibold text-gray-900" style={{ fontSize: fs.itemTitle }}>{award.name}</h4>
+                    <h4 className="font-semibold" style={{ fontSize: fs.itemTitle, color: colors.entryTitle }}>{award.name}</h4>
                     <span className="shrink-0 text-gray-400" style={{ fontSize: fs.tiny }}>{award.date}</span>
                   </div>
                   <p className="mt-0.5 font-medium text-gray-600" style={{ fontSize: fs.small }}>{award.issuer}</p>

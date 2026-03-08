@@ -50,15 +50,7 @@ test.describe("Import / Export @smoke", () => {
     expect(originalName).not.toBe("Imported User");
   });
 
-  test("import invalid JSON shows error alert", async ({ appPage: page }) => {
-    // Listen for the alert dialog
-    const dialogPromise = new Promise<string>((resolve) => {
-      page.on("dialog", async (dialog) => {
-        resolve(dialog.type());
-        await dialog.accept();
-      });
-    });
-
+  test("import invalid JSON shows error toast", async ({ appPage: page }) => {
     // Set invalid JSON file
     const fileInput = page.locator("input[type='file'][accept='.json']");
     await fileInput.setInputFiles({
@@ -67,9 +59,9 @@ test.describe("Import / Export @smoke", () => {
       buffer: Buffer.from("{ not valid json !!!"),
     });
 
-    // Should show an alert dialog
-    const dialogType = await dialogPromise;
-    expect(dialogType).toBe("alert");
+    // Should show an error toast (sonner)
+    const toast = page.locator("[data-sonner-toast][data-type='error']");
+    await expect(toast).toBeVisible({ timeout: 5000 });
   });
 
   test("import restores visual settings (color scheme)", async ({ appPage: page }) => {

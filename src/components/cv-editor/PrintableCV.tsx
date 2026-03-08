@@ -10,6 +10,7 @@ import { useFontSettings } from "@/lib/font-context";
 import { getFontDefinition, FONT_SIZE_LEVELS } from "@/lib/fonts";
 import { type ColorScheme } from "@/lib/color-schemes";
 import { renderRichDocument } from "@/lib/render-rich-text";
+import { getPhotoFilter } from "@/lib/photo-filters";
 import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
 
 function ensureProtocol(url: string): string {
@@ -18,14 +19,14 @@ function ensureProtocol(url: string): string {
 
 /** Font sizes in em — matches EditableText fontSizeMap + SectionTitle exactly */
 const FS = {
-  heading: "2.16em",
+  heading: "2.8em",
   subheading: "1.26em",
   itemTitle: "1.17em",
   body: "1em",
   small: "1em",
   tiny: "0.9em",
   section: "0.9em",
-  initials: "2em",
+  initials: "2.25em",
 } as const;
 
 function SectionHeading({
@@ -100,6 +101,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
     const [localPhotoError, setLocalPhotoError] = useState(false);
     const [localPhotoLoaded, setLocalPhotoLoaded] = useState(false);
     const hasLocalPhoto = !forceInitials && !!personalInfo.photoUrl && !localPhotoError;
+    const photoFilterStyle = { filter: getPhotoFilter(personalInfo.photoFilter).cssFilter };
 
     // SSR hydration fix: if the image loaded before React hydrated, onLoad won't fire.
     // The ref callback checks img.complete to catch already-loaded images.
@@ -134,50 +136,76 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
             flexShrink: 0,
             padding: `${mg(24)}px`,
             backgroundColor: colors.sidebarBg,
-            borderRight: `1px solid ${colors.sidebarSeparator}`,
           }}
         >
           <div className="relative space-y-5">
-            {/* Photo / Initials */}
-            <div
-              className="mx-auto h-36 w-36 rounded-full grid place-items-center overflow-hidden relative"
-              style={{ backgroundColor: colors.sidebarText + "28" }}
-            >
-              {/* Initials always visible as base layer */}
-              <span
-                className={`font-medium select-none leading-none tracking-wide ${photoUrlLoaded ? "opacity-0 transition-opacity duration-300" : ""}`}
-                style={{
-                  fontSize: FS.initials,
-                  color: colors.sidebarMuted,
-                }}
+            {/* Photo / Initials OR Name+Title in sidebar */}
+            {visibility.photo ? (
+              <div
+                className="mx-auto h-36 w-36 rounded-full grid place-items-center overflow-hidden relative"
+                style={{ backgroundColor: colors.sidebarText + "18" }}
               >
-                {initials}
-              </span>
-              {/* Local photo overlay — starts invisible, shown only on successful load */}
-              {hasLocalPhoto && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  ref={localPhotoRef}
-                  src={personalInfo.photoUrl}
-                  alt={t("profilePhotoAlt")}
-                  className={`absolute inset-0 w-full h-full object-cover ${localPhotoLoaded ? "" : "invisible"}`}
-                  onLoad={() => setLocalPhotoLoaded(true)}
-                  onError={() => setLocalPhotoError(true)}
-                />
-              )}
-              {/* Remote photo overlay (shared view) */}
-              {!hasLocalPhoto && photoUrl && !photoUrlError && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  ref={remotePhotoRef}
-                  src={photoUrl}
-                  alt={t("profilePhotoAlt")}
-                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${photoUrlLoaded ? "opacity-100" : "opacity-0"}`}
-                  onLoad={() => setPhotoUrlLoaded(true)}
-                  onError={() => setPhotoUrlError(true)}
-                />
-              )}
-            </div>
+                {/* Initials always visible as base layer */}
+                <span
+                  className={`font-medium select-none leading-none tracking-wide ${photoUrlLoaded ? "opacity-0 transition-opacity duration-300" : ""}`}
+                  style={{
+                    fontSize: FS.initials,
+                    color: colors.sidebarMuted,
+                  }}
+                >
+                  {initials}
+                </span>
+                {/* Local photo overlay — starts invisible, shown only on successful load */}
+                {hasLocalPhoto && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    ref={localPhotoRef}
+                    src={personalInfo.photoUrl}
+                    alt={t("profilePhotoAlt")}
+                    className={`absolute inset-0 w-full h-full object-cover ${localPhotoLoaded ? "" : "invisible"}`}
+                    style={photoFilterStyle}
+                    onLoad={() => setLocalPhotoLoaded(true)}
+                    onError={() => setLocalPhotoError(true)}
+                  />
+                )}
+                {/* Remote photo overlay (shared view) */}
+                {!hasLocalPhoto && photoUrl && !photoUrlError && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    ref={remotePhotoRef}
+                    src={photoUrl}
+                    alt={t("profilePhotoAlt")}
+                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${photoUrlLoaded ? "opacity-100" : "opacity-0"}`}
+                    style={photoFilterStyle}
+                    onLoad={() => setPhotoUrlLoaded(true)}
+                    onError={() => setPhotoUrlError(true)}
+                  />
+                )}
+              </div>
+            ) : (
+              /* Name + Title in sidebar when photo is hidden */
+              (() => {
+                const darkSidebar = colors.sidebarText === "#ffffff";
+                const nameClr = darkSidebar ? colors.sidebarText : colors.sidebarBadgeBg;
+                const titleClr = darkSidebar ? colors.sidebarText : colors.sidebarBadgeBg;
+                return (
+                  <div className="mb-8">
+                    <h2
+                      className="font-semibold leading-tight tracking-tight wrap-break-word"
+                      style={{ fontSize: "2.4em", color: nameClr }}
+                    >
+                      {personalInfo.fullName}
+                    </h2>
+                    <p
+                      className="mt-3 font-medium uppercase tracking-wide"
+                      style={{ fontSize: FS.small, color: titleClr }}
+                    >
+                      {personalInfo.jobTitle}
+                    </p>
+                  </div>
+                );
+              })()
+            )}
 
             {sidebarSections.map((sectionId) => {
               if (sectionId === "contact") {
@@ -189,25 +217,25 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
                     <div className="space-y-1.5">
                       {personalInfo.email && (
                         <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: FS.small }}>
-                          <Mail className="h-3 w-3 shrink-0" />
+                          <Mail className="h-3 w-3 shrink-0" style={{ color: colors.sidebarAccent }} />
                           <a href={`mailto:${personalInfo.email}`} className="truncate" style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.email}</a>
                         </div>
                       )}
                       {personalInfo.phone && (
                         <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: FS.small }}>
-                          <Phone className="h-3 w-3 shrink-0" />
+                          <Phone className="h-3 w-3 shrink-0" style={{ color: colors.sidebarAccent }} />
                           <a href={`tel:${personalInfo.phone}`} className="truncate" style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.phone}</a>
                         </div>
                       )}
                       {visibility.location && personalInfo.location && (
                         <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: FS.small }}>
-                          <MapPin className="h-3 w-3 shrink-0" />
+                          <MapPin className="h-3 w-3 shrink-0" style={{ color: colors.sidebarAccent }} />
                           <span className="truncate">{personalInfo.location}</span>
                         </div>
                       )}
                       {visibility.linkedin && personalInfo.linkedin && (
                         <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: FS.small }}>
-                          <Linkedin className="h-3 w-3 shrink-0" />
+                          <Linkedin className="h-3 w-3 shrink-0" style={{ color: colors.sidebarAccent }} />
                           {personalInfo.linkedinUrl ? (
                             <a href={ensureProtocol(personalInfo.linkedinUrl)} target="_blank" rel="noopener noreferrer" className="truncate" style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.linkedin}</a>
                           ) : (
@@ -217,7 +245,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
                       )}
                       {visibility.website && personalInfo.website && (
                         <div className="flex items-center gap-2" style={{ color: colors.sidebarText, fontSize: FS.small }}>
-                          <Globe className="h-3 w-3 shrink-0" />
+                          <Globe className="h-3 w-3 shrink-0" style={{ color: colors.sidebarAccent }} />
                           {personalInfo.websiteUrl ? (
                             <a href={ensureProtocol(personalInfo.websiteUrl)} target="_blank" rel="noopener noreferrer" className="truncate" style={{ color: "inherit", textDecoration: "none" }}>{personalInfo.website}</a>
                           ) : (
@@ -290,34 +318,36 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
         {/* ===== MAIN CONTENT (block flow — page breaks work here) ===== */}
         <div style={{ flex: 1, position: "relative" }}>
           <div className="relative">
-            {/* Header — padding matches CVPreview desktop header */}
-            <div style={{ padding: `${mg(24)}px ${mg(24)}px 0` }}>
-              <div className="mb-4">
-                <h1
-                  className="font-semibold tracking-tight text-gray-900"
-                  style={{ fontSize: FS.heading }}
-                >
-                  {personalInfo.fullName}
-                </h1>
-                {colors.nameAccent !== "transparent" && (
-                  <div
-                    className="mt-1 h-0.5 w-12 rounded-full"
-                    style={{ backgroundColor: colors.nameAccent }}
-                  />
-                )}
-                <div className="mt-0.5">
-                  <p
-                    className="font-medium uppercase tracking-wide text-gray-500"
-                    style={{ fontSize: FS.subheading }}
+            {/* Header — hidden when photo is off (name moves to sidebar) */}
+            {visibility.photo && (
+              <div style={{ padding: `${mg(24)}px ${mg(24)}px 0` }}>
+                <div className="mb-4">
+                  <h1
+                    className="font-semibold tracking-tight"
+                    style={{ fontSize: FS.heading, color: colors.nameColor }}
                   >
-                    {personalInfo.jobTitle}
-                  </p>
+                    {personalInfo.fullName}
+                  </h1>
+                  {colors.nameAccent !== "transparent" && (
+                    <div
+                      className="mt-1 h-0.5 w-12 rounded-full"
+                      style={{ backgroundColor: colors.nameAccent }}
+                    />
+                  )}
+                  <div className="mt-0.5">
+                    <p
+                      className="font-medium uppercase tracking-wide text-gray-500"
+                      style={{ fontSize: FS.subheading }}
+                    >
+                      {personalInfo.jobTitle}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
             {/* Content — padding matches CVPreview content area */}
-            <div style={{ padding: `${mg(16)}px ${mg(24)}px ${mg(24)}px` }}>
+            <div style={{ padding: `${visibility.photo ? mg(16) : mg(44)}px ${mg(24)}px ${mg(24)}px` }}>
               <div className="space-y-5">
                 {/* Experience */}
                 {experiences.length > 0 && (
@@ -330,8 +360,8 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
                         <div key={exp.id} style={{ pageBreakInside: "avoid" }}>
                           <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0">
                             <h4
-                              className="font-semibold text-gray-900"
-                              style={{ fontSize: FS.itemTitle }}
+                              className="font-semibold"
+                              style={{ fontSize: FS.itemTitle, color: colors.entryTitle }}
                             >
                               {exp.company}
                             </h4>
@@ -370,8 +400,8 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
                         <div key={edu.id} style={{ pageBreakInside: "avoid" }}>
                           <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0">
                             <h4
-                              className="font-semibold text-gray-900"
-                              style={{ fontSize: FS.itemTitle }}
+                              className="font-semibold"
+                              style={{ fontSize: FS.itemTitle, color: colors.entryTitle }}
                             >
                               {edu.institution}
                             </h4>
@@ -410,8 +440,8 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
                         <div key={course.id} style={{ pageBreakInside: "avoid" }}>
                           <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0">
                             <h4
-                              className="font-semibold text-gray-900"
-                              style={{ fontSize: FS.itemTitle }}
+                              className="font-semibold"
+                              style={{ fontSize: FS.itemTitle, color: colors.entryTitle }}
                             >
                               {course.name}
                             </h4>
@@ -450,8 +480,8 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
                         <div key={cert.id} style={{ pageBreakInside: "avoid" }}>
                           <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0">
                             <h4
-                              className="font-semibold text-gray-900"
-                              style={{ fontSize: FS.itemTitle }}
+                              className="font-semibold"
+                              style={{ fontSize: FS.itemTitle, color: colors.entryTitle }}
                             >
                               {cert.name}
                             </h4>
@@ -490,8 +520,8 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
                         <div key={award.id} style={{ pageBreakInside: "avoid" }}>
                           <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0">
                             <h4
-                              className="font-semibold text-gray-900"
-                              style={{ fontSize: FS.itemTitle }}
+                              className="font-semibold"
+                              style={{ fontSize: FS.itemTitle, color: colors.entryTitle }}
                             >
                               {award.name}
                             </h4>

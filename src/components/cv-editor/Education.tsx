@@ -96,6 +96,7 @@ function EducationCard({
           as="itemTitle"
           className="min-w-[60%]"
           placeholder={t("institutionPlaceholder")}
+          displayStyle={{ color: colorScheme.entryTitle }}
         />
         <div className="flex items-baseline gap-1 flex-shrink-0">
           <EditableText

@@ -34,6 +34,7 @@ function makeCVData(overrides?: Partial<CVData>): CVData {
     certifications: [],
     awards: [],
     visibility: {
+      photo: true,
       location: true,
       linkedin: true,
       website: true,
@@ -365,6 +366,7 @@ describe("toSettings", () => {
     const plain = {
       settings: {
         colorScheme: "midnight",
+        accentColor: "#1a7ed6",
         fontFamily: "lato",
         fontSizeLevel: 3,
         theme: "dark",
@@ -373,6 +375,7 @@ describe("toSettings", () => {
     };
     const s = toSettings(plain);
     expect(s.colorScheme).toBe("midnight");
+    expect(s.accentColor).toBe("#1a7ed6");
     expect(s.fontFamily).toBe("lato");
     expect(s.fontSizeLevel).toBe(3);
     expect(s.theme).toBe("dark");
@@ -381,11 +384,20 @@ describe("toSettings", () => {
 
   it("provides defaults for missing settings", () => {
     const s = toSettings({});
-    expect(s.colorScheme).toBe("ivory");
+    expect(s.colorScheme).toBe("default");
+    expect(s.accentColor).toBeNull();
     expect(s.fontFamily).toBe("inter");
     expect(s.fontSizeLevel).toBe(2);
     expect(s.theme).toBe("light");
     expect(s.locale).toBe("es");
+  });
+
+  it("defaults accentColor to null when not present", () => {
+    const plain = {
+      settings: { colorScheme: "default", fontFamily: "inter", fontSizeLevel: 2, theme: "light", locale: "es" },
+    };
+    const s = toSettings(plain);
+    expect(s.accentColor).toBeNull();
   });
 });
 
