@@ -681,7 +681,7 @@ export const PersonalInfo = memo(function PersonalInfo() {
               as="heading"
               className="leading-[1.1]!"
               placeholder={t("namePlaceholder")}
-              displayStyle={{ color: colorScheme.sidebarText }}
+              displayStyle={{ color: colorScheme.nameColor }}
             />
             <EditableText
               value={personalInfo.jobTitle}
@@ -689,7 +689,7 @@ export const PersonalInfo = memo(function PersonalInfo() {
               as="small"
               className="uppercase! tracking-wide!"
               placeholder={t("titlePlaceholder")}
-              displayStyle={{ color: colorScheme.sidebarMuted }}
+              displayStyle={{ color: colorScheme.nameColor + "99" }}
             />
           </div>
         )}

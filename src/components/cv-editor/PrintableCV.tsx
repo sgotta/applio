@@ -187,13 +187,13 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
               <div>
                 <h2
                   className="font-semibold leading-tight tracking-tight"
-                  style={{ fontSize: FS.heading, color: colors.sidebarText }}
+                  style={{ fontSize: FS.heading, color: colors.nameColor }}
                 >
                   {personalInfo.fullName}
                 </h2>
                 <p
                   className="mt-1.5 font-medium uppercase tracking-wide"
-                  style={{ fontSize: FS.small, color: colors.sidebarMuted }}
+                  style={{ fontSize: FS.small, color: colors.nameColor + "99" }}
                 >
                   {personalInfo.jobTitle}
                 </p>

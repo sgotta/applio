@@ -450,7 +450,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                   style={{
                     fontSize: fs(28),
                     fontWeight: 600,
-                    color: colors.sidebarText,
+                    color: colors.nameColor,
                     lineHeight: 1.15,
                     letterSpacing: -0.3,
                   }}
@@ -461,7 +461,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                   style={{
                     fontSize: fs(11),
                     fontWeight: 500,
-                    color: safePdfColor(colors.sidebarMuted),
+                    color: safePdfColor(colors.nameColor + "99"),
                     marginTop: 4,
                     textTransform: "uppercase",
                     letterSpacing: 0.5,
