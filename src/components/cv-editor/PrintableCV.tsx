@@ -189,7 +189,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
                 const nameClr = darkSidebar ? colors.sidebarText : colors.sidebarBadgeBg;
                 const titleClr = darkSidebar ? colors.sidebarText : colors.sidebarBadgeBg;
                 return (
-                  <div className="mb-10">
+                  <div className="mb-8">
                     <h2
                       className="font-semibold leading-tight tracking-tight wrap-break-word"
                       style={{ fontSize: "2.4em", color: nameClr }}

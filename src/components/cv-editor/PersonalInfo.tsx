@@ -678,7 +678,7 @@ export const PersonalInfo = memo(function PersonalInfo() {
             const nameClr = darkSidebar ? colorScheme.sidebarText : colorScheme.sidebarBadgeBg;
             const titleClr = darkSidebar ? colorScheme.sidebarText : colorScheme.sidebarBadgeBg;
             return (
-              <div className="mb-10">
+              <div className="mb-8">
                 <EditableText
                   value={personalInfo.fullName}
                   onChange={(v) => updatePersonalInfo("fullName", v)}
