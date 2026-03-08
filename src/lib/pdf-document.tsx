@@ -448,7 +448,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
               (() => {
                 const darkSidebar = colors.sidebarText === "#ffffff";
                 const nameClr = darkSidebar ? colors.sidebarText : colors.nameColor;
-                const titleClr = darkSidebar ? colors.sidebarMuted : colors.nameColor + "99";
+                const titleClr = darkSidebar ? colors.sidebarText : colors.nameColor + "99";
                 return (
                   <View>
                     <Text
@@ -467,7 +467,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                         fontSize: fs(11),
                         fontWeight: 500,
                         color: safePdfColor(titleClr),
-                        marginTop: 4,
+                        marginTop: 14,
                         textTransform: "uppercase",
                         letterSpacing: 0.5,
                       }}
@@ -617,7 +617,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
           </View>
 
           {/* ===== MAIN CONTENT ===== */}
-          <View style={[styles.main, !visibility.photo ? { paddingTop: 16 } : {}]}>
+          <View style={[styles.main, !visibility.photo ? { paddingTop: 24 } : {}]}>
             {/* Header: Name + Title — hidden when photo is off (name in sidebar) */}
             {visibility.photo && (
               <View style={{ marginBottom: 20 }}>

@@ -673,22 +673,21 @@ export const PersonalInfo = memo(function PersonalInfo() {
             placeholderBg={colorScheme.sidebarText + "18"}
             placeholderText={colorScheme.sidebarMuted}
           />
-        ) : (
-          <div className="space-y-1.5">
-            {(() => {
-              const darkSidebar = colorScheme.sidebarText === "#ffffff";
-              const nameClr = darkSidebar ? colorScheme.sidebarText : colorScheme.nameColor;
-              const titleClr = darkSidebar ? colorScheme.sidebarMuted : colorScheme.nameColor + "99";
-              return (
-                <>
-                  <EditableText
-                    value={personalInfo.fullName}
-                    onChange={(v) => updatePersonalInfo("fullName", v)}
-                    as="heading"
-                    className="leading-[1.1]!"
-                    placeholder={t("namePlaceholder")}
-                    displayStyle={{ color: nameClr }}
-                  />
+        ) : (() => {
+            const darkSidebar = colorScheme.sidebarText === "#ffffff";
+            const nameClr = darkSidebar ? colorScheme.sidebarText : colorScheme.nameColor;
+            const titleClr = darkSidebar ? colorScheme.sidebarText : colorScheme.nameColor + "99";
+            return (
+              <div>
+                <EditableText
+                  value={personalInfo.fullName}
+                  onChange={(v) => updatePersonalInfo("fullName", v)}
+                  as="heading"
+                  className="leading-[1.1]!"
+                  placeholder={t("namePlaceholder")}
+                  displayStyle={{ color: nameClr }}
+                />
+                <div className="mt-3">
                   <EditableText
                     value={personalInfo.jobTitle}
                     onChange={(v) => updatePersonalInfo("jobTitle", v)}
@@ -697,11 +696,11 @@ export const PersonalInfo = memo(function PersonalInfo() {
                     placeholder={t("titlePlaceholder")}
                     displayStyle={{ color: titleClr }}
                   />
-                </>
-              );
-            })()}
-          </div>
-        )}
+                </div>
+              </div>
+            );
+          })()
+        }
       </div>
 
       {/* Sortable sidebar sections */}

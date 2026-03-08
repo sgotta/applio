@@ -187,7 +187,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
               (() => {
                 const darkSidebar = colors.sidebarText === "#ffffff";
                 const nameClr = darkSidebar ? colors.sidebarText : colors.nameColor;
-                const titleClr = darkSidebar ? colors.sidebarMuted : colors.nameColor + "99";
+                const titleClr = darkSidebar ? colors.sidebarText : colors.nameColor + "99";
                 return (
                   <div>
                     <h2
@@ -197,7 +197,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
                       {personalInfo.fullName}
                     </h2>
                     <p
-                      className="mt-1.5 font-medium uppercase tracking-wide"
+                      className="mt-5 font-medium uppercase tracking-wide"
                       style={{ fontSize: FS.small, color: titleClr }}
                     >
                       {personalInfo.jobTitle}
@@ -347,7 +347,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
             )}
 
             {/* Content — padding matches CVPreview content area */}
-            <div style={{ padding: `${visibility.photo ? mg(16) : mg(32)}px ${mg(24)}px ${mg(24)}px` }}>
+            <div style={{ padding: `${visibility.photo ? mg(16) : mg(44)}px ${mg(24)}px ${mg(24)}px` }}>
               <div className="space-y-5">
                 {/* Experience */}
                 {experiences.length > 0 && (

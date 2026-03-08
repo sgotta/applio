@@ -114,7 +114,7 @@ function ClassicTemplate() {
               </div>
             )}
             {/* Content */}
-            <div style={{ padding: `${visibility.photo ? mg(16) : mg(32)}px ${mg(24)}px ${mg(24)}px` }}>
+            <div style={{ padding: `${visibility.photo ? mg(16) : mg(44)}px ${mg(24)}px ${mg(24)}px` }}>
               <div className="space-y-5">
                 <Experience />
                 <Education />
