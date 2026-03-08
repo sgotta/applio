@@ -41,12 +41,31 @@ function reencodeAsJpeg(blob: Blob, canvasFilter?: string): Promise<string> {
 }
 
 /**
+ * Fetch a remote image as a Blob.
+ * Tries a direct fetch first; if that fails (e.g. CORS), falls back to
+ * fetching through our own `/api/photo-proxy` route which fetches server-side.
+ */
+async function fetchImageBlob(url: string): Promise<Blob | null> {
+  // Try direct fetch first
+  try {
+    const r = await fetch(url);
+    if (r.ok) return r.blob();
+  } catch { /* CORS or network error — try proxy */ }
+
+  // Fallback: proxy through our API (server-side fetch, no CORS)
+  try {
+    const proxyUrl = `/api/photo-proxy?url=${encodeURIComponent(url)}`;
+    const r = await fetch(proxyUrl);
+    if (r.ok) return r.blob();
+  } catch { /* proxy also failed */ }
+
+  return null;
+}
+
+/**
  * If `photo` is a remote URL (not a data-URI), fetch it and convert
  * to a JPEG base64 data-URI so @react-pdf/renderer can embed it.
  * Returns undefined on failure so the PDF falls back to the initials circle.
- *
- * For remote URLs, preloads the image via an `Image()` element first to warm
- * the browser cache — this prevents first-time failures from cold CDN edges.
  */
 async function resolvePhoto(photo: string | undefined, canvasFilter?: string): Promise<string | undefined> {
   if (!photo) return undefined;
@@ -58,22 +77,9 @@ async function resolvePhoto(photo: string | undefined, canvasFilter?: string): P
   }
 
   try {
-    // For remote URLs, preload the image first to warm the browser cache.
-    // This prevents race conditions where the fetch below fails on a cold CDN edge
-    // but succeeds on retry because the image is now cached.
-    if (!photo.startsWith("data:")) {
-      await new Promise<void>((resolve) => {
-        const img = new globalThis.Image();
-        img.crossOrigin = "anonymous";
-        img.onload = () => resolve();
-        img.onerror = () => resolve(); // continue anyway — fetch below will handle errors
-        img.src = photo;
-      });
-    }
-
     const blob = photo.startsWith("data:")
       ? await (await fetch(photo)).blob()
-      : await (async () => { const r = await fetch(photo); if (!r.ok) return null; return r.blob(); })();
+      : await fetchImageBlob(photo);
     if (!blob) return undefined;
     return await reencodeAsJpeg(blob, canvasFilter);
   } catch {
