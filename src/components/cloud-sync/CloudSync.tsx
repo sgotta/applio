@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { useAuth } from "@/lib/auth-context";
 import { useCV } from "@/lib/cv-context";
 import { useColorScheme } from "@/lib/color-scheme-context";
-import { migrateColorSchemeName } from "@/lib/color-schemes";
+import { migrateColorSchemeName, COLOR_SCHEME_NAMES } from "@/lib/color-schemes";
 import { useFontSettings } from "@/lib/font-context";
 import { useTheme } from "@/lib/theme-context";
 import { useAppLocale } from "@/lib/locale-context";
@@ -246,9 +246,8 @@ export function CloudSync() {
   }
 
   function applyCloudSettings(settings: CloudSettings) {
-    // Migrate old 5-scheme names from cloud (peterRiver, emerald, carrot)
-    const validNames = ["default", "wetAsphalt", "esmeralda", "hielo", "floral"];
-    if (settings.colorScheme && !validNames.includes(settings.colorScheme)) {
+    // Migrate old scheme names from cloud (peterRiver, emerald, carrot)
+    if (settings.colorScheme && !COLOR_SCHEME_NAMES.includes(settings.colorScheme as never)) {
       const migrated = migrateColorSchemeName(settings.colorScheme);
       setColorScheme(migrated.baseName);
       setAccentColor(migrated.accentColor);

@@ -1,4 +1,4 @@
-export type ColorSchemeName = "default" | "wetAsphalt" | "esmeralda" | "hielo" | "floral";
+export type ColorSchemeName = "default" | "wetAsphalt" | "esmeralda" | "hielo" | "floral" | "rosa" | "violeta" | "rojo" | "amarillo";
 
 export interface ColorScheme {
   name: ColorSchemeName;
@@ -114,25 +114,105 @@ export const COLOR_SCHEMES: Record<ColorSchemeName, ColorScheme> = {
     pageBg: "#dae2e9",
     pageBgDark: "#1a2129",
   },
-  /* Floral · Orange accent #d35400 + pale pink sidebar #fce4ec */
+  /* Floral · Red-orange accent #ff4040 + pale pink sidebar #fce4ec */
   floral: {
     name: "floral",
     swatch: "#fce4ec",
     sidebarBg: "#fce4ec",
     sidebarText: "#1e293b",
     sidebarMuted: "#64748b",
-    sidebarSeparator: "#dfcac0", // 20% #d35400 over #e2e8f0
+    sidebarSeparator: "#e8c6cd", // 20% #ff4040 over #e2e8f0
     sidebarBadgeBg: "#384152",
     sidebarBadgeText: "#ffffff",
     heading: "#1e293b",
     separator: "#e2e8f0",
     bullet: "#334155",
     nameAccent: "transparent",
-    nameColor: "#d35400",
-    entryTitle: "#d35400",
-    sidebarAccent: "#d35400",
-    pageBg: "#e9dfd8",
-    pageBgDark: "#231f1e",
+    nameColor: "#ff4040",
+    entryTitle: "#ff4040",
+    sidebarAccent: "#ff4040",
+    pageBg: "#eddddd",
+    pageBgDark: "#251e22",
+  },
+  /* Rosa · Pink accent #db2777 + soft pink sidebar #fdf2f8 */
+  rosa: {
+    name: "rosa",
+    swatch: "#fdf2f8",
+    sidebarBg: "#fdf2f8",
+    sidebarText: "#0a0a0a",
+    sidebarMuted: "#64748b",
+    sidebarSeparator: "#e1c1d8", // 20% #db2777 over #e2e8f0
+    sidebarBadgeBg: "#384152",
+    sidebarBadgeText: "#ffffff",
+    heading: "#0a0a0a",
+    separator: "#e2e8f0",
+    bullet: "#334155",
+    nameAccent: "transparent",
+    nameColor: "#db2777",
+    entryTitle: "#db2777",
+    sidebarAccent: "#db2777",
+    pageBg: "#eadbe2",
+    pageBgDark: "#241d24",
+  },
+  /* Violeta · Violet accent #7c3aed + lavender sidebar #f5f3ff */
+  violeta: {
+    name: "violeta",
+    swatch: "#f5f3ff",
+    sidebarBg: "#f5f3ff",
+    sidebarText: "#0a0a0a",
+    sidebarMuted: "#64748b",
+    sidebarSeparator: "#cec5ef", // 20% #7c3aed over #e2e8f0
+    sidebarBadgeBg: "#384152",
+    sidebarBadgeText: "#ffffff",
+    heading: "#0a0a0a",
+    separator: "#e2e8f0",
+    bullet: "#334155",
+    nameAccent: "transparent",
+    nameColor: "#7c3aed",
+    entryTitle: "#7c3aed",
+    sidebarAccent: "#7c3aed",
+    pageBg: "#e2ddeb",
+    pageBgDark: "#1f1e2a",
+  },
+  /* Rojo · Red accent #dc2626 + blush sidebar #fef2f2 */
+  rojo: {
+    name: "rojo",
+    swatch: "#fef2f2",
+    sidebarBg: "#fef2f2",
+    sidebarText: "#0a0a0a",
+    sidebarMuted: "#64748b",
+    sidebarSeparator: "#e1c1c8", // 20% #dc2626 over #e2e8f0
+    sidebarBadgeBg: "#384152",
+    sidebarBadgeText: "#ffffff",
+    heading: "#0a0a0a",
+    separator: "#e2e8f0",
+    bullet: "#334155",
+    nameAccent: "transparent",
+    nameColor: "#dc2626",
+    entryTitle: "#dc2626",
+    sidebarAccent: "#dc2626",
+    pageBg: "#eadbdb",
+    pageBgDark: "#241d20",
+  },
+  /* Amarillo · Amber accent #f59e0b + warm cream sidebar #fffbeb */
+  amarillo: {
+    name: "amarillo",
+    swatch: "#fffbeb",
+    sidebarBg: "#fffbeb",
+    sidebarText: "#0a0a0a",
+    sidebarMuted: "#64748b",
+    sidebarSeparator: "#e6d9c2", // 20% #f59e0b over #e2e8f0
+    sidebarBadgeBg: "#384152",
+    sidebarBadgeText: "#ffffff",
+    heading: "#0a0a0a",
+    separator: "#e2e8f0",
+    bullet: "#334155",
+    nameAccent: "transparent",
+    nameColor: "#f59e0b",
+    entryTitle: "#f59e0b",
+    sidebarAccent: "#f59e0b",
+    pageBg: "#ece5d9",
+    pageBgDark: "#25231f",
   },
 };
 
@@ -142,6 +222,10 @@ export const COLOR_SCHEME_NAMES: ColorSchemeName[] = [
   "esmeralda",
   "hielo",
   "floral",
+  "rosa",
+  "violeta",
+  "rojo",
+  "amarillo",
 ];
 
 export const DEFAULT_COLOR_SCHEME: ColorSchemeName = "default";
@@ -165,6 +249,10 @@ export const SCHEME_METADATA: SchemeMetadata[] = [
   { name: "esmeralda", category: "palette", labelKey: "Esmeralda", premium: true },
   { name: "hielo", category: "palette", labelKey: "Hielo", premium: true },
   { name: "floral", category: "palette", labelKey: "Floral", premium: true },
+  { name: "rosa", category: "palette", labelKey: "Rosa", premium: true },
+  { name: "violeta", category: "palette", labelKey: "Violeta", premium: true },
+  { name: "rojo", category: "palette", labelKey: "Rojo", premium: true },
+  { name: "amarillo", category: "palette", labelKey: "Amarillo", premium: true },
 ];
 
 /* ── Accent color presets ──────────────────────────────── */
@@ -324,6 +412,11 @@ export function migrateColorSchemeName(name: string): {
   baseName: ColorSchemeName;
   accentColor: string | null;
 } {
+  // Pass through current valid names
+  if (COLOR_SCHEME_NAMES.includes(name as ColorSchemeName)) {
+    return { baseName: name as ColorSchemeName, accentColor: null };
+  }
+  // Migrate old names
   switch (name) {
     case "peterRiver":
       return { baseName: "hielo", accentColor: null };
@@ -331,10 +424,6 @@ export function migrateColorSchemeName(name: string): {
       return { baseName: "esmeralda", accentColor: null };
     case "carrot":
       return { baseName: "floral", accentColor: null };
-    case "wetAsphalt":
-      return { baseName: "wetAsphalt", accentColor: null };
-    case "default":
-      return { baseName: "default", accentColor: null };
     default:
       return { baseName: "default", accentColor: null };
   }

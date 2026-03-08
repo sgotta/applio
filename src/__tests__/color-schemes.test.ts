@@ -32,8 +32,8 @@ describe("getColorScheme", () => {
 });
 
 describe("COLOR_SCHEMES integrity", () => {
-  it("has 5 color schemes", () => {
-    expect(COLOR_SCHEME_NAMES).toHaveLength(5);
+  it("has 9 color schemes", () => {
+    expect(COLOR_SCHEME_NAMES).toHaveLength(9);
   });
 
   it("COLOR_SCHEME_NAMES matches COLOR_SCHEMES keys", () => {
@@ -153,6 +153,17 @@ describe("resolveColorScheme", () => {
     const scheme = resolveColorScheme("floral", null);
     expect(scheme).toEqual(COLOR_SCHEMES.floral);
   });
+
+  it("rosa accepts accent override", () => {
+    const scheme = resolveColorScheme("rosa", "#ff0000");
+    expect(scheme.nameColor).toBe("#ff0000");
+    expect(scheme.sidebarBg).toBe(COLOR_SCHEMES.rosa.sidebarBg);
+  });
+
+  it("rosa returns base when accent is null", () => {
+    const scheme = resolveColorScheme("rosa", null);
+    expect(scheme).toEqual(COLOR_SCHEMES.rosa);
+  });
 });
 
 describe("new palettes have correct accent colors and tinted separators", () => {
@@ -172,12 +183,44 @@ describe("new palettes have correct accent colors and tinted separators", () => 
     expect(COLOR_SCHEMES.hielo.sidebarSeparator).toBe("#bad3eb");
   });
 
-  it("floral uses orange accent + tinted separator", () => {
-    expect(COLOR_SCHEMES.floral.nameColor).toBe("#d35400");
-    expect(COLOR_SCHEMES.floral.entryTitle).toBe("#d35400");
-    expect(COLOR_SCHEMES.floral.sidebarAccent).toBe("#d35400");
+  it("floral uses red-orange accent + tinted separator", () => {
+    expect(COLOR_SCHEMES.floral.nameColor).toBe("#ff4040");
+    expect(COLOR_SCHEMES.floral.entryTitle).toBe("#ff4040");
+    expect(COLOR_SCHEMES.floral.sidebarAccent).toBe("#ff4040");
     expect(COLOR_SCHEMES.floral.sidebarBg).toBe("#fce4ec");
-    expect(COLOR_SCHEMES.floral.sidebarSeparator).toBe("#dfcac0");
+    expect(COLOR_SCHEMES.floral.sidebarSeparator).toBe("#e8c6cd");
+  });
+
+  it("rosa uses pink accent + tinted separator", () => {
+    expect(COLOR_SCHEMES.rosa.nameColor).toBe("#db2777");
+    expect(COLOR_SCHEMES.rosa.entryTitle).toBe("#db2777");
+    expect(COLOR_SCHEMES.rosa.sidebarAccent).toBe("#db2777");
+    expect(COLOR_SCHEMES.rosa.sidebarBg).toBe("#fdf2f8");
+    expect(COLOR_SCHEMES.rosa.sidebarSeparator).toBe("#e1c1d8");
+  });
+
+  it("violeta uses violet accent + tinted separator", () => {
+    expect(COLOR_SCHEMES.violeta.nameColor).toBe("#7c3aed");
+    expect(COLOR_SCHEMES.violeta.entryTitle).toBe("#7c3aed");
+    expect(COLOR_SCHEMES.violeta.sidebarAccent).toBe("#7c3aed");
+    expect(COLOR_SCHEMES.violeta.sidebarBg).toBe("#f5f3ff");
+    expect(COLOR_SCHEMES.violeta.sidebarSeparator).toBe("#cec5ef");
+  });
+
+  it("rojo uses red accent + tinted separator", () => {
+    expect(COLOR_SCHEMES.rojo.nameColor).toBe("#dc2626");
+    expect(COLOR_SCHEMES.rojo.entryTitle).toBe("#dc2626");
+    expect(COLOR_SCHEMES.rojo.sidebarAccent).toBe("#dc2626");
+    expect(COLOR_SCHEMES.rojo.sidebarBg).toBe("#fef2f2");
+    expect(COLOR_SCHEMES.rojo.sidebarSeparator).toBe("#e1c1c8");
+  });
+
+  it("amarillo uses amber accent + tinted separator", () => {
+    expect(COLOR_SCHEMES.amarillo.nameColor).toBe("#f59e0b");
+    expect(COLOR_SCHEMES.amarillo.entryTitle).toBe("#f59e0b");
+    expect(COLOR_SCHEMES.amarillo.sidebarAccent).toBe("#f59e0b");
+    expect(COLOR_SCHEMES.amarillo.sidebarBg).toBe("#fffbeb");
+    expect(COLOR_SCHEMES.amarillo.sidebarSeparator).toBe("#e6d9c2");
   });
 });
 
@@ -321,5 +364,13 @@ describe("migrateColorSchemeName", () => {
     const result = migrateColorSchemeName("unknown");
     expect(result.baseName).toBe("default");
     expect(result.accentColor).toBeNull();
+  });
+
+  it("passes through all current valid names", () => {
+    for (const name of COLOR_SCHEME_NAMES) {
+      const result = migrateColorSchemeName(name);
+      expect(result.baseName, `${name} should pass through`).toBe(name);
+      expect(result.accentColor).toBeNull();
+    }
   });
 });
