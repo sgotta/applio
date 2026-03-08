@@ -447,13 +447,13 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
             ) : (
               (() => {
                 const darkSidebar = colors.sidebarText === "#ffffff";
-                const nameClr = darkSidebar ? colors.sidebarText : colors.nameColor;
-                const titleClr = darkSidebar ? colors.sidebarText : colors.nameColor + "99";
+                const nameClr = darkSidebar ? colors.sidebarText : colors.sidebarBadgeBg;
+                const titleClr = darkSidebar ? colors.sidebarText : colors.sidebarBadgeBg;
                 return (
-                  <View>
+                  <View style={{ marginBottom: 9 }}>
                     <Text
                       style={{
-                        fontSize: fs(28),
+                        fontSize: fs(26),
                         fontWeight: 600,
                         color: nameClr,
                         lineHeight: 1.15,
@@ -467,7 +467,7 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
                         fontSize: fs(11),
                         fontWeight: 500,
                         color: safePdfColor(titleClr),
-                        marginTop: 14,
+                        marginTop: 8,
                         textTransform: "uppercase",
                         letterSpacing: 0.5,
                       }}

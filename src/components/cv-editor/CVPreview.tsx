@@ -18,7 +18,7 @@ import { Courses } from "./Courses";
 import { Certifications } from "./Certifications";
 import { Awards } from "./Awards";
 
-function CVHeader() {
+function CVHeader({ noPhoto }: { noPhoto?: boolean }) {
   const {
     data: { personalInfo },
     updatePersonalInfo,
@@ -26,27 +26,34 @@ function CVHeader() {
   const t = useTranslations("cvPreview");
   const { colorScheme } = useColorScheme();
 
+  // When no photo on white bg: use sidebarBadgeBg (falls back to heading for alpha values)
+  const noPhotoBg = colorScheme.sidebarBadgeBg.length <= 7 ? colorScheme.sidebarBadgeBg : colorScheme.heading;
+  const nameClr = noPhoto ? noPhotoBg : colorScheme.nameColor;
+  const titleClr = noPhoto ? noPhotoBg : undefined;
+
   return (
-    <div className="mb-4">
+    <div className={noPhoto ? "" : "mb-4"}>
       <EditableText
         value={personalInfo.fullName}
         onChange={(v) => updatePersonalInfo("fullName", v)}
         as="heading"
         placeholder={t("fullNamePlaceholder")}
-        displayStyle={{ color: colorScheme.nameColor }}
+        displayStyle={{ color: nameClr }}
       />
-      {colorScheme.nameAccent !== "transparent" && (
+      {!noPhoto && colorScheme.nameAccent !== "transparent" && (
         <div
           className="mt-1 h-0.5 w-12 rounded-full"
           style={{ backgroundColor: colorScheme.nameAccent }}
         />
       )}
-      <div className="mt-0.5">
+      <div className="mt-3">
         <EditableText
           value={personalInfo.jobTitle}
           onChange={(v) => updatePersonalInfo("jobTitle", v)}
-          as="subheading"
+          as={noPhoto ? "small" : "subheading"}
+          className={noPhoto ? "uppercase! tracking-wide!" : ""}
           placeholder={t("titlePlaceholder")}
+          displayStyle={titleClr ? { color: titleClr } : undefined}
         />
       </div>
     </div>
@@ -60,7 +67,7 @@ function MobileHeader() {
   } = useCV();
 
   return (
-    <div className={`flex flex-col items-center px-6 ${visibility.photo ? "pt-6" : "pt-10 pb-2"}`}>
+    <div className={`flex flex-col items-center px-6 ${visibility.photo ? "pt-6" : "pt-12 pb-12"}`}>
       {visibility.photo && (
         <ProfilePhotoUpload
           currentPhoto={personalInfo.photoUrl}
@@ -72,7 +79,7 @@ function MobileHeader() {
           initialsClass="text-4xl"
         />
       )}
-      <CVHeader />
+      <CVHeader noPhoto={!visibility.photo} />
     </div>
   );
 }
