@@ -202,7 +202,7 @@ function SidebarSectionHeading({
   fontSize: number;
 }) {
   return (
-    <View style={{ marginBottom: 6, marginTop: 2 }}>
+    <View style={{ marginBottom: 8 }}>
       <Text
         style={{
           fontSize,
@@ -231,7 +231,7 @@ function MainSectionHeading({
   fontSize: number;
 }) {
   return (
-    <View style={{ marginBottom: 8, marginTop: 4 }}>
+    <View style={{ marginBottom: 12 }}>
       <Text
         style={{
           fontSize,
