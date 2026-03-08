@@ -73,6 +73,9 @@ export async function POST(request: Request) {
         auto_return: "approved",
         notification_url: `${siteUrl}/api/mercadopago/webhook`,
         external_reference: `${session.user.id}|${planId}`,
+        payment_methods: {
+          installments: 1,
+        },
         statement_descriptor: "APPLIO PRO",
       },
     });
