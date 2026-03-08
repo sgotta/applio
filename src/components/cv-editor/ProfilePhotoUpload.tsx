@@ -4,11 +4,15 @@ import { useState, useCallback, useEffect } from "react";
 import { Camera } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { PhotoCropDialog } from "./PhotoCropDialog";
+import { getPhotoFilter } from "@/lib/photo-filters";
+import type { PhotoFilter } from "@/lib/types";
 
 interface ProfilePhotoUploadProps {
   currentPhoto?: string;
   fullName: string;
   onPhotoChange: (photoBase64: string | undefined) => void;
+  photoFilter?: PhotoFilter;
+  onPhotoFilterChange?: (filter: PhotoFilter) => void;
   /** Background color for the initials circle (from color scheme) */
   placeholderBg?: string;
   /** Text color for the initials (from color scheme) */
@@ -23,6 +27,8 @@ export function ProfilePhotoUpload({
   currentPhoto,
   fullName,
   onPhotoChange,
+  photoFilter,
+  onPhotoFilterChange,
   placeholderBg,
   placeholderText,
   sizeClass = "w-36 h-36",
@@ -67,6 +73,7 @@ export function ProfilePhotoUpload({
       src={currentPhoto}
       alt={t("altText")}
       className="w-full h-full object-cover"
+      style={{ filter: getPhotoFilter(photoFilter).cssFilter }}
       onError={() => setPhotoError(true)}
     />
   );
@@ -90,6 +97,8 @@ export function ProfilePhotoUpload({
         onOpenChange={setDialogOpen}
         currentPhoto={currentPhoto}
         onPhotoChange={handlePhotoChange}
+        photoFilter={photoFilter}
+        onPhotoFilterChange={onPhotoFilterChange}
       />
     </div>
   );

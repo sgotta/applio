@@ -10,6 +10,7 @@ import { useFontSettings } from "@/lib/font-context";
 import { getFontDefinition, FONT_SIZE_LEVELS } from "@/lib/fonts";
 import { type ColorScheme } from "@/lib/color-schemes";
 import { renderRichDocument } from "@/lib/render-rich-text";
+import { getPhotoFilter } from "@/lib/photo-filters";
 import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
 
 function ensureProtocol(url: string): string {
@@ -100,6 +101,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
     const [localPhotoError, setLocalPhotoError] = useState(false);
     const [localPhotoLoaded, setLocalPhotoLoaded] = useState(false);
     const hasLocalPhoto = !forceInitials && !!personalInfo.photoUrl && !localPhotoError;
+    const photoFilterStyle = { filter: getPhotoFilter(personalInfo.photoFilter).cssFilter };
 
     // SSR hydration fix: if the image loaded before React hydrated, onLoad won't fire.
     // The ref callback checks img.complete to catch already-loaded images.
@@ -160,6 +162,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
                   src={personalInfo.photoUrl}
                   alt={t("profilePhotoAlt")}
                   className={`absolute inset-0 w-full h-full object-cover ${localPhotoLoaded ? "" : "invisible"}`}
+                  style={photoFilterStyle}
                   onLoad={() => setLocalPhotoLoaded(true)}
                   onError={() => setLocalPhotoError(true)}
                 />
@@ -172,6 +175,7 @@ export const PrintableCV = forwardRef<HTMLDivElement, PrintableCVProps>(
                   src={photoUrl}
                   alt={t("profilePhotoAlt")}
                   className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${photoUrlLoaded ? "opacity-100" : "opacity-0"}`}
+                  style={photoFilterStyle}
                   onLoad={() => setPhotoUrlLoaded(true)}
                   onError={() => setPhotoUrlError(true)}
                 />

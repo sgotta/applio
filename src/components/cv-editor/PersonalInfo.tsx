@@ -667,6 +667,8 @@ export const PersonalInfo = memo(function PersonalInfo() {
           currentPhoto={personalInfo.photoUrl}
           fullName={personalInfo.fullName}
           onPhotoChange={(photoUrl) => updatePersonalInfo("photoUrl", photoUrl)}
+          photoFilter={personalInfo.photoFilter}
+          onPhotoFilterChange={(filter) => updatePersonalInfo("photoFilter", filter)}
           placeholderBg={colorScheme.sidebarText + "18"}
           placeholderText={colorScheme.sidebarMuted}
         />

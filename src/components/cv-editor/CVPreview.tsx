@@ -65,6 +65,8 @@ function MobileHeader() {
         currentPhoto={personalInfo.photoUrl}
         fullName={personalInfo.fullName}
         onPhotoChange={(photoUrl) => updatePersonalInfo("photoUrl", photoUrl)}
+        photoFilter={personalInfo.photoFilter}
+        onPhotoFilterChange={(filter) => updatePersonalInfo("photoFilter", filter)}
         sizeClass="w-44 h-44"
         initialsClass="text-4xl"
       />

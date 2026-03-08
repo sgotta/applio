@@ -9,6 +9,7 @@ const PersonalInfoSchema = new Schema(
     fullName: String,
     jobTitle: String,
     photoUrl: String,
+    photoFilter: String,
     email: String,
     phone: String,
     location: String,
@@ -146,6 +147,7 @@ export interface ICV extends Document {
     fullName?: string;
     jobTitle?: string;
     photoUrl?: string;
+    photoFilter?: string;
     email?: string;
     phone?: string;
     location?: string;

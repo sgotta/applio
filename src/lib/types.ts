@@ -1,7 +1,10 @@
+export type PhotoFilter = "none" | "grayscale" | "studio" | "warm" | "cool";
+
 export interface PersonalInfo {
   fullName: string;
   jobTitle: string;
   photoUrl?: string;
+  photoFilter?: PhotoFilter;
   email: string;
   phone: string;
   location: string;

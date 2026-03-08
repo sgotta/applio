@@ -8,6 +8,7 @@
 import type { CVData } from "@/lib/types";
 import type { ColorScheme } from "@/lib/color-schemes";
 import type { PDFLabels } from "@/lib/pdf-document";
+import { getPhotoFilter } from "@/lib/photo-filters";
 
 export type { PDFLabels };
 
@@ -16,14 +17,18 @@ export type { PDFLabels };
  * Needed because @react-pdf/renderer only supports JPEG and PNG —
  * WebP (and other formats) must be converted first.
  */
-function reencodeAsJpeg(blob: Blob): Promise<string> {
+function reencodeAsJpeg(blob: Blob, canvasFilter?: string): Promise<string> {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => {
       const canvas = document.createElement("canvas");
       canvas.width = img.naturalWidth;
       canvas.height = img.naturalHeight;
-      canvas.getContext("2d")!.drawImage(img, 0, 0);
+      const ctx = canvas.getContext("2d")!;
+      if (canvasFilter && canvasFilter !== "none") {
+        ctx.filter = canvasFilter;
+      }
+      ctx.drawImage(img, 0, 0);
       URL.revokeObjectURL(img.src);
       resolve(canvas.toDataURL("image/jpeg", 0.92));
     };
@@ -43,10 +48,13 @@ function reencodeAsJpeg(blob: Blob): Promise<string> {
  * For remote URLs, preloads the image via an `Image()` element first to warm
  * the browser cache — this prevents first-time failures from cold CDN edges.
  */
-async function resolvePhoto(photo: string | undefined): Promise<string | undefined> {
+async function resolvePhoto(photo: string | undefined, canvasFilter?: string): Promise<string | undefined> {
   if (!photo) return undefined;
-  if (photo.startsWith("data:image/jpeg") || photo.startsWith("data:image/png")) {
-    return photo; // already a react-pdf compatible format
+  // If it's already a compatible format AND no filter to apply, return as-is
+  if (!canvasFilter || canvasFilter === "none") {
+    if (photo.startsWith("data:image/jpeg") || photo.startsWith("data:image/png")) {
+      return photo;
+    }
   }
 
   try {
@@ -67,7 +75,7 @@ async function resolvePhoto(photo: string | undefined): Promise<string | undefin
       ? await (await fetch(photo)).blob()
       : await (async () => { const r = await fetch(photo); if (!r.ok) return null; return r.blob(); })();
     if (!blob) return undefined;
-    return await reencodeAsJpeg(blob);
+    return await reencodeAsJpeg(blob, canvasFilter);
   } catch {
     return undefined;
   }
@@ -84,7 +92,9 @@ export async function downloadPDF(
   isPremium?: boolean,
 ): Promise<void> {
   // Resolve remote photo URLs to base64 before passing to react-pdf
-  const resolvedPhoto = await resolvePhoto(data.personalInfo.photoUrl);
+  // Also bake in the photo filter via canvas since react-pdf doesn't support CSS filters
+  const filterDef = getPhotoFilter(data.personalInfo.photoFilter);
+  const resolvedPhoto = await resolvePhoto(data.personalInfo.photoUrl, filterDef.canvasFilter);
   const pdfData: CVData = resolvedPhoto !== data.personalInfo.photoUrl
     ? { ...data, personalInfo: { ...data.personalInfo, photoUrl: resolvedPhoto } }
     : data;
