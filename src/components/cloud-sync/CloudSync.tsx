@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth-context";
+import { usePlan } from "@/lib/plan-context";
 import { useCV } from "@/lib/cv-context";
 import { useColorScheme } from "@/lib/color-scheme-context";
 import { migrateColorSchemeName, COLOR_SCHEME_NAMES } from "@/lib/color-schemes";
@@ -69,6 +70,7 @@ async function uploadBase64ToR2(base64: string): Promise<string | null> {
 
 export function CloudSync() {
   const { user } = useAuth();
+  const { isPremium } = usePlan();
   const { data, loading: cvLoading, importData, updatePersonalInfo } = useCV();
   const { colorSchemeName, accentColor, setColorScheme, setAccentColor } = useColorScheme();
   const { fontFamilyId, fontSizeLevel, setFontFamily, setFontSizeLevel } = useFontSettings();
@@ -97,7 +99,7 @@ export function CloudSync() {
   // Effect 1: On login — fetch cloud CV and detect conflicts
   // -----------------------------------------------------------------------
   useEffect(() => {
-    if (!user || cvLoading) return;
+    if (!user || !isPremium || cvLoading) return;
     if (initialLoadStarted.current) return;
     initialLoadStarted.current = true;
 
@@ -151,7 +153,7 @@ export function CloudSync() {
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, cvLoading]);
+  }, [user, isPremium, cvLoading]);
 
   // Reset on logout
   useEffect(() => {
@@ -171,7 +173,7 @@ export function CloudSync() {
   // save could overwrite a photo URL that was just uploaded by a data save.
   // -----------------------------------------------------------------------
   useEffect(() => {
-    if (!user || cvLoading || !initialSyncComplete.current || showConflict) return;
+    if (!user || !isPremium || cvLoading || !initialSyncComplete.current || showConflict) return;
 
     const fingerprint = cvContentFingerprint(data);
     const settings = buildSettings();
@@ -207,7 +209,7 @@ export function CloudSync() {
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, colorSchemeName, accentColor, fontFamilyId, fontSizeLevel, theme, locale, user, cvLoading, showConflict]);
+  }, [data, colorSchemeName, accentColor, fontFamilyId, fontSizeLevel, theme, locale, user, isPremium, cvLoading, showConflict]);
 
   // -----------------------------------------------------------------------
   // Helpers
