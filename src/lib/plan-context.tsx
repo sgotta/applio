@@ -18,9 +18,6 @@ interface PlanContextValue {
   isPremium: boolean;
   loading: boolean;
   refresh: () => Promise<void>;
-  /** Dev-only: override the plan for testing */
-  devOverride: PlanType | null;
-  setDevOverride: (override: PlanType | null) => void;
 }
 
 const PlanContext = createContext<PlanContextValue | null>(null);
@@ -29,7 +26,6 @@ export function PlanProvider({ children }: { children: ReactNode }) {
   const { user, loading: authLoading } = useAuth();
   const [plan, setPlan] = useState<PlanType>("free");
   const [planLoading, setPlanLoading] = useState(false);
-  const [devOverride, setDevOverride] = useState<PlanType | null>(null);
   const fetchedForUser = useRef<string | null>(null);
 
   const refresh = useCallback(async () => {
@@ -64,17 +60,13 @@ export function PlanProvider({ children }: { children: ReactNode }) {
     refresh();
   }, [user, authLoading, refresh]);
 
-  const effectivePlan = devOverride ?? plan;
-
   return (
     <PlanContext.Provider
       value={{
-        plan: effectivePlan,
-        isPremium: effectivePlan === "premium",
+        plan,
+        isPremium: plan === "premium",
         loading: authLoading || planLoading,
         refresh,
-        devOverride,
-        setDevOverride,
       }}
     >
       {children}

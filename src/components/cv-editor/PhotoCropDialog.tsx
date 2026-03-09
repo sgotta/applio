@@ -385,7 +385,7 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
         </DialogContent>
       </Dialog>
 
-      <UpgradeDialog open={upgradeOpen} onOpenChange={setUpgradeOpen} />
+      <UpgradeDialog open={upgradeOpen} onOpenChange={setUpgradeOpen} initialFeature="photoFilters" />
     </>
   );
 });

@@ -11,6 +11,7 @@ import {
   Circle,
   Rect,
   Link,
+  Canvas,
   pdf,
 } from "@react-pdf/renderer";
 import type { CVData } from "@/lib/types";
@@ -918,6 +919,49 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
         </View>
 
 
+
+        {/* Diagonal watermark (free users only) */}
+        {!isPremium && (
+          <Canvas
+            fixed
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: 595.28,
+              height: 841.89,
+            }}
+            paint={(painter) => {
+              const W = 595.28;
+              const H = 841.89;
+              const text = "applio.dev";
+              const size = 16;
+              const spacingX = 120; // horizontal gap between repetitions
+              const spacingY = 65; // vertical gap between rows
+              const angle = -30;
+
+              painter.save();
+              painter.fontSize(size);
+              painter.fillColor("#888888");
+              painter.opacity(0.02);
+
+              // Rotate entire canvas around center
+              painter.translate(W / 2, H / 2);
+              painter.rotate(angle, { origin: [0, 0] });
+              painter.translate(-W / 2, -H / 2);
+
+              // Tile with generous overflow to cover corners after rotation
+              for (let y = -H; y < H * 2; y += spacingY) {
+                for (let x = -W; x < W * 2; x += spacingX) {
+                  painter.text(text, x, y, { lineBreak: false, continued: false });
+                }
+              }
+
+              painter.restore();
+              return null;
+            }}
+          />
+        )}
 
         {/* Fixed footer */}
         {(() => {

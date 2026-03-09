@@ -15,6 +15,12 @@ test.describe("PDF Generation @smoke", () => {
     // Click "Download PDF" — first button inside the file menu popover
     await page.getByText("Download PDF").click();
 
+    // Free users see a PDF upsell dialog — dismiss it to trigger the actual download
+    const continueBtn = page.getByRole("button", { name: "Continue for free" });
+    if (await continueBtn.isVisible({ timeout: 3_000 }).catch(() => false)) {
+      await continueBtn.click();
+    }
+
     const download = await downloadPromise;
     const filename = download.suggestedFilename();
 
@@ -41,6 +47,13 @@ test.describe("PDF Generation @smoke", () => {
 
     const downloadPromise = page.waitForEvent("download", { timeout: 60_000 });
     await page.getByText("Download PDF").click();
+
+    // Free users see a PDF upsell dialog — dismiss it to trigger the actual download
+    const continueBtn = page.getByRole("button", { name: "Continue for free" });
+    if (await continueBtn.isVisible({ timeout: 3_000 }).catch(() => false)) {
+      await continueBtn.click();
+    }
+
     const download = await downloadPromise;
     const filePath = await download.path();
     expect(filePath).toBeTruthy();
