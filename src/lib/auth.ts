@@ -8,7 +8,7 @@ import clientPromise from "@/lib/mongodb";
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     // allowDangerousEmailAccountLinking: link Google + GitHub accounts
-    // with the same email to a single user (Supabase did this by default).
+    // with the same email to a single user.
     Google({ allowDangerousEmailAccountLinking: true }),
     GitHub({ allowDangerousEmailAccountLinking: true }),
   ],
