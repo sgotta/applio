@@ -10,25 +10,39 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import {
-  FileText,
+  Palette,
+  Droplet,
+  FolderDown,
+  Sparkles,
+  Rocket,
   Loader2,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 
+const FEATURES = [
+  { icon: Palette, key: "palettes", color: "text-pink-500", bg: "bg-pink-50 dark:bg-pink-900/20", hex: "#ec4899" },
+  { icon: Droplet, key: "accentColor", color: "text-violet-500", bg: "bg-violet-50 dark:bg-violet-900/20", hex: "#8b5cf6" },
+  { icon: FolderDown, key: "pdfNoBranding", color: "text-red-500", bg: "bg-red-50 dark:bg-red-900/20", hex: "#ef4444" },
+  { icon: Sparkles, key: "photoFilters", color: "text-amber-500", bg: "bg-amber-50 dark:bg-amber-900/20", hex: "#f59e0b" },
+  { icon: Rocket, key: "earlyAccess", color: "text-emerald-500", bg: "bg-emerald-50 dark:bg-emerald-900/20", hex: "#10b981" },
+] as const;
+
+export type UpgradeFeatureKey = (typeof FEATURES)[number]["key"];
+
 interface UpgradeDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onLogin?: () => void;
+  initialFeature?: UpgradeFeatureKey;
 }
-
-const FEATURES = [
-  { icon: FileText, key: "pdfNoBranding", color: "text-red-500", bg: "bg-red-50 dark:bg-red-900/20", hex: "#ef4444" },
-] as const;
 
 type PlanId = "3mo" | "6mo";
 
 export const UpgradeDialog = memo(function UpgradeDialog({
   open,
   onOpenChange,
+  onLogin,
+  initialFeature,
 }: UpgradeDialogProps) {
   const t = useTranslations("premium");
   const { user } = useAuth();
@@ -39,8 +53,16 @@ export const UpgradeDialog = memo(function UpgradeDialog({
 
   const goPrev = useCallback(() => setCurrent((c) => Math.max(0, c - 1)), []);
   const goNext = useCallback(() => setCurrent((c) => Math.min(FEATURES.length - 1, c + 1)), []);
+  const cycleNext = useCallback(() => setCurrent((c) => (c + 1) % FEATURES.length), []);
 
-  useEffect(() => { if (open) { setCurrent(0); setSelectedPlan("3mo"); setLoading(false); } }, [open]);
+  useEffect(() => {
+    if (open) {
+      const idx = initialFeature ? FEATURES.findIndex((f) => f.key === initialFeature) : 0;
+      setCurrent(idx >= 0 ? idx : 0);
+      setSelectedPlan("3mo");
+      setLoading(false);
+    }
+  }, [open, initialFeature]);
 
   useEffect(() => {
     if (!open) return;
@@ -112,7 +134,8 @@ export const UpgradeDialog = memo(function UpgradeDialog({
 
         {/* Hero section — fixed height to prevent layout shifts */}
         <div
-          className="h-44 flex flex-col items-center justify-center px-8 text-center overflow-hidden"
+          className="h-44 flex flex-col items-center justify-center px-8 text-center overflow-hidden cursor-pointer select-none"
+          onClick={cycleNext}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
@@ -139,20 +162,24 @@ export const UpgradeDialog = memo(function UpgradeDialog({
         </div>
 
         {/* Animated dot navigation */}
-        <div className="flex items-center justify-center gap-1.5 pb-3">
+        <div className="flex items-center justify-center gap-0.5 pb-3">
           {FEATURES.map(({ hex }, i) => (
-            <motion.button
+            <button
               key={i}
               onClick={() => setCurrent(i)}
               aria-label={`Feature ${i + 1}`}
-              animate={{
-                width: i === current ? 20 : 6,
-                backgroundColor: i === current ? hex : "#d1d5db",
-              }}
-              transition={{ type: "spring", stiffness: 500, damping: 32 }}
-              className="outline-none"
-              style={{ height: 6, borderRadius: 9999, flexShrink: 0 }}
-            />
+              className="outline-none cursor-pointer py-1.5 px-1"
+            >
+              <motion.span
+                animate={{
+                  width: i === current ? 20 : 6,
+                  backgroundColor: i === current ? hex : "#d1d5db",
+                }}
+                transition={{ type: "spring", stiffness: 500, damping: 32 }}
+                className="block"
+                style={{ height: 6, borderRadius: 9999 }}
+              />
+            </button>
           ))}
         </div>
 
@@ -190,8 +217,8 @@ export const UpgradeDialog = memo(function UpgradeDialog({
         {/* CTA */}
         <div className="px-5 pb-5">
           <button
-            disabled={!user || loading}
-            onClick={handleCheckout}
+            disabled={loading}
+            onClick={!user && onLogin ? () => { onOpenChange(false); onLogin(); } : handleCheckout}
             className="w-full h-10 rounded-md flex items-center justify-center gap-2 text-sm font-semibold text-white bg-gray-900 dark:bg-gray-100 dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-60 disabled:cursor-default"
           >
             {loading ? (

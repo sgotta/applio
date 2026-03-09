@@ -480,8 +480,6 @@ commitlint.config.mjs                # Commitlint config (conventional commits)
 └── pre-push                         # Branch naming validation
 docs/
 └── design-system.md                 # Visual conventions reference
-supabase/
-└── migrations/                      # Legacy Supabase migration files (historical)
 ```
 
 ## Environment Variables
