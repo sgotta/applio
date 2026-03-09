@@ -936,14 +936,14 @@ function CVPDFDocument({ data, colors, labels, locale = "en", fontScale = 1.08, 
               const H = 841.89;
               const text = "applio.dev";
               const size = 16;
-              const spacingX = 120; // horizontal gap between repetitions
-              const spacingY = 65; // vertical gap between rows
+              const spacingX = 180;
+              const spacingY = 100;
               const angle = -30;
 
               painter.save();
               painter.fontSize(size);
               painter.fillColor("#888888");
-              painter.opacity(0.02);
+              painter.opacity(0.04);
 
               // Rotate entire canvas around center
               painter.translate(W / 2, H / 2);

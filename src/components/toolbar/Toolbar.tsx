@@ -30,7 +30,7 @@ import {
   SlidersHorizontal, Check, Sun, Moon,
   Menu, X, ChevronRight, ChevronLeft, Palette, Droplet,
   Loader2, Share2, LogIn, LogOut, User, Copy, ExternalLink,
-  Lock, HardDrive, Cloud, CloudOff, Sparkles,
+  HardDrive, Cloud, CloudOff, Sparkles,
 } from "lucide-react";
 import { HexColorPicker } from "react-colorful";
 
@@ -268,28 +268,43 @@ interface PaletteOption {
   stripColors: [string, string | null];
 }
 
-const PALETTE_OPTIONS: PaletteOption[] = [
-  // ── Free ──
+/** Free palettes — shown first */
+const FREE_PALETTES: PaletteOption[] = [
   { id: "default",        schemeName: "default",     accent: null,      premium: false, labelKey: "colorSchemeDefault",       stripColors: ["#f5f5f5", "#1e293b"] },
-  // ── Default + accent ──
-  { id: "default-blue",   schemeName: "default",     accent: "#1a7ed6", premium: true,  labelKey: "colorSchemeDefaultBlue",   stripColors: ["#f5f5f5", "#1a7ed6"] },
-  { id: "default-green",  schemeName: "default",     accent: "#27ae60", premium: true,  labelKey: "colorSchemeDefaultGreen",  stripColors: ["#f5f5f5", "#27ae60"] },
-  { id: "default-orange", schemeName: "default",     accent: "#d35400", premium: true,  labelKey: "colorSchemeDefaultOrange", stripColors: ["#f5f5f5", "#d35400"] },
-  // ── Sidebar + accent (original) ──
-  { id: "esmeralda",      schemeName: "esmeralda",   accent: "#27ae60", premium: true,  labelKey: "colorSchemeEsmeralda",     stripColors: ["#e8f5e9", "#27ae60"] },
-  { id: "hielo",          schemeName: "hielo",        accent: "#1a7ed6", premium: true,  labelKey: "colorSchemeHielo",         stripColors: ["#e8f0fe", "#1a7ed6"] },
-  { id: "floral",         schemeName: "floral",       accent: "#ff4040", premium: true,  labelKey: "colorSchemeFloral",        stripColors: ["#fce4ec", "#ff4040"] },
-  // ── Sidebar + accent (shadcn) ──
-  { id: "rosa",           schemeName: "rosa",         accent: "#db2777", premium: true,  labelKey: "colorSchemeRosa",          stripColors: ["#fdf2f8", "#db2777"] },
-  { id: "violeta",        schemeName: "violeta",      accent: "#7c3aed", premium: true,  labelKey: "colorSchemeVioleta",       stripColors: ["#f5f3ff", "#7c3aed"] },
-  { id: "rojo",           schemeName: "rojo",          accent: "#dc2626", premium: true,  labelKey: "colorSchemeRojo",          stripColors: ["#fef2f2", "#dc2626"] },
-  { id: "amarillo",       schemeName: "amarillo",     accent: "#f59e0b", premium: true,  labelKey: "colorSchemeAmarillo",      stripColors: ["#fffbeb", "#f59e0b"] },
-  // ── No accent ──
-  { id: "wetAsphalt",     schemeName: "wetAsphalt",  accent: null,      premium: true,  labelKey: "colorSchemeWetAsphalt",    stripColors: ["#2c3e50", null] },
+  { id: "wetAsphalt",     schemeName: "wetAsphalt",  accent: null,      premium: false, labelKey: "colorSchemeWetAsphalt",    stripColors: ["#2c3e50", "#94a3b8"] },
 ];
 
-/** Indices where dividers should be placed (before these indices) */
-const DIVIDER_INDICES = new Set([1, 4, 7, 11]);
+/** Premium palette groups — each group has a creative title */
+interface PaletteGroup {
+  labelKey: string;
+  palettes: PaletteOption[];
+}
+
+const PALETTE_GROUPS: PaletteGroup[] = [
+  {
+    labelKey: "paletteGroupClassic",
+    palettes: [
+      { id: "default-blue",   schemeName: "default",     accent: "#1a7ed6", premium: false, labelKey: "colorSchemeDefaultBlue",   stripColors: ["#f5f5f5", "#1a7ed6"] },
+      { id: "default-green",  schemeName: "default",     accent: "#27ae60", premium: false, labelKey: "colorSchemeDefaultGreen",  stripColors: ["#f5f5f5", "#27ae60"] },
+    ],
+  },
+  {
+    labelKey: "paletteGroupNature",
+    palettes: [
+      { id: "esmeralda",      schemeName: "esmeralda",   accent: "#27ae60", premium: false, labelKey: "colorSchemeEsmeralda",     stripColors: ["#e8f5e9", "#27ae60"] },
+      { id: "hielo",          schemeName: "hielo",        accent: "#1a7ed6", premium: false, labelKey: "colorSchemeHielo",         stripColors: ["#e8f0fe", "#1a7ed6"] },
+      { id: "floral",         schemeName: "floral",       accent: "#ff4040", premium: false, labelKey: "colorSchemeFloral",        stripColors: ["#fce4ec", "#ff4040"] },
+    ],
+  },
+  {
+    labelKey: "paletteGroupBold",
+    palettes: [
+      { id: "rosa",           schemeName: "rosa",         accent: "#db2777", premium: false, labelKey: "colorSchemeRosa",          stripColors: ["#fdf2f8", "#db2777"] },
+      { id: "violeta",        schemeName: "violeta",      accent: "#7c3aed", premium: false, labelKey: "colorSchemeVioleta",       stripColors: ["#f5f3ff", "#7c3aed"] },
+      { id: "rojo",           schemeName: "rojo",          accent: "#dc2626", premium: false, labelKey: "colorSchemeRojo",          stripColors: ["#fef2f2", "#dc2626"] },
+    ],
+  },
+];
 
 interface AccentPickerProps {
   accentColor: string | null;
@@ -328,9 +343,50 @@ interface PaletteSectionProps {
   accentColor: string | null;
   setColorScheme: (name: ColorSchemeName) => void;
   setAccentColor: (color: string | null) => void;
-  isPremium: boolean;
-  onUpgrade: (feature?: UpgradeFeatureKey) => void;
   t: (key: string) => string;
+}
+
+/** Shared swatch button for a single palette option */
+function PaletteSwatch({
+  option,
+  isActive,
+  label,
+  onClick,
+}: {
+  option: PaletteOption;
+  isActive: boolean;
+  label: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      aria-label={label}
+      className="group flex flex-col items-center gap-1.5 cursor-pointer"
+    >
+      {/* 2-color swatch */}
+      <div
+        className={`relative flex w-full aspect-[2/1] rounded-lg overflow-hidden border transition-all ${
+          isActive
+            ? "ring-2 ring-offset-2 ring-gray-900 dark:ring-gray-100 ring-offset-white dark:ring-offset-gray-950 border-transparent"
+            : "border-gray-200/80 dark:border-gray-600/60 group-hover:border-gray-300 dark:group-hover:border-gray-500 group-hover:shadow-sm"
+        }`}
+      >
+        <div className="flex-1" style={{ backgroundColor: option.stripColors[0] }} />
+        <div className="flex-1" style={{ backgroundColor: option.stripColors[1] ?? option.stripColors[0] }} />
+        {/* Active check overlay */}
+        {isActive && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+            <Check className="h-4 w-4 text-white drop-shadow-sm" />
+          </div>
+        )}
+      </div>
+      {/* Label */}
+      <span className="text-[10px] font-medium text-gray-500 dark:text-gray-400 truncate w-full text-center leading-tight">
+        {label}
+      </span>
+    </button>
+  );
 }
 
 function PaletteSection({
@@ -338,73 +394,62 @@ function PaletteSection({
   accentColor,
   setColorScheme,
   setAccentColor,
-  isPremium,
-  onUpgrade,
   t,
 }: PaletteSectionProps) {
+  const handleClick = (option: PaletteOption) => {
+    setColorScheme(option.schemeName);
+    setAccentColor(option.accent);
+  };
+
   return (
-    <div className="w-[260px]">
-      <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-2.5">
+    <div className="w-[240px]">
+      <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-3">
         {t("colorPalette")}
       </p>
-      <div className="space-y-1 max-h-[60vh] overflow-y-auto overscroll-contain scrollbar-thin -m-1 p-1">
-        {PALETTE_OPTIONS.map((option, idx) => {
-          const isActive = colorSchemeName === option.schemeName && accentColor === option.accent;
-          const isLocked = option.premium && !isPremium;
-          const label = t(option.labelKey);
 
+      {/* Free palettes */}
+      <div className="grid grid-cols-3 gap-2">
+        {FREE_PALETTES.map((option) => {
+          const isActive = colorSchemeName === option.schemeName && accentColor === option.accent;
           return (
-            <React.Fragment key={option.id}>
-              {/* Group dividers */}
-              {DIVIDER_INDICES.has(idx) && (
-                <div className="h-px bg-gray-200 dark:bg-gray-700 my-1.5" />
-              )}
-              <button
-                onClick={() => {
-                  if (isLocked) { onUpgrade("palettes"); return; }
-                  setColorScheme(option.schemeName);
-                  setAccentColor(option.accent);
-                }}
-                aria-label={label}
-                className={`group relative w-full rounded-xl px-2.5 py-1.5 transition-all cursor-pointer ${
-                  isActive
-                    ? "bg-gray-100 dark:bg-gray-800 ring-1 ring-gray-300 dark:ring-gray-600"
-                    : "hover:bg-gray-50 dark:hover:bg-gray-800/50"
-                }`}
-              >
-                {/* Label row */}
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-[11px] font-medium text-gray-600 dark:text-gray-300">
-                    {label}
-                  </span>
-                  <div className="flex items-center gap-1">
-                    {isActive && (
-                      <Check className="h-3.5 w-3.5 text-gray-900 dark:text-gray-100 shrink-0" />
-                    )}
-                    {isLocked && (
-                      <Lock className="h-3 w-3 text-amber-500 shrink-0" />
-                    )}
-                  </div>
-                </div>
-                {/* 2-color strip: sidebar | accent */}
-                <div className="flex h-6 w-full rounded-lg overflow-hidden border border-gray-200/60 dark:border-gray-600/60">
-                  <div className="flex-1" style={{ backgroundColor: option.stripColors[0] }} />
-                  {option.stripColors[1] !== null ? (
-                    <div className="flex-1" style={{ backgroundColor: option.stripColors[1] }} />
-                  ) : (
-                    /* "No accent" indicator: white with red diagonal */
-                    <div className="flex-1 relative bg-white dark:bg-gray-200">
-                      <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-                        <line x1="0" y1="100" x2="100" y2="0" stroke="#ef4444" strokeWidth="3" />
-                      </svg>
-                    </div>
-                  )}
-                </div>
-              </button>
-            </React.Fragment>
+            <PaletteSwatch
+              key={option.id}
+              option={option}
+              isActive={isActive}
+              label={t(option.labelKey)}
+              onClick={() => handleClick(option)}
+            />
           );
         })}
       </div>
+
+      {/* Palette groups */}
+      {PALETTE_GROUPS.map((group) => (
+        <div key={group.labelKey} className="mt-3">
+          {/* Group divider + title */}
+          <div className="flex items-center gap-2 mb-2.5">
+            <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
+            <span className="text-[9px] font-medium tracking-wide text-gray-400 dark:text-gray-500 whitespace-nowrap">
+              {t(group.labelKey)}
+            </span>
+            <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            {group.palettes.map((option) => {
+              const isActive = colorSchemeName === option.schemeName && accentColor === option.accent;
+              return (
+                <PaletteSwatch
+                  key={option.id}
+                  option={option}
+                  isActive={isActive}
+                  label={t(option.labelKey)}
+                  onClick={() => handleClick(option)}
+                />
+              );
+            })}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
@@ -745,7 +790,9 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   const canShare = data.personalInfo.fullName.trim().length > 0;
 
   const handleShare = useCallback(async () => {
-    if (!user || !canShare || isSharing) return;
+    if (isSharing) return;
+    if (!isPremium) { onUpgrade("sharing"); return; }
+    if (!canShare) { toast(t("shareNameRequired")); return; }
     setIsSharing(true);
     setFileMenuOpen(false);
     setMobileMenuOpen(false);
@@ -767,7 +814,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
     } finally {
       setIsSharing(false);
     }
-  }, [user, isSharing, canShare, t]);
+  }, [isPremium, isSharing, canShare, t]);
 
   const handleCopyShareUrl = useCallback(async () => {
     try {
@@ -782,8 +829,8 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   const handleFloatingShare = useCallback(async () => {
     if (isSharing) return;
 
-    if (!user) {
-      toast(t("shareLoginRequired"));
+    if (!isPremium) {
+      onUpgrade("sharing");
       return;
     }
 
@@ -831,7 +878,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
     } finally {
       setIsSharing(false);
     }
-  }, [user, canShare, isSharing, t, data.personalInfo.fullName]);
+  }, [isPremium, canShare, isSharing, t, data.personalInfo.fullName]);
 
   const menuItemClass =
     "flex w-full items-center justify-between px-4 py-2.5 text-[15px] font-medium text-gray-800 hover:bg-gray-50 dark:text-gray-100 dark:hover:bg-accent/60 transition-colors cursor-pointer";
@@ -848,7 +895,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   /* ── Shared design section props ──────────────────────── */
   const onUpgrade = (feature?: UpgradeFeatureKey) => { setUpgradeFeature(feature); setUpgradeDialogOpen(true); };
   const accentPickerProps: AccentPickerProps = { accentColor, setAccentColor, t: t as (key: string) => string };
-  const paletteProps: PaletteSectionProps = { colorSchemeName, accentColor, setColorScheme, setAccentColor, isPremium, onUpgrade, t: t as (key: string) => string };
+  const paletteProps: PaletteSectionProps = { colorSchemeName, accentColor, setColorScheme, setAccentColor, t: t as (key: string) => string };
   const isPaletteActive = colorSchemeName === "wetAsphalt";
   const fontProps = { fontFamilyId, fontSizeLevel, setFontFamily, setFontSizeLevel, t: t as (key: string) => string };
   const sectionsProps = { data, toggleSection, t: t as (key: string) => string };
@@ -912,10 +959,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
                     <div className={isPaletteActive ? "opacity-40 pointer-events-none" : ""}>
                       <button
-                        onClick={() => {
-                          if (!isPremium) { setMobileMenuOpen(false); onUpgrade("accentColor"); return; }
-                          setMobileMenuPage("accent");
-                        }}
+                        onClick={() => setMobileMenuPage("accent")}
                         className={menuItemClass}
                       >
                         <span className="flex items-center gap-3">
@@ -923,7 +967,6 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                             <Droplet className="h-4.5 w-4.5" />
                           </span>
                           {t("accentColor")}
-                          {!isPremium && <PremiumBadge />}
                         </span>
                         <ChevronRight className="h-4 w-4 text-gray-300 dark:text-gray-600 shrink-0" />
                       </button>
@@ -1014,29 +1057,14 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       </span>
                     </button>
 
-                    {user ? (
-                      <button onClick={handleShare} disabled={isSharing || !canShare} className={`${menuItemClass} ${!canShare ? "opacity-50" : ""}`}>
-                        <span className="flex items-center gap-3">
-                          <span className="h-10 w-10 flex items-center justify-center rounded-xl bg-green-50 dark:bg-green-900/20 text-green-500 shrink-0">
-                            {isSharing ? <Loader2 className="h-4.5 w-4.5 animate-spin" /> : <Share2 className="h-4.5 w-4.5" />}
-                          </span>
-                          {t("share")}
+                    <button onClick={handleShare} disabled={isSharing} className={menuItemClass}>
+                      <span className="flex items-center gap-3">
+                        <span className="h-10 w-10 flex items-center justify-center rounded-xl bg-green-50 dark:bg-green-900/20 text-green-500 shrink-0">
+                          {isSharing ? <Loader2 className="h-4.5 w-4.5 animate-spin" /> : <Share2 className="h-4.5 w-4.5" />}
                         </span>
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => { setMobileMenuOpen(false); toast(t("shareLoginRequired")); }}
-                        className={`${menuItemClass} opacity-50`}
-                      >
-                        <span className="flex items-center gap-3">
-                          <span className="h-10 w-10 flex items-center justify-center rounded-xl bg-green-50 dark:bg-green-900/20 text-green-500 shrink-0">
-                            <Share2 className="h-4.5 w-4.5" />
-                          </span>
-                          {t("share")}
-                        </span>
-                        <Lock className="h-4 w-4 text-gray-300 dark:text-gray-600 shrink-0" />
-                      </button>
-                    )}
+                        {t("share")}
+                      </span>
+                    </button>
 
                     <div className="h-4" />
                   </div>
@@ -1270,7 +1298,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
               </PopoverContent>
             </Popover>
 
-            {/* Accent color picker (premium, disabled when Asfalto active) */}
+            {/* Accent color picker (disabled when Asfalto active) */}
             <div className={isPaletteActive ? "opacity-40 pointer-events-none" : ""}>
               <Popover>
                 <Tooltip>
@@ -1282,9 +1310,6 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                         aria-label={t("accentColor")}
                         data-testid="btn-accent-color"
                         className="h-10 w-10"
-                        onClick={(e) => {
-                          if (!isPremium) { e.preventDefault(); onUpgrade("accentColor"); }
-                        }}
                       >
                         <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-violet-50 dark:bg-violet-900/20 text-violet-500">
                           <Droplet className="h-4 w-4" />
@@ -1409,9 +1434,9 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     variant="ghost"
                     size="icon"
                     aria-label={t("share")}
-                    onClick={user ? handleShare : undefined}
-                    disabled={!user || isSharing || !canShare}
-                    className={`h-10 w-10 ${!user || !canShare ? "opacity-50" : ""}`}
+                    onClick={handleShare}
+                    disabled={isSharing}
+                    className="h-10 w-10"
                   >
                     <span className="h-8 w-8 flex items-center justify-center rounded-lg bg-green-50 dark:bg-green-900/20 text-green-500">
                       {isSharing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Share2 className="h-4 w-4" />}
@@ -1419,7 +1444,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                   </Button>
                 </span>
               </TooltipTrigger>
-              <TooltipContent>{!user ? t("shareLoginRequired") : t("share")}</TooltipContent>
+              <TooltipContent>{t("share")}</TooltipContent>
             </Tooltip>
 
             {/* Divider: CV tools | App settings */}
@@ -1685,7 +1710,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
     <div className="fixed bottom-5 right-4 md:bottom-6 md:right-6 z-50 flex flex-col gap-2.5">
       <button
         onClick={handleFloatingShare}
-        className={`flex items-center gap-2 rounded-full border border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-card/90 backdrop-blur-sm pl-2 pr-3.5 py-2 shadow-lg transition-all hover:shadow-xl hover:scale-105 active:scale-95 ${!user || isSharing ? "opacity-50" : ""} ${isSharing ? "pointer-events-none" : ""}`}
+        className={`flex items-center gap-2 rounded-full border border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-card/90 backdrop-blur-sm pl-2 pr-3.5 py-2 shadow-lg transition-all hover:shadow-xl hover:scale-105 active:scale-95 ${isSharing ? "opacity-50 pointer-events-none" : ""}`}
       >
         <span className="h-7 w-7 flex items-center justify-center rounded-full bg-green-50 dark:bg-green-900/20 text-green-500 shrink-0">
           {isSharing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Share2 className="h-3.5 w-3.5" />}

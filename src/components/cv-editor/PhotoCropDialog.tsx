@@ -3,13 +3,11 @@
 import { memo, useState, useCallback, useRef } from "react";
 import Cropper, { type Area } from "react-easy-crop";
 import { useTranslations } from "next-intl";
-import { Upload, Trash2, ImagePlus, Crop, Loader2, Lock } from "lucide-react";
+import { Upload, Trash2, ImagePlus, Crop, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth-context";
-import { usePlan } from "@/lib/plan-context";
 import { PHOTO_FILTERS, getPhotoFilter } from "@/lib/photo-filters";
 import type { PhotoFilter } from "@/lib/types";
-import { UpgradeDialog } from "@/components/premium/UpgradeDialog";
 import {
   Dialog,
   DialogContent,
@@ -70,7 +68,6 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
 }: PhotoCropDialogProps) {
   const t = useTranslations("photo");
   const { user } = useAuth();
-  const { isPremium } = usePlan();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [imageToCrop, setImageToCrop] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
@@ -78,7 +75,6 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const [uploading, setUploading] = useState(false);
   const [previewError, setPreviewError] = useState(false);
-  const [upgradeOpen, setUpgradeOpen] = useState(false);
 
   const activeFilter = getPhotoFilter(photoFilter);
 
@@ -178,14 +174,10 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
   }, []);
 
   const handleFilterSelect = useCallback(
-    (filterId: PhotoFilter, premium: boolean) => {
-      if (premium && !isPremium) {
-        setUpgradeOpen(true);
-        return;
-      }
+    (filterId: PhotoFilter) => {
       onPhotoFilterChange?.(filterId);
     },
-    [isPremium, onPhotoFilterChange]
+    [onPhotoFilterChange]
   );
 
   const isCropping = !!imageToCrop;
@@ -297,7 +289,7 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
                           <button
                             key={def.id}
                             type="button"
-                            onClick={() => handleFilterSelect(def.id, def.premium)}
+                            onClick={() => handleFilterSelect(def.id)}
                             className="flex flex-col items-center gap-1 cursor-pointer"
                           >
                             <div
@@ -314,11 +306,6 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
                                 className="w-full h-full object-cover"
                                 style={{ filter: def.cssFilter }}
                               />
-                              {def.premium && !isPremium && (
-                                <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                                  <Lock className="w-3 h-3 text-white" />
-                                </div>
-                              )}
                             </div>
                             <span className={`text-[10px] leading-tight ${
                               isActive
@@ -384,8 +371,6 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
           )}
         </DialogContent>
       </Dialog>
-
-      <UpgradeDialog open={upgradeOpen} onOpenChange={setUpgradeOpen} initialFeature="photoFilters" />
     </>
   );
 });

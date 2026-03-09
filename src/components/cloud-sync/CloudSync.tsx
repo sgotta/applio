@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth-context";
+import { usePlan } from "@/lib/plan-context";
 import { useCV } from "@/lib/cv-context";
 import { useColorScheme } from "@/lib/color-scheme-context";
 import { migrateColorSchemeName, COLOR_SCHEME_NAMES } from "@/lib/color-schemes";
@@ -69,6 +70,7 @@ async function uploadBase64ToR2(base64: string): Promise<string | null> {
 
 export function CloudSync() {
   const { user } = useAuth();
+  const { isPremium } = usePlan();
   const { data, loading: cvLoading, importData, updatePersonalInfo } = useCV();
   const { colorSchemeName, accentColor, setColorScheme, setAccentColor } = useColorScheme();
   const { fontFamilyId, fontSizeLevel, setFontFamily, setFontSizeLevel } = useFontSettings();
@@ -88,7 +90,13 @@ export function CloudSync() {
   // Refs for debounced saves
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const initialLoadStarted = useRef(false);
-  const initialSyncComplete = useRef(false);
+  const [initialSyncComplete, setInitialSyncCompleteState] = useState(false);
+  const initialSyncCompleteRef = useRef(false);
+  // Wrapper that updates both state (triggers Effect 2) and ref (for sync reads in cleanup)
+  const setInitialSyncComplete = useCallback((v: boolean) => {
+    initialSyncCompleteRef.current = v;
+    setInitialSyncCompleteState(v);
+  }, []);
   const lastSavedFingerprint = useRef<string>("");
   const lastSavedSettings = useRef<string>("");
   const uploadingPhoto = useRef(false);
@@ -97,7 +105,7 @@ export function CloudSync() {
   // Effect 1: On login — fetch cloud CV and detect conflicts
   // -----------------------------------------------------------------------
   useEffect(() => {
-    if (!user || cvLoading) return;
+    if (!user || !isPremium || cvLoading) return;
     if (initialLoadStarted.current) return;
     initialLoadStarted.current = true;
 
@@ -112,7 +120,7 @@ export function CloudSync() {
         if (!cloud) {
           // No cloud data — first sync, just mark ready and let Effect 2 save
           lastSavedFingerprint.current = cvContentFingerprint(data);
-          initialSyncComplete.current = true;
+          setInitialSyncComplete(true);
           setStatus("synced");
           return;
         }
@@ -124,7 +132,7 @@ export function CloudSync() {
           // Same content — apply cloud settings if different
           applyCloudSettings(cloud.settings);
           lastSavedFingerprint.current = localFingerprint;
-          initialSyncComplete.current = true;
+          setInitialSyncComplete(true);
           setStatus("synced");
           return;
         }
@@ -146,24 +154,24 @@ export function CloudSync() {
     return () => {
       cancelled = true;
       // If cancelled before sync completed, allow retry on next render cycle
-      if (!initialSyncComplete.current) {
+      if (!initialSyncCompleteRef.current) {
         initialLoadStarted.current = false;
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, cvLoading]);
+  }, [user, isPremium, cvLoading, setInitialSyncComplete]);
 
   // Reset on logout
   useEffect(() => {
     if (!user) {
       initialLoadStarted.current = false;
-      initialSyncComplete.current = false;
+      setInitialSyncComplete(false);
       lastSavedFingerprint.current = "";
       lastSavedSettings.current = "";
       setStatus("idle");
       setLastError(null);
     }
-  }, [user, setStatus, setLastError]);
+  }, [user, setStatus, setLastError, setInitialSyncComplete]);
 
   // -----------------------------------------------------------------------
   // Effect 2: Unified auto-save — CV data + settings (3s debounce)
@@ -171,7 +179,7 @@ export function CloudSync() {
   // save could overwrite a photo URL that was just uploaded by a data save.
   // -----------------------------------------------------------------------
   useEffect(() => {
-    if (!user || cvLoading || !initialSyncComplete.current || showConflict) return;
+    if (!user || !isPremium || cvLoading || !initialSyncComplete || showConflict) return;
 
     const fingerprint = cvContentFingerprint(data);
     const settings = buildSettings();
@@ -207,7 +215,7 @@ export function CloudSync() {
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, colorSchemeName, accentColor, fontFamilyId, fontSizeLevel, theme, locale, user, cvLoading, showConflict]);
+  }, [data, colorSchemeName, accentColor, fontFamilyId, fontSizeLevel, theme, locale, user, isPremium, cvLoading, showConflict, initialSyncComplete]);
 
   // -----------------------------------------------------------------------
   // Helpers
@@ -278,7 +286,7 @@ export function CloudSync() {
       await saveCV(dataToSave, settings);
       lastSavedFingerprint.current = cvContentFingerprint(dataToSave);
       lastSavedSettings.current = JSON.stringify(settings);
-      initialSyncComplete.current = true;
+      setInitialSyncComplete(true);
       setStatus("synced");
       setLastError(null);
     } catch (err) {
@@ -301,7 +309,7 @@ export function CloudSync() {
     applyCloudSettings(cloudData.settings);
     lastSavedFingerprint.current = cvContentFingerprint(cloudData.cvData);
     lastSavedSettings.current = JSON.stringify(cloudData.settings);
-    initialSyncComplete.current = true;
+    setInitialSyncComplete(true);
     setShowConflict(false);
     setCloudData(null);
     setStatus("synced");
