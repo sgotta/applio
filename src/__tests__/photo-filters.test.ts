@@ -28,12 +28,9 @@ describe("photo-filters", () => {
     }
   });
 
-  it("only 'none' is free, rest are premium", () => {
-    const freeFilters = PHOTO_FILTERS.filter((f) => !f.premium);
+  it("all filters are free", () => {
     const premiumFilters = PHOTO_FILTERS.filter((f) => f.premium);
-    expect(freeFilters).toHaveLength(1);
-    expect(freeFilters[0].id).toBe("none");
-    expect(premiumFilters).toHaveLength(4);
+    expect(premiumFilters).toHaveLength(0);
   });
 
   it("has exactly 5 filters defined", () => {
