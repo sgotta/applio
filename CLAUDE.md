@@ -229,7 +229,7 @@ The CVContext exposes `reorder*` methods (using `arrayMove`) in addition to the 
 - **Two plans:** 3 months ($19.000 ARS) and 6 months ($33.000 ARS). Manual renewal, no auto-subscription
 - Mercado Pago Checkout Pro: `POST /api/mercadopago/checkout` → creates preference → redirect to MP → webhook updates user subscription in MongoDB
 - Webhook extends `currentPeriodEnd` if user already has active pro (stacks time)
-- **Currently gated features:** extra color palettes (wetAsphalt, esmeralda, hielo, floral), accent colors, extra fonts (SourceSans3, Merriweather), sidebar patterns, photo filters (grayscale/studio/warm/cool), optional sections (courses, certifications, awards), PDF without branding
+- **Currently gated features:** PDF without branding, cloud sync, CV sharing, early access to new features. All visual customization is free (palettes, accent colors, fonts, photo filters, optional sections)
 
 **MongoDB `users` collection (subscription subdocument):**
 - Fields: `plan` ("free" | "pro"), `billingInterval`, `provider` (stripe/mercadopago/paypal), `customerId`, `subscriptionId`, `currentPeriodEnd`
@@ -283,7 +283,7 @@ Other localStorage keys:
 - Add new components: `npx shadcn@latest add [name]`
 - Icons: lucide-react only
 
-**Color schemes:** 9 palettes in `src/lib/color-schemes.ts`: Default (free, customizable accent), wetAsphalt/esmeralda/hielo/floral/rosa/violeta/rojo/amarillo (premium). `resolveColorScheme(baseName, accentColor)` applies accent to all except wetAsphalt. Tinted sidebar separators via `hexToTintedSeparator()`. Premium palettes gated behind plan.
+**Color schemes:** 9 palettes in `src/lib/color-schemes.ts`: Default (customizable accent), wetAsphalt, esmeralda, hielo, floral, rosa, violeta, rojo. All free. Palette picker uses a 3-column grid grouped by creative themes (Clásicas, Naturaleza, Intensas). `resolveColorScheme(baseName, accentColor)` applies accent to all except wetAsphalt. Tinted sidebar separators via `hexToTintedSeparator()`.
 
 **Sidebar patterns:** Decorative patterns for the sidebar, defined in `src/lib/sidebar-patterns.ts`. Settings managed by `SidebarPatternProvider`. All patterns except `"none"` are premium.
 
