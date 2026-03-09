@@ -219,7 +219,7 @@ test.describe("Smoke Tests @smoke", () => {
         await route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({ plan: "free", isActive: false, currentPeriodEnd: null }),
+          body: JSON.stringify({ plan: "pro", isActive: true, currentPeriodEnd: new Date(Date.now() + 86_400_000 * 30).toISOString() }),
         });
       });
 
@@ -248,46 +248,26 @@ test.describe("Smoke Tests @smoke", () => {
     });
 
     test("edit after sync triggers API save", async ({ page }) => {
-      let saveCalled = false;
-
       await page.goto("/editor");
       await page.locator(".cv-preview-content").waitFor({ state: "visible" });
       await seedCVData(page, minimalCV);
 
       await mockAuthSession(page);
-
-      // Mock CV API with save tracking
-      await page.route("**/api/cv", async (route, request) => {
-        if (request.method() === "GET") {
-          await route.fulfill({
-            status: 200,
-            contentType: "application/json",
-            body: JSON.stringify(null),
-          });
-        } else if (request.method() === "POST") {
-          saveCalled = true;
-          await route.fulfill({
-            status: 200,
-            contentType: "application/json",
-            body: JSON.stringify({ id: "mock-cv-id", updatedAt: new Date().toISOString() }),
-          });
-        } else {
-          await route.continue();
-        }
-      });
-
-      await page.route("**/api/cv/plan", async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: "application/json",
-          body: JSON.stringify({ plan: "free", isActive: false, currentPeriodEnd: null }),
-        });
-      });
+      await mockCVApi(page, { loadCVReturn: null });
 
       await page.reload();
       await page.locator(".cv-preview-content").waitFor({ state: "visible" });
 
-      // Edit something to trigger auto-save
+      // Wait for initial sync to complete (plan fetch + GET /api/cv)
+      await page.waitForTimeout(2000);
+
+      // Set up save listener BEFORE editing
+      const savePromise = page.waitForRequest(
+        (req) => req.url().includes("/api/cv") && !req.url().includes("/plan") && req.method() === "POST",
+        { timeout: 10_000 },
+      );
+
+      // Edit something to trigger auto-save (blur to commit, NOT Escape which cancels)
       const nameField = page.locator("[data-testid='desktop-header']").locator("[role='textbox']").first();
       await nameField.waitFor({ state: "visible" });
       await nameField.click();
@@ -295,12 +275,11 @@ test.describe("Smoke Tests @smoke", () => {
       await editor.waitFor({ state: "visible", timeout: 5000 });
       await page.keyboard.press("Control+a");
       await page.keyboard.type("Modified Name");
-      await page.keyboard.press("Escape");
+      await page.locator(".cv-preview-content").click(); // blur to commit edit
 
-      // Wait for debounce (3s) + network
-      await page.waitForTimeout(4500);
-
-      expect(saveCalled).toBe(true);
+      // Wait for the POST /api/cv (3s debounce + network)
+      const saveRequest = await savePromise;
+      expect(saveRequest).toBeTruthy();
     });
 
     test("logout resets sync state", async ({ page }) => {

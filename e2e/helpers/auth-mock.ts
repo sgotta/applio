@@ -56,9 +56,10 @@ export async function mockCVApi(
       slug: string | null;
       updatedAt: string;
     } | null;
+    plan?: "free" | "pro";
   } = {},
 ) {
-  const { loadCVReturn = null } = options;
+  const { loadCVReturn = null, plan = "pro" } = options;
 
   // GET /api/cv → loadCV
   await page.route("**/api/cv", async (route, request) => {
@@ -85,7 +86,11 @@ export async function mockCVApi(
     await route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify({ plan: "free", isActive: false, currentPeriodEnd: null }),
+      body: JSON.stringify({
+        plan,
+        isActive: plan === "pro",
+        currentPeriodEnd: plan === "pro" ? new Date(Date.now() + 86_400_000 * 30).toISOString() : null,
+      }),
     });
   });
 }
