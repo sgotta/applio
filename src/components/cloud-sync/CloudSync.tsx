@@ -13,6 +13,14 @@ import { useTheme } from "@/lib/theme-context";
 import { useAppLocale } from "@/lib/locale-context";
 import { useSyncStatus } from "@/lib/sync-status-context";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import type { CVData, CloudSettings } from "@/lib/types";
 import { cvContentFingerprint } from "@/lib/cv-sync";
 
@@ -321,38 +329,34 @@ export function CloudSync() {
   // -----------------------------------------------------------------------
   // Conflict resolution dialog
   // -----------------------------------------------------------------------
-  if (showConflict && cloudData) {
-    return (
-      <div className="fixed inset-0 z-200 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-        <div className="mx-4 w-full max-w-md rounded-xl bg-white p-6 shadow-2xl dark:bg-gray-900">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-            {t("title")}
-          </h2>
-          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+  return (
+    <AlertDialog open={showConflict && !!cloudData}>
+      <AlertDialogContent className="sm:max-w-md">
+        <AlertDialogHeader>
+          <AlertDialogTitle>{t("title")}</AlertDialogTitle>
+          <AlertDialogDescription>
             {t("description", { date: "" })}
-          </p>
-          <div className="mt-5 flex gap-3">
-            <Button
-              variant="outline"
-              onClick={handleKeepLocal}
-              className="flex-1 rounded-lg"
-            >
-              {t("useLocal")}
-            </Button>
-            <Button
-              onClick={handleUseCloud}
-              className="flex-1 rounded-lg"
-            >
-              {t("useCloud")}
-            </Button>
-          </div>
-          <p className="mt-3 text-xs text-gray-500 dark:text-gray-500">
-            {t("backup")}
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  return null;
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter className="flex-row gap-3">
+          <Button
+            variant="outline"
+            onClick={handleKeepLocal}
+            className="flex-1 rounded-lg"
+          >
+            {t("useLocal")}
+          </Button>
+          <Button
+            onClick={handleUseCloud}
+            className="flex-1 rounded-lg"
+          >
+            {t("useCloud")}
+          </Button>
+        </AlertDialogFooter>
+        <p className="text-xs text-muted-foreground">
+          {t("backup")}
+        </p>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
 }
