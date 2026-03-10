@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { GripVertical, Plus, ChevronUp, ChevronDown, Trash2, Move } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import type { DraggableAttributes } from "@dnd-kit/core";
 import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 
@@ -42,7 +43,7 @@ export function EntryGrip({
     : "p-1.5 can-hover:p-1 rounded transition-colors hover:bg-gray-100 touch-manipulation cursor-grab active:cursor-grabbing";
 
   const iconColor = sidebar ? "opacity-60" : "text-gray-400";
-  const itemClass = "flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-sm text-gray-700 dark:text-gray-300 transition-colors hover:bg-gray-100/70 dark:hover:bg-accent/50";
+  const itemClass = "w-full justify-start gap-2.5 px-3 font-normal text-gray-700 dark:text-gray-300 hover:bg-gray-100/70 dark:hover:bg-accent/50";
   const sep = <div className="my-1 h-px bg-gray-100 dark:bg-gray-700" />;
 
   return (
@@ -60,46 +61,54 @@ export function EntryGrip({
           </button>
         </PopoverTrigger>
         <PopoverContent className="w-52 p-1.5" align="start" side={sidebar ? "bottom" : "left"}>
-          <button
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={() => { onAddBelow(); setMenuOpen(false); }}
             className={itemClass}
           >
-            <Plus className="h-4 w-4 text-gray-400" />
+            <Plus className="text-gray-400" />
             {labels.addBelow}
-          </button>
+          </Button>
 
           {(onMoveUp || onMoveDown) && (
             <>
               {sep}
               {onMoveUp && (
-                <button
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={() => { onMoveUp(); setMenuOpen(false); }}
                   className={itemClass}
                 >
-                  <ChevronUp className="h-4 w-4 text-gray-400" />
+                  <ChevronUp className="text-gray-400" />
                   {labels.moveUp}
-                </button>
+                </Button>
               )}
               {onMoveDown && (
-                <button
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={() => { onMoveDown(); setMenuOpen(false); }}
                   className={itemClass}
                 >
-                  <ChevronDown className="h-4 w-4 text-gray-400" />
+                  <ChevronDown className="text-gray-400" />
                   {labels.moveDown}
-                </button>
+                </Button>
               )}
             </>
           )}
 
           {sep}
-          <button
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={() => { onDelete(); setMenuOpen(false); }}
-            className="flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-sm text-red-500 transition-colors hover:bg-red-50 dark:hover:bg-red-500/10"
+            className="w-full justify-start gap-2.5 px-3 font-normal text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500"
           >
-            <Trash2 className="h-4 w-4" />
+            <Trash2 />
             {labels.delete}
-          </button>
+          </Button>
 
           {sep}
           <div className="px-3 py-1.5">

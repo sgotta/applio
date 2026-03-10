@@ -16,6 +16,7 @@ import {
   Rocket,
   Loader2,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth-context";
 
 const FEATURES = [
@@ -214,19 +215,19 @@ export const UpgradeDialog = memo(function UpgradeDialog({
 
         {/* CTA */}
         <div className="px-5 pb-5">
-          <button
+          <Button
             disabled={loading}
             onClick={!user && onLogin ? () => { onOpenChange(false); onLogin(); } : handleCheckout}
-            className="w-full h-10 rounded-md flex items-center justify-center gap-2 text-sm font-semibold text-white bg-gray-900 dark:bg-gray-100 dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-60 disabled:cursor-default"
+            className="w-full font-semibold"
           >
             {loading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Loader2 className="animate-spin" />
             ) : !user ? (
               t("loginRequired")
             ) : (
               t("checkout")
             )}
-          </button>
+          </Button>
         </div>
 
       </DialogContent>

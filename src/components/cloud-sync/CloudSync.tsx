@@ -12,6 +12,7 @@ import { useFontSettings } from "@/lib/font-context";
 import { useTheme } from "@/lib/theme-context";
 import { useAppLocale } from "@/lib/locale-context";
 import { useSyncStatus } from "@/lib/sync-status-context";
+import { Button } from "@/components/ui/button";
 import type { CVData, CloudSettings } from "@/lib/types";
 import { cvContentFingerprint } from "@/lib/cv-sync";
 
@@ -331,18 +332,19 @@ export function CloudSync() {
             {t("description", { date: "" })}
           </p>
           <div className="mt-5 flex gap-3">
-            <button
+            <Button
+              variant="outline"
               onClick={handleKeepLocal}
-              className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
+              className="flex-1 rounded-lg"
             >
               {t("useLocal")}
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleUseCloud}
-              className="flex-1 rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
+              className="flex-1 rounded-lg"
             >
               {t("useCloud")}
-            </button>
+            </Button>
           </div>
           <p className="mt-3 text-xs text-gray-500 dark:text-gray-500">
             {t("backup")}

@@ -1,6 +1,7 @@
 "use client";
 
 import { AlertCircle, RotateCcw } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function GlobalError({
   error,
@@ -19,13 +20,10 @@ export default function GlobalError({
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
           {error.message || "An unexpected error occurred. Please try again."}
         </p>
-        <button
-          onClick={reset}
-          className="inline-flex items-center gap-2 rounded-md bg-gray-900 dark:bg-gray-100 px-4 py-2 text-sm font-medium text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
-        >
-          <RotateCcw className="h-4 w-4" />
+        <Button onClick={reset}>
+          <RotateCcw />
           Try again
-        </button>
+        </Button>
       </div>
     </div>
   );
