@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface LoginDialogProps {
   open: boolean;
@@ -67,31 +68,32 @@ export const LoginDialog = memo(function LoginDialog({
         </DialogHeader>
 
         <div className="space-y-3 pt-4">
-          <button
+          <Button
+            variant="outline"
             onClick={handleGoogle}
             disabled={loadingProvider !== null}
-            className="flex w-full items-center justify-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+            className="w-full rounded-xl gap-3 border-gray-200 bg-white px-4 py-3.5 text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
           >
             {loadingProvider === "google" ? (
-              <Loader2 className="h-5 w-5 animate-spin" />
+              <Loader2 className="size-5 animate-spin" />
             ) : (
-              <GoogleIcon className="h-5 w-5" />
+              <GoogleIcon className="size-5" />
             )}
             {t("continueWithGoogle")}
-          </button>
+          </Button>
 
-          <button
+          <Button
             onClick={handleGithub}
             disabled={loadingProvider !== null}
-            className="flex w-full items-center justify-center gap-3 rounded-xl bg-gray-900 px-4 py-3.5 text-sm font-medium text-white transition-colors hover:bg-gray-800 disabled:opacity-50 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
+            className="w-full rounded-xl gap-3 px-4 py-3.5"
           >
             {loadingProvider === "github" ? (
-              <Loader2 className="h-5 w-5 animate-spin" />
+              <Loader2 className="size-5 animate-spin" />
             ) : (
-              <GitHubIcon className="h-5 w-5" />
+              <GitHubIcon className="size-5" />
             )}
             {t("continueWithGitHub")}
-          </button>
+          </Button>
         </div>
 
         <p className="text-center text-xs text-gray-400 pt-4">

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Download, Heart, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { LocaleProvider, useAppLocale } from "@/lib/locale-context";
 import { ThemeProvider } from "@/lib/theme-context";
@@ -92,18 +93,18 @@ function SharedCVInner({ cvData, settings }: SharedCVContentProps) {
     <div className="min-h-screen bg-gray-50 lg:bg-gray-100 lg:py-8 lg:px-4 overflow-x-auto">
       {/* PDF button */}
       <div className="fixed top-3 right-3 lg:top-4 lg:right-4 z-10">
-        <button
+        <Button
           onClick={handleDownloadPDF}
           disabled={isGeneratingPDF}
-          className="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-800 shadow-lg transition-colors disabled:opacity-50"
+          className="rounded-lg shadow-lg"
         >
           {isGeneratingPDF ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader2 className="animate-spin" />
           ) : (
-            <Download className="h-4 w-4" />
+            <Download />
           )}
           PDF
-        </button>
+        </Button>
       </div>
 
       {/* Desktop: PrintableCV with zoom */}
