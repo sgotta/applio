@@ -16,6 +16,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Slider } from "@/components/ui/slider";
+import { Button } from "@/components/ui/button";
 
 interface PhotoCropDialogProps {
   open: boolean;
@@ -230,24 +231,21 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
               </div>
 
               <div className="flex flex-col gap-2.5">
-                <div className="rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800">
-                  <button
-                    onClick={handleApply}
-                    disabled={uploading}
-                    className="w-full flex items-center justify-center gap-2 px-5 h-14 text-mobile-menu font-semibold bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors cursor-pointer disabled:opacity-50"
-                  >
-                    {uploading && <Loader2 className="h-4 w-4 animate-spin" />}
-                    {t("apply")}
-                  </button>
-                </div>
-                <div className="rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800">
-                  <button
-                    onClick={handleCancelCrop}
-                    className="w-full flex items-center justify-center px-5 h-14 text-mobile-menu font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer"
-                  >
-                    {t("cancel")}
-                  </button>
-                </div>
+                <Button
+                  onClick={handleApply}
+                  disabled={uploading}
+                  className="w-full"
+                >
+                  {uploading && <Loader2 className="h-4 w-4 animate-spin" />}
+                  {t("apply")}
+                </Button>
+                <Button
+                  variant="ghost"
+                  onClick={handleCancelCrop}
+                  className="w-full"
+                >
+                  {t("cancel")}
+                </Button>
               </div>
             </>
           ) : (
@@ -327,7 +325,7 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
                         <>
                           <button
                             onClick={() => setImageToCrop(currentPhoto!)}
-                            className="w-full flex items-center gap-4 px-5 h-14 text-mobile-menu font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                            className="w-full flex items-center gap-4 px-5 h-12 text-sm font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer"
                           >
                             <Crop className="w-4.5 h-4.5 text-gray-500 dark:text-gray-400 shrink-0" />
                             {t("adjust")}
@@ -337,7 +335,7 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
                       )}
                       <button
                         onClick={triggerFileInput}
-                        className="w-full flex items-center gap-4 px-5 h-14 text-mobile-menu font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                        className="w-full flex items-center gap-4 px-5 h-12 text-sm font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer"
                       >
                         <Upload className="w-4.5 h-4.5 text-gray-500 dark:text-gray-400 shrink-0" />
                         {t("change")}
@@ -347,7 +345,7 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
                     <div className="rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800">
                       <button
                         onClick={handleDelete}
-                        className="w-full flex items-center gap-4 px-5 h-14 text-mobile-menu font-semibold text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer"
+                        className="w-full flex items-center gap-4 px-5 h-12 text-sm font-semibold text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer"
                       >
                         <Trash2 className="w-4.5 h-4.5 shrink-0" />
                         {t("delete")}
