@@ -16,7 +16,7 @@ Usar el componente `<PremiumBadge />` de `src/components/premium/PremiumBadge.ts
 - Light: `bg-amber-100 text-amber-700`
 - Dark: `bg-amber-900/50 text-amber-400`
 - Hover: `bg-amber-200` / `dark:bg-amber-800/50`
-- Tipografía: `text-[10px] font-semibold`
+- Tipografía: `text-badge font-semibold`
 - Icon: `Lock h-2.5 w-2.5`
 - Padding: `px-1.5 py-0.5`, gap: `gap-0.5`
 - Forma: `rounded-full`
@@ -64,10 +64,6 @@ Para elementos donde un badge textual no cabe (círculos de color, cuadrados de 
 | **Active/Premium status** | `emerald-500` | `emerald-500` |
 | **Free/inactive status** | `amber-500` | `amber-500` |
 | **Destructive** | `red-600` | `red-500` |
-| **Primary text** | `gray-900` (`#111827`) | `gray-100` |
-| **Secondary text** | `gray-700` | `gray-200` |
-| **Muted text** | `gray-500` | `gray-400` |
-| **Subtle/label text** | `gray-400` | `gray-400` |
 | **Backgrounds** | `white` / `gray-50` | `gray-950` / `gray-800` |
 | **Borders** | `gray-200` | `gray-700` / `gray-800` |
 | **Hover bg** | `gray-100` | `accent` |
@@ -79,20 +75,37 @@ Para elementos donde un badge textual no cabe (círculos de color, cuadrados de 
 - **Gray** = neutral/UI base
 - **Red** = destructivo (eliminar, errores)
 
+### Semantic text colors (design tokens)
+
+Usá **siempre** tokens semánticos en vez de colores gray hardcodeados. Los tokens manejan dark mode automáticamente — una sola clase en vez de dos.
+
+| Token | Tailwind class | Light | Dark | Uso |
+|---|---|---|---|---|
+| `--foreground` | `text-foreground` | `#111827` (gray-900) | `#f5f5f5` | Texto primario: headings, nombres, contenido principal |
+| `--on-subtle` | `text-on-subtle` | `#374151` (gray-700) | `#e5e7eb` (gray-200) | Texto secundario: menu items, descripciones, body en popovers |
+| `--muted-foreground` | `text-muted-foreground` | `#6b7280` (gray-500) | `#b5b5b5` | Texto muted: info secundaria, placeholders |
+| `--subtle` | `text-subtle` | `#9ca3af` (gray-400) | `#6b7280` (gray-500) | Texto deemphasized: labels uppercase, hints, timestamps |
+
+> **Regla:** Usá `text-foreground`, `text-on-subtle`, `text-muted-foreground`, o `text-subtle` según la jerarquía. Evitá `text-gray-400 dark:text-gray-500` y combinaciones similares — los tokens ya resuelven ambos modos.
+
 ---
 
 ## 3. Typography
 
-### Tamaños UI (no CV content)
+### Tamaños UI — Design Tokens
 
-| Uso | Clase |
-|---|---|
-| Section labels (uppercase) | `text-xs font-medium uppercase tracking-wide text-gray-400` |
-| Menu items | `text-sm text-gray-700 dark:text-gray-200` |
-| Mobile menu items | `text-[15px]` |
-| Micro labels | `text-[10px]` |
-| Badge text | `text-[10px] font-semibold` |
-| Tooltip content | Default shadcn |
+Usá **siempre** los tokens definidos en `globals.css` (`@theme inline`). Nunca uses valores crudos como `text-[13px]`.
+
+| Token | Tailwind class | Valor | Uso |
+|---|---|---|---|
+| `--font-size-micro` | `text-micro` | 9px | Badge accents ("POPULAR", "PRO" tags), micro indicators |
+| `--font-size-badge` | `text-badge` | 10px | PRO badge text, section group labels (uppercase) |
+| `--font-size-label` | `text-label` | 11px | Form labels, hint text, section headers mobile |
+| `--font-size-menu` | `text-menu` | 13px | Desktop menu items, popover body text, inputs |
+| `--font-size-mobile-menu` | `text-mobile-menu` | 15px | Mobile menu items, sheet buttons, toast text |
+| `--font-size-mobile-title` | `text-mobile-title` | 17px | Mobile nav headers, brand name |
+
+> **Nota:** Para texto estándar de UI que coincida con Tailwind built-in (`text-xs` = 12px, `text-sm` = 14px, `text-base` = 16px), seguí usando las clases de Tailwind. Los tokens cubren los tamaños intermedios que no existen en la escala default.
 
 ### Pesos
 
@@ -137,12 +150,30 @@ Para elementos donde un badge textual no cabe (círculos de color, cuadrados de 
 
 ## 6. Layout
 
-### Spacing
+### Spacing decisions
 
-- Toolbar popovers: `p-3.5` padding, `space-y-4` entre secciones
-- Mobile sheets: `px-3.5 pt-2.5 pb-1.5`
-- Between label and content: `mb-2`
-- Between list items: `space-y-0.5`
+| Contexto | Padding | Gap entre secciones |
+|---|---|---|
+| Desktop popover (con contenido) | `p-4` | `space-y-4` |
+| Desktop popover (compact, ej. file menu) | `p-3` | `space-y-2` |
+| Desktop popover (custom layout, ej. account) | `p-0` | — |
+| Mobile sheet | `p-0` (padding individual por fila) | — |
+| Mobile action row | `px-5 h-14` | — |
+| Dialog content | shadcn default (`p-6`) | — |
+| Section label → content | — | `mb-3` |
+| Between list items | — | `space-y-0.5` |
+
+### Component height decisions
+
+| Contexto | Altura | Notas |
+|---|---|---|
+| Desktop toolbar icon button | `h-7 w-7` / `h-8 w-8` | Usar `<Button size="icon-sm">` |
+| Desktop menu item row | `h-10` | Usar `<Button size="lg">` o `min-h-[36px]` |
+| Mobile toolbar icon button | `h-9 w-9` | Usar `<Button size="icon">` |
+| Mobile toggle button | `h-11 w-11` | Touch-friendly |
+| Mobile CTA button | `h-12` | Prominent actions |
+| Mobile sheet action row | `h-14` | Full-width action rows |
+| Touch target mínimo | `min-h-[44px]` | WCAG 2.5.8, solo mobile |
 
 ### Border radius
 
@@ -158,10 +189,42 @@ Para elementos donde un badge textual no cabe (círculos de color, cuadrados de 
 
 Al crear un nuevo elemento de UI, verificá:
 
-- [ ] Dark mode: tiene variantes `dark:` para backgrounds, text y borders
+- [ ] Dark mode: usa tokens semánticos (`text-foreground`, `text-on-subtle`, etc.) en vez de pares `dark:`
 - [ ] Premium gate: si es PRO, usa `PremiumBadge` (texto) o Lock overlay (swatch)
 - [ ] Hover: tiene `transition-colors` y estado hover
 - [ ] Focus: tiene `focus-visible:ring-*` si es interactivo
 - [ ] Icons: tamaño correcto según contexto (ver sección 4)
-- [ ] Spacing: consistente con secciones vecinas
+- [ ] Typography: usa tokens (`text-menu`, `text-badge`, etc.), no valores crudos
+- [ ] Spacing: consistente con tabla de spacing decisions (sección 6)
 - [ ] Mobile: tiene variante mobile o responsive
+- [ ] Botones: usa `<Button>` de shadcn con variant y size apropiados, no `<button>` raw
+
+---
+
+## 8. Migration Guide
+
+Al migrar componentes existentes a design tokens:
+
+### Typography
+
+| Antes | Después |
+|---|---|
+| `text-[9px]` | `text-micro` |
+| `text-[10px]` | `text-badge` |
+| `text-[11px]` | `text-label` |
+| `text-[13px]` | `text-menu` |
+| `text-[15px]` | `text-mobile-menu` |
+| `text-[17px]` | `text-mobile-title` |
+
+### Text colors
+
+| Antes | Después |
+|---|---|
+| `text-gray-900 dark:text-gray-100` | `text-foreground` |
+| `text-gray-800 dark:text-gray-100` | `text-foreground` |
+| `text-gray-700 dark:text-gray-200` | `text-on-subtle` |
+| `text-gray-500 dark:text-gray-400` | `text-muted-foreground` |
+| `text-gray-400 dark:text-gray-500` | `text-subtle` |
+| `text-gray-400 dark:text-gray-400` | `text-subtle` |
+
+> **Regla:** Migrá de a un archivo por PR. Verificá dark mode visualmente después de cada migración.
