@@ -113,7 +113,7 @@ function ContactLine({
         <div className="space-y-3">
           {/* Display text field */}
           <div className="space-y-1.5">
-            <label className="block text-[11px] font-semibold uppercase tracking-widest text-white/40">
+            <label className="block text-label font-semibold uppercase tracking-widest text-white/40">
               {t("linkTextLabel")}
             </label>
             <input
@@ -121,13 +121,13 @@ function ContactLine({
               value={value}
               onChange={(e) => onChange(field, e.target.value)}
               placeholder={placeholder}
-              className="w-full rounded-lg px-3 py-2 text-[13px] outline-none transition-colors bg-white/10 text-white placeholder:text-white/30 focus:bg-white/15"
+              className="w-full rounded-lg px-3 py-2 text-menu outline-none transition-colors bg-white/10 text-white placeholder:text-white/30 focus:bg-white/15"
               autoFocus
             />
           </div>
           {/* URL field */}
           <div className="space-y-1.5">
-            <label className="block text-[11px] font-semibold uppercase tracking-widest text-white/40">
+            <label className="block text-label font-semibold uppercase tracking-widest text-white/40">
               {t("linkUrlLabel")}
             </label>
             <div className="flex items-center rounded-lg transition-colors bg-white/10 focus-within:bg-white/15">
@@ -137,7 +137,7 @@ function ContactLine({
                 value={urlValue || ""}
                 onChange={(e) => onChange(urlField!, e.target.value || undefined)}
                 placeholder={urlPlaceholder}
-                className="flex-1 min-w-0 bg-transparent px-2.5 py-2 text-[13px] outline-none text-white/80 placeholder:text-white/30"
+                className="flex-1 min-w-0 bg-transparent px-2.5 py-2 text-menu outline-none text-white/80 placeholder:text-white/30"
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === "Escape") setLinkOpen(false);
                 }}
@@ -153,14 +153,14 @@ function ContactLine({
                   href={urlValue}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 rounded-lg px-2.5 py-2 text-[13px] transition-colors text-white/60 hover:text-white hover:bg-white/10"
+                  className="flex items-center gap-2 rounded-lg px-2.5 py-2 text-menu transition-colors text-white/60 hover:text-white hover:bg-white/10"
                 >
                   <ExternalLink className="h-3.5 w-3.5 shrink-0" />
                   {t("linkOpen")}
                 </a>
                 <button
                   onClick={() => { onChange(urlField!, undefined); setLinkOpen(false); }}
-                  className="flex items-center gap-2 rounded-lg px-2.5 py-2 text-[13px] transition-colors text-white/60 hover:text-red-300 hover:bg-white/10"
+                  className="flex items-center gap-2 rounded-lg px-2.5 py-2 text-menu transition-colors text-white/60 hover:text-red-300 hover:bg-white/10"
                 >
                   <Trash2 className="h-3.5 w-3.5 shrink-0" />
                   {t("linkRemove")}

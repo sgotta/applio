@@ -126,7 +126,7 @@ export default function Home() {
                 icons={{ success: null }}
                 toastOptions={{
                   classNames: {
-                    toast: "!bg-gray-950 !text-white !border !border-white/[0.07] !shadow-[0_8px_32px_rgba(0,0,0,0.32)] !rounded-2xl !py-4 !px-5 !text-[15px] !font-medium !max-w-[calc(100vw-2rem)] !gap-4 dark:!bg-white dark:!text-gray-900 dark:!border-gray-200/80 dark:!shadow-[0_4px_20px_rgba(0,0,0,0.08)]",
+                    toast: "!bg-gray-950 !text-white !border !border-white/[0.07] !shadow-[0_8px_32px_rgba(0,0,0,0.32)] !rounded-2xl !py-4 !px-5 !text-mobile-menu !font-medium !max-w-[calc(100vw-2rem)] !gap-4 dark:!bg-white dark:!text-gray-900 dark:!border-gray-200/80 dark:!shadow-[0_4px_20px_rgba(0,0,0,0.08)]",
                     actionButton: "!bg-white !text-gray-900 !text-[14px] !font-semibold !rounded-lg !px-5 !py-3.5 hover:!bg-gray-100 !transition-colors !shrink-0 dark:!bg-gray-900 dark:!text-white dark:hover:!bg-gray-800",
                   },
                 }}

@@ -68,7 +68,7 @@ function SectionToggle({
 }) {
   return (
     <label className={`flex items-center justify-between gap-3 cursor-pointer ${mobile ? "py-3.5 min-h-13" : "py-2.5 px-4"}`}>
-      <span className={`flex items-center gap-2 ${mobile ? "text-[17px]" : "text-[13px]"} text-gray-700 dark:text-gray-200`}>
+      <span className={`flex items-center gap-2 ${mobile ? "text-mobile-title" : "text-menu"} text-on-subtle`}>
         {label}
         {locked && <PremiumBadge />}
       </span>
@@ -130,9 +130,9 @@ function AccountContent({
   mobile?: boolean;
 }) {
   // Mobile: texto notablemente más grande para lectura cómoda sin zoom
-  const nameSize    = mobile ? "text-xl"   : "text-[15px]";
-  const emailSize   = mobile ? "text-base" : "text-[13px]";
-  const bodyText    = mobile ? "text-base" : "text-[13px]";
+  const nameSize    = mobile ? "text-xl"   : "text-mobile-menu";
+  const emailSize   = mobile ? "text-base" : "text-menu";
+  const bodyText    = mobile ? "text-base" : "text-menu";
   const hintText    = "text-sm";
   const iconSize    = mobile ? "h-5 w-5"   : "h-4 w-4";
   const iconBoxSize = mobile ? "h-9 w-9"   : "h-7 w-7";
@@ -158,7 +158,7 @@ function AccountContent({
             {user.name || user.email}
           </p>
           {user.email && user.name && (
-            <p className={`${emailSize} text-gray-400 dark:text-gray-500 truncate mt-1`}>
+            <p className={`${emailSize} text-subtle truncate mt-1`}>
               {user.email}
             </p>
           )}
@@ -238,7 +238,7 @@ function AccountContent({
         </span>
       </div>
 
-      <p className={`${hintText} text-gray-400 dark:text-gray-500 ${hintLeading} ${hintMb}`}>
+      <p className={`${hintText} text-subtle ${hintLeading} ${hintMb}`}>
         {t("syncLoginHint")}
       </p>
 
@@ -315,7 +315,7 @@ interface AccentPickerProps {
 function AccentPicker({ accentColor, setAccentColor, t }: AccentPickerProps) {
   return (
     <div className="w-[200px]">
-      <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-3">
+      <p className="text-badge font-semibold tracking-widest uppercase text-subtle mb-3">
         {t("accentColor")}
       </p>
       <HexColorPicker
@@ -330,7 +330,7 @@ function AccentPicker({ accentColor, setAccentColor, t }: AccentPickerProps) {
           const v = e.target.value;
           if (/^#[0-9a-fA-F]{6}$/.test(v)) setAccentColor(v);
         }}
-        className="mt-2 w-full px-3 py-1.5 text-xs font-mono text-center rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-400"
+        className="mt-2 w-full px-3 py-1.5 text-xs font-mono text-center rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-on-subtle focus:outline-none focus:ring-1 focus:ring-gray-400"
         maxLength={7}
         placeholder="#6366f1"
       />
@@ -382,7 +382,7 @@ function PaletteSwatch({
         )}
       </div>
       {/* Label */}
-      <span className="text-[10px] font-medium text-gray-500 dark:text-gray-400 truncate w-full text-center leading-tight">
+      <span className="text-badge font-medium text-gray-500 dark:text-gray-400 truncate w-full text-center leading-tight">
         {label}
       </span>
     </button>
@@ -403,7 +403,7 @@ function PaletteSection({
 
   return (
     <div className="w-[240px]">
-      <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-3">
+      <p className="text-badge font-semibold tracking-widest uppercase text-subtle mb-3">
         {t("colorPalette")}
       </p>
 
@@ -429,7 +429,7 @@ function PaletteSection({
           {/* Group divider + title */}
           <div className="flex items-center gap-2 mb-2.5">
             <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
-            <span className="text-[9px] font-medium tracking-wide text-gray-400 dark:text-gray-500 whitespace-nowrap">
+            <span className="text-micro font-medium tracking-wide text-subtle whitespace-nowrap">
               {t(group.labelKey)}
             </span>
             <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
@@ -471,7 +471,7 @@ function FontSection({
     <div className="space-y-4">
       {/* Font Family list */}
       <div>
-        <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-3">
+        <p className="text-badge font-semibold tracking-widest uppercase text-subtle mb-3">
           {t("fontFamily")}
         </p>
         <div className="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800">
@@ -480,7 +480,7 @@ function FontSection({
               {idx > 0 && <div className="h-px bg-gray-100 dark:bg-white/5" />}
               <button
                 onClick={() => setFontFamily(font.id)}
-                className="flex w-full items-center justify-between h-10 px-4 text-[13px] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                className="flex w-full items-center justify-between h-10 px-4 text-menu text-on-subtle hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                 style={{ fontFamily: font.cssStack }}
               >
                 <span>{font.displayName}</span>
@@ -495,7 +495,7 @@ function FontSection({
 
       {/* Font Size */}
       <div>
-        <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-3">
+        <p className="text-badge font-semibold tracking-widest uppercase text-subtle mb-3">
           {t("fontSize")}
         </p>
         <div className="flex gap-1.5">
@@ -535,7 +535,7 @@ function SectionsContent({
   return (
     <div className={mobile ? "space-y-3" : "space-y-4"}>
       <div>
-        <p className={`font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 ${mobile ? "text-[11px] pb-1" : "text-[10px] tracking-widest mb-3"}`}>{t("sectionsTitle")}</p>
+        <p className={`font-semibold uppercase tracking-widest text-subtle ${mobile ? "text-label pb-1" : "text-badge tracking-widest mb-3"}`}>{t("sectionsTitle")}</p>
         {mobile ? (
           <>
             <SectionToggle label={t("sectionPhoto")} checked={data.visibility.photo} onToggle={() => toggleSection("photo")} mobile={mobile} />
@@ -556,7 +556,7 @@ function SectionsContent({
         )}
       </div>
       <div>
-        <p className={`font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 ${mobile ? "text-[11px] pt-3 pb-1" : "text-[10px] tracking-widest mb-3"}`}>{t("optionalSections")}</p>
+        <p className={`font-semibold uppercase tracking-widest text-subtle ${mobile ? "text-label pt-3 pb-1" : "text-badge tracking-widest mb-3"}`}>{t("optionalSections")}</p>
         {mobile ? (
           <>
             <SectionToggle label={t("sectionSummary")} checked={data.visibility.summary} onToggle={() => toggleSection("summary")} mobile={mobile} />
@@ -881,10 +881,10 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
   }, [isPremium, canShare, isSharing, t, data.personalInfo.fullName]);
 
   const menuItemClass =
-    "flex w-full items-center justify-between px-4 py-2.5 text-[15px] font-medium text-gray-800 hover:bg-gray-50 dark:text-gray-100 dark:hover:bg-accent/60 transition-colors cursor-pointer";
+    "flex w-full items-center justify-between px-4 py-2.5 text-mobile-menu font-medium text-gray-800 hover:bg-gray-50 dark:text-gray-100 dark:hover:bg-accent/60 transition-colors cursor-pointer";
 
   const backButtonClass =
-    "w-full flex items-center gap-2 px-4 h-14 border-b border-gray-100 dark:border-border text-[17px] font-bold text-gray-900 dark:text-gray-100 tracking-tight hover:bg-gray-50 dark:hover:bg-accent/40 transition-colors cursor-pointer shrink-0";
+    "w-full flex items-center gap-2 px-4 h-14 border-b border-gray-100 dark:border-border text-mobile-title font-bold text-gray-900 dark:text-gray-100 tracking-tight hover:bg-gray-50 dark:hover:bg-accent/40 transition-colors cursor-pointer shrink-0";
 
   /* ── PDF upsell gate ────────────────────────────────── */
   const handlePDF = () => {
@@ -926,7 +926,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                   <div className="flex items-center justify-between px-4 h-14 border-b border-gray-100 dark:border-border shrink-0">
                     <div className="flex items-center gap-2">
                       <FileText className="h-5 w-5 text-gray-900 dark:text-gray-100" />
-                      <span className="font-bold text-[17px] text-gray-900 dark:text-gray-100 tracking-tight">Applio</span>
+                      <span className="font-bold text-mobile-title text-gray-900 dark:text-gray-100 tracking-tight">Applio</span>
                     </div>
                     <button
                       onClick={handleCloseMenu}
@@ -943,7 +943,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                   <div className="flex-1 overflow-y-auto overscroll-contain py-2">
 
                     {/* ── DISEÑO ── */}
-                    <p className="px-4 pt-3 pb-1.5 text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
+                    <p className="px-4 pt-3 pb-1.5 text-label font-semibold uppercase tracking-widest text-subtle">
                       {t("design")}
                     </p>
 
@@ -993,7 +993,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     </button>
 
                     {/* ── PREFERENCIAS ── */}
-                    <p className="px-4 pt-5 pb-1.5 text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
+                    <p className="px-4 pt-5 pb-1.5 text-label font-semibold uppercase tracking-widest text-subtle">
                       {t("menuPreferences")}
                     </p>
 
@@ -1019,14 +1019,14 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                         </span>
                         {t("language")}
                       </span>
-                      <span className="flex items-center gap-1.5 text-sm text-gray-400 dark:text-gray-500">
+                      <span className="flex items-center gap-1.5 text-sm text-subtle">
                         {LOCALE_NAMES[locale]}
                         <ChevronRight className="h-4 w-4" />
                       </span>
                     </button>
 
                     {/* ── ARCHIVO ── */}
-                    <p className="px-4 pt-5 pb-1.5 text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
+                    <p className="px-4 pt-5 pb-1.5 text-label font-semibold uppercase tracking-widest text-subtle">
                       {t("fileMenu")}
                     </p>
 
@@ -1077,11 +1077,11 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                           <UserAvatar url={user.image} size={10} />
                         </span>
                         <div className="min-w-0 flex-1">
-                          <p className="text-[15px] font-semibold text-gray-800 dark:text-gray-100 truncate leading-tight">
+                          <p className="text-mobile-menu font-semibold text-gray-800 dark:text-gray-100 truncate leading-tight">
                             {user.name || user.email}
                           </p>
                           {user.email && user.name && (
-                            <p className="text-[13px] text-gray-400 dark:text-gray-500 truncate">{user.email}</p>
+                            <p className="text-menu text-subtle truncate">{user.email}</p>
                           )}
                         </div>
                         <button
@@ -1096,7 +1096,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                       <div className="px-5 py-4">
                         <button
                           onClick={() => { setMobileMenuOpen(false); setLoginDialogOpen(true); }}
-                          className="w-full flex items-center justify-center gap-2 h-12 rounded-xl bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-[15px] font-semibold cursor-pointer hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+                          className="w-full flex items-center justify-center gap-2 h-12 rounded-xl bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-mobile-menu font-semibold cursor-pointer hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
                         >
                           <LogIn className="h-4.5 w-4.5" />
                           {tauth("login")}
@@ -1111,7 +1111,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
               {mobileMenuPage === "accent" && (
                 <div className="flex flex-col h-full">
                   <button onClick={() => setMobileMenuPage("main")} className={backButtonClass}>
-                    <ChevronLeft className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+                    <ChevronLeft className="h-5 w-5 text-subtle" />
                     {t("accentColor")}
                   </button>
                   <div className="flex-1 overflow-y-auto overscroll-contain scrollbar-thin px-5 pt-5 pb-4">
@@ -1124,7 +1124,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
               {mobileMenuPage === "palette" && (
                 <div className="flex flex-col h-full">
                   <button onClick={() => setMobileMenuPage("main")} className={backButtonClass}>
-                    <ChevronLeft className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+                    <ChevronLeft className="h-5 w-5 text-subtle" />
                     {t("colorPalette")}
                   </button>
                   <div className="flex-1 overflow-y-auto overscroll-contain scrollbar-thin px-5 pt-5 pb-4">
@@ -1137,7 +1137,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
               {mobileMenuPage === "font" && (
                 <div className="flex flex-col h-full">
                   <button onClick={() => setMobileMenuPage("main")} className={backButtonClass}>
-                    <ChevronLeft className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+                    <ChevronLeft className="h-5 w-5 text-subtle" />
                     {t("fontFamily")}
                   </button>
                   <div className="flex-1 overflow-y-auto overscroll-contain scrollbar-thin px-4 pt-4 pb-4 space-y-4">
@@ -1158,7 +1158,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
                       {/* Font Size */}
                       <div className="mt-6">
-                        <p className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-3">
+                        <p className="text-label font-semibold uppercase tracking-widest text-subtle mb-3">
                           {t("fontSize")}
                         </p>
                         <div className="flex gap-2">
@@ -1189,7 +1189,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
               {mobileMenuPage === "sections" && (
                 <div className="flex flex-col h-full">
                   <button onClick={() => setMobileMenuPage("main")} className={backButtonClass}>
-                    <ChevronLeft className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+                    <ChevronLeft className="h-5 w-5 text-subtle" />
                     {t("sections")}
                   </button>
                   <div className="flex-1 overflow-y-auto overscroll-contain px-4 pt-2 pb-4">
@@ -1202,7 +1202,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
               {mobileMenuPage === "language" && (
                 <div className="flex flex-col h-full">
                   <button onClick={() => setMobileMenuPage("main")} className={backButtonClass}>
-                    <ChevronLeft className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+                    <ChevronLeft className="h-5 w-5 text-subtle" />
                     {t("language")}
                   </button>
                   <div className="flex-1 overflow-y-auto overscroll-contain scrollbar-thin py-2">
@@ -1216,11 +1216,11 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                             setLocale(code);
                             setMobileMenuPage("main");
                           }}
-                          className="flex w-full items-center justify-between px-4 py-3.5 min-h-13 text-[15px] font-medium text-gray-800 hover:bg-gray-50 dark:text-gray-100 dark:hover:bg-accent/60 transition-colors cursor-pointer"
+                          className="flex w-full items-center justify-between px-4 py-3.5 min-h-13 text-mobile-menu font-medium text-gray-800 hover:bg-gray-50 dark:text-gray-100 dark:hover:bg-accent/60 transition-colors cursor-pointer"
                         >
                           <span className="flex items-baseline gap-1.5">
                             {native}
-                            <span className="text-[13px] text-gray-400 dark:text-gray-500">({translated})</span>
+                            <span className="text-menu text-subtle">({translated})</span>
                           </span>
                           {locale === code && (
                             <Check className="h-4.5 w-4.5 text-gray-900 dark:text-gray-100 shrink-0" />
@@ -1400,7 +1400,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                   <button
                     onClick={() => { setFileMenuOpen(false); handlePDF(); }}
                     disabled={isGeneratingPDF}
-                    className="flex w-full items-center gap-3 h-10 px-4 text-[13px] font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors disabled:opacity-50"
+                    className="flex w-full items-center gap-3 h-10 px-4 text-menu font-medium text-on-subtle hover:bg-gray-50 dark:hover:bg-white/5 transition-colors disabled:opacity-50"
                   >
                     {isGeneratingPDF ? <Loader2 className="h-3.5 w-3.5 animate-spin shrink-0 text-red-500" /> : <Download className="h-3.5 w-3.5 shrink-0 text-red-500" />}
                     {t("pdfTitle")}
@@ -1409,7 +1409,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                 <div className="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800">
                   <button
                     onClick={exportToJSON}
-                    className="flex w-full items-center gap-3 h-10 px-4 text-[13px] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                    className="flex w-full items-center gap-3 h-10 px-4 text-menu text-on-subtle hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                   >
                     <FileDown className="h-3.5 w-3.5 shrink-0 text-amber-500" />
                     {t("export")}
@@ -1417,7 +1417,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                   <div className="h-px bg-gray-100 dark:bg-white/5" />
                   <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="flex w-full items-center gap-3 h-10 px-4 text-[13px] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                    className="flex w-full items-center gap-3 h-10 px-4 text-menu text-on-subtle hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                   >
                     <FileUp className="h-3.5 w-3.5 shrink-0 text-amber-500" />
                     {t("import")}
@@ -1501,11 +1501,11 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                         {idx > 0 && <div className="h-px bg-gray-100 dark:bg-white/5" />}
                         <button
                           onClick={() => setLocale(code)}
-                          className="flex w-full items-center justify-between h-10 px-4 text-[13px] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                          className="flex w-full items-center justify-between h-10 px-4 text-menu text-on-subtle hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                         >
                           <span>
                             {native}
-                            <span className="ml-1.5 text-[11px] text-gray-400 dark:text-gray-500">({translated})</span>
+                            <span className="ml-1.5 text-label text-subtle">({translated})</span>
                           </span>
                           {locale === code && (
                             <Check className="h-3.5 w-3.5 text-gray-900 dark:text-gray-100 shrink-0" />
@@ -1535,7 +1535,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                     </span>
                   ) : (
                     <span className="h-8 w-8 rounded-full ring-1 ring-gray-200 dark:ring-gray-700 group-hover:ring-gray-400 dark:group-hover:ring-gray-500 transition-all flex items-center justify-center bg-gray-100 dark:bg-gray-800">
-                      <User className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+                      <User className="h-5 w-5 text-subtle" />
                     </span>
                   )}
                   {/* Sync status badge */}
@@ -1586,7 +1586,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                   </span>
                 ) : (
                   <span className="h-9 w-9 rounded-full ring-1 ring-gray-200 dark:ring-gray-700 group-hover:ring-gray-400 dark:group-hover:ring-gray-500 transition-all flex items-center justify-center bg-gray-100 dark:bg-gray-800">
-                    <User className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+                    <User className="h-5 w-5 text-subtle" />
                   </span>
                 )}
                 {/* Sync badge — consistent with desktop: pulse animation */}
@@ -1678,7 +1678,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
             type="text"
             readOnly
             value={shareUrl}
-            className="flex-1 min-w-0 bg-transparent pl-2.5 pr-1 py-2 text-[13px] text-muted-foreground truncate outline-none cursor-default select-all"
+            className="flex-1 min-w-0 bg-transparent pl-2.5 pr-1 py-2 text-menu text-muted-foreground truncate outline-none cursor-default select-all"
             onFocus={(e) => e.target.select()}
           />
           <Button
@@ -1699,7 +1699,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
           href={shareUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 rounded-xl px-3 py-3 text-[13px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors border border-input"
+          className="flex items-center justify-center gap-2 rounded-xl px-3 py-3 text-menu font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors border border-input"
         >
           <ExternalLink className="h-4 w-4 shrink-0" />
           {t("shareOpen")}

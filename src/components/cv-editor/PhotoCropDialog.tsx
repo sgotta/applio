@@ -234,7 +234,7 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
                   <button
                     onClick={handleApply}
                     disabled={uploading}
-                    className="w-full flex items-center justify-center gap-2 px-5 h-14 text-[15px] font-semibold bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors cursor-pointer disabled:opacity-50"
+                    className="w-full flex items-center justify-center gap-2 px-5 h-14 text-mobile-menu font-semibold bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors cursor-pointer disabled:opacity-50"
                   >
                     {uploading && <Loader2 className="h-4 w-4 animate-spin" />}
                     {t("apply")}
@@ -243,7 +243,7 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
                 <div className="rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800">
                   <button
                     onClick={handleCancelCrop}
-                    className="w-full flex items-center justify-center px-5 h-14 text-[15px] font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                    className="w-full flex items-center justify-center px-5 h-14 text-mobile-menu font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer"
                   >
                     {t("cancel")}
                   </button>
@@ -307,7 +307,7 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
                                 style={{ filter: def.cssFilter }}
                               />
                             </div>
-                            <span className={`text-[10px] leading-tight ${
+                            <span className={`text-badge leading-tight ${
                               isActive
                                 ? "font-semibold text-gray-900 dark:text-gray-100"
                                 : "text-muted-foreground"
@@ -327,7 +327,7 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
                         <>
                           <button
                             onClick={() => setImageToCrop(currentPhoto!)}
-                            className="w-full flex items-center gap-4 px-5 h-14 text-[15px] font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                            className="w-full flex items-center gap-4 px-5 h-14 text-mobile-menu font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer"
                           >
                             <Crop className="w-4.5 h-4.5 text-gray-500 dark:text-gray-400 shrink-0" />
                             {t("adjust")}
@@ -337,7 +337,7 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
                       )}
                       <button
                         onClick={triggerFileInput}
-                        className="w-full flex items-center gap-4 px-5 h-14 text-[15px] font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                        className="w-full flex items-center gap-4 px-5 h-14 text-mobile-menu font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer"
                       >
                         <Upload className="w-4.5 h-4.5 text-gray-500 dark:text-gray-400 shrink-0" />
                         {t("change")}
@@ -347,7 +347,7 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
                     <div className="rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800">
                       <button
                         onClick={handleDelete}
-                        className="w-full flex items-center gap-4 px-5 h-14 text-[15px] font-semibold text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer"
+                        className="w-full flex items-center gap-4 px-5 h-14 text-mobile-menu font-semibold text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer"
                       >
                         <Trash2 className="w-4.5 h-4.5 shrink-0" />
                         {t("delete")}
@@ -361,7 +361,7 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
                   onClick={triggerFileInput}
                   className="flex flex-col items-center justify-center gap-3 w-full py-10 border-2 border-dashed border-gray-300 dark:border-border rounded-xl hover:border-gray-400 dark:hover:border-ring hover:bg-gray-50 dark:hover:bg-accent transition-colors cursor-pointer"
                 >
-                  <ImagePlus className="w-8 h-8 text-gray-400 dark:text-gray-500" />
+                  <ImagePlus className="w-8 h-8 text-subtle" />
                   <span className="text-sm text-muted-foreground">
                     {t("upload")} {t("photoLabel")}
                   </span>

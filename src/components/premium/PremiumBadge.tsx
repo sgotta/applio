@@ -41,7 +41,7 @@ export const PremiumBadge = memo(function PremiumBadge({
             setDialogOpen(true);
           }
         }}
-        className="inline-flex items-center gap-0.5 rounded-full bg-amber-100 dark:bg-amber-900/50 px-1.5 py-0.5 text-[10px] font-semibold text-amber-700 dark:text-amber-400 hover:bg-amber-200 dark:hover:bg-amber-800/50 transition-colors cursor-pointer"
+        className="inline-flex items-center gap-0.5 rounded-full bg-amber-100 dark:bg-amber-900/50 px-1.5 py-0.5 text-badge font-semibold text-amber-700 dark:text-amber-400 hover:bg-amber-200 dark:hover:bg-amber-800/50 transition-colors cursor-pointer"
         title={t("pro")}
       >
         <Lock className="h-2.5 w-2.5" />

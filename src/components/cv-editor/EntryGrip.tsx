@@ -112,11 +112,11 @@ export function EntryGrip({
 
           {sep}
           <div className="px-3 py-1.5">
-            <p className="hidden can-hover:flex items-center gap-1.5 text-[11px] text-gray-400 dark:text-gray-500">
+            <p className="hidden can-hover:flex items-center gap-1.5 text-label text-subtle">
               <Move className="h-3.5 w-3.5 shrink-0" />
               {labels.dragHint}
             </p>
-            <p className="flex can-hover:hidden items-center gap-1.5 text-[11px] text-gray-400 dark:text-gray-500">
+            <p className="flex can-hover:hidden items-center gap-1.5 text-label text-subtle">
               <Move className="h-3.5 w-3.5 shrink-0" />
               {labels.longPressHint}
             </p>

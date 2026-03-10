@@ -125,7 +125,7 @@ export const UpgradeDialog = memo(function UpgradeDialog({
             <DialogTitle className="text-xl font-bold tracking-tight">
               {t("upgradeTitle")}
             </DialogTitle>
-            <span className="text-[9px] font-bold text-amber-500 bg-amber-50 dark:bg-amber-900/30 px-1.5 py-0.5 rounded tracking-widest uppercase">
+            <span className="text-micro font-bold text-amber-500 bg-amber-50 dark:bg-amber-900/30 px-1.5 py-0.5 rounded tracking-widest uppercase">
               Pro
             </span>
           </div>
@@ -205,7 +205,7 @@ export const UpgradeDialog = memo(function UpgradeDialog({
                 : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
             }`}
           >
-            <span className="absolute -top-2.5 right-2 text-[9px] font-bold text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30 px-1.5 py-0.5 rounded tracking-wide">
+            <span className="absolute -top-2.5 right-2 text-micro font-bold text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30 px-1.5 py-0.5 rounded tracking-wide">
               {t("planSaveTag")}
             </span>
             <p className="text-xs font-medium text-muted-foreground">{t("plan6moLabel")}</p>
