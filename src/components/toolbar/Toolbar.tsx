@@ -314,7 +314,7 @@ interface AccentPickerProps {
 function AccentPicker({ accentColor, setAccentColor, t }: AccentPickerProps) {
   return (
     <div className="w-[200px]">
-      <p className="text-micro font-medium tracking-wider uppercase text-subtle mb-2">
+      <p className="text-[9px] font-medium tracking-wider uppercase text-muted-foreground mb-2">
         {t("accentColor")}
       </p>
       <HexColorPicker
@@ -402,7 +402,7 @@ function PaletteSection({
 
   return (
     <div className="w-[240px]">
-      <p className="text-micro font-medium tracking-wider uppercase text-subtle mb-2">
+      <p className="text-[9px] font-medium tracking-wider uppercase text-muted-foreground mb-2">
         {t("colorPalette")}
       </p>
 
@@ -470,7 +470,7 @@ function FontSection({
     <div className="space-y-4">
       {/* Font Family list */}
       <div>
-        <p className="text-micro font-medium tracking-wider uppercase text-subtle mb-2">
+        <p className="text-[9px] font-medium tracking-wider uppercase text-muted-foreground mb-2">
           {t("fontFamily")}
         </p>
         <div className="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800">
@@ -494,7 +494,7 @@ function FontSection({
 
       {/* Font Size */}
       <div>
-        <p className="text-micro font-medium tracking-wider uppercase text-subtle mb-2">
+        <p className="text-[9px] font-medium tracking-wider uppercase text-muted-foreground mb-2">
           {t("fontSize")}
         </p>
         <div className="flex gap-1.5">
