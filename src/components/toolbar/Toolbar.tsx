@@ -1647,18 +1647,19 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
           {tpremium("pdfUpsellBody")}
         </p>
         <div className="px-5 pb-5 space-y-2">
-          <button
+          <Button
             onClick={() => { setPdfUpsellOpen(false); onUpgrade("pdfNoBranding"); }}
-            className="w-full h-10 rounded-md flex items-center justify-center text-sm font-semibold text-white bg-gray-900 dark:bg-gray-100 dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+            className="w-full"
           >
             {tpremium("pdfUpsellUpgrade")}
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="ghost"
             onClick={() => { setPdfUpsellOpen(false); onPrintPDF(); }}
-            className="w-full h-10 rounded-md flex items-center justify-center text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+            className="w-full text-muted-foreground"
           >
             {tpremium("pdfUpsellContinue")}
-          </button>
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
@@ -1680,16 +1681,17 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
             className="flex-1 min-w-0 bg-transparent pl-2.5 pr-1 py-2 text-[13px] text-muted-foreground truncate outline-none cursor-default select-all"
             onFocus={(e) => e.target.select()}
           />
-          <button
+          <Button
+            size="icon"
             onClick={handleCopyShareUrl}
-            className={`h-9 w-9 flex items-center justify-center shrink-0 rounded-lg transition-colors cursor-pointer ${
+            className={`shrink-0 rounded-lg ${
               shareCopied
-                ? "bg-green-500 text-white"
-                : "bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-200"
+                ? "bg-green-500 text-white hover:bg-green-500"
+                : ""
             }`}
           >
-            {shareCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-          </button>
+            {shareCopied ? <Check /> : <Copy />}
+          </Button>
         </div>
 
         {/* Abrir en nueva pestaña */}
