@@ -130,8 +130,8 @@ function AccountContent({
   mobile?: boolean;
 }) {
   // Mobile: texto notablemente más grande para lectura cómoda sin zoom
-  const nameSize    = mobile ? "text-xl"   : "text-mobile-menu";
-  const emailSize   = mobile ? "text-base" : "text-menu";
+  const nameSize    = mobile ? "text-xl"   : "text-sm";
+  const emailSize   = mobile ? "text-base" : "text-xs";
   const bodyText    = mobile ? "text-base" : "text-menu";
   const hintText    = "text-sm";
   const iconSize    = mobile ? "h-5 w-5"   : "h-4 w-4";
