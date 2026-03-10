@@ -14,13 +14,13 @@ export default function EditorError({
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950 px-4">
       <div className="text-center max-w-md">
         <AlertCircle className="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-        <h1 className="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-2">
+        <h1 className="text-lg font-semibold text-on-subtle mb-2">
           The editor encountered an error
         </h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
           {error.message || "Something went wrong while loading the editor."}
         </p>
-        <div className="flex items-center justify-center gap-1.5 text-xs text-gray-400 dark:text-gray-500 mb-6">
+        <div className="flex items-center justify-center gap-1.5 text-xs text-subtle mb-6">
           <HardDrive className="h-3.5 w-3.5" />
           <span>Your CV is saved locally in your browser.</span>
         </div>

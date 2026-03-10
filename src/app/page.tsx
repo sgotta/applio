@@ -111,7 +111,7 @@ function HeroCVMockup() {
         <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/70" />
         <div className="w-2.5 h-2.5 rounded-full bg-green-400/70" />
         <div className="flex-1 flex justify-center">
-          <div className="bg-white dark:bg-white/10 rounded-md px-4 py-1 text-[10px] text-gray-400 border border-gray-200 dark:border-white/10">
+          <div className="bg-white dark:bg-white/10 rounded-md px-4 py-1 text-badge text-gray-400 border border-gray-200 dark:border-white/10">
             applio.dev
           </div>
         </div>
@@ -126,7 +126,7 @@ function HeroCVMockup() {
         <div className="flex items-center gap-2 mb-4 px-1">
           <div className="flex items-center gap-1.5">
             <FileText className="w-3.5 h-3.5 text-gray-400" />
-            <span className="text-[10px] font-bold tracking-tight text-gray-400 font-display">Applio</span>
+            <span className="text-badge font-bold tracking-tight text-gray-400 font-display">Applio</span>
           </div>
           <div className="flex-1" />
           <div className="flex gap-1.5">
@@ -140,12 +140,12 @@ function HeroCVMockup() {
         <div className="bg-white rounded-md shadow-lg mx-auto max-w-[80%]">
           <div className="flex">
             {/* Sidebar */}
-            <div className="w-[30%] bg-[#dfe4ec] p-4 md:p-6 space-y-5 text-[10px] leading-snug rounded-l-md">
+            <div className="w-[30%] bg-[#dfe4ec] p-4 md:p-6 space-y-5 text-badge leading-snug rounded-l-md">
               <div className="w-16 h-16 rounded-full bg-[#94a3b8]/20 mx-auto grid place-items-center">
                 <span className="text-lg font-medium text-[#94a3b8]">JD</span>
               </div>
               <div>
-                <div className="text-[9px] font-semibold uppercase tracking-[0.15em] text-[#1e293b] mb-2">
+                <div className="text-micro font-semibold uppercase tracking-[0.15em] text-[#1e293b] mb-2">
                   {t("mockup.contact")}
                 </div>
                 <div className="h-px bg-[#c4cad5] mb-3" />
@@ -162,7 +162,7 @@ function HeroCVMockup() {
                 </div>
               </div>
               <div>
-                <div className="text-[9px] font-semibold uppercase tracking-[0.15em] text-[#1e293b] mb-2">
+                <div className="text-micro font-semibold uppercase tracking-[0.15em] text-[#1e293b] mb-2">
                   {t("mockup.skills")}
                 </div>
                 <div className="h-px bg-[#c4cad5] mb-3" />
@@ -170,7 +170,7 @@ function HeroCVMockup() {
                   {["React", "TypeScript", "Next.js", "Node.js", "Python"].map((s) => (
                     <span
                       key={s}
-                      className="bg-[#384152] text-white text-[9px] rounded px-2 py-0.5"
+                      className="bg-[#384152] text-white text-micro rounded px-2 py-0.5"
                     >
                       {s}
                     </span>
@@ -180,18 +180,18 @@ function HeroCVMockup() {
             </div>
 
             {/* Main content */}
-            <div className="flex-1 p-5 md:p-7 space-y-5 text-[10px] leading-snug">
+            <div className="flex-1 p-5 md:p-7 space-y-5 text-badge leading-snug">
               <div>
                 <div className="text-[18px] md:text-[20px] font-semibold text-gray-900 leading-tight">
                   John Doe
                 </div>
                 <div className="w-8 h-0.5 bg-[#94a3b8] rounded-full mt-1.5" />
-                <div className="text-[10px] md:text-[11px] font-medium uppercase tracking-wide text-gray-500 mt-1">
+                <div className="text-badge md:text-label font-medium uppercase tracking-wide text-gray-500 mt-1">
                   Sr. Software Engineer
                 </div>
               </div>
               <div>
-                <div className="text-[9px] font-semibold uppercase tracking-[0.15em] text-[#1e293b] mb-2">
+                <div className="text-micro font-semibold uppercase tracking-[0.15em] text-[#1e293b] mb-2">
                   {t("mockup.experience")}
                 </div>
                 <div className="h-px bg-[#cbd5e1] mb-3" />
@@ -201,11 +201,11 @@ function HeroCVMockup() {
                       <span className="font-semibold text-gray-900">
                         Acme Corp
                       </span>
-                      <span className="text-gray-400 text-[10px]">
+                      <span className="text-gray-400 text-badge">
                         Mar 2021 — {t("mockup.present")}
                       </span>
                     </div>
-                    <div className="font-medium uppercase tracking-wide text-gray-500 text-[10px] mt-0.5">
+                    <div className="font-medium uppercase tracking-wide text-gray-500 text-badge mt-0.5">
                       Senior Software Engineer
                     </div>
                     <ul className="mt-1.5 space-y-1 pl-3.5 list-disc marker:text-[#334155]">
@@ -218,11 +218,11 @@ function HeroCVMockup() {
                       <span className="font-semibold text-gray-900">
                         Tech Solutions Inc.
                       </span>
-                      <span className="text-gray-400 text-[10px]">
+                      <span className="text-gray-400 text-badge">
                         Sep 2019 — Feb 2021
                       </span>
                     </div>
-                    <div className="font-medium uppercase tracking-wide text-gray-500 text-[10px] mt-0.5">
+                    <div className="font-medium uppercase tracking-wide text-gray-500 text-badge mt-0.5">
                       Frontend Developer
                     </div>
                     <ul className="mt-1.5 space-y-1 pl-3.5 list-disc marker:text-[#334155]">
@@ -234,7 +234,7 @@ function HeroCVMockup() {
               </div>
               {/* Education — partially visible, cut by fade to suggest more content */}
               <div>
-                <div className="text-[9px] font-semibold uppercase tracking-[0.15em] text-[#1e293b] mb-2">
+                <div className="text-micro font-semibold uppercase tracking-[0.15em] text-[#1e293b] mb-2">
                   {t("mockup.education")}
                 </div>
                 <div className="h-px bg-[#cbd5e1] mb-3" />
@@ -243,11 +243,11 @@ function HeroCVMockup() {
                     <span className="font-semibold text-gray-900">
                       UC Berkeley
                     </span>
-                    <span className="text-gray-400 text-[10px]">
+                    <span className="text-gray-400 text-badge">
                       2015 — 2019
                     </span>
                   </div>
-                  <div className="font-medium uppercase tracking-wide text-gray-500 text-[10px] mt-0.5">
+                  <div className="font-medium uppercase tracking-wide text-gray-500 text-badge mt-0.5">
                     B.S. Computer Science
                   </div>
                 </div>
@@ -418,7 +418,7 @@ function SortableDragItem({
           <div className="font-semibold text-gray-900 dark:text-white text-[0.8rem] leading-snug">
             {title}
           </div>
-          <div className="text-[0.6rem] text-gray-400 dark:text-gray-500 shrink-0 tabular-nums tracking-tight">
+          <div className="text-[0.6rem] text-subtle shrink-0 tabular-nums tracking-tight">
             {dates}
           </div>
         </div>
@@ -597,7 +597,7 @@ function InteractiveEditMockup() {
           <InlineField
             value={fields.dates}
             onChange={(v) => updateField("dates", v)}
-            className="text-xs text-gray-400 dark:text-gray-500"
+            className="text-xs text-subtle"
           />
         </div>
         <div
@@ -750,7 +750,7 @@ function PhoneMockup() {
         <div className="absolute top-2 left-1/2 -translate-x-1/2 w-[90px] h-[28px] bg-gray-900 dark:bg-gray-700 rounded-full z-10" />
 
         {/* Screen — fixed height, content clips naturally like a real phone */}
-        <div className="pt-12 pb-8 text-[11px] leading-[1.45] font-sans h-full overflow-hidden text-gray-900">
+        <div className="pt-12 pb-8 text-label leading-[1.45] font-sans h-full overflow-hidden text-gray-900">
 
           {/* ── Mobile header: photo + name centered ── */}
           <div className="flex flex-col items-center px-8 pt-2 pb-1">
@@ -939,7 +939,7 @@ function LandingPageContent() {
             <h1 className="font-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl text-center leading-[1.05] tracking-tighter font-extrabold">
               {t("hero.titleLine1")}
               <br />
-              <span className="text-gray-400 dark:text-gray-500">
+              <span className="text-subtle">
                 {t("hero.titleLine2")}
               </span>
             </h1>
