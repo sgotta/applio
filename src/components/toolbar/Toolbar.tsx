@@ -1711,10 +1711,9 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
     <div className="fixed bottom-5 right-4 md:bottom-6 md:right-6 z-50 flex flex-col gap-2.5">
       <Button
         variant="outline"
-        size="sm"
         onClick={handleFloatingShare}
         disabled={isSharing}
-        className="rounded-full shadow-lg backdrop-blur-sm bg-white/90 dark:bg-card/90 gap-2 pl-2 pr-3.5 hover:shadow-xl hover:scale-105 active:scale-95 transition-all"
+        className="h-auto rounded-full shadow-lg backdrop-blur-sm bg-white/90 dark:bg-card/90 gap-2.5 pl-2 pr-4 py-2 hover:shadow-xl hover:scale-105 active:scale-95 transition-all"
       >
         <span className="h-7 w-7 flex items-center justify-center rounded-full bg-green-50 dark:bg-green-900/20 text-green-500 shrink-0">
           {isSharing ? <Loader2 className="size-3.5 animate-spin" /> : <Share2 className="size-3.5" />}
@@ -1725,10 +1724,9 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
       </Button>
       <Button
         variant="outline"
-        size="sm"
         onClick={handlePDF}
         disabled={isGeneratingPDF}
-        className="rounded-full shadow-lg backdrop-blur-sm bg-white/90 dark:bg-card/90 gap-2 pl-2 pr-3.5 hover:shadow-xl hover:scale-105 active:scale-95 transition-all"
+        className="h-auto rounded-full shadow-lg backdrop-blur-sm bg-white/90 dark:bg-card/90 gap-2.5 pl-2 pr-4 py-2 hover:shadow-xl hover:scale-105 active:scale-95 transition-all"
       >
         <span className="h-7 w-7 flex items-center justify-center rounded-full bg-red-50 dark:bg-red-900/20 text-red-500 shrink-0">
           {isGeneratingPDF ? <Loader2 className="size-3.5 animate-spin" /> : <Download className="size-3.5" />}
