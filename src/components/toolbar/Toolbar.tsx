@@ -479,7 +479,7 @@ function FontSection({
               {idx > 0 && <div className="h-px bg-gray-100 dark:bg-white/5" />}
               <button
                 onClick={() => setFontFamily(font.id)}
-                className="flex w-full items-center justify-between h-10 px-4 text-menu text-on-subtle hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                className="flex w-full items-center justify-between h-9 px-3.5 text-xs text-on-subtle hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                 style={{ fontFamily: font.cssStack }}
               >
                 <span>{font.displayName}</span>
@@ -1399,7 +1399,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                   <button
                     onClick={() => { setFileMenuOpen(false); handlePDF(); }}
                     disabled={isGeneratingPDF}
-                    className="flex w-full items-center gap-3 h-10 px-4 text-menu font-medium text-on-subtle hover:bg-gray-50 dark:hover:bg-white/5 transition-colors disabled:opacity-50"
+                    className="flex w-full items-center gap-3 h-9 px-3.5 text-xs font-medium text-on-subtle hover:bg-gray-50 dark:hover:bg-white/5 transition-colors disabled:opacity-50"
                   >
                     {isGeneratingPDF ? <Loader2 className="h-3.5 w-3.5 animate-spin shrink-0 text-red-500" /> : <Download className="h-3.5 w-3.5 shrink-0 text-red-500" />}
                     {t("pdfTitle")}
@@ -1408,7 +1408,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                 <div className="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800">
                   <button
                     onClick={exportToJSON}
-                    className="flex w-full items-center gap-3 h-10 px-4 text-menu text-on-subtle hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                    className="flex w-full items-center gap-3 h-9 px-3.5 text-xs text-on-subtle hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                   >
                     <FileDown className="h-3.5 w-3.5 shrink-0 text-amber-500" />
                     {t("export")}
@@ -1416,7 +1416,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                   <div className="h-px bg-gray-100 dark:bg-white/5" />
                   <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="flex w-full items-center gap-3 h-10 px-4 text-menu text-on-subtle hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                    className="flex w-full items-center gap-3 h-9 px-3.5 text-xs text-on-subtle hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                   >
                     <FileUp className="h-3.5 w-3.5 shrink-0 text-amber-500" />
                     {t("import")}
@@ -1500,7 +1500,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
                         {idx > 0 && <div className="h-px bg-gray-100 dark:bg-white/5" />}
                         <button
                           onClick={() => setLocale(code)}
-                          className="flex w-full items-center justify-between h-10 px-4 text-menu text-on-subtle hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                          className="flex w-full items-center justify-between h-9 px-3.5 text-xs text-on-subtle hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                         >
                           <span>
                             {native}
