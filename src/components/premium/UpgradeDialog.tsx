@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth-context";
+import { toast } from "sonner";
 
 const FEATURES = [
   { icon: FolderDown, key: "pdfNoBranding", color: "text-red-500", bg: "bg-red-50 dark:bg-red-900/20", hex: "#ef4444" },
@@ -106,9 +107,10 @@ export const UpgradeDialog = memo(function UpgradeDialog({
       }
     } catch (error) {
       console.error("Checkout error:", error);
+      toast.error(t("checkoutError"));
       setLoading(false);
     }
-  }, [loading, selectedPlan]);
+  }, [loading, selectedPlan, t]);
 
   const feature = FEATURES[current];
 

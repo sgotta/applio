@@ -90,7 +90,8 @@
     "syncProHint": "Mit Pro, Sync in der Cloud.",
     "syncLoginHint": "Melden Sie sich an, um Ihre Daten zu synchronisieren und von jedem Gerät darauf zuzugreifen.",
     "syncSyncing": "Synchronisierung...",
-    "syncError": "Synchronisierungsfehler"
+    "syncError": "Synchronisierungsfehler",
+    "pdfError": "Fehler beim Erstellen der PDF. Bitte versuche es erneut."
   },
   "cvPreview": {
     "fullNamePlaceholder": "Dein vollständiger Name",
@@ -309,7 +310,8 @@
     "createYourCV": "Erstellen Sie Ihren Lebenslauf",
     "sharedOn": "Geteilt am {date}",
     "madeWith": "Hergestellt in Argentinien",
-    "generating": "PDF wird erstellt..."
+    "generating": "PDF wird erstellt...",
+    "pdfError": "Fehler beim Erstellen der PDF. Bitte versuche es erneut."
   },
   "languages": {
     "en": "Englisch",
@@ -439,7 +441,8 @@
     "pdfUpsellTitle": "Ihr Lebenslauf ist fertig",
     "pdfUpsellBody": "Heben Sie ihn hervor: Laden Sie ohne Applio-Branding herunter und hinterlassen Sie einen stärkeren ersten Eindruck. Für weniger als eine Pizza.",
     "pdfUpsellUpgrade": "Premium testen",
-    "pdfUpsellContinue": "Kostenlos fortfahren"
+    "pdfUpsellContinue": "Kostenlos fortfahren",
+    "checkoutError": "Checkout konnte nicht gestartet werden. Bitte versuche es erneut."
   },
   "syncConflict": {
     "title": "Wir haben Ihren Lebenslauf gefunden",

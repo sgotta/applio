@@ -90,7 +90,8 @@
     "syncProHint": "Con Pro, sync nel cloud.",
     "syncLoginHint": "Accedi per sincronizzare i tuoi dati e accedervi da qualsiasi dispositivo.",
     "syncSyncing": "Sincronizzazione...",
-    "syncError": "Errore di sincronizzazione"
+    "syncError": "Errore di sincronizzazione",
+    "pdfError": "Errore nella generazione del PDF. Riprova."
   },
   "cvPreview": {
     "fullNamePlaceholder": "Il Tuo Nome Completo",
@@ -309,7 +310,8 @@
     "createYourCV": "Crea il tuo CV",
     "sharedOn": "Condiviso il {date}",
     "madeWith": "Fatto in Argentina",
-    "generating": "Generazione PDF..."
+    "generating": "Generazione PDF...",
+    "pdfError": "Errore nella generazione del PDF. Riprova."
   },
   "languages": {
     "en": "Inglese",
@@ -439,7 +441,8 @@
     "pdfUpsellTitle": "Il tuo CV è pronto",
     "pdfUpsellBody": "Portalo al livello successivo: scarica senza il marchio Applio e fai una prima impressione più forte. Per meno di una pizza.",
     "pdfUpsellUpgrade": "Prova Premium",
-    "pdfUpsellContinue": "Continua gratis"
+    "pdfUpsellContinue": "Continua gratis",
+    "checkoutError": "Impossibile avviare il pagamento. Riprova."
   },
   "syncConflict": {
     "title": "Abbiamo trovato il tuo CV",
