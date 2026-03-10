@@ -132,7 +132,7 @@ function AccountContent({
   // Mobile: texto notablemente más grande para lectura cómoda sin zoom
   const nameSize    = mobile ? "text-xl"   : "text-sm";
   const emailSize   = mobile ? "text-base" : "text-xs";
-  const bodyText    = mobile ? "text-base" : "text-menu";
+  const bodyText    = mobile ? "text-base" : "text-xs";
   const hintText    = "text-sm";
   const iconSize    = mobile ? "h-5 w-5"   : "h-4 w-4";
   const iconBoxSize = mobile ? "h-9 w-9"   : "h-7 w-7";
@@ -314,7 +314,7 @@ interface AccentPickerProps {
 function AccentPicker({ accentColor, setAccentColor, t }: AccentPickerProps) {
   return (
     <div className="w-[200px]">
-      <p className="text-badge font-semibold tracking-widest uppercase text-subtle mb-3">
+      <p className="text-badge font-semibold tracking-wider uppercase text-subtle mb-3">
         {t("accentColor")}
       </p>
       <HexColorPicker
@@ -402,7 +402,7 @@ function PaletteSection({
 
   return (
     <div className="w-[240px]">
-      <p className="text-badge font-semibold tracking-widest uppercase text-subtle mb-3">
+      <p className="text-badge font-semibold tracking-wider uppercase text-subtle mb-3">
         {t("colorPalette")}
       </p>
 
@@ -470,7 +470,7 @@ function FontSection({
     <div className="space-y-4">
       {/* Font Family list */}
       <div>
-        <p className="text-badge font-semibold tracking-widest uppercase text-subtle mb-3">
+        <p className="text-badge font-semibold tracking-wider uppercase text-subtle mb-3">
           {t("fontFamily")}
         </p>
         <div className="rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800">
@@ -494,7 +494,7 @@ function FontSection({
 
       {/* Font Size */}
       <div>
-        <p className="text-badge font-semibold tracking-widest uppercase text-subtle mb-3">
+        <p className="text-badge font-semibold tracking-wider uppercase text-subtle mb-3">
           {t("fontSize")}
         </p>
         <div className="flex gap-1.5">
