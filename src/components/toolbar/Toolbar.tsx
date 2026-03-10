@@ -145,7 +145,6 @@ function AccountContent({
   const pillMx      = mobile ? "mx-4 mb-4" : "mx-3 mb-3";
   const rowPy       = mobile ? "py-2.5"    : "py-1.5";
   const rowMinH     = mobile ? "min-h-[44px]" : "min-h-[36px]";
-  const btnPy       = mobile ? "py-3"      : "py-2.5";
   const statusMb    = mobile ? "mb-3"      : "mb-2.5";
   const hintMb      = mobile ? "mb-4"      : "mb-3";
 
@@ -243,13 +242,13 @@ function AccountContent({
       </p>
 
       {/* CTA */}
-      <button
+      <Button
         onClick={() => { onClose(); onLogin(); }}
-        className={`cursor-pointer w-full flex items-center justify-center gap-2 rounded-xl bg-linear-to-b from-gray-800 to-gray-900 px-4 ${btnPy} ${rowMinH} text-sm font-medium text-white shadow-sm hover:from-gray-700 hover:to-gray-800 transition-colors dark:from-gray-100 dark:to-gray-200 dark:text-gray-900 dark:hover:from-gray-200 dark:hover:to-gray-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2`}
+        className="w-full gap-2"
       >
         <LogIn className={iconSize} />
         {tauth("login")}
-      </button>
+      </Button>
     </div>
   );
 }
@@ -1237,10 +1236,10 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
           {/* Desktop: link to landing */}
           <Link
             href="/"
-            className="hidden md:flex items-center gap-1.5"
+            className="hidden md:flex items-center gap-2"
           >
-            <FileText className="h-5 w-5 text-gray-900 dark:text-gray-100" />
-            <span className="font-display text-base font-bold tracking-tight text-gray-900 dark:text-gray-100">
+            <FileText className="h-5 w-5 sm:h-6 sm:w-6 text-gray-900 dark:text-gray-100" />
+            <span className="font-display text-base sm:text-lg font-bold tracking-tight text-gray-900 dark:text-gray-100">
               Applio
             </span>
           </Link>
@@ -1709,30 +1708,37 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
 
     {/* Floating action buttons */}
-    <div className="fixed bottom-5 right-4 md:bottom-6 md:right-6 z-50 flex flex-col gap-2.5">
-      <button
-        onClick={handleFloatingShare}
-        className={`flex items-center gap-2 rounded-full border border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-card/90 backdrop-blur-sm pl-2 pr-3.5 py-2 shadow-lg transition-all hover:shadow-xl hover:scale-105 active:scale-95 ${isSharing ? "opacity-50 pointer-events-none" : ""}`}
-      >
-        <span className="h-7 w-7 flex items-center justify-center rounded-full bg-green-50 dark:bg-green-900/20 text-green-500 shrink-0">
-          {isSharing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Share2 className="h-3.5 w-3.5" />}
-        </span>
-        <span className="text-xs font-semibold tracking-wide text-gray-600 dark:text-gray-300 flex-1 text-center">
-          {t("share")}
-        </span>
-      </button>
-      <button
-        onClick={handlePDF}
-        disabled={isGeneratingPDF}
-        className="flex items-center gap-2 rounded-full border border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-card/90 backdrop-blur-sm pl-2 pr-3.5 py-2 shadow-lg transition-all hover:shadow-xl hover:scale-105 active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
-      >
-        <span className="h-7 w-7 flex items-center justify-center rounded-full bg-red-50 dark:bg-red-900/20 text-red-500 shrink-0">
-          {isGeneratingPDF ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Download className="h-3.5 w-3.5" />}
-        </span>
-        <span className="text-xs font-semibold tracking-wide text-gray-600 dark:text-gray-300 flex-1 text-center">
-          PDF
-        </span>
-      </button>
+    <div className="fixed bottom-5 right-4 md:bottom-6 md:right-6 z-50 flex flex-col gap-2">
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="outline"
+            size="icon-lg"
+            onClick={handleFloatingShare}
+            disabled={isSharing}
+            className="rounded-full shadow-lg backdrop-blur-sm bg-white/90 dark:bg-card/90 hover:shadow-xl hover:scale-105 active:scale-95 transition-all"
+          >
+            {isSharing ? <Loader2 className="animate-spin text-green-500" /> : <Share2 className="text-green-500" />}
+            <span className="sr-only">{t("share")}</span>
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent side="left">{t("share")}</TooltipContent>
+      </Tooltip>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="outline"
+            size="icon-lg"
+            onClick={handlePDF}
+            disabled={isGeneratingPDF}
+            className="rounded-full shadow-lg backdrop-blur-sm bg-white/90 dark:bg-card/90 hover:shadow-xl hover:scale-105 active:scale-95 transition-all"
+          >
+            {isGeneratingPDF ? <Loader2 className="animate-spin text-red-500" /> : <Download className="text-red-500" />}
+            <span className="sr-only">PDF</span>
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent side="left">PDF</TooltipContent>
+      </Tooltip>
     </div>
     </>
   );
