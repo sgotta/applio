@@ -240,7 +240,7 @@ export const PhotoCropDialog = memo(function PhotoCropDialog({
                   {t("apply")}
                 </Button>
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   onClick={handleCancelCrop}
                   className="w-full"
                 >
