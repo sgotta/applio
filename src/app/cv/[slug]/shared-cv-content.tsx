@@ -2,8 +2,10 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { Download, Heart, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Toaster } from "@/components/ui/sonner";
 import Link from "next/link";
 import { LocaleProvider, useAppLocale } from "@/lib/locale-context";
 import { ThemeProvider } from "@/lib/theme-context";
@@ -84,10 +86,11 @@ function SharedCVInner({ cvData, settings }: SharedCVContentProps) {
       await downloadPDF(cvData, filename, colorScheme, labels, locale, pdfFontFamily, pdfFontScale);
     } catch (err) {
       console.error("PDF generation failed:", err);
+      toast.error(t("pdfError"));
     } finally {
       setIsGeneratingPDF(false);
     }
-  }, [isGeneratingPDF, cvData, colorScheme, tp, locale, fontDef, settings.fontSizeLevel]);
+  }, [isGeneratingPDF, cvData, colorScheme, t, tp, locale, fontDef, settings.fontSizeLevel]);
 
   return (
     <div className="min-h-screen bg-gray-50 lg:bg-gray-100 lg:py-8 lg:px-4 overflow-x-auto">
@@ -173,6 +176,7 @@ export function SharedCVContent({ cvData, settings }: SharedCVContentProps) {
           <LocaleProvider>
             <TooltipProvider delayDuration={300}>
               <SharedCVInner cvData={cvData} settings={settings} />
+              <Toaster position="top-center" />
             </TooltipProvider>
           </LocaleProvider>
         </FontSettingsProvider>

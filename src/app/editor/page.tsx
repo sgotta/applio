@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { Loader2, FileText } from "lucide-react";
 import { CVProvider, useCV } from "@/lib/cv-context";
 import { LocaleProvider, useAppLocale } from "@/lib/locale-context";
@@ -52,10 +53,11 @@ function AppContent() {
       await downloadPDF(data, filename, colorScheme, labels, locale, pdfFontFamily, pdfFontScale, isPremium);
     } catch (err) {
       console.error("PDF generation failed:", err);
+      toast.error(t("pdfError"));
     } finally {
       setIsGeneratingPDF(false);
     }
-  }, [isGeneratingPDF, data, colorScheme, tp, locale, fontFamilyId, fontSizeLevel, isPremium]);
+  }, [isGeneratingPDF, data, colorScheme, t, tp, locale, fontFamilyId, fontSizeLevel, isPremium]);
 
   if (loading) {
     return (
