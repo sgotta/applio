@@ -49,12 +49,12 @@
   --radius-4xl: calc(var(--radius) + 16px);
 
   /* ─── Typography scale (UI text, not CV content) ─── */
-  --font-size-micro: 0.5625rem;        /* 9px — badge accents, "POPULAR" tags */
-  --font-size-badge: 0.625rem;         /* 10px — PRO badge, section group labels */
-  --font-size-label: 0.6875rem;        /* 11px — form labels, hint text */
-  --font-size-menu: 0.8125rem;         /* 13px — desktop menu items, popover body */
-  --font-size-mobile-menu: 0.9375rem;  /* 15px — mobile menu items, sheet buttons */
-  --font-size-mobile-title: 1.0625rem; /* 17px — mobile nav header */
+  --text-micro: 0.5625rem;        /* 9px — badge accents, "POPULAR" tags */
+  --text-badge: 0.625rem;         /* 10px — PRO badge, section group labels */
+  --text-label: 0.6875rem;        /* 11px — form labels, hint text */
+  --text-menu: 0.8125rem;         /* 13px — desktop menu items, popover body */
+  --text-mobile-menu: 0.9375rem;  /* 15px — mobile menu items, sheet buttons */
+  --text-mobile-title: 1.0625rem; /* 17px — mobile nav header */
 
   /* ─── Semantic text colors (extend shadcn base) ─── */
   --color-subtle: var(--subtle);
