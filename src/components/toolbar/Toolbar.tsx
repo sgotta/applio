@@ -1708,25 +1708,37 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
 
     {/* Floating action buttons */}
-    <div className="fixed bottom-5 right-4 md:bottom-6 md:right-6 z-50 flex flex-col gap-2.5">
-      <Button
-        variant="outline"
-        onClick={handleFloatingShare}
-        disabled={isSharing}
-        className="rounded-full shadow-lg backdrop-blur-sm bg-white/90 dark:bg-card/90 hover:shadow-xl hover:scale-105 active:scale-95 transition-all"
-      >
-        {isSharing ? <Loader2 className="animate-spin text-green-500" /> : <Share2 className="text-green-500" />}
-        {t("share")}
-      </Button>
-      <Button
-        variant="outline"
-        onClick={handlePDF}
-        disabled={isGeneratingPDF}
-        className="rounded-full shadow-lg backdrop-blur-sm bg-white/90 dark:bg-card/90 hover:shadow-xl hover:scale-105 active:scale-95 transition-all"
-      >
-        {isGeneratingPDF ? <Loader2 className="animate-spin text-red-500" /> : <Download className="text-red-500" />}
-        PDF
-      </Button>
+    <div className="fixed bottom-5 right-4 md:bottom-6 md:right-6 z-50 flex flex-col gap-2">
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={handleFloatingShare}
+            disabled={isSharing}
+            className="rounded-full shadow-lg backdrop-blur-sm bg-white/90 dark:bg-card/90 hover:shadow-xl hover:scale-105 active:scale-95 transition-all"
+          >
+            {isSharing ? <Loader2 className="animate-spin text-green-500" /> : <Share2 className="text-green-500" />}
+            <span className="sr-only">{t("share")}</span>
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent side="left">{t("share")}</TooltipContent>
+      </Tooltip>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={handlePDF}
+            disabled={isGeneratingPDF}
+            className="rounded-full shadow-lg backdrop-blur-sm bg-white/90 dark:bg-card/90 hover:shadow-xl hover:scale-105 active:scale-95 transition-all"
+          >
+            {isGeneratingPDF ? <Loader2 className="animate-spin text-red-500" /> : <Download className="text-red-500" />}
+            <span className="sr-only">PDF</span>
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent side="left">PDF</TooltipContent>
+      </Tooltip>
     </div>
     </>
   );
