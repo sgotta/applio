@@ -1713,7 +1713,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
         <TooltipTrigger asChild>
           <Button
             variant="outline"
-            size="icon"
+            size="icon-lg"
             onClick={handleFloatingShare}
             disabled={isSharing}
             className="rounded-full shadow-lg backdrop-blur-sm bg-white/90 dark:bg-card/90 hover:shadow-xl hover:scale-105 active:scale-95 transition-all"
@@ -1728,7 +1728,7 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
         <TooltipTrigger asChild>
           <Button
             variant="outline"
-            size="icon"
+            size="icon-lg"
             onClick={handlePDF}
             disabled={isGeneratingPDF}
             className="rounded-full shadow-lg backdrop-blur-sm bg-white/90 dark:bg-card/90 hover:shadow-xl hover:scale-105 active:scale-95 transition-all"
