@@ -1709,32 +1709,29 @@ export function Toolbar({ onPrintPDF, isGeneratingPDF }: ToolbarProps) {
 
     {/* Floating action buttons */}
     <div className="fixed bottom-5 right-4 md:bottom-6 md:right-6 z-50 flex flex-col gap-2.5">
-      <Button
-        variant="outline"
+      <button
         onClick={handleFloatingShare}
-        disabled={isSharing}
-        className="h-auto rounded-full shadow-lg backdrop-blur-sm bg-white/90 dark:bg-card/90 gap-2.5 pl-2 pr-4 py-2 hover:shadow-xl hover:scale-105 active:scale-95 transition-all"
+        className={`flex items-center gap-2 rounded-full border border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-card/90 backdrop-blur-sm pl-2 pr-3.5 py-2 shadow-lg transition-all hover:shadow-xl hover:scale-105 active:scale-95 ${isSharing ? "opacity-50 pointer-events-none" : ""}`}
       >
         <span className="h-7 w-7 flex items-center justify-center rounded-full bg-green-50 dark:bg-green-900/20 text-green-500 shrink-0">
-          {isSharing ? <Loader2 className="size-3.5 animate-spin" /> : <Share2 className="size-3.5" />}
+          {isSharing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Share2 className="h-3.5 w-3.5" />}
         </span>
-        <span className="text-xs font-semibold tracking-wide text-gray-600 dark:text-gray-300">
+        <span className="text-xs font-semibold tracking-wide text-gray-600 dark:text-gray-300 flex-1 text-center">
           {t("share")}
         </span>
-      </Button>
-      <Button
-        variant="outline"
+      </button>
+      <button
         onClick={handlePDF}
         disabled={isGeneratingPDF}
-        className="h-auto rounded-full shadow-lg backdrop-blur-sm bg-white/90 dark:bg-card/90 gap-2.5 pl-2 pr-4 py-2 hover:shadow-xl hover:scale-105 active:scale-95 transition-all"
+        className="flex items-center gap-2 rounded-full border border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-card/90 backdrop-blur-sm pl-2 pr-3.5 py-2 shadow-lg transition-all hover:shadow-xl hover:scale-105 active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
       >
         <span className="h-7 w-7 flex items-center justify-center rounded-full bg-red-50 dark:bg-red-900/20 text-red-500 shrink-0">
-          {isGeneratingPDF ? <Loader2 className="size-3.5 animate-spin" /> : <Download className="size-3.5" />}
+          {isGeneratingPDF ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Download className="h-3.5 w-3.5" />}
         </span>
-        <span className="text-xs font-semibold tracking-wide text-gray-600 dark:text-gray-300">
+        <span className="text-xs font-semibold tracking-wide text-gray-600 dark:text-gray-300 flex-1 text-center">
           PDF
         </span>
-      </Button>
+      </button>
     </div>
     </>
   );
